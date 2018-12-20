@@ -1,17 +1,19 @@
 import * as Benchmark from 'benchmark'
-import { SpaceObject, valid, invalid } from './SpaceObject'
+import * as t from '../src'
 
 const suite = new Benchmark.Suite()
 
+const T = t.intersection([t.type({ a: t.number }), t.type({ b: t.string })])
+
+const valid = { a: 1, b: 'b' }
+const invalid = { a: 1, b: 1 }
+
 suite
-  .add('space-object (decode, valid)', function() {
-    SpaceObject.decode(valid)
+  .add('t.intersection (valid)', function() {
+    T.decode(valid)
   })
-  .add('space-object (decode, invalid)', function() {
-    SpaceObject.decode(invalid)
-  })
-  .add('space-object (encode)', function() {
-    SpaceObject.encode(valid)
+  .add('t.intersection (invalid)', function() {
+    T.decode(invalid)
   })
   .on('cycle', function(event: any) {
     console.log(String(event.target))

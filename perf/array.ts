@@ -1,5 +1,5 @@
-var Benchmark = require('benchmark')
-var t = require('../lib/index')
+import * as Benchmark from 'benchmark'
+import * as t from '../src'
 
 const suite = new Benchmark.Suite()
 
@@ -15,10 +15,10 @@ suite
   .add('t.array (invalid)', function() {
     T.decode(invalid)
   })
-  .on('cycle', function(event) {
+  .on('cycle', function(event: any) {
     console.log(String(event.target))
   })
-  .on('complete', function() {
+  .on('complete', function(this: any) {
     console.log('Fastest is ' + this.filter('fastest').map('name'))
   })
   .run({ async: true })

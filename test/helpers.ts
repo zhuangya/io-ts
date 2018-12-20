@@ -1,66 +1,81 @@
 import * as assert from 'assert'
 import * as t from '../src/index'
 import { PathReporter } from '../src/PathReporter'
+import { Either, right, left } from 'fp-ts/lib/Either'
 
-export function assertSuccess<T>(validation: t.Validation<T>): void {
-  assert.ok(validation.isRight())
+export function assertSuccess<T>(result: Either<t.DecodeError, T>, expected?: T): void {
+  if (result.isRight()) {
+    if (expected !== undefined) {
+      assert.deepEqual(result.value, expected)
+    }
+  } else {
+    throw new Error(`${result} is not a right`)
+  }
 }
 
-export function assertFailure<T>(validation: t.Validation<T>, descriptions: Array<string>): void {
-  assert.ok(validation.isLeft())
-  assert.deepEqual(PathReporter.report(validation), descriptions)
+export function assertStrictSuccess<T>(result: Either<t.DecodeError, T>, expected: T): void {
+  if (result.isRight()) {
+    if (expected !== undefined) {
+      assert.strictEqual(result.value, expected)
+    }
+  } else {
+    throw new Error(`${result} is not a right`)
+  }
 }
 
-export function assertStrictEqual<T>(validation: t.Validation<T>, value: any): void {
-  assert.strictEqual(validation.fold<any>(t.identity, t.identity), value)
+export function assertFailure<T>(result: Either<t.DecodeError, T>, errors: Array<string>): void {
+  if (result.isLeft()) {
+    assert.deepEqual(PathReporter.report(result), errors)
+  } else {
+    throw new Error(`${result} is not a left`)
+  }
 }
 
-export function assertDeepEqual<T>(validation: t.Validation<T>, value: any): void {
-  assert.deepEqual(validation.fold<any>(t.identity, t.identity), value)
+class NumberFromStringType extends t.Type<number, string, unknown> {
+  readonly _tag: 'NumberFromStringType' = 'NumberFromStringType'
+  constructor() {
+    super(
+      'NumberFromString',
+      t.number.is,
+      (u, c) =>
+        t.string.validate(u, c).chain(s => {
+          const n = +s
+          return isNaN(n) ? t.failure(u, c) : t.success(n)
+        }),
+      String
+    )
+  }
 }
 
-export const string2 = new t.Type<string, string>(
-  'string2',
-  (v): v is string => t.string.is(v) && v[1] === '-',
-  (s, c) =>
-    t.string.validate(s, c).chain(s => {
+export const NumberFromString = new NumberFromStringType()
+
+export const HyphenatedString = new t.Type<string, string, unknown>(
+  'HyphenatedString',
+  (v): v is string => t.string.is(v) && v.length === 3 && v[1] === '-',
+  u => {
+    const stringResult = t.string.decode(u)
+    if (stringResult.isLeft()) {
+      return left(t.leaf(u, 'HyphenatedString'))
+    } else {
+      const s = stringResult.value
       if (s.length === 2) {
-        return t.success(s[0] + '-' + s[1])
+        return right(s[0] + '-' + s[1])
       } else {
-        return t.failure(s, c)
+        return left(t.leaf(u, 'HyphenatedString'))
       }
-    }),
+    }
+  },
   a => a[0] + a[2]
 )
 
-export const DateFromNumber = new t.Type<Date, number>(
-  'DateFromNumber',
-  (v): v is Date => v instanceof Date,
-  (s, c) =>
-    t.number.validate(s, c).chain(n => {
-      const d = new Date(n)
-      return isNaN(d.getTime()) ? t.failure(n, c) : t.success(d)
-    }),
-  a => a.getTime()
-)
-
-export const NumberFromString = new t.Type<number, string, string>(
-  'NumberFromString',
-  t.number.is,
-  (s, c) => {
-    const n = parseFloat(s)
-    return isNaN(n) ? t.failure(s, c) : t.success(n)
-  },
-  String
-)
-
-export const IntegerFromString = t.refinement(NumberFromString, t.Integer.is, 'IntegerFromString')
-
-export function withDefault<T extends t.Mixed>(type: T, defaultValue: t.TypeOf<T>): t.Type<t.InputOf<T>, t.TypeOf<T>> {
-  return new t.Type(
-    `withDefault(${type.name}, ${JSON.stringify(defaultValue)})`,
-    type.is,
-    (v, c) => type.validate(v != null ? v : defaultValue, c),
-    type.encode
-  )
-}
+// export function withDefault<T extends t.Mixed>(
+//   type: T,
+//   defaultValue: t.TypeOf<T>
+// ): t.Type<t.TypeOf<T>, t.TypeOf<T>, unknown> {
+//   return new t.Type(
+//     `withDefault(${type.name}, ${JSON.stringify(defaultValue)})`,
+//     type.is,
+//     v => type.decode(v != null ? v : defaultValue),
+//     type.encode
+//   )
+// }

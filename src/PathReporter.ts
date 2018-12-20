@@ -1,35 +1,38 @@
-import { Reporter } from './Reporter'
-import { Context, getFunctionName, ValidationError } from './index'
+import { DecodeError } from '.'
+import { Either } from 'fp-ts/lib/Either'
 
-function stringify(v: any): string {
-  return typeof v === 'function' ? getFunctionName(v) : JSON.stringify(v)
+export const failure = (error: DecodeError): Array<string> => {
+  const go = (error: DecodeError, path: string): Array<string> => {
+    switch (error.type) {
+      case 'Leaf':
+        return [`Invalid value ${JSON.stringify(error.actual)} supplied to ${path + error.expected}`]
+      case 'LabeledProduct':
+        const r: Array<string> = []
+        for (const key in error.errors) {
+          const e = error.errors[key]
+          r.push(...go(e, path + error.expected + '/' + key + ': '))
+        }
+        return r
+      case 'IndexedProduct':
+        return error.errors.reduce((acc: Array<string>, [key, e]) => {
+          acc.push(...go(e, path + error.expected + '/' + key + ': '))
+          return acc
+        }, [])
+      case 'And':
+      case 'Or':
+        return error.errors.reduce((acc: Array<string>, e) => {
+          acc.push(...go(e, path + error.expected + '/_: '))
+          return acc
+        }, [])
+    }
+  }
+  return go(error, '')
 }
 
-function getContextPath(context: Context): string {
-  return context.map(({ key, type }) => `${key}: ${type.name}`).join('/')
-}
+const empty: Array<never> = []
 
-function getMessage(v: any, context: Context): string {
-  return `Invalid value ${stringify(v)} supplied to ${getContextPath(context)}`
-}
+export const success = () => empty
 
-/**
- * @since 1.0.0
- */
-export function failure(es: Array<ValidationError>): Array<string> {
-  return es.map(e => getMessage(e.value, e.context))
-}
-
-/**
- * @since 1.0.0
- */
-export function success(): Array<string> {
-  return ['No errors!']
-}
-
-/**
- * @since 1.0.0
- */
-export const PathReporter: Reporter<Array<string>> = {
-  report: validation => validation.fold(failure, success)
+export const PathReporter = {
+  report: <A>(result: Either<DecodeError, A>): Array<string> => result.fold(failure, success)
 }

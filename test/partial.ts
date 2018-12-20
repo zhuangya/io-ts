@@ -1,88 +1,80 @@
 import * as assert from 'assert'
 import * as t from '../src/index'
-import {
-  assertSuccess,
-  assertFailure,
-  assertStrictEqual,
-  DateFromNumber,
-  assertDeepEqual,
-  withDefault
-} from './helpers'
+import { assertFailure, assertSuccess, NumberFromString } from './helpers'
 
 describe('partial', () => {
-  it('should succeed validating a valid value', () => {
-    const T = t.partial({ a: t.number })
-    assertSuccess(T.decode({}))
-    assertSuccess(T.decode({ a: 1 }))
-  })
-
-  it('should not add optional keys', () => {
-    const T = t.partial({ a: t.number })
-    const input1 = {}
-    assertStrictEqual(T.decode(input1), input1)
-    const input2 = { a: undefined }
-    assertStrictEqual(T.decode(input2), input2)
-    assert.deepEqual(T.decode({ b: 1 }).value, { b: 1 })
-    const input3 = { a: undefined, b: 1 }
-    assertStrictEqual(T.decode(input3), input3)
-  })
-
-  it('should return the same reference if validation succeeded', () => {
-    const T = t.partial({ a: t.number })
-    const value = {}
-    assertStrictEqual(T.decode(value), value)
-  })
-
-  it('should fail validating an invalid value', () => {
-    const T = t.partial({ a: t.number })
-    assertFailure(T.decode(null), ['Invalid value null supplied to : PartialType<{ a: number }>'])
-    assertFailure(T.decode({ a: 's' }), [
-      'Invalid value "s" supplied to : PartialType<{ a: number }>/a: (number | undefined)/0: number',
-      'Invalid value "s" supplied to : PartialType<{ a: number }>/a: (number | undefined)/1: undefined'
-    ])
-  })
-
-  it('should serialize a deserialized', () => {
-    const T = t.partial({ a: DateFromNumber })
-    assert.deepEqual(T.encode({ a: new Date(0) }), { a: 0 })
-    assert.deepEqual(T.encode({}), {})
-  })
-
-  it('should return the same reference when serializing', () => {
-    const T = t.partial({ a: t.number })
-    assert.strictEqual(T.encode, t.identity)
-  })
-
-  it('should type guard', () => {
-    const T1 = t.partial({ a: t.number })
-    assert.strictEqual(T1.is({}), true)
-    assert.strictEqual(T1.is({ a: 1 }), true)
-    assert.strictEqual(T1.is({ a: 'foo' }), false)
-    assert.strictEqual(T1.is(undefined), false)
-    const T2 = t.partial({ a: DateFromNumber })
-    assert.strictEqual(T2.is({}), true)
-    assert.strictEqual(T2.is({ a: new Date(0) }), true)
-    assert.strictEqual(T2.is({ a: 0 }), false)
-    assert.strictEqual(T2.is(undefined), false)
-  })
-
-  it('should support default values', () => {
-    const T = t.partial({
-      name: withDefault(t.string, 'foo')
+  describe('name', () => {
+    it('should assign a default name', () => {
+      const T = t.partial({ a: t.number })
+      assert.strictEqual(T.name, 'Partial<{ a: number }>')
     })
-    assertDeepEqual(T.decode({}), { name: 'foo' })
+
+    it('should accept a name', () => {
+      const T = t.partial({ a: t.number }, 'T')
+      assert.strictEqual(T.name, 'T')
+    })
   })
 
-  it('should assign a default name', () => {
-    const T1 = t.partial({ a: t.number })
-    assert.strictEqual(T1.name, 'PartialType<{ a: number }>')
-    const T2 = t.partial({ a: t.number }, 'T2')
-    assert.strictEqual(T2.name, 'T2')
+  describe('is', () => {
+    it('should check a isomorphic value', () => {
+      const T = t.partial({ a: t.number })
+      assert.strictEqual(T.is({}), true)
+      assert.strictEqual(T.is({ a: 1 }), true)
+      assert.strictEqual(T.is(undefined), false)
+      assert.strictEqual(T.is({ a: 'foo' }), false)
+    })
+
+    it('should check a prismatic value', () => {
+      const T = t.partial({ a: NumberFromString })
+      assert.strictEqual(T.is({}), true)
+      assert.strictEqual(T.is({ a: 1 }), true)
+      assert.strictEqual(T.is(undefined), false)
+      assert.strictEqual(T.is({ a: 'foo' }), false)
+    })
   })
 
-  it('should preserve additional properties while encoding', () => {
-    const T = t.partial({ a: DateFromNumber })
-    const x = { a: new Date(0), b: 'foo' }
-    assert.deepEqual(T.encode(x), { a: 0, b: 'foo' })
+  describe('decode', () => {
+    it('should decode a isomorphic value', () => {
+      const T = t.partial({ a: t.number })
+      assertSuccess(T.decode({}), {})
+      assertSuccess(T.decode({ a: undefined }), { a: undefined })
+      assertSuccess(T.decode({ a: 1 }), { a: 1 })
+    })
+
+    it('should strip unknown properties', () => {
+      const T = t.partial({ a: t.number })
+      assertSuccess(T.decode({ b: 'b' }), {})
+    })
+
+    it('should fail validating an invalid value', () => {
+      const T = t.partial({ a: t.number })
+      assertFailure(T.decode(null), ['Invalid value null supplied to Partial<{ a: number }>'])
+      assertFailure(T.decode({ a: 's' }), [
+        'Invalid value "s" supplied to Partial<{ a: number }>/a: (undefined | number)/_: undefined',
+        'Invalid value "s" supplied to Partial<{ a: number }>/a: (undefined | number)/_: number'
+      ])
+    })
+  })
+
+  describe('encode', () => {
+    it('should encode a isomorphic value', () => {
+      const T = t.partial({ a: t.number })
+      assert.deepEqual(T.encode({}), {})
+      assert.deepEqual(T.encode({ a: undefined }), { a: undefined })
+      assert.deepEqual(T.encode({ a: 1 }), { a: 1 })
+    })
+
+    it('should encode a prismatic value', () => {
+      const T = t.partial({ a: NumberFromString })
+      assert.deepEqual(T.encode({}), {})
+      assert.deepEqual(T.encode({ a: undefined }), { a: undefined })
+      assert.deepEqual(T.encode({ a: 1 }), { a: '1' })
+    })
+
+    it('should strip addditional properties', () => {
+      const T = t.partial({ a: t.number })
+      const x = { a: 1, b: 'b' }
+      assert.deepEqual(T.encode(x), { a: 1 })
+    })
   })
 })

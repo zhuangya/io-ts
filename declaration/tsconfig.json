@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "outDir": "./out",
+    "declaration": true,
+    "module": "commonjs",
+    "strict": true,
+    "lib": ["es6"],
+    "emitDeclarationOnly": true
+  },
+  "include": ["./index.ts"]
+}
