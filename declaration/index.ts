@@ -73,9 +73,7 @@ const _Person = t.type({
 
 export interface Person extends t.TypeOf<typeof _Person> {}
 
-interface PersonType extends t.InterfaceTypeOf<typeof _Person, Person, Person> {}
-
-export const Person: PersonType = _Person
+export const Person: t.Type<Person, Person, unknown> = _Person
 
 export const TestPerson = t.type({
   person: Person

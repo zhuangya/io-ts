@@ -5,7 +5,8 @@
     "module": "commonjs",
     "strict": true,
     "lib": ["es6"],
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "target": "es5"
   },
   "include": ["./index.ts"]
 }
