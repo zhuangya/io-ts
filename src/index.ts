@@ -205,12 +205,12 @@ export class AnyArrayType extends Type<Array<unknown>, Array<unknown>, unknown> 
 
 const arrayType: AnyArrayType = new AnyArrayType()
 
-const isDictionary = (u: unknown): u is Record<string, unknown> => u !== null && typeof u === 'object'
+const isAnyDictionary = (u: unknown): u is Record<string, unknown> => u !== null && typeof u === 'object'
 
 export class AnyDictionaryType extends Type<Record<string, unknown>, Record<string, unknown>, unknown> {
   readonly _tag: 'AnyDictionaryType' = 'AnyDictionaryType'
   constructor() {
-    super('Dictionary', isDictionary, (i, c) => (isDictionary(i) ? right(i) : failure(i, c)), identity)
+    super('Dictionary', isAnyDictionary, (i, c) => (isAnyDictionary(i) ? right(i) : failure(i, c)), identity)
   }
 }
 
@@ -760,7 +760,7 @@ export class DictionaryType<D extends Mixed, C extends Mixed> extends Type<
   }
 }
 
-const isUnknown = (type: Mixed): type is UnknownType => type === unknown
+const isUnknownType = (type: Mixed): type is UnknownType => (type as any)._tag === 'UnknownType'
 
 const isObject = (r: Record<string, unknown>) => Object.prototype.toString.call(r) !== '[object Object]'
 
@@ -775,7 +775,7 @@ export const dictionary = <D extends Mixed, C extends Mixed>(
       if (!Dictionary.is(u)) {
         return false
       }
-      if (!isUnknown(codomain) && isObject(u)) {
+      if (!isUnknownType(codomain) && isObject(u)) {
         return false
       }
       return Object.keys(u).every(k => domain.is(k) && codomain.is(u[k]))
@@ -786,7 +786,7 @@ export const dictionary = <D extends Mixed, C extends Mixed>(
         return dictionaryResult
       } else {
         const o = dictionaryResult.value
-        if (!isUnknown(codomain) && isObject(o)) {
+        if (!isUnknownType(codomain) && isObject(o)) {
           return failure(u, c)
         }
         const a: Record<string, unknown> = {}
