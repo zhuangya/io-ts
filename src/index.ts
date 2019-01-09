@@ -762,7 +762,7 @@ export class DictionaryType<D extends Mixed, C extends Mixed> extends Type<
 
 const isUnknownType = (type: Mixed): type is UnknownType => (type as any)._tag === 'UnknownType'
 
-const isObject = (r: Record<string, unknown>) => Object.prototype.toString.call(r) !== '[object Object]'
+const isObject = (r: Record<string, unknown>) => Object.prototype.toString.call(r) === '[object Object]'
 
 export const dictionary = <D extends Mixed, C extends Mixed>(
   domain: D,
@@ -775,7 +775,7 @@ export const dictionary = <D extends Mixed, C extends Mixed>(
       if (!Dictionary.is(u)) {
         return false
       }
-      if (!isUnknownType(codomain) && isObject(u)) {
+      if (!isUnknownType(codomain) && !isObject(u)) {
         return false
       }
       return Object.keys(u).every(k => domain.is(k) && codomain.is(u[k]))
@@ -786,7 +786,7 @@ export const dictionary = <D extends Mixed, C extends Mixed>(
         return dictionaryResult
       } else {
         const o = dictionaryResult.value
-        if (!isUnknownType(codomain) && isObject(o)) {
+        if (!isUnknownType(codomain) && !isObject(o)) {
           return failure(u, c)
         }
         const a: Record<string, unknown> = {}
