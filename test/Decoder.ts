@@ -295,4 +295,48 @@ describe.only('Decoder', () => {
       )
     })
   })
+
+  describe('recursive', () => {
+    interface Category {
+      name: string
+      categories: Array<Category>
+    }
+
+    it('should decode a valid input', () => {
+      const decoder: D.Decoder<Category> = D.recursive('Category', () =>
+        D.type({
+          name: D.string,
+          categories: D.array(decoder)
+        })
+      )
+      assert.deepStrictEqual(decoder.decode({ name: 'a', categories: [] }), E.right({ name: 'a', categories: [] }))
+      assert.deepStrictEqual(
+        decoder.decode({ name: 'a', categories: [{ name: 'b', categories: [] }] }),
+        E.right({ name: 'a', categories: [{ name: 'b', categories: [] }] })
+      )
+    })
+
+    it('should reject an invalid input', () => {
+      const decoder: D.Decoder<Category> = D.recursive('Category', () =>
+        D.type({
+          name: D.string,
+          categories: D.array(decoder)
+        })
+      )
+      assert.deepStrictEqual(decoder.decode(null), E.left(DE.decodeError('Category', null)))
+      assert.deepStrictEqual(
+        decoder.decode({}),
+        E.left(
+          DE.decodeError(
+            'Category',
+            {},
+            DE.labeledProduct([
+              ['name', DE.decodeError('string', undefined)],
+              ['categories', DE.decodeError('Array<Category>', undefined)]
+            ])
+          )
+        )
+      )
+    })
+  })
 })

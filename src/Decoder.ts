@@ -2,7 +2,6 @@
  * Missing combinators:
  * - brand
  * - `Int` decoder
- * - recursive
  *
  * Open questions:
  * - is it possible to handle `enum`s?
@@ -14,7 +13,7 @@
  * @since 3.0.0
  */
 import * as E from 'fp-ts/lib/Either'
-import { Refinement } from 'fp-ts/lib/function'
+import { Refinement, flow } from 'fp-ts/lib/function'
 import * as DE from './DecodeError'
 
 //
@@ -25,8 +24,8 @@ import * as DE from './DecodeError'
  * @since 3.0.0
  */
 export interface Decoder<A> {
-  name: string
-  decode: (u: unknown) => E.Either<DE.DecodeError, A>
+  readonly name: string
+  readonly decode: (u: unknown) => E.Either<DE.DecodeError, A>
 }
 
 /**
@@ -37,6 +36,16 @@ export type Decoding<D> = D extends Decoder<infer A> ? A : never
 //
 // primitives
 //
+
+/**
+ * @since 3.0.0
+ */
+export function refinement<A>(refinement: Refinement<unknown, A>, name: string): Decoder<A> {
+  return {
+    name,
+    decode: E.fromPredicate(refinement, u => DE.decodeError(name, u))
+  }
+}
 
 /**
  * @since 3.0.0
@@ -92,16 +101,6 @@ export function keyof<A>(keys: Record<keyof A, unknown>, name?: string): Decoder
 //
 // combinators
 //
-
-/**
- * @since 3.0.0
- */
-export function refinement<A>(refinement: Refinement<unknown, A>, name: string): Decoder<A> {
-  return {
-    name,
-    decode: E.fromPredicate(refinement, u => DE.decodeError(name, u))
-  }
-}
 
 const getStructNames = (decoders: Record<string, Decoder<any>>): string =>
   Object.keys(decoders)
@@ -316,11 +315,41 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
   }
 }
 
-// export function expected<A>(decoder: Decoder<A>, f: (e: DecodeError) => string): Decoder<A> {
-//   return flow(
-//     decoder,
-//     E.mapLeft(e => ({ ...e, expected: f(e) }))
-//   )
+/**
+ * @since 3.0.0
+ */
+export function recursive<A>(name: string, f: () => Decoder<A>): Decoder<A> {
+  let memoized: Decoder<A>
+  function getMemoized(): Decoder<A> {
+    if (!memoized) {
+      const { decode } = f()
+      memoized = {
+        name,
+        decode: flow(
+          decode,
+          E.mapLeft(e => ({ ...e, expected: name }))
+        )
+      }
+    }
+    return memoized
+  }
+  return {
+    name,
+    decode: u => getMemoized().decode(u)
+  }
+}
+
+// /**
+//  * @since 3.0.0
+//  */
+// export function withExpected<A>(decoder: Decoder<A>, f: (e: DE.DecodeError) => string): Decoder<A> {
+//   return {
+//     name: decoder.name,
+//     decode: flow(
+//       decoder.decode,
+//       E.mapLeft(e => ({ ...e, expected: f(e) }))
+//     )
+//   }
 // }
 
 // export function required<N extends string, A, M extends string = N>(
