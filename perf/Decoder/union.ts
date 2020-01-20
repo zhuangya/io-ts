@@ -1,6 +1,7 @@
 import * as Benchmark from 'benchmark'
 import * as t from '../../src'
 import * as d from '../../src/Decoder'
+import { range } from 'fp-ts/lib/Array'
 
 const suite = new Benchmark.Suite()
 
@@ -16,9 +17,13 @@ const getD = <T extends string>(type: T) =>
     a: d.string
   })
 
-const TUnion = t.union([getT('A'), getT('B'), getT('C'), getT('D'), getT('E'), getT('F')])
+const getInputT = (n: number) => range(1, n).map(n => getT(`T${n}`))
 
-const DUnion = d.union([getD('A'), getD('B'), getD('C'), getD('D'), getD('E'), getD('F')])
+const getInputD = (n: number) => range(1, n).map(n => getD(`T${n}`))
+
+const TUnion = t.union(getInputT(100) as any)
+
+const DUnion = d.union(getInputD(100) as any)
 
 const good = {
   type: 'F',
@@ -35,13 +40,13 @@ suite
     TUnion.decode(good)
   })
   .add('DPerson (good)', function() {
-    DUnion(good)
+    DUnion.decode(good)
   })
   .add('TPerson (bad)', function() {
     TUnion.decode(bad)
   })
   .add('DPerson (bad)', function() {
-    DUnion(bad)
+    DUnion.decode(bad)
   })
   .on('cycle', function(event: any) {
     console.log(String(event.target))

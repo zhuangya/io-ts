@@ -1,7 +1,7 @@
 /**
  * Missing combinators:
- * - keyof
  * - brand
+ * - `Int` decoder
  * - recursive
  *
  * Open questions:
@@ -9,7 +9,7 @@
  * - how to change a field? (for example snake case to camel case)
  * - is it possible to define a Decoder which fails with additional fields?
  * - is it possible to get only the first error?
- * - is it possible to define sum types?
+ * - is it possible to optimize sum types?
  *
  * @since 3.0.0
  */
@@ -69,8 +69,24 @@ export const UnknownArray: Decoder<Array<unknown>> = refinement(Array.isArray, '
 /**
  * @since 3.0.0
  */
-export function literal<L extends string | number | boolean>(literal: L): Decoder<L> {
-  return refinement((u: unknown): u is L => u === literal, JSON.stringify(literal))
+export function literal<L extends string | number | boolean>(literal: L, name?: string): Decoder<L> {
+  const expected = name ?? JSON.stringify(literal)
+  return refinement((u: unknown): u is L => u === literal, expected)
+}
+
+/**
+ * @since 3.0.0
+ */
+export function keyof<A>(keys: Record<keyof A, unknown>, name?: string): Decoder<keyof A> {
+  const expected =
+    name ??
+    Object.keys(keys)
+      .map(k => JSON.stringify(k))
+      .join(' | ')
+  return refinement(
+    (u: unknown): u is keyof A => typeof u === 'string' && Object.prototype.hasOwnProperty.call(keys, u),
+    expected
+  )
 }
 
 //
@@ -105,7 +121,7 @@ export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, name?: stri
     decode: u => {
       const e = UnknownRecord.decode(u)
       if (E.isLeft(e)) {
-        return e
+        return E.left(DE.decodeError(expected, u))
       } else {
         const r = e.right
         let a: A = {} as any
@@ -134,7 +150,7 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, name?: s
     decode: u => {
       const e = UnknownRecord.decode(u)
       if (E.isLeft(e)) {
-        return e
+        return E.left(DE.decodeError(expected, u))
       } else {
         const r = e.right
         let a: Partial<A> = {}
@@ -165,7 +181,7 @@ export function record<V>(decoder: Decoder<V>, name?: string): Decoder<Record<st
     decode: u => {
       const e = UnknownRecord.decode(u)
       if (E.isLeft(e)) {
-        return e
+        return E.left(DE.decodeError(expected, u))
       } else {
         const r = e.right
         let a: Record<string, V> = {}
@@ -194,7 +210,7 @@ export function array<A>(decoder: Decoder<A>, name?: string): Decoder<Array<A>> 
     decode: u => {
       const e = UnknownArray.decode(u)
       if (E.isLeft(e)) {
-        return e
+        return E.left(DE.decodeError(expected, u))
       } else {
         const us = e.right
         const len = us.length
@@ -227,7 +243,7 @@ export function tuple<A extends [unknown, ...Array<unknown>]>(
     decode: u => {
       const e = UnknownArray.decode(u)
       if (E.isLeft(e)) {
-        return e
+        return E.left(DE.decodeError(expected, u))
       } else {
         const us = e.right
         const len = decoders.length
@@ -299,3 +315,53 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
     }
   }
 }
+
+// export function expected<A>(decoder: Decoder<A>, f: (e: DecodeError) => string): Decoder<A> {
+//   return flow(
+//     decoder,
+//     E.mapLeft(e => ({ ...e, expected: f(e) }))
+//   )
+// }
+
+// export function required<N extends string, A, M extends string = N>(
+//   name: N,
+//   decoder: Decoder<A>,
+//   rename?: M
+// ): Decoder<{ [K in M]: A }> {
+//   const to = rename || name
+//   return flow(
+//     UnknownRecord,
+//     E.chain(r =>
+//       pipe(
+//         decoder(r[name]),
+//         E.bimap(
+//           e => ({ ...e, expected: `required ${JSON.stringify(name)} field` }),
+//           a => ({ [to]: a } as { [K in M]: A })
+//         )
+//       )
+//     )
+//   )
+// }
+
+// export function optional<N extends string, A, M extends string = N>(
+//   name: N,
+//   decoder: Decoder<A>,
+//   rename?: M
+// ): Decoder<{ [K in M]?: A }> {
+//   const to = rename || name
+//   return flow(
+//     UnknownRecord,
+//     E.chain(r => {
+//       if (r[name] === undefined) {
+//         return E.right({})
+//       }
+//       return pipe(
+//         decoder(r[name]),
+//         E.bimap(
+//           e => ({ ...e, expected: `optional ${JSON.stringify(name)} field` }),
+//           a => ({ [to]: a } as { [K in M]: A })
+//         )
+//       )
+//     })
+//   )
+// }

@@ -16,5 +16,5 @@ module.exports = {
       statements: 100
     }
   },
-  modulePathIgnorePatterns: ['helpers.ts']
+  modulePathIgnorePatterns: ['helpers.ts', '../src/Tree.ts']
 }
