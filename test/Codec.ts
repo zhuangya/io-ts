@@ -19,7 +19,7 @@ export const NumberFromString: C.Codec<number> = {
   encode: String
 }
 
-describe.only('Codec', () => {
+describe('Codec', () => {
   describe('string', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
@@ -100,8 +100,8 @@ describe.only('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.Int
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('Int', null)))
-        assert.deepStrictEqual(codec.decode('1'), E.left(DE.decodeError('Int', '1')))
+        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('number', null)))
+        assert.deepStrictEqual(codec.decode('1'), E.left(DE.decodeError('number', '1')))
         assert.deepStrictEqual(codec.decode(1.2), E.left(DE.decodeError('Int', 1.2)))
       })
     })
@@ -118,10 +118,14 @@ describe.only('Codec', () => {
         const codec = C.literal('a')
         assert.deepStrictEqual(codec.decode('b'), E.left(DE.decodeError('"a"', 'b')))
       })
+    })
+  })
 
-      it('should use the name argument if provided', () => {
-        const codec = C.literal('a', 'NAME')
-        assert.deepStrictEqual(codec.decode('b'), E.left(DE.decodeError('NAME', 'b')))
+  describe('withName', () => {
+    describe('decode', () => {
+      it('should, return the provided name', () => {
+        const codec = C.withName(C.number, 'mynumber')
+        assert.deepStrictEqual(codec.decode('a'), E.left(DE.decodeError('mynumber', 'a')))
       })
     })
   })
@@ -150,11 +154,6 @@ describe.only('Codec', () => {
         const codec = C.keyof({ a: null, b: null })
         assert.deepStrictEqual(codec.decode('c'), E.left(DE.decodeError('"a" | "b"', 'c')))
       })
-
-      it('should use the name argument if provided', () => {
-        const codec = C.keyof({ a: null, b: null }, 'NAME')
-        assert.deepStrictEqual(codec.decode('c'), E.left(DE.decodeError('NAME', 'c')))
-      })
     })
   })
 
@@ -178,16 +177,11 @@ describe.only('Codec', () => {
         const codec = C.type({
           a: C.string
         })
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('{ a: string }', undefined)))
+        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 1 }),
           E.left(DE.decodeError('{ a: string }', { a: 1 }, DE.labeledProduct([['a', DE.decodeError('string', 1)]])))
         )
-      })
-
-      it('should use the name argument if provided', () => {
-        const codec = C.type({ a: C.string }, 'NAME')
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('NAME', undefined)))
       })
     })
 
@@ -195,6 +189,12 @@ describe.only('Codec', () => {
       it('should encode a value', () => {
         const codec = C.type({ a: NumberFromString })
         assert.deepStrictEqual(codec.encode({ a: 1 }), { a: '1' })
+      })
+
+      it('should strip additional fields', () => {
+        const codec = C.type({ a: C.number })
+        const a = { a: 1, b: true }
+        assert.deepStrictEqual(codec.encode(a), { a: 1 })
       })
     })
   })
@@ -220,18 +220,13 @@ describe.only('Codec', () => {
         const codec = C.partial({
           a: C.string
         })
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Partial<{ a: string }>', undefined)))
+        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 1 }),
           E.left(
             DE.decodeError('Partial<{ a: string }>', { a: 1 }, DE.labeledProduct([['a', DE.decodeError('string', 1)]]))
           )
         )
-      })
-
-      it('should use the name argument if provided', () => {
-        const codec = C.partial({ a: C.string }, 'NAME')
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('NAME', undefined)))
       })
     })
 
@@ -240,6 +235,12 @@ describe.only('Codec', () => {
         const codec = C.partial({ a: NumberFromString })
         assert.deepStrictEqual(codec.encode({}), {})
         assert.deepStrictEqual(codec.encode({ a: 1 }), { a: '1' })
+      })
+
+      it('should strip additional fields', () => {
+        const codec = C.partial({ a: C.number })
+        const a = { a: 1, b: true }
+        assert.deepStrictEqual(codec.encode(a), { a: 1 })
       })
     })
   })
@@ -254,7 +255,7 @@ describe.only('Codec', () => {
 
       it('should reject an invalid value', () => {
         const codec = C.record(C.number)
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Record<string, number>', undefined)))
+        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 'a' }),
           E.left(
@@ -265,11 +266,6 @@ describe.only('Codec', () => {
             )
           )
         )
-      })
-
-      it('should use the name argument if provided', () => {
-        const codec = C.record(C.number, 'NAME')
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('NAME', undefined)))
       })
     })
 
@@ -291,16 +287,11 @@ describe.only('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.array(C.string)
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Array<string>', undefined)))
+        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Array<unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode([1]),
           E.left(DE.decodeError('Array<string>', [1], DE.indexedProduct([[0, DE.decodeError('string', 1)]])))
         )
-      })
-
-      it('should use the name argument if provided', () => {
-        const codec = C.array(C.number, 'NAME')
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('NAME', undefined)))
       })
     })
 
@@ -326,7 +317,7 @@ describe.only('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.tuple([C.string, C.number])
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('[string, number]', undefined)))
+        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Array<unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode(['a']),
           E.left(
@@ -334,17 +325,12 @@ describe.only('Codec', () => {
           )
         )
       })
-
-      it('should use the name argument if provided', () => {
-        const codec = C.tuple([C.string, C.number], 'NAME')
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('NAME', undefined)))
-      })
     })
 
     describe('encode', () => {
       it('should encode a value', () => {
-        const codec = C.tuple([NumberFromString])
-        assert.deepStrictEqual(codec.encode([1]), ['1'])
+        const codec = C.tuple([NumberFromString, C.string])
+        assert.deepStrictEqual(codec.encode([1, 'a']), ['1', 'a'])
       })
     })
   })
@@ -374,26 +360,6 @@ describe.only('Codec', () => {
           E.left(
             DE.decodeError(
               '({ a: string } & { b: number })',
-              { a: 'a' },
-              DE.and([
-                DE.decodeError(
-                  '{ b: number }',
-                  { a: 'a' },
-                  DE.labeledProduct([['b', DE.decodeError('number', undefined)]])
-                )
-              ])
-            )
-          )
-        )
-      })
-
-      it('should use the name argument if provided', () => {
-        const codec = C.intersection([C.type({ a: C.string }), C.type({ b: C.number })], 'NAME')
-        assert.deepStrictEqual(
-          codec.decode({ a: 'a' }),
-          E.left(
-            DE.decodeError(
-              'NAME',
               { a: 'a' },
               DE.and([
                 DE.decodeError(
@@ -442,17 +408,9 @@ describe.only('Codec', () => {
           )
         )
       })
-
-      it('should use the name argument if provided', () => {
-        const codec = C.union([C.string, C.number], 'NAME')
-        assert.deepStrictEqual(
-          codec.decode(true),
-          E.left(DE.decodeError('NAME', true, DE.or([DE.decodeError('string', true), DE.decodeError('number', true)])))
-        )
-      })
     })
 
-    describe('encode', () => {
+    describe.skip('encode', () => {
       it('should encode a value', () => {
         const codec = C.union([C.string, NumberFromString])
         assert.deepStrictEqual(codec.encode('a'), 'a')
@@ -498,7 +456,7 @@ describe.only('Codec', () => {
               {},
               DE.labeledProduct([
                 ['a', DE.decodeError('string', undefined)],
-                ['b', DE.decodeError('Array<Rec>', undefined)]
+                ['b', DE.decodeError('Array<unknown>', undefined)]
               ])
             )
           )

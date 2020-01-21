@@ -55,22 +55,20 @@ export function fromRefinement<A>(name: string, refinement: Refinement<unknown, 
 /**
  * @since 3.0.0
  */
-export function literal<L extends string | number | boolean>(literal: L, name?: string): Decoder<L> {
-  const expected = name ?? JSON.stringify(literal)
-  return fromRefinement(expected, (u: unknown): u is L => u === literal)
+export function literal<L extends string | number | boolean>(literal: L): Decoder<L> {
+  const name = JSON.stringify(literal)
+  return fromRefinement(name, (u: unknown): u is L => u === literal)
 }
 
 /**
  * @since 3.0.0
  */
-export function keyof<A>(keys: Record<keyof A, unknown>, name?: string): Decoder<keyof A> {
-  const expected =
-    name ??
-    Object.keys(keys)
-      .map(k => JSON.stringify(k))
-      .join(' | ')
+export function keyof<A>(keys: Record<keyof A, unknown>): Decoder<keyof A> {
+  const name = Object.keys(keys)
+    .map(k => JSON.stringify(k))
+    .join(' | ')
   return fromRefinement(
-    expected,
+    name,
     (u: unknown): u is keyof A => typeof u === 'string' && Object.prototype.hasOwnProperty.call(keys, u)
   )
 }
@@ -146,6 +144,20 @@ export const Int = refinement(number, (n): n is Int => Number.isInteger(n), 'Int
 /**
  * @since 3.0.0
  */
+export function withName<A>(decoder: Decoder<A>, name: string): Decoder<A> {
+  return {
+    name: decoder.name,
+    decode: u =>
+      pipe(
+        decoder.decode(u),
+        E.mapLeft(e => ({ ...e, expected: name }))
+      )
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
 export function withMessage<A>(
   decoder: Decoder<A>,
   onError: (input: unknown, e: DE.DecodeError) => string
@@ -173,7 +185,7 @@ export function refinement<A, B extends A>(
     name,
     decode: u => {
       const e = decoder.decode(u)
-      return E.isLeft(e) ? E.left(DE.decodeError(name, u)) : fromPredicate(e.right)
+      return E.isLeft(e) ? e : fromPredicate(e.right)
     }
   }
 }
@@ -189,14 +201,14 @@ const getTupleNames = (decoders: Array<Decoder<any>>, sep: string): string =>
 /**
  * @since 3.0.0
  */
-export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, name?: string): Decoder<A> {
-  const expected = name ?? `{ ${getStructNames(decoders)} }`
+export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<A> {
+  const name = `{ ${getStructNames(decoders)} }`
   return {
-    name: expected,
+    name,
     decode: u => {
       const e = UnknownRecord.decode(u)
       if (E.isLeft(e)) {
-        return E.left(DE.decodeError(expected, u))
+        return e
       } else {
         const r = e.right
         let a: A = {} as any
@@ -209,7 +221,7 @@ export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, name?: stri
             a[k] = e.right
           }
         }
-        return DE.isNonEmpty(es) ? E.left(DE.decodeError(expected, u, DE.labeledProduct(es))) : E.right(a)
+        return DE.isNonEmpty(es) ? E.left(DE.decodeError(name, u, DE.labeledProduct(es))) : E.right(a)
       }
     }
   }
@@ -218,14 +230,14 @@ export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, name?: stri
 /**
  * @since 3.0.0
  */
-export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, name?: string): Decoder<Partial<A>> {
-  const expected = name ?? `Partial<{ ${getStructNames(decoders)} }>`
+export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<Partial<A>> {
+  const name = `Partial<{ ${getStructNames(decoders)} }>`
   return {
-    name: expected,
+    name,
     decode: u => {
       const e = UnknownRecord.decode(u)
       if (E.isLeft(e)) {
-        return E.left(DE.decodeError(expected, u))
+        return e
       } else {
         const r = e.right
         let a: Partial<A> = {}
@@ -240,7 +252,7 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, name?: s
             }
           }
         }
-        return DE.isNonEmpty(es) ? E.left(DE.decodeError(expected, u, DE.labeledProduct(es))) : E.right(a)
+        return DE.isNonEmpty(es) ? E.left(DE.decodeError(name, u, DE.labeledProduct(es))) : E.right(a)
       }
     }
   }
@@ -249,14 +261,14 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, name?: s
 /**
  * @since 3.0.0
  */
-export function record<A>(decoder: Decoder<A>, name?: string): Decoder<Record<string, A>> {
-  const expected = name ?? `Record<string, ${decoder.name}>`
+export function record<A>(decoder: Decoder<A>): Decoder<Record<string, A>> {
+  const name = `Record<string, ${decoder.name}>`
   return {
-    name: expected,
+    name,
     decode: u => {
       const e = UnknownRecord.decode(u)
       if (E.isLeft(e)) {
-        return E.left(DE.decodeError(expected, u))
+        return e
       } else {
         const r = e.right
         let a: Record<string, A> = {}
@@ -269,7 +281,7 @@ export function record<A>(decoder: Decoder<A>, name?: string): Decoder<Record<st
             a[k] = e.right
           }
         }
-        return DE.isNonEmpty(es) ? E.left(DE.decodeError(expected, u, DE.labeledProduct(es))) : E.right(a)
+        return DE.isNonEmpty(es) ? E.left(DE.decodeError(name, u, DE.labeledProduct(es))) : E.right(a)
       }
     }
   }
@@ -278,14 +290,14 @@ export function record<A>(decoder: Decoder<A>, name?: string): Decoder<Record<st
 /**
  * @since 3.0.0
  */
-export function array<A>(decoder: Decoder<A>, name?: string): Decoder<Array<A>> {
-  const expected = name ?? `Array<${decoder.name}>`
+export function array<A>(decoder: Decoder<A>): Decoder<Array<A>> {
+  const name = `Array<${decoder.name}>`
   return {
-    name: expected,
+    name,
     decode: u => {
       const e = UnknownArray.decode(u)
       if (E.isLeft(e)) {
-        return E.left(DE.decodeError(expected, u))
+        return e
       } else {
         const us = e.right
         const len = us.length
@@ -299,7 +311,7 @@ export function array<A>(decoder: Decoder<A>, name?: string): Decoder<Array<A>> 
             a[i] = e.right
           }
         }
-        return DE.isNonEmpty(es) ? E.left(DE.decodeError(expected, us, DE.indexedProduct(es))) : E.right(a)
+        return DE.isNonEmpty(es) ? E.left(DE.decodeError(name, us, DE.indexedProduct(es))) : E.right(a)
       }
     }
   }
@@ -308,17 +320,16 @@ export function array<A>(decoder: Decoder<A>, name?: string): Decoder<Array<A>> 
 /**
  * @since 3.0.0
  */
-export function tuple<A extends [unknown, ...Array<unknown>]>(
-  decoders: { [K in keyof A]: Decoder<A[K]> },
-  name?: string
+export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
+  decoders: { [K in keyof A]: Decoder<A[K]> }
 ): Decoder<A> {
-  const expected = name ?? `[${getTupleNames(decoders, ', ')}]`
+  const name = `[${getTupleNames(decoders, ', ')}]`
   return {
-    name: expected,
+    name,
     decode: u => {
       const e = UnknownArray.decode(u)
       if (E.isLeft(e)) {
-        return E.left(DE.decodeError(expected, u))
+        return e
       } else {
         const us = e.right
         const len = decoders.length
@@ -332,7 +343,7 @@ export function tuple<A extends [unknown, ...Array<unknown>]>(
             a[i] = e.right
           }
         }
-        return DE.isNonEmpty(es) ? E.left(DE.decodeError(expected, us, DE.indexedProduct(es))) : E.right(a)
+        return DE.isNonEmpty(es) ? E.left(DE.decodeError(name, us, DE.indexedProduct(es))) : E.right(a)
       }
     }
   }
@@ -342,19 +353,17 @@ export function tuple<A extends [unknown, ...Array<unknown>]>(
  * @since 3.0.0
  */
 export function intersection<A, B, C, D, E>(
-  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>],
-  name?: string
+  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>]
 ): Decoder<A & B & C & D & E>
 export function intersection<A, B, C, D>(
-  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>],
-  name?: string
+  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>]
 ): Decoder<A & B & C & D>
-export function intersection<A, B, C>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>], name?: string): Decoder<A & B & C>
-export function intersection<A, B>(decoders: [Decoder<A>, Decoder<B>], name?: string): Decoder<A & B>
-export function intersection<A>(decoders: Array<Decoder<A>>, name?: string): Decoder<A> {
-  const expected = name ?? `(${getTupleNames(decoders, ' & ')})`
+export function intersection<A, B, C>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>]): Decoder<A & B & C>
+export function intersection<A, B>(decoders: [Decoder<A>, Decoder<B>]): Decoder<A & B>
+export function intersection<A>(decoders: Array<Decoder<A>>): Decoder<A> {
+  const name = `(${getTupleNames(decoders, ' & ')})`
   return {
-    name: expected,
+    name,
     decode: u => {
       const as: Array<A> = []
       const es: Array<DE.DecodeError> = []
@@ -369,7 +378,7 @@ export function intersection<A>(decoders: Array<Decoder<A>>, name?: string): Dec
       const a: A = as.some(a => Object.prototype.toString.call(a) !== '[object Object]')
         ? as[as.length - 1]
         : Object.assign({}, ...as)
-      return DE.isNonEmpty(es) ? E.left(DE.decodeError(expected, u, DE.and(es))) : E.right(a)
+      return DE.isNonEmpty(es) ? E.left(DE.decodeError(name, u, DE.and(es))) : E.right(a)
     }
   }
 }
@@ -378,12 +387,11 @@ export function intersection<A>(decoders: Array<Decoder<A>>, name?: string): Dec
  * @since 3.0.0
  */
 export function union<A extends [unknown, unknown, ...Array<unknown>]>(
-  decoders: { [K in keyof A]: Decoder<A[K]> },
-  name?: string
+  decoders: { [K in keyof A]: Decoder<A[K]> }
 ): Decoder<A[number]> {
-  const expected = name ?? `(${getTupleNames(decoders, ' | ')})`
+  const name = `(${getTupleNames(decoders, ' | ')})`
   return {
-    name: expected,
+    name,
     decode: u => {
       const es: Array<DE.DecodeError> = []
       for (let i = 0; i < decoders.length; i++) {
@@ -394,7 +402,7 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
           return e
         }
       }
-      return E.left(DE.decodeError(expected, u, DE.or(es as any)))
+      return E.left(DE.decodeError(name, u, DE.or(es as any)))
     }
   }
 }
@@ -422,59 +430,3 @@ export function recursive<A>(name: string, f: () => Decoder<A>): Decoder<A> {
     decode: u => getMemoized().decode(u)
   }
 }
-
-// /**
-//  * @since 3.0.0
-//  */
-// export function withExpected<A>(decoder: Decoder<A>, f: (e: DE.DecodeError) => string): Decoder<A> {
-//   return {
-//     name: decoder.name,
-//     decode: flow(
-//       decoder.decode,
-//       E.mapLeft(e => ({ ...e, expected: f(e) }))
-//     )
-//   }
-// }
-
-// export function required<N extends string, A, M extends string = N>(
-//   name: N,
-//   decoder: Decoder<A>,
-//   rename?: M
-// ): Decoder<{ [K in M]: A }> {
-//   const to = rename || name
-//   return flow(
-//     UnknownRecord,
-//     E.chain(r =>
-//       pipe(
-//         decoder(r[name]),
-//         E.bimap(
-//           e => ({ ...e, expected: `required ${JSON.stringify(name)} field` }),
-//           a => ({ [to]: a } as { [K in M]: A })
-//         )
-//       )
-//     )
-//   )
-// }
-
-// export function optional<N extends string, A, M extends string = N>(
-//   name: N,
-//   decoder: Decoder<A>,
-//   rename?: M
-// ): Decoder<{ [K in M]?: A }> {
-//   const to = rename || name
-//   return flow(
-//     UnknownRecord,
-//     E.chain(r => {
-//       if (r[name] === undefined) {
-//         return E.right({})
-//       }
-//       return pipe(
-//         decoder(r[name]),
-//         E.bimap(
-//           e => ({ ...e, expected: `optional ${JSON.stringify(name)} field` }),
-//           a => ({ [to]: a } as { [K in M]: A })
-//         )
-//       )
-//     })
-//   )
-// }

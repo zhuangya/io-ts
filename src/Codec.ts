@@ -1,8 +1,9 @@
 /**
  * Breaking changes:
+ * - remove all optional `name` arguments (use `withName` instead)
  * - `refinement`
  *   - `name` is mandatory
- * - removed `brand` combinator
+ * - remove `brand` combinator
  *
  * @since 3.0.0
  */
@@ -37,15 +38,15 @@ export function fromDecoder<A>(decoder: D.Decoder<A>): Codec<A> {
 /**
  * @since 3.0.0
  */
-export function literal<L extends string | number | boolean>(literal: L, name?: string): Codec<L> {
-  return fromDecoder(D.literal(literal, name))
+export function literal<L extends string | number | boolean>(literal: L): Codec<L> {
+  return fromDecoder(D.literal(literal))
 }
 
 /**
  * @since 3.0.0
  */
-export function keyof<A>(keys: Record<keyof A, unknown>, name?: string): Codec<keyof A> {
-  return fromDecoder(D.keyof(keys, name))
+export function keyof<A>(keys: Record<keyof A, unknown>): Codec<keyof A> {
+  return fromDecoder(D.keyof(keys))
 }
 
 // -------------------------------------------------------------------------------------
@@ -109,6 +110,16 @@ export const Int: Codec<Int> = fromDecoder(D.Int)
 /**
  * @since 3.0.0
  */
+export function withName<A>(codec: Codec<A>, name: string): Codec<A> {
+  return {
+    ...D.withName(codec, name),
+    encode: codec.encode
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
 export function withMessage<A>(codec: Codec<A>, onError: (input: unknown, e: DE.DecodeError) => string): Codec<A> {
   return {
     ...D.withMessage(codec, onError),
@@ -129,9 +140,9 @@ export function refinement<A, B extends A>(codec: Codec<A>, refinement: Refineme
 /**
  * @since 3.0.0
  */
-export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }, name?: string): Codec<A> {
+export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<A> {
   return {
-    ...D.type(codecs, name),
+    ...D.type(codecs),
     ...E.type(codecs)
   }
 }
@@ -139,9 +150,9 @@ export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }, name?: string):
 /**
  * @since 3.0.0
  */
-export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }, name?: string): Codec<Partial<A>> {
+export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<Partial<A>> {
   return {
-    ...D.partial(codecs, name),
+    ...D.partial(codecs),
     ...E.partial(codecs)
   }
 }
@@ -149,9 +160,9 @@ export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }, name?: strin
 /**
  * @since 3.0.0
  */
-export function record<A>(codec: Codec<A>, name?: string): Codec<Record<string, A>> {
+export function record<A>(codec: Codec<A>): Codec<Record<string, A>> {
   return {
-    ...D.record(codec, name),
+    ...D.record(codec),
     ...E.record(codec)
   }
 }
@@ -159,9 +170,9 @@ export function record<A>(codec: Codec<A>, name?: string): Codec<Record<string, 
 /**
  * @since 3.0.0
  */
-export function array<A>(codec: Codec<A>, name?: string): Codec<Array<A>> {
+export function array<A>(codec: Codec<A>): Codec<Array<A>> {
   return {
-    ...D.array(codec, name),
+    ...D.array(codec),
     ...E.array(codec)
   }
 }
@@ -169,12 +180,11 @@ export function array<A>(codec: Codec<A>, name?: string): Codec<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A extends [unknown, ...Array<unknown>]>(
-  codecs: { [K in keyof A]: Codec<A[K]> },
-  name?: string
+export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
+  codecs: { [K in keyof A]: Codec<A[K]> }
 ): Codec<A> {
   return {
-    ...D.tuple<A>(codecs, name),
+    ...D.tuple<A>(codecs),
     ...E.tuple(codecs)
   }
 }
@@ -190,11 +200,11 @@ export function intersection<A, B, C, D>(
   codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>],
   name?: string
 ): Codec<A & B & C & D>
-export function intersection<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>], name?: string): Codec<A & B & C>
-export function intersection<A, B>(codecs: [Codec<A>, Codec<B>], name?: string): Codec<A & B>
-export function intersection<A>(codecs: any, name?: string): Codec<A> {
+export function intersection<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>]): Codec<A & B & C>
+export function intersection<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<A & B>
+export function intersection<A>(codecs: any): Codec<A> {
   return {
-    ...D.intersection<A, A>(codecs, name),
+    ...D.intersection<A, A>(codecs),
     ...E.intersection(codecs)
   }
 }
@@ -203,11 +213,10 @@ export function intersection<A>(codecs: any, name?: string): Codec<A> {
  * @since 3.0.0
  */
 export function union<A extends [unknown, unknown, ...Array<unknown>]>(
-  codecs: { [K in keyof A]: Codec<A[K]> },
-  name?: string
+  codecs: { [K in keyof A]: Codec<A[K]> }
 ): Codec<A[number]> {
   return {
-    ...D.union(codecs, name),
+    ...D.union(codecs),
     ...E.union(codecs)
   }
 }

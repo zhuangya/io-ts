@@ -77,9 +77,11 @@ export function array<A>(encoder: Encoder<A>): Encoder<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A extends [unknown, ...Array<unknown>]>(encoders: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> {
+export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
+  encoders: { [K in keyof A]: Encoder<A[K]> }
+): Encoder<A> {
   return {
-    encode: as => as.map((a, i) => encoders[i].encode(a))
+    encode: as => encoders.map((encoder, i) => encoder.encode(as[i]))
   }
 }
 
