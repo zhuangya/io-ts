@@ -8,6 +8,9 @@ import { DecodeError } from './DecodeError'
  * @since 3.0.0
  */
 export function toTree(e: DecodeError): Tree<string> {
+  if (e.message) {
+    return make(e.message)
+  }
   const value = (e: DecodeError): string => `Expected a valid ${e.expected}, but was ${JSON.stringify(e.actual)}`
   const d = e.detail
   if (d) {

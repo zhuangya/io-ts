@@ -1,24 +1,29 @@
 /**
- * Missing combinators:
- * - brand
- * - `Int` decoder
+ * FAQ
+ * - is it possible to provide a custom message?
+ *   - yes, use `withMessage`
+ * - how to change a field? (for example snake case to camel case)
+ *   - mapping
+ *
+ * Open problems:
+ * - is it possible to optimize sum types?
  *
  * Open questions:
  * - is it possible to handle `enum`s?
- * - how to change a field? (for example snake case to camel case)
  * - is it possible to define a Decoder which fails with additional fields?
  * - is it possible to get only the first error?
- * - is it possible to optimize sum types?
+ * - readonly?
  *
  * @since 3.0.0
  */
 import * as E from 'fp-ts/lib/Either'
-import { Refinement, flow } from 'fp-ts/lib/function'
+import { flow, Refinement } from 'fp-ts/lib/function'
+import { pipe } from 'fp-ts/lib/pipeable'
 import * as DE from './DecodeError'
 
-//
+// -------------------------------------------------------------------------------------
 // model
-//
+// -------------------------------------------------------------------------------------
 
 /**
  * @since 3.0.0
@@ -33,14 +38,14 @@ export interface Decoder<A> {
  */
 export type Decoding<D> = D extends Decoder<infer A> ? A : never
 
-//
-// primitives
-//
+// -------------------------------------------------------------------------------------
+// constructors
+// -------------------------------------------------------------------------------------
 
 /**
  * @since 3.0.0
  */
-export function refinement<A>(refinement: Refinement<unknown, A>, name: string): Decoder<A> {
+export function fromRefinement<A>(name: string, refinement: Refinement<unknown, A>): Decoder<A> {
   return {
     name,
     decode: E.fromPredicate(refinement, u => DE.decodeError(name, u))
@@ -50,37 +55,9 @@ export function refinement<A>(refinement: Refinement<unknown, A>, name: string):
 /**
  * @since 3.0.0
  */
-export const string: Decoder<string> = refinement((u: unknown): u is string => typeof u === 'string', 'string')
-
-/**
- * @since 3.0.0
- */
-export const number: Decoder<number> = refinement((u: unknown): u is number => typeof u === 'number', 'number')
-
-/**
- * @since 3.0.0
- */
-export const boolean: Decoder<boolean> = refinement((u: unknown): u is boolean => typeof u === 'boolean', 'boolean')
-
-/**
- * @since 3.0.0
- */
-export const UnknownRecord: Decoder<Record<string, unknown>> = refinement(
-  (u: unknown): u is Record<string, unknown> => Object.prototype.toString.call(u) === '[object Object]',
-  'Record<string, unknown>'
-)
-
-/**
- * @since 3.0.0
- */
-export const UnknownArray: Decoder<Array<unknown>> = refinement(Array.isArray, 'Array<unknown>')
-
-/**
- * @since 3.0.0
- */
 export function literal<L extends string | number | boolean>(literal: L, name?: string): Decoder<L> {
   const expected = name ?? JSON.stringify(literal)
-  return refinement((u: unknown): u is L => u === literal, expected)
+  return fromRefinement(expected, (u: unknown): u is L => u === literal)
 }
 
 /**
@@ -92,15 +69,114 @@ export function keyof<A>(keys: Record<keyof A, unknown>, name?: string): Decoder
     Object.keys(keys)
       .map(k => JSON.stringify(k))
       .join(' | ')
-  return refinement(
-    (u: unknown): u is keyof A => typeof u === 'string' && Object.prototype.hasOwnProperty.call(keys, u),
-    expected
+  return fromRefinement(
+    expected,
+    (u: unknown): u is keyof A => typeof u === 'string' && Object.prototype.hasOwnProperty.call(keys, u)
   )
 }
 
-//
+// -------------------------------------------------------------------------------------
+// primitives
+// -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export const string: Decoder<string> = fromRefinement('string', (u: unknown): u is string => typeof u === 'string')
+
+/**
+ * @since 3.0.0
+ */
+export const number: Decoder<number> = fromRefinement('number', (u: unknown): u is number => typeof u === 'number')
+
+/**
+ * @since 3.0.0
+ */
+export const boolean: Decoder<boolean> = fromRefinement('boolean', (u: unknown): u is boolean => typeof u === 'boolean')
+
+const _undefined: Decoder<undefined> = fromRefinement('undefined', (u: unknown): u is undefined => u === undefined)
+
+const _null: Decoder<null> = fromRefinement('null', (u: unknown): u is null => u === null)
+
+export {
+  /**
+   * @since 3.0.0
+   */
+  _undefined as undefined,
+  /**
+   * @since 3.0.0
+   */
+  _null as null
+}
+
+/**
+ * @since 3.0.0
+ */
+export const UnknownArray: Decoder<Array<unknown>> = fromRefinement('Array<unknown>', Array.isArray)
+
+/**
+ * @since 3.0.0
+ */
+export const UnknownRecord: Decoder<Record<string, unknown>> = fromRefinement(
+  'Record<string, unknown>',
+  (u: unknown): u is Record<string, unknown> => Object.prototype.toString.call(u) === '[object Object]'
+)
+
+/**
+ * @since 3.0.0
+ */
+export interface IntBrand {
+  readonly Int: unique symbol
+}
+
+/**
+ * @since 3.0.0
+ */
+export type Int = number & IntBrand
+
+/**
+ * @since 3.0.0
+ */
+export const Int = refinement(number, (n): n is Int => Number.isInteger(n), 'Int')
+
+// -------------------------------------------------------------------------------------
 // combinators
-//
+// -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export function withMessage<A>(
+  decoder: Decoder<A>,
+  onError: (input: unknown, e: DE.DecodeError) => string
+): Decoder<A> {
+  return {
+    name: decoder.name,
+    decode: u =>
+      pipe(
+        decoder.decode(u),
+        E.mapLeft(e => ({ ...e, message: onError(u, e) }))
+      )
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function refinement<A, B extends A>(
+  decoder: Decoder<A>,
+  refinement: Refinement<A, B>,
+  name: string
+): Decoder<B> {
+  const fromPredicate = E.fromPredicate(refinement, a => DE.decodeError(name, a))
+  return {
+    name,
+    decode: u => {
+      const e = decoder.decode(u)
+      return E.isLeft(e) ? E.left(DE.decodeError(name, u)) : fromPredicate(e.right)
+    }
+  }
+}
 
 const getStructNames = (decoders: Record<string, Decoder<any>>): string =>
   Object.keys(decoders)
@@ -173,7 +249,7 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, name?: s
 /**
  * @since 3.0.0
  */
-export function record<V>(decoder: Decoder<V>, name?: string): Decoder<Record<string, V>> {
+export function record<A>(decoder: Decoder<A>, name?: string): Decoder<Record<string, A>> {
   const expected = name ?? `Record<string, ${decoder.name}>`
   return {
     name: expected,
@@ -183,7 +259,7 @@ export function record<V>(decoder: Decoder<V>, name?: string): Decoder<Record<st
         return E.left(DE.decodeError(expected, u))
       } else {
         const r = e.right
-        let a: Record<string, V> = {}
+        let a: Record<string, A> = {}
         const es: Array<[string, DE.DecodeError]> = []
         for (const k in r) {
           const e = decoder.decode(r[k])
@@ -262,20 +338,25 @@ export function tuple<A extends [unknown, ...Array<unknown>]>(
   }
 }
 
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never
-
 /**
  * @since 3.0.0
  */
-export function intersection<A extends [unknown, unknown, ...Array<unknown>]>(
-  decoders: { [K in keyof A]: Decoder<A[K]> },
+export function intersection<A, B, C, D, E>(
+  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>],
   name?: string
-): Decoder<{ [K in keyof UnionToIntersection<A[number]>]: UnionToIntersection<A[number]>[K] }> {
+): Decoder<A & B & C & D & E>
+export function intersection<A, B, C, D>(
+  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>],
+  name?: string
+): Decoder<A & B & C & D>
+export function intersection<A, B, C>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>], name?: string): Decoder<A & B & C>
+export function intersection<A, B>(decoders: [Decoder<A>, Decoder<B>], name?: string): Decoder<A & B>
+export function intersection<A>(decoders: Array<Decoder<A>>, name?: string): Decoder<A> {
   const expected = name ?? `(${getTupleNames(decoders, ' & ')})`
   return {
     name: expected,
     decode: u => {
-      const as: Array<unknown> = []
+      const as: Array<A> = []
       const es: Array<DE.DecodeError> = []
       for (let i = 0; i < decoders.length; i++) {
         const e = decoders[i].decode(u)
@@ -285,7 +366,10 @@ export function intersection<A extends [unknown, unknown, ...Array<unknown>]>(
           as[i] = e.right
         }
       }
-      return DE.isNonEmpty(es) ? E.left(DE.decodeError(expected, u, DE.and(es))) : E.right(Object.assign({}, ...as))
+      const a: A = as.some(a => Object.prototype.toString.call(a) !== '[object Object]')
+        ? as[as.length - 1]
+        : Object.assign({}, ...as)
+      return DE.isNonEmpty(es) ? E.left(DE.decodeError(expected, u, DE.and(es))) : E.right(a)
     }
   }
 }

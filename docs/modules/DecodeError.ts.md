@@ -1,6 +1,6 @@
 ---
 title: DecodeError.ts
-nav_order: 1
+nav_order: 2
 parent: Modules
 ---
 
@@ -48,7 +48,8 @@ Added in v3.0.0
 export interface DecodeError {
   readonly expected: string
   readonly actual: unknown
-  readonly detail?: Detail
+  readonly detail: Detail | undefined
+  readonly message: string | undefined
 }
 ```
 
