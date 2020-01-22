@@ -122,7 +122,7 @@ export function intersection<A>(encoders: Array<Encoder<A>>): Encoder<A> {
 /**
  * @since 3.0.0
  */
-export function recursive<A>(f: () => Encoder<A>): Encoder<A> {
+export function lazy<A>(f: () => Encoder<A>): Encoder<A> {
   let memoized: Encoder<A>
   function getMemoized(): Encoder<A> {
     if (!memoized) {

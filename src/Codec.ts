@@ -4,6 +4,7 @@
  * - `refinement`
  *   - `name` is mandatory
  * - remove `brand` combinator
+ * - rename `recursive` to `lazy`
  *
  * @since 3.0.0
  */
@@ -230,10 +231,10 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
 /**
  * @since 3.0.0
  */
-export function recursive<A>(f: () => Codec<A>): Codec<A> {
+export function lazy<A>(f: () => Codec<A>): Codec<A> {
   return {
-    ...D.recursive(f),
-    ...E.recursive(f),
-    ...G.recursive(f)
+    ...D.lazy(f),
+    ...E.lazy(f),
+    ...G.lazy(f)
   }
 }

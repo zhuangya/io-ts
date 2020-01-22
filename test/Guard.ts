@@ -122,7 +122,7 @@ describe('Guard', () => {
       b: Array<Rec>
     }
 
-    const guard: G.Guard<Rec> = G.recursive(() =>
+    const guard: G.Guard<Rec> = G.lazy(() =>
       G.type({
         a: G.number,
         b: G.array(guard)

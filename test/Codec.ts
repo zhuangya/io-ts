@@ -394,7 +394,7 @@ describe('Codec', () => {
       b: Array<Rec>
     }
 
-    const codec: C.Codec<Rec> = C.recursive(() =>
+    const codec: C.Codec<Rec> = C.lazy(() =>
       C.type({
         a: NumberFromString,
         b: C.array(codec)

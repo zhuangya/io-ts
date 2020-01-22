@@ -236,7 +236,7 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
 /**
  * @since 3.0.0
  */
-export function recursive<A>(f: () => Guard<A>): Guard<A> {
+export function lazy<A>(f: () => Guard<A>): Guard<A> {
   let memoized: Guard<A>
   function getMemoized(): Guard<A> {
     if (!memoized) {
