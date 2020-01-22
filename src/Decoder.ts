@@ -6,9 +6,10 @@
  *   - mapping
  *
  * Open problems:
- * - is it possible to optimize sum types?
+ * - is it possible to optimize unions (sum types)?
  *
  * Open questions:
+ * - is it possible to define a Semigroup for DecodeError?
  * - is it possible to handle `enum`s?
  * - is it possible to define a Decoder which fails with additional fields?
  * - is it possible to get only the first error?
@@ -20,6 +21,7 @@ import * as E from 'fp-ts/lib/Either'
 import { flow, Refinement } from 'fp-ts/lib/function'
 import { pipe } from 'fp-ts/lib/pipeable'
 import * as DE from './DecodeError'
+import * as G from './Guard'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -45,19 +47,18 @@ export type Decoding<D> = D extends Decoder<infer A> ? A : never
 /**
  * @since 3.0.0
  */
-export function fromRefinement<A>(name: string, refinement: Refinement<unknown, A>): Decoder<A> {
+export function fromGuard<A>(name: string, guard: G.Guard<A>): Decoder<A> {
   return {
     name,
-    decode: E.fromPredicate(refinement, u => DE.decodeError(name, u))
+    decode: E.fromPredicate(guard.is, u => DE.decodeError(name, u))
   }
 }
 
 /**
  * @since 3.0.0
  */
-export function literal<L extends string | number | boolean>(literal: L): Decoder<L> {
-  const name = JSON.stringify(literal)
-  return fromRefinement(name, (u: unknown): u is L => u === literal)
+export function literal<A extends string | number | boolean>(literal: A): Decoder<A> {
+  return fromGuard(JSON.stringify(literal), G.literal(literal))
 }
 
 /**
@@ -67,10 +68,7 @@ export function keyof<A>(keys: Record<keyof A, unknown>): Decoder<keyof A> {
   const name = Object.keys(keys)
     .map(k => JSON.stringify(k))
     .join(' | ')
-  return fromRefinement(
-    name,
-    (u: unknown): u is keyof A => typeof u === 'string' && Object.prototype.hasOwnProperty.call(keys, u)
-  )
+  return fromGuard(name, G.keyof(keys))
 }
 
 // -------------------------------------------------------------------------------------
@@ -80,21 +78,21 @@ export function keyof<A>(keys: Record<keyof A, unknown>): Decoder<keyof A> {
 /**
  * @since 3.0.0
  */
-export const string: Decoder<string> = fromRefinement('string', (u: unknown): u is string => typeof u === 'string')
+export const string: Decoder<string> = fromGuard('string', G.string)
 
 /**
  * @since 3.0.0
  */
-export const number: Decoder<number> = fromRefinement('number', (u: unknown): u is number => typeof u === 'number')
+export const number: Decoder<number> = fromGuard('number', G.number)
 
 /**
  * @since 3.0.0
  */
-export const boolean: Decoder<boolean> = fromRefinement('boolean', (u: unknown): u is boolean => typeof u === 'boolean')
+export const boolean: Decoder<boolean> = fromGuard('boolean', G.boolean)
 
-const _undefined: Decoder<undefined> = fromRefinement('undefined', (u: unknown): u is undefined => u === undefined)
+const _undefined: Decoder<undefined> = fromGuard('undefined', G.undefined)
 
-const _null: Decoder<null> = fromRefinement('null', (u: unknown): u is null => u === null)
+const _null: Decoder<null> = fromGuard('null', G.null)
 
 export {
   /**
@@ -110,32 +108,27 @@ export {
 /**
  * @since 3.0.0
  */
-export const UnknownArray: Decoder<Array<unknown>> = fromRefinement('Array<unknown>', Array.isArray)
+export const UnknownArray: Decoder<Array<unknown>> = fromGuard('Array<unknown>', G.UnknownArray)
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: Decoder<Record<string, unknown>> = fromRefinement(
-  'Record<string, unknown>',
-  (u: unknown): u is Record<string, unknown> => Object.prototype.toString.call(u) === '[object Object]'
-)
+export const UnknownRecord: Decoder<Record<string, unknown>> = fromGuard('Record<string, unknown>', G.UnknownRecord)
 
 /**
  * @since 3.0.0
  */
-export interface IntBrand {
-  readonly Int: unique symbol
-}
+export type IntBrand = G.IntBrand
 
 /**
  * @since 3.0.0
  */
-export type Int = number & IntBrand
+export type Int = G.Int
 
 /**
  * @since 3.0.0
  */
-export const Int = refinement(number, (n): n is Int => Number.isInteger(n), 'Int')
+export const Int: Decoder<Int> = fromGuard('Int', G.Int)
 
 // -------------------------------------------------------------------------------------
 // combinators

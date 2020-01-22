@@ -2,6 +2,7 @@ import * as assert from 'assert'
 import * as E from 'fp-ts/lib/Either'
 import * as C from '../src/Codec'
 import * as D from '../src/Decoder'
+import * as G from '../src/Guard'
 import * as DE from '../src/DecodeError'
 
 export const NumberFromString: C.Codec<number> = {
@@ -16,7 +17,8 @@ export const NumberFromString: C.Codec<number> = {
       return isNaN(n) ? E.left(DE.decodeError('NumberFromString', u)) : E.right(n)
     }
   },
-  encode: String
+  encode: String,
+  ...G.number
 }
 
 describe('Codec', () => {
@@ -100,8 +102,8 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.Int
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('number', null)))
-        assert.deepStrictEqual(codec.decode('1'), E.left(DE.decodeError('number', '1')))
+        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('Int', null)))
+        assert.deepStrictEqual(codec.decode('1'), E.left(DE.decodeError('Int', '1')))
         assert.deepStrictEqual(codec.decode(1.2), E.left(DE.decodeError('Int', 1.2)))
       })
     })
@@ -410,7 +412,7 @@ describe('Codec', () => {
       })
     })
 
-    describe.skip('encode', () => {
+    describe('encode', () => {
       it('should encode a value', () => {
         const codec = C.union([C.string, NumberFromString])
         assert.deepStrictEqual(codec.encode('a'), 'a')

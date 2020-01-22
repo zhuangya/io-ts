@@ -110,17 +110,6 @@ export function intersection<A>(encoders: Array<Encoder<A>>): Encoder<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
-  _encoders: { [K in keyof A]: Encoder<A[K]> }
-): Encoder<A[number]> {
-  return {
-    encode: a => a
-  }
-}
-
-/**
- * @since 3.0.0
- */
 export function recursive<A>(f: () => Encoder<A>): Encoder<A> {
   let memoized: Encoder<A>
   function getMemoized(): Encoder<A> {

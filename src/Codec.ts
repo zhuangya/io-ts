@@ -10,6 +10,7 @@
 import { identity, Refinement } from 'fp-ts/lib/function'
 import * as D from './Decoder'
 import * as E from './Encoder'
+import * as G from './Guard'
 import * as DE from './DecodeError'
 
 // -------------------------------------------------------------------------------------
@@ -19,7 +20,7 @@ import * as DE from './DecodeError'
 /**
  * @since 3.0.0
  */
-export interface Codec<A> extends D.Decoder<A>, E.Encoder<A> {}
+export interface Codec<A> extends D.Decoder<A>, E.Encoder<A>, G.Guard<A> {}
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -28,25 +29,26 @@ export interface Codec<A> extends D.Decoder<A>, E.Encoder<A> {}
 /**
  * @since 3.0.0
  */
-export function fromDecoder<A>(decoder: D.Decoder<A>): Codec<A> {
+export function fromDecoder<A>(decoder: D.Decoder<A>, guard: G.Guard<A>): Codec<A> {
   return {
     ...decoder,
-    encode: identity
+    encode: identity,
+    ...guard
   }
 }
 
 /**
  * @since 3.0.0
  */
-export function literal<L extends string | number | boolean>(literal: L): Codec<L> {
-  return fromDecoder(D.literal(literal))
+export function literal<A extends string | number | boolean>(literal: A): Codec<A> {
+  return fromDecoder(D.literal(literal), G.literal(literal))
 }
 
 /**
  * @since 3.0.0
  */
 export function keyof<A>(keys: Record<keyof A, unknown>): Codec<keyof A> {
-  return fromDecoder(D.keyof(keys))
+  return fromDecoder(D.keyof(keys), G.keyof(keys))
 }
 
 // -------------------------------------------------------------------------------------
@@ -56,21 +58,21 @@ export function keyof<A>(keys: Record<keyof A, unknown>): Codec<keyof A> {
 /**
  * @since 3.0.0
  */
-export const string: Codec<string> = fromDecoder(D.string)
+export const string: Codec<string> = fromDecoder(D.string, G.string)
 
 /**
  * @since 3.0.0
  */
-export const number: Codec<number> = fromDecoder(D.number)
+export const number: Codec<number> = fromDecoder(D.number, G.number)
 
 /**
  * @since 3.0.0
  */
-export const boolean: Codec<boolean> = fromDecoder(D.boolean)
+export const boolean: Codec<boolean> = fromDecoder(D.boolean, G.boolean)
 
-const _undefined: Codec<undefined> = fromDecoder(D.undefined)
+const _undefined: Codec<undefined> = fromDecoder(D.undefined, G.undefined)
 
-const _null: Codec<null> = fromDecoder(D.null)
+const _null: Codec<null> = fromDecoder(D.null, G.null)
 
 export {
   /**
@@ -86,12 +88,12 @@ export {
 /**
  * @since 3.0.0
  */
-export const UnknownArray: Codec<Array<unknown>> = fromDecoder(D.UnknownArray)
+export const UnknownArray: Codec<Array<unknown>> = fromDecoder(D.UnknownArray, G.UnknownArray)
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: Codec<Record<string, unknown>> = fromDecoder(D.UnknownRecord)
+export const UnknownRecord: Codec<Record<string, unknown>> = fromDecoder(D.UnknownRecord, G.UnknownRecord)
 
 /**
  * @since 3.0.0
@@ -101,7 +103,7 @@ export type Int = D.Int
 /**
  * @since 3.0.0
  */
-export const Int: Codec<Int> = fromDecoder(D.Int)
+export const Int: Codec<Int> = fromDecoder(D.Int, G.Int)
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -113,7 +115,8 @@ export const Int: Codec<Int> = fromDecoder(D.Int)
 export function withName<A>(codec: Codec<A>, name: string): Codec<A> {
   return {
     ...D.withName(codec, name),
-    encode: codec.encode
+    encode: codec.encode,
+    is: codec.is
   }
 }
 
@@ -123,7 +126,8 @@ export function withName<A>(codec: Codec<A>, name: string): Codec<A> {
 export function withMessage<A>(codec: Codec<A>, onError: (input: unknown, e: DE.DecodeError) => string): Codec<A> {
   return {
     ...D.withMessage(codec, onError),
-    encode: codec.encode
+    encode: codec.encode,
+    is: codec.is
   }
 }
 
@@ -133,7 +137,8 @@ export function withMessage<A>(codec: Codec<A>, onError: (input: unknown, e: DE.
 export function refinement<A, B extends A>(codec: Codec<A>, refinement: Refinement<A, B>, name: string): Codec<B> {
   return {
     ...D.refinement(codec, refinement, name),
-    encode: codec.encode
+    encode: codec.encode,
+    is: (u): u is B => codec.is(u) && refinement(u)
   }
 }
 
@@ -143,7 +148,8 @@ export function refinement<A, B extends A>(codec: Codec<A>, refinement: Refineme
 export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<A> {
   return {
     ...D.type(codecs),
-    ...E.type(codecs)
+    ...E.type(codecs),
+    ...G.type(codecs)
   }
 }
 
@@ -153,7 +159,8 @@ export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<A> {
 export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<Partial<A>> {
   return {
     ...D.partial(codecs),
-    ...E.partial(codecs)
+    ...E.partial(codecs),
+    ...G.partial(codecs)
   }
 }
 
@@ -163,7 +170,8 @@ export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<Parti
 export function record<A>(codec: Codec<A>): Codec<Record<string, A>> {
   return {
     ...D.record(codec),
-    ...E.record(codec)
+    ...E.record(codec),
+    ...G.record(codec)
   }
 }
 
@@ -173,7 +181,8 @@ export function record<A>(codec: Codec<A>): Codec<Record<string, A>> {
 export function array<A>(codec: Codec<A>): Codec<Array<A>> {
   return {
     ...D.array(codec),
-    ...E.array(codec)
+    ...E.array(codec),
+    ...G.array(codec)
   }
 }
 
@@ -185,7 +194,8 @@ export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
 ): Codec<A> {
   return {
     ...D.tuple<A>(codecs),
-    ...E.tuple(codecs)
+    ...E.tuple(codecs),
+    ...G.tuple<A>(codecs)
   }
 }
 
@@ -205,7 +215,8 @@ export function intersection<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<A & B>
 export function intersection<A>(codecs: any): Codec<A> {
   return {
     ...D.intersection<A, A>(codecs),
-    ...E.intersection(codecs)
+    ...E.intersection(codecs),
+    ...G.intersection<A, A>(codecs)
   }
 }
 
@@ -217,7 +228,14 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
 ): Codec<A[number]> {
   return {
     ...D.union(codecs),
-    ...E.union(codecs)
+    encode: a => {
+      for (const codec of codecs) {
+        if (codec.is(a)) {
+          return codec.encode(a)
+        }
+      }
+    },
+    ...G.union(codecs)
   }
 }
 
@@ -227,6 +245,7 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
 export function recursive<A>(name: string, f: () => Codec<A>): Codec<A> {
   return {
     ...D.recursive(name, f),
-    ...E.recursive(f)
+    ...E.recursive(f),
+    ...G.recursive(f)
   }
 }
