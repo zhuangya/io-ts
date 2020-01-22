@@ -11,7 +11,6 @@ import { identity, Refinement } from 'fp-ts/lib/function'
 import * as D from './Decoder'
 import * as E from './Encoder'
 import * as G from './Guard'
-import * as DE from './DecodeError'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -29,9 +28,9 @@ export interface Codec<A> extends D.Decoder<A>, E.Encoder<A>, G.Guard<A> {}
 /**
  * @since 3.0.0
  */
-export function fromDecoder<A>(decoder: D.Decoder<A>, guard: G.Guard<A>): Codec<A> {
+export function fromGuard<A>(guard: G.Guard<A>, expected: string): Codec<A> {
   return {
-    ...decoder,
+    ...D.fromGuard(guard, expected),
     encode: identity,
     ...guard
   }
@@ -41,14 +40,22 @@ export function fromDecoder<A>(decoder: D.Decoder<A>, guard: G.Guard<A>): Codec<
  * @since 3.0.0
  */
 export function literal<A extends string | number | boolean>(literal: A): Codec<A> {
-  return fromDecoder(D.literal(literal), G.literal(literal))
+  return {
+    ...D.literal(literal),
+    encode: identity,
+    ...G.literal(literal)
+  }
 }
 
 /**
  * @since 3.0.0
  */
 export function keyof<A>(keys: Record<keyof A, unknown>): Codec<keyof A> {
-  return fromDecoder(D.keyof(keys), G.keyof(keys))
+  return {
+    ...D.keyof(keys),
+    encode: identity,
+    ...G.keyof(keys)
+  }
 }
 
 // -------------------------------------------------------------------------------------
@@ -58,26 +65,23 @@ export function keyof<A>(keys: Record<keyof A, unknown>): Codec<keyof A> {
 /**
  * @since 3.0.0
  */
-export const string: Codec<string> = fromDecoder(D.string, G.string)
+export const string: Codec<string> = fromGuard(G.string, 'string')
 
 /**
  * @since 3.0.0
  */
-export const number: Codec<number> = fromDecoder(D.number, G.number)
+export const number: Codec<number> = fromGuard(G.number, 'number')
 
 /**
  * @since 3.0.0
  */
-export const boolean: Codec<boolean> = fromDecoder(D.boolean, G.boolean)
+export const boolean: Codec<boolean> = fromGuard(G.boolean, 'boolean')
 
-const _undefined: Codec<undefined> = fromDecoder(D.undefined, G.undefined)
+const _undefined: Codec<undefined> = fromGuard(G.undefined, 'undefined')
 
-const _null: Codec<null> = fromDecoder(D.null, G.null)
+const _null: Codec<null> = fromGuard(G.null, 'null')
 
 export {
-  /**
-   * @since 3.0.0
-   */
   _undefined as undefined,
   /**
    * @since 3.0.0
@@ -88,12 +92,12 @@ export {
 /**
  * @since 3.0.0
  */
-export const UnknownArray: Codec<Array<unknown>> = fromDecoder(D.UnknownArray, G.UnknownArray)
+export const UnknownArray: Codec<Array<unknown>> = fromGuard(G.UnknownArray, 'Array<unknown>')
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: Codec<Record<string, unknown>> = fromDecoder(D.UnknownRecord, G.UnknownRecord)
+export const UnknownRecord: Codec<Record<string, unknown>> = fromGuard(G.UnknownRecord, 'Record<string, unknown>')
 
 /**
  * @since 3.0.0
@@ -103,7 +107,7 @@ export type Int = D.Int
 /**
  * @since 3.0.0
  */
-export const Int: Codec<Int> = fromDecoder(D.Int, G.Int)
+export const Int: Codec<Int> = refinement(number, G.Int.is, 'Int')
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -123,22 +127,11 @@ export function withExpected<A>(codec: Codec<A>, expected: string): Codec<A> {
 /**
  * @since 3.0.0
  */
-export function withMessage<A>(codec: Codec<A>, onError: (e: DE.DecodeError) => string): Codec<A> {
-  return {
-    ...D.withMessage(codec, onError),
-    encode: codec.encode,
-    is: codec.is
-  }
-}
-
-/**
- * @since 3.0.0
- */
 export function refinement<A, B extends A>(codec: Codec<A>, refinement: Refinement<A, B>, name: string): Codec<B> {
   return {
     ...D.refinement(codec, refinement, name),
     encode: codec.encode,
-    is: (u): u is B => codec.is(u) && refinement(u)
+    ...G.refinement(codec, refinement)
   }
 }
 

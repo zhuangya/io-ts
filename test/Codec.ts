@@ -101,8 +101,8 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.Int
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('Int', null)))
-        assert.deepStrictEqual(codec.decode('1'), E.left(DE.decodeError('Int', '1')))
+        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('number', null)))
+        assert.deepStrictEqual(codec.decode('1'), E.left(DE.decodeError('number', '1')))
         assert.deepStrictEqual(codec.decode(1.2), E.left(DE.decodeError('Int', 1.2)))
       })
     })
@@ -127,18 +127,6 @@ describe('Codec', () => {
       it('should, return the provided name', () => {
         const codec = C.withExpected(C.number, 'mynumber')
         assert.deepStrictEqual(codec.decode('a'), E.left(DE.decodeError('mynumber', 'a')))
-      })
-    })
-  })
-
-  describe('withMessage', () => {
-    describe('decode', () => {
-      it('should, return the provided message', () => {
-        const codec = C.withMessage(C.number, () => 'Please provide a number')
-        assert.deepStrictEqual(
-          codec.decode('a'),
-          E.left({ expected: 'number', actual: 'a', detail: undefined, message: 'Please provide a number' })
-        )
       })
     })
   })

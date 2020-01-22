@@ -62,10 +62,12 @@ export function literal<A extends string | number | boolean>(literal: A): Decode
  * @since 3.0.0
  */
 export function keyof<A>(keys: Record<keyof A, unknown>): Decoder<keyof A> {
-  const expected = Object.keys(keys)
-    .map(k => JSON.stringify(k))
-    .join(' | ')
-  return fromGuard(G.keyof(keys), expected)
+  return fromGuard(
+    G.keyof(keys),
+    Object.keys(keys)
+      .map(k => JSON.stringify(k))
+      .join(' | ')
+  )
 }
 
 // -------------------------------------------------------------------------------------
@@ -142,13 +144,6 @@ function mapLeft<A>(decoder: Decoder<A>, f: (e: DE.DecodeError) => DE.DecodeErro
  */
 export function withExpected<A>(decoder: Decoder<A>, expected: string): Decoder<A> {
   return mapLeft(decoder, e => ({ ...e, expected }))
-}
-
-/**
- * @since 3.0.0
- */
-export function withMessage<A>(decoder: Decoder<A>, onError: (e: DE.DecodeError) => string): Decoder<A> {
-  return mapLeft(decoder, e => ({ ...e, message: onError(e) }))
 }
 
 /**

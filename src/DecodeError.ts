@@ -82,7 +82,6 @@ export interface DecodeError {
   readonly expected: string
   readonly actual: unknown
   readonly detail: Detail | undefined
-  readonly message: string | undefined
 }
 
 /**
@@ -92,7 +91,6 @@ export function decodeError(expected: string, actual: unknown, detail?: Detail):
   return {
     expected,
     actual,
-    detail,
-    message: undefined
+    detail
   }
 }
