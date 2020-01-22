@@ -3,6 +3,14 @@ import * as t from '../../src'
 import * as C from '../../src/Codec'
 import { range } from 'fp-ts/lib/Array'
 
+/*
+TUnion (good) x 1,269,637 ops/sec ±0.43% (88 runs sampled)
+CUnion (good) x 44,216 ops/sec ±0.55% (82 runs sampled)
+TUnion (bad) x 1,244,076 ops/sec ±4.06% (85 runs sampled)
+CUnion (bad) x 41,267 ops/sec ±0.34% (88 runs sampled)
+Fastest is TUnion (good),TUnion (bad)
+*/
+
 const suite = new Benchmark.Suite()
 
 const getT = <T extends string>(type: T) =>

@@ -45,13 +45,13 @@ suite
     TPerson.decode(good)
   })
   .add('DPerson (good)', function() {
-    DPerson(good)
+    DPerson.decode(good)
   })
   .add('TPerson (bad)', function() {
     TPerson.decode(bad)
   })
   .add('DPerson (bad)', function() {
-    DPerson(bad)
+    DPerson.decode(bad)
   })
   .on('cycle', function(event: any) {
     console.log(String(event.target))

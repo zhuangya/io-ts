@@ -6,7 +6,6 @@ import * as G from '../src/Guard'
 import * as DE from '../src/DecodeError'
 
 export const NumberFromString: C.Codec<number> = {
-  name: 'NumberFromString',
   decode: u => {
     const e = D.string.decode(u)
     if (E.isLeft(e)) {
@@ -123,10 +122,10 @@ describe('Codec', () => {
     })
   })
 
-  describe('withName', () => {
+  describe('withExpected', () => {
     describe('decode', () => {
       it('should, return the provided name', () => {
-        const codec = C.withName(C.number, 'mynumber')
+        const codec = C.withExpected(C.number, 'mynumber')
         assert.deepStrictEqual(codec.decode('a'), E.left(DE.decodeError('mynumber', 'a')))
       })
     })
@@ -182,7 +181,7 @@ describe('Codec', () => {
         assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 1 }),
-          E.left(DE.decodeError('{ a: string }', { a: 1 }, DE.labeledProduct([['a', DE.decodeError('string', 1)]])))
+          E.left(DE.decodeError('type', { a: 1 }, DE.labeledProduct([['a', DE.decodeError('string', 1)]])))
         )
       })
     })
@@ -225,9 +224,7 @@ describe('Codec', () => {
         assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 1 }),
-          E.left(
-            DE.decodeError('Partial<{ a: string }>', { a: 1 }, DE.labeledProduct([['a', DE.decodeError('string', 1)]]))
-          )
+          E.left(DE.decodeError('partial', { a: 1 }, DE.labeledProduct([['a', DE.decodeError('string', 1)]])))
         )
       })
     })
@@ -260,13 +257,7 @@ describe('Codec', () => {
         assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 'a' }),
-          E.left(
-            DE.decodeError(
-              'Record<string, number>',
-              { a: 'a' },
-              DE.labeledProduct([['a', DE.decodeError('number', 'a')]])
-            )
-          )
+          E.left(DE.decodeError('record', { a: 'a' }, DE.labeledProduct([['a', DE.decodeError('number', 'a')]])))
         )
       })
     })
@@ -292,7 +283,7 @@ describe('Codec', () => {
         assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Array<unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode([1]),
-          E.left(DE.decodeError('Array<string>', [1], DE.indexedProduct([[0, DE.decodeError('string', 1)]])))
+          E.left(DE.decodeError('array', [1], DE.indexedProduct([[0, DE.decodeError('string', 1)]])))
         )
       })
     })
@@ -322,9 +313,7 @@ describe('Codec', () => {
         assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Array<unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode(['a']),
-          E.left(
-            DE.decodeError('[string, number]', ['a'], DE.indexedProduct([[1, DE.decodeError('number', undefined)]]))
-          )
+          E.left(DE.decodeError('tuple', ['a'], DE.indexedProduct([[1, DE.decodeError('number', undefined)]])))
         )
       })
     })
@@ -361,14 +350,10 @@ describe('Codec', () => {
           codec.decode({ a: 'a' }),
           E.left(
             DE.decodeError(
-              '({ a: string } & { b: number })',
+              'intersection',
               { a: 'a' },
               DE.and([
-                DE.decodeError(
-                  '{ b: number }',
-                  { a: 'a' },
-                  DE.labeledProduct([['b', DE.decodeError('number', undefined)]])
-                )
+                DE.decodeError('type', { a: 'a' }, DE.labeledProduct([['b', DE.decodeError('number', undefined)]]))
               ])
             )
           )
@@ -401,13 +386,7 @@ describe('Codec', () => {
         const codec = C.union([C.string, C.number])
         assert.deepStrictEqual(
           codec.decode(true),
-          E.left(
-            DE.decodeError(
-              '(string | number)',
-              true,
-              DE.or([DE.decodeError('string', true), DE.decodeError('number', true)])
-            )
-          )
+          E.left(DE.decodeError('union', true, DE.or([DE.decodeError('string', true), DE.decodeError('number', true)])))
         )
       })
     })

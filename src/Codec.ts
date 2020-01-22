@@ -112,9 +112,9 @@ export const Int: Codec<Int> = fromDecoder(D.Int, G.Int)
 /**
  * @since 3.0.0
  */
-export function withName<A>(codec: Codec<A>, name: string): Codec<A> {
+export function withExpected<A>(codec: Codec<A>, expected: string): Codec<A> {
   return {
-    ...D.withName(codec, name),
+    ...D.withExpected(codec, expected),
     encode: codec.encode,
     is: codec.is
   }
@@ -123,7 +123,7 @@ export function withName<A>(codec: Codec<A>, name: string): Codec<A> {
 /**
  * @since 3.0.0
  */
-export function withMessage<A>(codec: Codec<A>, onError: (input: unknown, e: DE.DecodeError) => string): Codec<A> {
+export function withMessage<A>(codec: Codec<A>, onError: (e: DE.DecodeError) => string): Codec<A> {
   return {
     ...D.withMessage(codec, onError),
     encode: codec.encode,
