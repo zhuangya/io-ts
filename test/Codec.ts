@@ -394,7 +394,7 @@ describe('Codec', () => {
       b: Array<Rec>
     }
 
-    const codec: C.Codec<Rec> = C.recursive('Rec', () =>
+    const codec: C.Codec<Rec> = C.recursive(() =>
       C.type({
         a: NumberFromString,
         b: C.array(codec)
@@ -411,12 +411,12 @@ describe('Codec', () => {
       })
 
       it('should reject an invalid input', () => {
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('Rec', null)))
+        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('Record<string, unknown>', null)))
         assert.deepStrictEqual(
           codec.decode({}),
           E.left(
             DE.decodeError(
-              'Rec',
+              'type',
               {},
               DE.labeledProduct([
                 ['a', DE.decodeError('NumberFromString', undefined)],

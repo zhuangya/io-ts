@@ -361,17 +361,11 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
 /**
  * @since 3.0.0
  */
-export function recursive<A>(name: string, f: () => Decoder<A>): Decoder<A> {
+export function recursive<A>(f: () => Decoder<A>): Decoder<A> {
   let memoized: Decoder<A>
   function getMemoized(): Decoder<A> {
     if (!memoized) {
-      const { decode } = f()
-      memoized = {
-        decode: flow(
-          decode,
-          E.mapLeft(e => ({ ...e, expected: name }))
-        )
-      }
+      memoized = f()
     }
     return memoized
   }

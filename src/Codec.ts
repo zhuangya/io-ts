@@ -230,9 +230,9 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
 /**
  * @since 3.0.0
  */
-export function recursive<A>(name: string, f: () => Codec<A>): Codec<A> {
+export function recursive<A>(f: () => Codec<A>): Codec<A> {
   return {
-    ...D.recursive(name, f),
+    ...D.recursive(f),
     ...E.recursive(f),
     ...G.recursive(f)
   }
