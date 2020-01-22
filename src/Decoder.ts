@@ -117,17 +117,19 @@ export const UnknownRecord: Decoder<Record<string, unknown>> = fromGuard(G.Unkno
 /**
  * @since 3.0.0
  */
-export type IntBrand = G.IntBrand
+export interface IntBrand {
+  readonly Int: unique symbol
+}
 
 /**
  * @since 3.0.0
  */
-export type Int = G.Int
+export type Int = number & IntBrand
 
 /**
  * @since 3.0.0
  */
-export const Int: Decoder<Int> = fromGuard(G.Int, 'Int')
+export const Int: Decoder<Int> = refinement(number, (n: number): n is Int => Number.isInteger(n), 'Int')
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -152,9 +154,9 @@ export function withExpected<A>(decoder: Decoder<A>, expected: string): Decoder<
 export function refinement<A, B extends A>(
   decoder: Decoder<A>,
   refinement: Refinement<A, B>,
-  name: string
+  expected: string
 ): Decoder<B> {
-  const fromPredicate = E.fromPredicate(refinement, a => DE.decodeError(name, a))
+  const fromPredicate = E.fromPredicate(refinement, a => DE.decodeError(expected, a))
   return {
     decode: u => {
       const e = decoder.decode(u)

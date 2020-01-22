@@ -1,5 +1,3 @@
-import { Refinement } from 'fp-ts/lib/function'
-
 /**
  * @since 3.0.0
  */
@@ -98,35 +96,9 @@ export const UnknownRecord: Guard<Record<string, unknown>> = {
   }
 }
 
-/**
- * @since 3.0.0
- */
-export interface IntBrand {
-  readonly Int: unique symbol
-}
-
-/**
- * @since 3.0.0
- */
-export type Int = number & IntBrand
-
-/**
- * @since 3.0.0
- */
-export const Int: Guard<Int> = refinement(number, (n: number): n is Int => Number.isInteger(n))
-
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
-
-/**
- * @since 3.0.0
- */
-export function refinement<A, B extends A>(guard: Guard<A>, refinement: Refinement<A, B>): Guard<B> {
-  return {
-    is: (u: unknown): u is B => guard.is(u) && refinement(u)
-  }
-}
 
 /**
  * @since 3.0.0

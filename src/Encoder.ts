@@ -2,7 +2,6 @@
  * @since 3.0.0
  */
 import { identity } from 'fp-ts/lib/function'
-import { Guard } from './Guard'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -116,25 +115,6 @@ export function intersection<A>(encoders: Array<Encoder<A>>): Encoder<A> {
       return us.some(u => Object.prototype.toString.call(u) !== '[object Object]')
         ? us[us.length - 1]
         : Object.assign({}, ...us)
-    }
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
-  encoders: { [K in keyof A]: Encoder<A[K]> & Guard<A[K]> }
-): Encoder<A[number]> {
-  return {
-    encode: a => {
-      for (const encoder of encoders) {
-        if (encoder.is(a)) {
-          return encoder.encode(a)
-        }
-      }
-      // this should never happen, but https://github.com/gcanti/io-ts/pull/305 shows otherwise
-      // throw new Error(`no encoder found to encode ${JSON.stringify(a)}`)
     }
   }
 }

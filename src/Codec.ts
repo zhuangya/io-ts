@@ -6,12 +6,15 @@
  * - remove `brand` combinator
  * - rename `recursive` to `lazy`
  *
+ * TODO
+ * - make expected optional
+ * - add composeIso?
+ *
  * @since 3.0.0
  */
 import { Refinement } from 'fp-ts/lib/function'
 import * as D from './Decoder'
 import * as E from './Encoder'
-import * as G from './Guard'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -20,7 +23,7 @@ import * as G from './Guard'
 /**
  * @since 3.0.0
  */
-export interface Codec<A> extends D.Decoder<A>, E.Encoder<A>, G.Guard<A> {}
+export interface Codec<A> extends D.Decoder<A>, E.Encoder<A> {}
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -29,33 +32,32 @@ export interface Codec<A> extends D.Decoder<A>, E.Encoder<A>, G.Guard<A> {}
 /**
  * @since 3.0.0
  */
-export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>, guard: G.Guard<A>): Codec<A> {
+export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> {
   return {
     decode: decoder.decode,
-    encode: encoder.encode,
-    is: guard.is
+    encode: encoder.encode
   }
 }
 
 /**
  * @since 3.0.0
  */
-export function fromDecoder<A>(decoder: D.Decoder<A>, guard: G.Guard<A>): Codec<A> {
-  return make(decoder, E.id, guard)
+export function fromDecoder<A>(decoder: D.Decoder<A>): Codec<A> {
+  return make(decoder, E.id)
 }
 
 /**
  * @since 3.0.0
  */
 export function literal<A extends string | number | boolean>(a: A): Codec<A> {
-  return fromDecoder(D.literal(a), G.literal(a))
+  return fromDecoder(D.literal(a))
 }
 
 /**
  * @since 3.0.0
  */
 export function keyof<A>(keys: Record<keyof A, unknown>): Codec<keyof A> {
-  return fromDecoder(D.keyof(keys), G.keyof(keys))
+  return fromDecoder(D.keyof(keys))
 }
 
 // -------------------------------------------------------------------------------------
@@ -65,21 +67,21 @@ export function keyof<A>(keys: Record<keyof A, unknown>): Codec<keyof A> {
 /**
  * @since 3.0.0
  */
-export const string: Codec<string> = fromDecoder(D.string, G.string)
+export const string: Codec<string> = fromDecoder(D.string)
 
 /**
  * @since 3.0.0
  */
-export const number: Codec<number> = fromDecoder(D.number, G.number)
+export const number: Codec<number> = fromDecoder(D.number)
 
 /**
  * @since 3.0.0
  */
-export const boolean: Codec<boolean> = fromDecoder(D.boolean, G.boolean)
+export const boolean: Codec<boolean> = fromDecoder(D.boolean)
 
-const _undefined: Codec<undefined> = fromDecoder(D.undefined, G.undefined)
+const _undefined: Codec<undefined> = fromDecoder(D.undefined)
 
-const _null: Codec<null> = fromDecoder(D.null, G.null)
+const _null: Codec<null> = fromDecoder(D.null)
 
 export {
   /**
@@ -95,12 +97,12 @@ export {
 /**
  * @since 3.0.0
  */
-export const UnknownArray: Codec<Array<unknown>> = fromDecoder(D.UnknownArray, G.UnknownArray)
+export const UnknownArray: Codec<Array<unknown>> = fromDecoder(D.UnknownArray)
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: Codec<Record<string, unknown>> = fromDecoder(D.UnknownRecord, G.UnknownRecord)
+export const UnknownRecord: Codec<Record<string, unknown>> = fromDecoder(D.UnknownRecord)
 
 /**
  * @since 3.0.0
@@ -110,7 +112,7 @@ export type Int = D.Int
 /**
  * @since 3.0.0
  */
-export const Int: Codec<Int> = refinement(number, G.Int.is, 'Int')
+export const Int: Codec<Int> = fromDecoder(D.Int)
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -120,42 +122,42 @@ export const Int: Codec<Int> = refinement(number, G.Int.is, 'Int')
  * @since 3.0.0
  */
 export function withExpected<A>(codec: Codec<A>, expected: string): Codec<A> {
-  return make(D.withExpected(codec, expected), codec, codec)
+  return make(D.withExpected(codec, expected), codec)
 }
 
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(codec: Codec<A>, refinement: Refinement<A, B>, name: string): Codec<B> {
-  return make(D.refinement(codec, refinement, name), codec, G.refinement(codec, refinement))
+export function refinement<A, B extends A>(codec: Codec<A>, refinement: Refinement<A, B>, expected: string): Codec<B> {
+  return make(D.refinement(codec, refinement, expected), codec)
 }
 
 /**
  * @since 3.0.0
  */
 export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<A> {
-  return make(D.type(codecs), E.type(codecs), G.type(codecs))
+  return make(D.type(codecs), E.type(codecs))
 }
 
 /**
  * @since 3.0.0
  */
 export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<Partial<A>> {
-  return make(D.partial(codecs), E.partial(codecs), G.partial(codecs))
+  return make(D.partial(codecs), E.partial(codecs))
 }
 
 /**
  * @since 3.0.0
  */
 export function record<A>(codec: Codec<A>): Codec<Record<string, A>> {
-  return make(D.record(codec), E.record(codec), G.record(codec))
+  return make(D.record(codec), E.record(codec))
 }
 
 /**
  * @since 3.0.0
  */
 export function array<A>(codec: Codec<A>): Codec<Array<A>> {
-  return make(D.array(codec), E.array(codec), G.array(codec))
+  return make(D.array(codec), E.array(codec))
 }
 
 /**
@@ -164,7 +166,7 @@ export function array<A>(codec: Codec<A>): Codec<Array<A>> {
 export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
   codecs: { [K in keyof A]: Codec<A[K]> }
 ): Codec<A> {
-  return make(D.tuple<A>(codecs), E.tuple(codecs), G.tuple<A>(codecs))
+  return make(D.tuple<A>(codecs), E.tuple(codecs))
 }
 
 /**
@@ -181,21 +183,12 @@ export function intersection<A, B, C, D>(
 export function intersection<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>]): Codec<A & B & C>
 export function intersection<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<A & B>
 export function intersection<A>(codecs: any): Codec<A> {
-  return make(D.intersection<A, A>(codecs), E.intersection(codecs), G.intersection<A, A>(codecs))
-}
-
-/**
- * @since 3.0.0
- */
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
-  codecs: { [K in keyof A]: Codec<A[K]> }
-): Codec<A[number]> {
-  return make(D.union(codecs), E.union(codecs), G.union(codecs))
+  return make(D.intersection<A, A>(codecs), E.intersection(codecs))
 }
 
 /**
  * @since 3.0.0
  */
 export function lazy<A>(f: () => Codec<A>): Codec<A> {
-  return make(D.lazy(f), E.lazy(f), G.lazy(f))
+  return make(D.lazy(f), E.lazy(f))
 }

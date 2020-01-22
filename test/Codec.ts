@@ -92,22 +92,6 @@ describe('Codec', () => {
     })
   })
 
-  describe('Int', () => {
-    describe('decode', () => {
-      it('should decode a valid input', () => {
-        const codec = C.Int
-        assert.deepStrictEqual(codec.decode(1), E.right(1))
-      })
-
-      it('should reject an invalid input', () => {
-        const codec = C.Int
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('number', null)))
-        assert.deepStrictEqual(codec.decode('1'), E.left(DE.decodeError('number', '1')))
-        assert.deepStrictEqual(codec.decode(1.2), E.left(DE.decodeError('Int', 1.2)))
-      })
-    })
-  })
-
   describe('literal', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
@@ -358,32 +342,6 @@ describe('Codec', () => {
       it('should handle primitives', () => {
         const codec = C.intersection([C.Int, C.Int])
         assert.deepStrictEqual(codec.encode(1 as any), 1)
-      })
-    })
-  })
-
-  describe('union', () => {
-    describe('decode', () => {
-      it('should decode a valid input', () => {
-        const codec = C.union([C.string, C.number])
-        assert.deepStrictEqual(codec.decode('a'), E.right('a'))
-        assert.deepStrictEqual(codec.decode(1), E.right(1))
-      })
-
-      it('should reject an invalid input', () => {
-        const codec = C.union([C.string, C.number])
-        assert.deepStrictEqual(
-          codec.decode(true),
-          E.left(DE.decodeError('union', true, DE.or([DE.decodeError('string', true), DE.decodeError('number', true)])))
-        )
-      })
-    })
-
-    describe('encode', () => {
-      it('should encode a value', () => {
-        const codec = C.union([C.string, NumberFromString])
-        assert.deepStrictEqual(codec.encode('a'), 'a')
-        assert.deepStrictEqual(codec.encode(1), '1')
       })
     })
   })
