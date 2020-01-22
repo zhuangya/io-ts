@@ -5,7 +5,7 @@ import * as D from '../src/Decoder'
 import * as G from '../src/Guard'
 import * as DE from '../src/DecodeError'
 
-export const NumberFromString: C.Codec<number> = {
+const NumberFromString: C.Codec<number> = {
   decode: u => {
     const e = D.string.decode(u)
     if (E.isLeft(e)) {
@@ -389,33 +389,28 @@ describe('Codec', () => {
   })
 
   describe('recursive', () => {
-    describe('decode', () => {
-      interface Rec {
-        a: string
-        b: Array<Rec>
-      }
+    interface Rec {
+      a: number
+      b: Array<Rec>
+    }
 
+    const codec: C.Codec<Rec> = C.recursive('Rec', () =>
+      C.type({
+        a: NumberFromString,
+        b: C.array(codec)
+      })
+    )
+
+    describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec: C.Codec<Rec> = C.recursive('Rec', () =>
-          C.type({
-            a: C.string,
-            b: C.array(codec)
-          })
-        )
-        assert.deepStrictEqual(codec.decode({ a: 'a', b: [] }), E.right({ a: 'a', b: [] }))
+        assert.deepStrictEqual(codec.decode({ a: '1', b: [] }), E.right({ a: 1, b: [] }))
         assert.deepStrictEqual(
-          codec.decode({ a: 'a', b: [{ a: 'b', b: [] }] }),
-          E.right({ a: 'a', b: [{ a: 'b', b: [] }] })
+          codec.decode({ a: '1', b: [{ a: '2', b: [] }] }),
+          E.right({ a: 1, b: [{ a: 2, b: [] }] })
         )
       })
 
       it('should reject an invalid input', () => {
-        const codec: C.Codec<Rec> = C.recursive('Rec', () =>
-          C.type({
-            a: C.string,
-            b: C.array(codec)
-          })
-        )
         assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('Rec', null)))
         assert.deepStrictEqual(
           codec.decode({}),
@@ -424,7 +419,7 @@ describe('Codec', () => {
               'Rec',
               {},
               DE.labeledProduct([
-                ['a', DE.decodeError('string', undefined)],
+                ['a', DE.decodeError('NumberFromString', undefined)],
                 ['b', DE.decodeError('Array<unknown>', undefined)]
               ])
             )
@@ -434,18 +429,7 @@ describe('Codec', () => {
     })
 
     describe('encode', () => {
-      interface Rec {
-        a: number
-        b: Array<Rec>
-      }
-
       it('should encode a value', () => {
-        const codec: C.Codec<Rec> = C.recursive('Rec', () =>
-          C.type({
-            a: NumberFromString,
-            b: C.array(codec)
-          })
-        )
         assert.deepStrictEqual(codec.encode({ a: 1, b: [{ a: 2, b: [] }] }), { a: '1', b: [{ a: '2', b: [] }] })
       })
     })
