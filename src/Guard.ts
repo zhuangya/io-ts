@@ -22,9 +22,9 @@ export interface Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literal<L extends string | number | boolean>(literal: L): Guard<L> {
+export function literal<A extends string | number | boolean>(a: A): Guard<A> {
   return {
-    is: (u: unknown): u is L => u === literal
+    is: (u: unknown): u is A => u === a
   }
 }
 

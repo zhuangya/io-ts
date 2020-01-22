@@ -54,8 +54,8 @@ export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends string | number | boolean>(literal: A): Decoder<A> {
-  return fromGuard(G.literal(literal), JSON.stringify(literal))
+export function literal<A extends string | number | boolean>(a: A): Decoder<A> {
+  return fromGuard(G.literal(a), JSON.stringify(a))
 }
 
 /**
