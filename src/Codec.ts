@@ -7,6 +7,7 @@
  * - rename `recursive` to `lazy`
  *
  * TODO
+ * - refactor DecodeError
  * - make expected optional
  * - add composeIso?
  *

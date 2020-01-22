@@ -19,6 +19,7 @@
  */
 import * as E from 'fp-ts/lib/Either'
 import { flow, Refinement } from 'fp-ts/lib/function'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as DE from './DecodeError'
 import * as G from './Guard'
 
@@ -165,6 +166,10 @@ export function refinement<A, B extends A>(
   }
 }
 
+function isNonEmpty<A>(as: Array<A>): as is NonEmptyArray<A> {
+  return as.length > 0
+}
+
 /**
  * @since 3.0.0
  */
@@ -186,7 +191,7 @@ export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<A>
             a[k] = e.right
           }
         }
-        return DE.isNonEmpty(es) ? E.left(DE.decodeError('type', u, DE.labeledProduct(es))) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.decodeError('type', u, DE.labeledProduct(es))) : E.right(a)
       }
     }
   }
@@ -215,7 +220,7 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder
             }
           }
         }
-        return DE.isNonEmpty(es) ? E.left(DE.decodeError('partial', u, DE.labeledProduct(es))) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.decodeError('partial', u, DE.labeledProduct(es))) : E.right(a)
       }
     }
   }
@@ -242,7 +247,7 @@ export function record<A>(decoder: Decoder<A>): Decoder<Record<string, A>> {
             a[k] = e.right
           }
         }
-        return DE.isNonEmpty(es) ? E.left(DE.decodeError('record', u, DE.labeledProduct(es))) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.decodeError('record', u, DE.labeledProduct(es))) : E.right(a)
       }
     }
   }
@@ -270,7 +275,7 @@ export function array<A>(decoder: Decoder<A>): Decoder<Array<A>> {
             a[i] = e.right
           }
         }
-        return DE.isNonEmpty(es) ? E.left(DE.decodeError('array', us, DE.indexedProduct(es))) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.decodeError('array', us, DE.indexedProduct(es))) : E.right(a)
       }
     }
   }
@@ -300,7 +305,7 @@ export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
             a[i] = e.right
           }
         }
-        return DE.isNonEmpty(es) ? E.left(DE.decodeError('tuple', us, DE.indexedProduct(es))) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.decodeError('tuple', us, DE.indexedProduct(es))) : E.right(a)
       }
     }
   }
@@ -333,7 +338,7 @@ export function intersection<A>(decoders: Array<Decoder<A>>): Decoder<A> {
       const a: A = as.some(a => Object.prototype.toString.call(a) !== '[object Object]')
         ? as[as.length - 1]
         : Object.assign({}, ...as)
-      return DE.isNonEmpty(es) ? E.left(DE.decodeError('intersection', u, DE.and(es))) : E.right(a)
+      return isNonEmpty(es) ? E.left(DE.decodeError('intersection', u, DE.and(es))) : E.right(a)
     }
   }
 }
