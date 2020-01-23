@@ -15,13 +15,15 @@ FAQ
 
 Open problems:
 
-- is it possible to optimize sum types?
+- is it possible to optimize unions (sum types)?
 
 Open questions:
 
+- is it possible to define a Semigroup for DecodeError?
 - is it possible to handle `enum`s?
 - is it possible to define a Decoder which fails with additional fields?
 - is it possible to get only the first error?
+- readonly?
 
 Added in v3.0.0
 
@@ -30,30 +32,31 @@ Added in v3.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Decoder (interface)](#decoder-interface)
-- [IntBrand (interface)](#intbrand-interface)
-- [Decoding (type alias)](#decoding-type-alias)
-- [Int (type alias)](#int-type-alias)
+- [TypeOf (type alias)](#typeof-type-alias)
+- [URI (type alias)](#uri-type-alias)
 - [Int (constant)](#int-constant)
+- [URI (constant)](#uri-constant)
 - [UnknownArray (constant)](#unknownarray-constant)
 - [UnknownRecord (constant)](#unknownrecord-constant)
 - [boolean (constant)](#boolean-constant)
+- [decoder (constant)](#decoder-constant)
 - [number (constant)](#number-constant)
 - [string (constant)](#string-constant)
-- [undefined (constant)](#undefined-constant)
 - [array (function)](#array-function)
 - [fromRefinement (function)](#fromrefinement-function)
 - [intersection (function)](#intersection-function)
 - [keyof (function)](#keyof-function)
+- [lazy (function)](#lazy-function)
 - [literal (function)](#literal-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
-- [recursive (function)](#recursive-function)
 - [refinement (function)](#refinement-function)
 - [tuple (function)](#tuple-function)
 - [type (function)](#type-function)
 - [union (function)](#union-function)
-- [withMessage (function)](#withmessage-function)
+- [withExpected (function)](#withexpected-function)
 - [null (export)](#null-export)
+- [undefined (export)](#undefined-export)
 
 ---
 
@@ -63,41 +66,28 @@ Added in v3.0.0
 
 ```ts
 export interface Decoder<A> {
-  readonly name: string
   readonly decode: (u: unknown) => E.Either<DE.DecodeError, A>
 }
 ```
 
 Added in v3.0.0
 
-# IntBrand (interface)
+# TypeOf (type alias)
 
 **Signature**
 
 ```ts
-export interface IntBrand {
-  readonly Int: unique symbol
-}
+export type TypeOf<D> = D extends Decoder<infer A> ? A : never
 ```
 
 Added in v3.0.0
 
-# Decoding (type alias)
+# URI (type alias)
 
 **Signature**
 
 ```ts
-export type Decoding<D> = D extends Decoder<infer A> ? A : never
-```
-
-Added in v3.0.0
-
-# Int (type alias)
-
-**Signature**
-
-```ts
-export type Int = number & IntBrand
+export type URI = typeof URI
 ```
 
 Added in v3.0.0
@@ -107,7 +97,17 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const Int: Decoder<Int> = ...
+export const Int: Decoder<S.Int> = ...
+```
+
+Added in v3.0.0
+
+# URI (constant)
+
+**Signature**
+
+```ts
+export const URI: "Decoder" = ...
 ```
 
 Added in v3.0.0
@@ -142,6 +142,16 @@ export const boolean: Decoder<boolean> = ...
 
 Added in v3.0.0
 
+# decoder (constant)
+
+**Signature**
+
+```ts
+export const decoder: S.Schema<URI> = ...
+```
+
+Added in v3.0.0
+
 # number (constant)
 
 **Signature**
@@ -162,22 +172,12 @@ export const string: Decoder<string> = ...
 
 Added in v3.0.0
 
-# undefined (constant)
-
-**Signature**
-
-```ts
-export const undefined: Decoder<undefined> = ...
-```
-
-Added in v3.0.0
-
 # array (function)
 
 **Signature**
 
 ```ts
-export function array<A>(decoder: Decoder<A>, name?: string): Decoder<Array<A>> { ... }
+export function array<A>(decoder: Decoder<A>): Decoder<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -187,7 +187,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function fromRefinement<A>(name: string, refinement: Refinement<unknown, A>): Decoder<A> { ... }
+export function fromRefinement<A>(refinement: Refinement<unknown, A>, expected: string): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -198,15 +198,13 @@ Added in v3.0.0
 
 ```ts
 export function intersection<A, B, C, D, E>(
-  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>],
-  name?: string
+  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>]
 ): Decoder<A & B & C & D & E>
 export function intersection<A, B, C, D>(
-  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>],
-  name?: string
+  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>]
 ): Decoder<A & B & C & D>
-export function intersection<A, B, C>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>], name?: string): Decoder<A & B & C>
-export function intersection<A, B>(decoders: [Decoder<A>, Decoder<B>], name?: string): Decoder<A & B> { ... }
+export function intersection<A, B, C>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>]): Decoder<A & B & C>
+export function intersection<A, B>(decoders: [Decoder<A>, Decoder<B>]): Decoder<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -216,7 +214,17 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function keyof<A>(keys: Record<keyof A, unknown>, name?: string): Decoder<keyof A> { ... }
+export function keyof<A>(keys: Record<keyof A, unknown>): Decoder<keyof A> { ... }
+```
+
+Added in v3.0.0
+
+# lazy (function)
+
+**Signature**
+
+```ts
+export function lazy<A>(f: () => Decoder<A>): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -226,7 +234,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<L extends string | number | boolean>(literal: L, name?: string): Decoder<L> { ... }
+export function literal<A extends string | number | boolean>(a: A): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -236,7 +244,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, name?: string): Decoder<Partial<A>> { ... }
+export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -246,17 +254,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<V>(decoder: Decoder<V>, name?: string): Decoder<Record<string, V>> { ... }
-```
-
-Added in v3.0.0
-
-# recursive (function)
-
-**Signature**
-
-```ts
-export function recursive<A>(name: string, f: () => Decoder<A>): Decoder<A> { ... }
+export function record<A>(decoder: Decoder<A>): Decoder<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -269,7 +267,7 @@ Added in v3.0.0
 export function refinement<A, B extends A>(
   decoder: Decoder<A>,
   refinement: Refinement<A, B>,
-  name: string
+  expected: string
 ): Decoder<B> { ... }
 ```
 
@@ -280,9 +278,8 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A extends [unknown, ...Array<unknown>]>(
-  decoders: { [K in keyof A]: Decoder<A[K]> },
-  name?: string
+export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
+  decoders: { [K in keyof A]: Decoder<A[K]> }
 ): Decoder<A> { ... }
 ```
 
@@ -293,7 +290,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, name?: string): Decoder<A> { ... }
+export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -304,22 +301,18 @@ Added in v3.0.0
 
 ```ts
 export function union<A extends [unknown, unknown, ...Array<unknown>]>(
-  decoders: { [K in keyof A]: Decoder<A[K]> },
-  name?: string
+  decoders: { [K in keyof A]: Decoder<A[K]> }
 ): Decoder<A[number]> { ... }
 ```
 
 Added in v3.0.0
 
-# withMessage (function)
+# withExpected (function)
 
 **Signature**
 
 ```ts
-export function withMessage<A>(
-  decoder: Decoder<A>,
-  onError: (input: unknown, e: DE.DecodeError) => string
-): Decoder<A> { ... }
+export function withExpected<A>(decoder: Decoder<A>, expected: string): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -330,6 +323,16 @@ Added in v3.0.0
 
 ```ts
 Decoder<null>
+```
+
+Added in v3.0.0
+
+# undefined (export)
+
+**Signature**
+
+```ts
+Decoder<undefined>
 ```
 
 Added in v3.0.0

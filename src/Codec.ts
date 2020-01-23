@@ -16,6 +16,7 @@
 import { Refinement } from 'fp-ts/lib/function'
 import * as D from './Decoder'
 import * as E from './Encoder'
+import * as S from './Schema'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -108,12 +109,7 @@ export const UnknownRecord: Codec<Record<string, unknown>> = fromDecoder(D.Unkno
 /**
  * @since 3.0.0
  */
-export type Int = D.Int
-
-/**
- * @since 3.0.0
- */
-export const Int: Codec<Int> = fromDecoder(D.Int)
+export const Int: Codec<S.Int> = fromDecoder(D.Int)
 
 // -------------------------------------------------------------------------------------
 // combinators

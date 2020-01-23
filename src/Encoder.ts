@@ -2,6 +2,7 @@
  * @since 3.0.0
  */
 import { identity } from 'fp-ts/lib/function'
+import * as S from './Schema'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -133,4 +134,48 @@ export function lazy<A>(f: () => Encoder<A>): Encoder<A> {
   return {
     encode: a => getMemoized().encode(a)
   }
+}
+
+// -------------------------------------------------------------------------------------
+// instances
+// -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export const URI = 'Encoder'
+
+/**
+ * @since 3.0.0
+ */
+export type URI = typeof URI
+
+declare module 'fp-ts/lib/HKT' {
+  interface URItoKind<A> {
+    readonly Encoder: Encoder<A>
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export const encoder: S.Schema<URI> = {
+  URI,
+  literal: () => id,
+  keyof: () => id,
+  string: id,
+  number: id,
+  boolean: id,
+  undefined: id,
+  null: id,
+  Int: id,
+  UnknownArray: id,
+  UnknownRecord: id,
+  type,
+  partial,
+  record,
+  array,
+  tuple,
+  intersection,
+  lazy
 }

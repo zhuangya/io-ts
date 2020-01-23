@@ -22,6 +22,7 @@ import { flow, Refinement } from 'fp-ts/lib/function'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as DE from './DecodeError'
 import * as G from './Guard'
+import * as S from './Schema'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -121,19 +122,7 @@ export const UnknownRecord: Decoder<Record<string, unknown>> = fromRefinement(
 /**
  * @since 3.0.0
  */
-export interface IntBrand {
-  readonly Int: unique symbol
-}
-
-/**
- * @since 3.0.0
- */
-export type Int = number & IntBrand
-
-/**
- * @since 3.0.0
- */
-export const Int: Decoder<Int> = refinement(number, (n: number): n is Int => Number.isInteger(n), 'Int')
+export const Int: Decoder<S.Int> = refinement(number, (n: number): n is S.Int => Number.isInteger(n), 'Int')
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -386,4 +375,48 @@ export function lazy<A>(f: () => Decoder<A>): Decoder<A> {
   return {
     decode: u => getMemoized().decode(u)
   }
+}
+
+// -------------------------------------------------------------------------------------
+// instances
+// -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export const URI = 'Decoder'
+
+/**
+ * @since 3.0.0
+ */
+export type URI = typeof URI
+
+declare module 'fp-ts/lib/HKT' {
+  interface URItoKind<A> {
+    readonly Decoder: Decoder<A>
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export const decoder: S.Schema<URI> = {
+  URI,
+  literal,
+  keyof,
+  string,
+  number,
+  boolean,
+  undefined: _undefined,
+  null: _null,
+  Int,
+  UnknownArray,
+  UnknownRecord,
+  type,
+  partial,
+  record,
+  array,
+  tuple: tuple as any, // TODO
+  intersection,
+  lazy
 }

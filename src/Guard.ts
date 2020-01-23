@@ -1,6 +1,8 @@
 /**
  * @since 3.0.0
  */
+import * as S from './Schema'
+import { Refinement } from 'fp-ts/lib/function'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -96,9 +98,23 @@ export const UnknownRecord: Guard<Record<string, unknown>> = {
   }
 }
 
+/**
+ * @since 3.0.0
+ */
+export const Int: Guard<S.Int> = refinement(number, (n: number): n is S.Int => Number.isInteger(n))
+
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export function refinement<A, B extends A>(guard: Guard<A>, refinement: Refinement<A, B>): Guard<B> {
+  return {
+    is: (u: unknown): u is B => guard.is(u) && refinement(u)
+  }
+}
 
 /**
  * @since 3.0.0
@@ -219,4 +235,48 @@ export function lazy<A>(f: () => Guard<A>): Guard<A> {
   return {
     is: (u: unknown): u is A => getMemoized().is(u)
   }
+}
+
+// -------------------------------------------------------------------------------------
+// instances
+// -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export const URI = 'Guard'
+
+/**
+ * @since 3.0.0
+ */
+export type URI = typeof URI
+
+declare module 'fp-ts/lib/HKT' {
+  interface URItoKind<A> {
+    readonly Guard: Guard<A>
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export const guard: S.Schema<URI> = {
+  URI,
+  literal,
+  keyof,
+  string,
+  number,
+  boolean,
+  undefined: _undefined,
+  null: _null,
+  Int,
+  UnknownArray,
+  UnknownRecord,
+  type,
+  partial,
+  record,
+  array,
+  tuple: tuple as any, // TODO
+  intersection,
+  lazy
 }

@@ -13,16 +13,15 @@ Added in v3.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [And (interface)](#and-interface)
-- [DecodeError (interface)](#decodeerror-interface)
-- [IndexedProduct (interface)](#indexedproduct-interface)
-- [LabeledProduct (interface)](#labeledproduct-interface)
+- [Indexed (interface)](#indexed-interface)
+- [Labeled (interface)](#labeled-interface)
+- [Leaf (interface)](#leaf-interface)
 - [Or (interface)](#or-interface)
-- [Detail (type alias)](#detail-type-alias)
+- [DecodeError (type alias)](#decodeerror-type-alias)
 - [and (function)](#and-function)
-- [decodeError (function)](#decodeerror-function)
-- [indexedProduct (function)](#indexedproduct-function)
-- [isNonEmpty (function)](#isnonempty-function)
-- [labeledProduct (function)](#labeledproduct-function)
+- [indexed (function)](#indexed-function)
+- [labeled (function)](#labeled-function)
+- [leaf (function)](#leaf-function)
 - [or (function)](#or-function)
 
 ---
@@ -34,48 +33,53 @@ Added in v3.0.0
 ```ts
 export interface And {
   readonly _tag: 'And'
+  readonly expected: string
+  readonly actual: unknown
   readonly errors: NonEmptyArray<DecodeError>
 }
 ```
 
 Added in v3.0.0
 
-# DecodeError (interface)
+# Indexed (interface)
 
 **Signature**
 
 ```ts
-export interface DecodeError {
+export interface Indexed {
+  readonly _tag: 'Indexed'
   readonly expected: string
   readonly actual: unknown
-  readonly detail: Detail | undefined
-  readonly message: string | undefined
-}
-```
-
-Added in v3.0.0
-
-# IndexedProduct (interface)
-
-**Signature**
-
-```ts
-export interface IndexedProduct {
-  readonly _tag: 'IndexedProduct'
   readonly errors: NonEmptyArray<[number, DecodeError]>
 }
 ```
 
 Added in v3.0.0
 
-# LabeledProduct (interface)
+# Labeled (interface)
 
 **Signature**
 
 ```ts
-export interface LabeledProduct {
-  readonly _tag: 'LabeledProduct'
+export interface Labeled {
+  readonly _tag: 'Labeled'
+  readonly expected: string
+  readonly actual: unknown
   readonly errors: NonEmptyArray<[string, DecodeError]>
+}
+```
+
+Added in v3.0.0
+
+# Leaf (interface)
+
+**Signature**
+
+```ts
+export interface Leaf {
+  readonly _tag: 'Leaf'
+  readonly expected: string
+  readonly actual: unknown
 }
 ```
 
@@ -88,18 +92,20 @@ Added in v3.0.0
 ```ts
 export interface Or {
   readonly _tag: 'Or'
+  readonly expected: string
+  readonly actual: unknown
   readonly errors: NonEmptyArray<DecodeError>
 }
 ```
 
 Added in v3.0.0
 
-# Detail (type alias)
+# DecodeError (type alias)
 
 **Signature**
 
 ```ts
-export type Detail = IndexedProduct | LabeledProduct | And | Or
+export type DecodeError = Leaf | And | Or | Indexed | Labeled
 ```
 
 Added in v3.0.0
@@ -109,47 +115,37 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function and(errors: NonEmptyArray<DecodeError>): Detail { ... }
+export function and(expected: string, actual: unknown, errors: NonEmptyArray<DecodeError>): DecodeError { ... }
 ```
 
 Added in v3.0.0
 
-# decodeError (function)
+# indexed (function)
 
 **Signature**
 
 ```ts
-export function decodeError(expected: string, actual: unknown, detail?: Detail): DecodeError { ... }
+export function indexed(expected: string, actual: unknown, errors: NonEmptyArray<[number, DecodeError]>): DecodeError { ... }
 ```
 
 Added in v3.0.0
 
-# indexedProduct (function)
+# labeled (function)
 
 **Signature**
 
 ```ts
-export function indexedProduct(errors: NonEmptyArray<[number, DecodeError]>): Detail { ... }
+export function labeled(expected: string, actual: unknown, errors: NonEmptyArray<[string, DecodeError]>): DecodeError { ... }
 ```
 
 Added in v3.0.0
 
-# isNonEmpty (function)
+# leaf (function)
 
 **Signature**
 
 ```ts
-export function isNonEmpty<A>(as: Array<A>): as is NonEmptyArray<A> { ... }
-```
-
-Added in v3.0.0
-
-# labeledProduct (function)
-
-**Signature**
-
-```ts
-export function labeledProduct(errors: NonEmptyArray<[string, DecodeError]>): Detail { ... }
+export function leaf(expected: string, actual: unknown): DecodeError { ... }
 ```
 
 Added in v3.0.0
@@ -159,7 +155,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function or(errors: NonEmptyArray<DecodeError>): Detail { ... }
+export function or(expected: string, actual: unknown, errors: NonEmptyArray<DecodeError>): DecodeError { ... }
 ```
 
 Added in v3.0.0

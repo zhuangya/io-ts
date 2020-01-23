@@ -8,8 +8,17 @@ parent: Modules
 
 Breaking changes:
 
+- remove all optional `name` arguments (use `withName` instead)
 - `refinement`
   - `name` is mandatory
+- remove `brand` combinator
+- rename `recursive` to `lazy`
+
+TODO
+
+- refactor DecodeError
+- make expected optional
+- add composeIso?
 
 Added in v3.0.0
 
@@ -18,6 +27,7 @@ Added in v3.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Codec (interface)](#codec-interface)
+- [Int (constant)](#int-constant)
 - [UnknownArray (constant)](#unknownarray-constant)
 - [UnknownRecord (constant)](#unknownrecord-constant)
 - [boolean (constant)](#boolean-constant)
@@ -25,10 +35,19 @@ Added in v3.0.0
 - [string (constant)](#string-constant)
 - [array (function)](#array-function)
 - [fromDecoder (function)](#fromdecoder-function)
+- [intersection (function)](#intersection-function)
+- [keyof (function)](#keyof-function)
+- [lazy (function)](#lazy-function)
 - [literal (function)](#literal-function)
+- [make (function)](#make-function)
 - [partial (function)](#partial-function)
+- [record (function)](#record-function)
 - [refinement (function)](#refinement-function)
+- [tuple (function)](#tuple-function)
 - [type (function)](#type-function)
+- [withExpected (function)](#withexpected-function)
+- [null (export)](#null-export)
+- [undefined (export)](#undefined-export)
 
 ---
 
@@ -38,6 +57,16 @@ Added in v3.0.0
 
 ```ts
 export interface Codec<A> extends D.Decoder<A>, E.Encoder<A> {}
+```
+
+Added in v3.0.0
+
+# Int (constant)
+
+**Signature**
+
+```ts
+export const Int: Codec<S.Int> = ...
 ```
 
 Added in v3.0.0
@@ -97,7 +126,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(codec: Codec<A>, name?: string): Codec<Array<A>> { ... }
+export function array<A>(codec: Codec<A>): Codec<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -112,12 +141,61 @@ export function fromDecoder<A>(decoder: D.Decoder<A>): Codec<A> { ... }
 
 Added in v3.0.0
 
+# intersection (function)
+
+**Signature**
+
+```ts
+export function intersection<A, B, C, D, E>(
+  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
+  name?: string
+): Codec<A & B & C & D & E>
+export function intersection<A, B, C, D>(
+  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>],
+  name?: string
+): Codec<A & B & C & D>
+export function intersection<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>]): Codec<A & B & C>
+export function intersection<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<A & B> { ... }
+```
+
+Added in v3.0.0
+
+# keyof (function)
+
+**Signature**
+
+```ts
+export function keyof<A>(keys: Record<keyof A, unknown>): Codec<keyof A> { ... }
+```
+
+Added in v3.0.0
+
+# lazy (function)
+
+**Signature**
+
+```ts
+export function lazy<A>(f: () => Codec<A>): Codec<A> { ... }
+```
+
+Added in v3.0.0
+
 # literal (function)
 
 **Signature**
 
 ```ts
-export function literal<L extends string | number | boolean>(literal: L, name?: string): Codec<L> { ... }
+export function literal<A extends string | number | boolean>(a: A): Codec<A> { ... }
+```
+
+Added in v3.0.0
+
+# make (function)
+
+**Signature**
+
+```ts
+export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> { ... }
 ```
 
 Added in v3.0.0
@@ -127,7 +205,17 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }, name?: string): Codec<Partial<A>> { ... }
+export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<Partial<A>> { ... }
+```
+
+Added in v3.0.0
+
+# record (function)
+
+**Signature**
+
+```ts
+export function record<A>(codec: Codec<A>): Codec<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -137,7 +225,19 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(codec: Codec<A>, refinement: Refinement<A, B>, name: string): Codec<B> { ... }
+export function refinement<A, B extends A>(codec: Codec<A>, refinement: Refinement<A, B>, expected: string): Codec<B> { ... }
+```
+
+Added in v3.0.0
+
+# tuple (function)
+
+**Signature**
+
+```ts
+export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
+  codecs: { [K in keyof A]: Codec<A[K]> }
+): Codec<A> { ... }
 ```
 
 Added in v3.0.0
@@ -147,7 +247,37 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }, name?: string): Codec<A> { ... }
+export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<A> { ... }
+```
+
+Added in v3.0.0
+
+# withExpected (function)
+
+**Signature**
+
+```ts
+export function withExpected<A>(codec: Codec<A>, expected: string): Codec<A> { ... }
+```
+
+Added in v3.0.0
+
+# null (export)
+
+**Signature**
+
+```ts
+Codec<null>
+```
+
+Added in v3.0.0
+
+# undefined (export)
+
+**Signature**
+
+```ts
+Codec<undefined>
 ```
 
 Added in v3.0.0
