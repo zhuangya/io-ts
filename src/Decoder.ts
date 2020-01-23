@@ -46,9 +46,9 @@ export type Decoding<D> = D extends Decoder<infer A> ? A : never
 /**
  * @since 3.0.0
  */
-export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
+export function fromRefinement<A>(refinement: Refinement<unknown, A>, expected: string): Decoder<A> {
   return {
-    decode: E.fromPredicate(guard.is, u => DE.decodeError(expected, u))
+    decode: E.fromPredicate(refinement, u => DE.decodeError(expected, u))
   }
 }
 
@@ -56,15 +56,15 @@ export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
  * @since 3.0.0
  */
 export function literal<A extends string | number | boolean>(a: A): Decoder<A> {
-  return fromGuard(G.literal(a), JSON.stringify(a))
+  return fromRefinement(G.literal(a).is, JSON.stringify(a))
 }
 
 /**
  * @since 3.0.0
  */
 export function keyof<A>(keys: Record<keyof A, unknown>): Decoder<keyof A> {
-  return fromGuard(
-    G.keyof(keys),
+  return fromRefinement(
+    G.keyof(keys).is,
     Object.keys(keys)
       .map(k => JSON.stringify(k))
       .join(' | ')
@@ -78,21 +78,21 @@ export function keyof<A>(keys: Record<keyof A, unknown>): Decoder<keyof A> {
 /**
  * @since 3.0.0
  */
-export const string: Decoder<string> = fromGuard(G.string, 'string')
+export const string: Decoder<string> = fromRefinement(G.string.is, 'string')
 
 /**
  * @since 3.0.0
  */
-export const number: Decoder<number> = fromGuard(G.number, 'number')
+export const number: Decoder<number> = fromRefinement(G.number.is, 'number')
 
 /**
  * @since 3.0.0
  */
-export const boolean: Decoder<boolean> = fromGuard(G.boolean, 'boolean')
+export const boolean: Decoder<boolean> = fromRefinement(G.boolean.is, 'boolean')
 
-const _undefined: Decoder<undefined> = fromGuard(G.undefined, 'undefined')
+const _undefined: Decoder<undefined> = fromRefinement(G.undefined.is, 'undefined')
 
-const _null: Decoder<null> = fromGuard(G.null, 'null')
+const _null: Decoder<null> = fromRefinement(G.null.is, 'null')
 
 export {
   /**
@@ -108,12 +108,15 @@ export {
 /**
  * @since 3.0.0
  */
-export const UnknownArray: Decoder<Array<unknown>> = fromGuard(G.UnknownArray, 'Array<unknown>')
+export const UnknownArray: Decoder<Array<unknown>> = fromRefinement(G.UnknownArray.is, 'Array<unknown>')
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: Decoder<Record<string, unknown>> = fromGuard(G.UnknownRecord, 'Record<string, unknown>')
+export const UnknownRecord: Decoder<Record<string, unknown>> = fromRefinement(
+  G.UnknownRecord.is,
+  'Record<string, unknown>'
+)
 
 /**
  * @since 3.0.0

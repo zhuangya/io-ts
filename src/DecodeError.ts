@@ -6,13 +6,6 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 /**
  * @since 3.0.0
  */
-export function isNonEmpty<A>(as: Array<A>): as is NonEmptyArray<A> {
-  return as.length > 0
-}
-
-/**
- * @since 3.0.0
- */
 export interface IndexedProduct {
   readonly _tag: 'IndexedProduct'
   readonly errors: NonEmptyArray<[number, DecodeError]>
