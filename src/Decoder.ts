@@ -37,7 +37,7 @@ export interface Decoder<A> {
 /**
  * @since 3.0.0
  */
-export type Decoding<D> = D extends Decoder<infer A> ? A : never
+export type TypeOf<D> = D extends Decoder<infer A> ? A : never
 
 // -------------------------------------------------------------------------------------
 // constructors
