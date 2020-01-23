@@ -153,7 +153,7 @@ describe('Codec', () => {
         assert.deepStrictEqual(codec.decode(undefined), E.left(DE.leaf('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 1 }),
-          E.left(DE.labeledProduct('type', { a: 1 }, [['a', DE.leaf('string', 1)]]))
+          E.left(DE.labeled('type', { a: 1 }, [['a', DE.leaf('string', 1)]]))
         )
       })
     })
@@ -196,7 +196,7 @@ describe('Codec', () => {
         assert.deepStrictEqual(codec.decode(undefined), E.left(DE.leaf('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 1 }),
-          E.left(DE.labeledProduct('partial', { a: 1 }, [['a', DE.leaf('string', 1)]]))
+          E.left(DE.labeled('partial', { a: 1 }, [['a', DE.leaf('string', 1)]]))
         )
       })
     })
@@ -229,7 +229,7 @@ describe('Codec', () => {
         assert.deepStrictEqual(codec.decode(undefined), E.left(DE.leaf('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 'a' }),
-          E.left(DE.labeledProduct('record', { a: 'a' }, [['a', DE.leaf('number', 'a')]]))
+          E.left(DE.labeled('record', { a: 'a' }, [['a', DE.leaf('number', 'a')]]))
         )
       })
     })
@@ -253,7 +253,7 @@ describe('Codec', () => {
       it('should reject an invalid input', () => {
         const codec = C.array(C.string)
         assert.deepStrictEqual(codec.decode(undefined), E.left(DE.leaf('Array<unknown>', undefined)))
-        assert.deepStrictEqual(codec.decode([1]), E.left(DE.indexedProduct('array', [1], [[0, DE.leaf('string', 1)]])))
+        assert.deepStrictEqual(codec.decode([1]), E.left(DE.indexed('array', [1], [[0, DE.leaf('string', 1)]])))
       })
     })
 
@@ -282,7 +282,7 @@ describe('Codec', () => {
         assert.deepStrictEqual(codec.decode(undefined), E.left(DE.leaf('Array<unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode(['a']),
-          E.left(DE.indexedProduct('tuple', ['a'], [[1, DE.leaf('number', undefined)]]))
+          E.left(DE.indexed('tuple', ['a'], [[1, DE.leaf('number', undefined)]]))
         )
       })
     })
@@ -318,9 +318,7 @@ describe('Codec', () => {
         assert.deepStrictEqual(
           codec.decode({ a: 'a' }),
           E.left(
-            DE.and('intersection', { a: 'a' }, [
-              DE.labeledProduct('type', { a: 'a' }, [['b', DE.leaf('number', undefined)]])
-            ])
+            DE.and('intersection', { a: 'a' }, [DE.labeled('type', { a: 'a' }, [['b', DE.leaf('number', undefined)]])])
           )
         )
       })
@@ -371,7 +369,7 @@ describe('Codec', () => {
         assert.deepStrictEqual(
           codec.decode({}),
           E.left(
-            DE.labeledProduct('type', {}, [
+            DE.labeled('type', {}, [
               ['a', DE.leaf('NumberFromString', undefined)],
               ['b', DE.leaf('Array<unknown>', undefined)]
             ])

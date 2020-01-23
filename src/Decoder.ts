@@ -194,7 +194,7 @@ export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<A>
             a[k] = e.right
           }
         }
-        return isNonEmpty(es) ? E.left(DE.labeledProduct('type', u, es)) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.labeled('type', u, es)) : E.right(a)
       }
     }
   }
@@ -223,7 +223,7 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder
             }
           }
         }
-        return isNonEmpty(es) ? E.left(DE.labeledProduct('partial', u, es)) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.labeled('partial', u, es)) : E.right(a)
       }
     }
   }
@@ -250,7 +250,7 @@ export function record<A>(decoder: Decoder<A>): Decoder<Record<string, A>> {
             a[k] = e.right
           }
         }
-        return isNonEmpty(es) ? E.left(DE.labeledProduct('record', u, es)) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.labeled('record', u, es)) : E.right(a)
       }
     }
   }
@@ -278,7 +278,7 @@ export function array<A>(decoder: Decoder<A>): Decoder<Array<A>> {
             a[i] = e.right
           }
         }
-        return isNonEmpty(es) ? E.left(DE.indexedProduct('array', u, es)) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.indexed('array', u, es)) : E.right(a)
       }
     }
   }
@@ -308,7 +308,7 @@ export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
             a[i] = e.right
           }
         }
-        return isNonEmpty(es) ? E.left(DE.indexedProduct('tuple', u, es)) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.indexed('tuple', u, es)) : E.right(a)
       }
     }
   }

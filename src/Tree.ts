@@ -12,7 +12,7 @@ export function toTree(e: DecodeError): Tree<string> {
   switch (e._tag) {
     case 'Leaf':
       return make(value(e))
-    case 'IndexedProduct':
+    case 'Indexed':
       return make(
         value(e),
         e.errors.map(([i, e]) => {
@@ -20,7 +20,7 @@ export function toTree(e: DecodeError): Tree<string> {
           return { ...t, value: `(${i}) ${t.value}` }
         })
       )
-    case 'LabeledProduct':
+    case 'Labeled':
       return make(
         value(e),
         e.errors.map(([k, e]) => {

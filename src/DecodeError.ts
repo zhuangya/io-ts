@@ -6,8 +6,8 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 /**
  * @since 3.0.0
  */
-export interface IndexedProduct {
-  readonly _tag: 'IndexedProduct'
+export interface Indexed {
+  readonly _tag: 'Indexed'
   readonly expected: string
   readonly actual: unknown
   readonly errors: NonEmptyArray<[number, DecodeError]>
@@ -16,19 +16,15 @@ export interface IndexedProduct {
 /**
  * @since 3.0.0
  */
-export function indexedProduct(
-  expected: string,
-  actual: unknown,
-  errors: NonEmptyArray<[number, DecodeError]>
-): DecodeError {
-  return { _tag: 'IndexedProduct', expected, actual, errors }
+export function indexed(expected: string, actual: unknown, errors: NonEmptyArray<[number, DecodeError]>): DecodeError {
+  return { _tag: 'Indexed', expected, actual, errors }
 }
 
 /**
  * @since 3.0.0
  */
-export interface LabeledProduct {
-  readonly _tag: 'LabeledProduct'
+export interface Labeled {
+  readonly _tag: 'Labeled'
   readonly expected: string
   readonly actual: unknown
   readonly errors: NonEmptyArray<[string, DecodeError]>
@@ -37,12 +33,8 @@ export interface LabeledProduct {
 /**
  * @since 3.0.0
  */
-export function labeledProduct(
-  expected: string,
-  actual: unknown,
-  errors: NonEmptyArray<[string, DecodeError]>
-): DecodeError {
-  return { _tag: 'LabeledProduct', expected, actual, errors }
+export function labeled(expected: string, actual: unknown, errors: NonEmptyArray<[string, DecodeError]>): DecodeError {
+  return { _tag: 'Labeled', expected, actual, errors }
 }
 
 /**
@@ -102,4 +94,4 @@ export function leaf(expected: string, actual: unknown): DecodeError {
 /**
  * @since 3.0.0
  */
-export type DecodeError = Leaf | And | Or | IndexedProduct | LabeledProduct
+export type DecodeError = Leaf | And | Or | Indexed | Labeled
