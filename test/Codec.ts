@@ -9,11 +9,11 @@ const NumberFromString: C.Codec<number> = {
   decode: u => {
     const e = D.string.decode(u)
     if (E.isLeft(e)) {
-      return E.left(DE.decodeError('NumberFromString', u))
+      return E.left(DE.leaf('NumberFromString', u))
     } else {
       const s = e.right
       const n = parseFloat(s)
-      return isNaN(n) ? E.left(DE.decodeError('NumberFromString', u)) : E.right(n)
+      return isNaN(n) ? E.left(DE.leaf('NumberFromString', u)) : E.right(n)
     }
   },
   encode: String,
@@ -30,7 +30,7 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.string
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('string', null)))
+        assert.deepStrictEqual(codec.decode(null), E.left(DE.leaf('string', null)))
       })
     })
   })
@@ -44,7 +44,7 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.number
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('number', null)))
+        assert.deepStrictEqual(codec.decode(null), E.left(DE.leaf('number', null)))
       })
     })
   })
@@ -59,7 +59,7 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.boolean
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('boolean', null)))
+        assert.deepStrictEqual(codec.decode(null), E.left(DE.leaf('boolean', null)))
       })
     })
   })
@@ -73,7 +73,7 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.undefined
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('undefined', null)))
+        assert.deepStrictEqual(codec.decode(null), E.left(DE.leaf('undefined', null)))
       })
     })
   })
@@ -87,7 +87,7 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.null
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('null', undefined)))
+        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.leaf('null', undefined)))
       })
     })
   })
@@ -101,7 +101,7 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.literal('a')
-        assert.deepStrictEqual(codec.decode('b'), E.left(DE.decodeError('"a"', 'b')))
+        assert.deepStrictEqual(codec.decode('b'), E.left(DE.leaf('"a"', 'b')))
       })
     })
   })
@@ -110,7 +110,7 @@ describe('Codec', () => {
     describe('decode', () => {
       it('should, return the provided name', () => {
         const codec = C.withExpected(C.number, 'mynumber')
-        assert.deepStrictEqual(codec.decode('a'), E.left(DE.decodeError('mynumber', 'a')))
+        assert.deepStrictEqual(codec.decode('a'), E.left(DE.leaf('mynumber', 'a')))
       })
     })
   })
@@ -125,7 +125,7 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.keyof({ a: null, b: null })
-        assert.deepStrictEqual(codec.decode('c'), E.left(DE.decodeError('"a" | "b"', 'c')))
+        assert.deepStrictEqual(codec.decode('c'), E.left(DE.leaf('"a" | "b"', 'c')))
       })
     })
   })
@@ -150,10 +150,10 @@ describe('Codec', () => {
         const codec = C.type({
           a: C.string
         })
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Record<string, unknown>', undefined)))
+        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.leaf('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 1 }),
-          E.left(DE.decodeError('type', { a: 1 }, DE.labeledProduct([['a', DE.decodeError('string', 1)]])))
+          E.left(DE.labeledProduct('type', { a: 1 }, [['a', DE.leaf('string', 1)]]))
         )
       })
     })
@@ -193,10 +193,10 @@ describe('Codec', () => {
         const codec = C.partial({
           a: C.string
         })
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Record<string, unknown>', undefined)))
+        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.leaf('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 1 }),
-          E.left(DE.decodeError('partial', { a: 1 }, DE.labeledProduct([['a', DE.decodeError('string', 1)]])))
+          E.left(DE.labeledProduct('partial', { a: 1 }, [['a', DE.leaf('string', 1)]]))
         )
       })
     })
@@ -226,10 +226,10 @@ describe('Codec', () => {
 
       it('should reject an invalid value', () => {
         const codec = C.record(C.number)
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Record<string, unknown>', undefined)))
+        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.leaf('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 'a' }),
-          E.left(DE.decodeError('record', { a: 'a' }, DE.labeledProduct([['a', DE.decodeError('number', 'a')]])))
+          E.left(DE.labeledProduct('record', { a: 'a' }, [['a', DE.leaf('number', 'a')]]))
         )
       })
     })
@@ -252,11 +252,8 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.array(C.string)
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Array<unknown>', undefined)))
-        assert.deepStrictEqual(
-          codec.decode([1]),
-          E.left(DE.decodeError('array', [1], DE.indexedProduct([[0, DE.decodeError('string', 1)]])))
-        )
+        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.leaf('Array<unknown>', undefined)))
+        assert.deepStrictEqual(codec.decode([1]), E.left(DE.indexedProduct('array', [1], [[0, DE.leaf('string', 1)]])))
       })
     })
 
@@ -282,10 +279,10 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.tuple([C.string, C.number])
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.decodeError('Array<unknown>', undefined)))
+        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.leaf('Array<unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode(['a']),
-          E.left(DE.decodeError('tuple', ['a'], DE.indexedProduct([[1, DE.decodeError('number', undefined)]])))
+          E.left(DE.indexedProduct('tuple', ['a'], [[1, DE.leaf('number', undefined)]]))
         )
       })
     })
@@ -321,15 +318,16 @@ describe('Codec', () => {
         assert.deepStrictEqual(
           codec.decode({ a: 'a' }),
           E.left(
-            DE.decodeError(
-              'intersection',
-              { a: 'a' },
-              DE.and([
-                DE.decodeError('type', { a: 'a' }, DE.labeledProduct([['b', DE.decodeError('number', undefined)]]))
-              ])
-            )
+            DE.and('intersection', { a: 'a' }, [
+              DE.labeledProduct('type', { a: 'a' }, [['b', DE.leaf('number', undefined)]])
+            ])
           )
         )
+      })
+
+      it('should handle empty intersections', () => {
+        const codec = D.intersection([] as any)
+        assert.deepStrictEqual(codec.decode('a'), E.right('a'))
       })
     })
 
@@ -369,18 +367,14 @@ describe('Codec', () => {
       })
 
       it('should reject an invalid input', () => {
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.decodeError('Record<string, unknown>', null)))
+        assert.deepStrictEqual(codec.decode(null), E.left(DE.leaf('Record<string, unknown>', null)))
         assert.deepStrictEqual(
           codec.decode({}),
           E.left(
-            DE.decodeError(
-              'type',
-              {},
-              DE.labeledProduct([
-                ['a', DE.decodeError('NumberFromString', undefined)],
-                ['b', DE.decodeError('Array<unknown>', undefined)]
-              ])
-            )
+            DE.labeledProduct('type', {}, [
+              ['a', DE.leaf('NumberFromString', undefined)],
+              ['b', DE.leaf('Array<unknown>', undefined)]
+            ])
           )
         )
       })

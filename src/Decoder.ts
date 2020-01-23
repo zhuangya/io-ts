@@ -48,7 +48,7 @@ export type Decoding<D> = D extends Decoder<infer A> ? A : never
  */
 export function fromRefinement<A>(refinement: Refinement<unknown, A>, expected: string): Decoder<A> {
   return {
-    decode: E.fromPredicate(refinement, u => DE.decodeError(expected, u))
+    decode: E.fromPredicate(refinement, u => DE.leaf(expected, u))
   }
 }
 
@@ -160,7 +160,7 @@ export function refinement<A, B extends A>(
   refinement: Refinement<A, B>,
   expected: string
 ): Decoder<B> {
-  const fromPredicate = E.fromPredicate(refinement, a => DE.decodeError(expected, a))
+  const fromPredicate = E.fromPredicate(refinement, a => DE.leaf(expected, a))
   return {
     decode: u => {
       const e = decoder.decode(u)
@@ -194,7 +194,7 @@ export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<A>
             a[k] = e.right
           }
         }
-        return isNonEmpty(es) ? E.left(DE.decodeError('type', u, DE.labeledProduct(es))) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.labeledProduct('type', u, es)) : E.right(a)
       }
     }
   }
@@ -223,7 +223,7 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder
             }
           }
         }
-        return isNonEmpty(es) ? E.left(DE.decodeError('partial', u, DE.labeledProduct(es))) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.labeledProduct('partial', u, es)) : E.right(a)
       }
     }
   }
@@ -250,7 +250,7 @@ export function record<A>(decoder: Decoder<A>): Decoder<Record<string, A>> {
             a[k] = e.right
           }
         }
-        return isNonEmpty(es) ? E.left(DE.decodeError('record', u, DE.labeledProduct(es))) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.labeledProduct('record', u, es)) : E.right(a)
       }
     }
   }
@@ -278,7 +278,7 @@ export function array<A>(decoder: Decoder<A>): Decoder<Array<A>> {
             a[i] = e.right
           }
         }
-        return isNonEmpty(es) ? E.left(DE.decodeError('array', us, DE.indexedProduct(es))) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.indexedProduct('array', u, es)) : E.right(a)
       }
     }
   }
@@ -308,7 +308,7 @@ export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
             a[i] = e.right
           }
         }
-        return isNonEmpty(es) ? E.left(DE.decodeError('tuple', us, DE.indexedProduct(es))) : E.right(a)
+        return isNonEmpty(es) ? E.left(DE.indexedProduct('tuple', u, es)) : E.right(a)
       }
     }
   }
@@ -325,12 +325,16 @@ export function intersection<A, B, C, D>(
 ): Decoder<A & B & C & D>
 export function intersection<A, B, C>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>]): Decoder<A & B & C>
 export function intersection<A, B>(decoders: [Decoder<A>, Decoder<B>]): Decoder<A & B>
-export function intersection<A>(decoders: Array<Decoder<A>>): Decoder<A> {
+export function intersection(decoders: Array<Decoder<unknown>>): Decoder<unknown> {
   return {
     decode: u => {
-      const as: Array<A> = []
+      const len = decoders.length
+      if (len === 0) {
+        return E.right(u)
+      }
+      const as: Array<unknown> = []
       const es: Array<DE.DecodeError> = []
-      for (let i = 0; i < decoders.length; i++) {
+      for (let i = 0; i < len; i++) {
         const e = decoders[i].decode(u)
         if (E.isLeft(e)) {
           es.push(e.left)
@@ -338,10 +342,10 @@ export function intersection<A>(decoders: Array<Decoder<A>>): Decoder<A> {
           as[i] = e.right
         }
       }
-      const a: A = as.some(a => Object.prototype.toString.call(a) !== '[object Object]')
+      const a: unknown = as.some(a => Object.prototype.toString.call(a) !== '[object Object]')
         ? as[as.length - 1]
         : Object.assign({}, ...as)
-      return isNonEmpty(es) ? E.left(DE.decodeError('intersection', u, DE.and(es))) : E.right(a)
+      return isNonEmpty(es) ? E.left(DE.and('intersection', u, es)) : E.right(a)
     }
   }
 }
@@ -363,7 +367,7 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
           return e
         }
       }
-      return E.left(DE.decodeError('union', u, DE.or(es as any)))
+      return E.left(isNonEmpty(es) ? DE.or('union', u, es) : DE.leaf('empty union', u))
     }
   }
 }

@@ -8,14 +8,20 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
  */
 export interface IndexedProduct {
   readonly _tag: 'IndexedProduct'
+  readonly expected: string
+  readonly actual: unknown
   readonly errors: NonEmptyArray<[number, DecodeError]>
 }
 
 /**
  * @since 3.0.0
  */
-export function indexedProduct(errors: NonEmptyArray<[number, DecodeError]>): Detail {
-  return { _tag: 'IndexedProduct', errors }
+export function indexedProduct(
+  expected: string,
+  actual: unknown,
+  errors: NonEmptyArray<[number, DecodeError]>
+): DecodeError {
+  return { _tag: 'IndexedProduct', expected, actual, errors }
 }
 
 /**
@@ -23,14 +29,20 @@ export function indexedProduct(errors: NonEmptyArray<[number, DecodeError]>): De
  */
 export interface LabeledProduct {
   readonly _tag: 'LabeledProduct'
+  readonly expected: string
+  readonly actual: unknown
   readonly errors: NonEmptyArray<[string, DecodeError]>
 }
 
 /**
  * @since 3.0.0
  */
-export function labeledProduct(errors: NonEmptyArray<[string, DecodeError]>): Detail {
-  return { _tag: 'LabeledProduct', errors }
+export function labeledProduct(
+  expected: string,
+  actual: unknown,
+  errors: NonEmptyArray<[string, DecodeError]>
+): DecodeError {
+  return { _tag: 'LabeledProduct', expected, actual, errors }
 }
 
 /**
@@ -38,14 +50,16 @@ export function labeledProduct(errors: NonEmptyArray<[string, DecodeError]>): De
  */
 export interface And {
   readonly _tag: 'And'
+  readonly expected: string
+  readonly actual: unknown
   readonly errors: NonEmptyArray<DecodeError>
 }
 
 /**
  * @since 3.0.0
  */
-export function and(errors: NonEmptyArray<DecodeError>): Detail {
-  return { _tag: 'And', errors }
+export function and(expected: string, actual: unknown, errors: NonEmptyArray<DecodeError>): DecodeError {
+  return { _tag: 'And', expected, actual, errors }
 }
 
 /**
@@ -53,37 +67,39 @@ export function and(errors: NonEmptyArray<DecodeError>): Detail {
  */
 export interface Or {
   readonly _tag: 'Or'
+  readonly expected: string
+  readonly actual: unknown
   readonly errors: NonEmptyArray<DecodeError>
 }
 
 /**
  * @since 3.0.0
  */
-export function or(errors: NonEmptyArray<DecodeError>): Detail {
-  return { _tag: 'Or', errors }
+export function or(expected: string, actual: unknown, errors: NonEmptyArray<DecodeError>): DecodeError {
+  return { _tag: 'Or', expected, actual, errors }
 }
 
 /**
  * @since 3.0.0
  */
-export type Detail = IndexedProduct | LabeledProduct | And | Or
-
-/**
- * @since 3.0.0
- */
-export interface DecodeError {
+export interface Leaf {
+  readonly _tag: 'Leaf'
   readonly expected: string
   readonly actual: unknown
-  readonly detail: Detail | undefined
 }
 
 /**
  * @since 3.0.0
  */
-export function decodeError(expected: string, actual: unknown, detail?: Detail): DecodeError {
+export function leaf(expected: string, actual: unknown): DecodeError {
   return {
+    _tag: 'Leaf',
     expected,
-    actual,
-    detail
+    actual
   }
 }
+
+/**
+ * @since 3.0.0
+ */
+export type DecodeError = Leaf | And | Or | IndexedProduct | LabeledProduct
