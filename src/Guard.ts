@@ -186,11 +186,14 @@ export function array<A>(guard: Guard<A>): Guard<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
-  guards: { [K in keyof A]: Guard<A[K]> }
-): Guard<A> {
+export function tuple<A, B, C, D, E>(guards: [Guard<A>, Guard<B>, Guard<C>, Guard<D>, Guard<E>]): Guard<[A, B, C, D, E]>
+export function tuple<A, B, C, D>(guards: [Guard<A>, Guard<B>, Guard<C>, Guard<D>]): Guard<[A, B, C, D]>
+export function tuple<A, B, C>(guards: [Guard<A>, Guard<B>, Guard<C>]): Guard<[A, B, C]>
+export function tuple<A, B>(guards: [Guard<A>, Guard<B>]): Guard<[A, B]>
+export function tuple<A>(guards: [Guard<A>]): Guard<[A]>
+export function tuple(guards: Array<Guard<unknown>>): Guard<Array<unknown>> {
   return {
-    is: (u: unknown): u is A =>
+    is: (u: unknown): u is Array<unknown> =>
       UnknownArray.is(u) && u.length === guards.length && guards.every((guard, i) => guard.is(u[i]))
   }
 }
@@ -276,7 +279,7 @@ export const guard: S.Schema<URI> = {
   partial,
   record,
   array,
-  tuple: tuple as any, // TODO
+  tuple,
   intersection,
   lazy
 }

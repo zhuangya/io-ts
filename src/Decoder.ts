@@ -276,9 +276,14 @@ export function array<A>(decoder: Decoder<A>): Decoder<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
-  decoders: { [K in keyof A]: Decoder<A[K]> }
-): Decoder<A> {
+export function tuple<A, B, C, D, E>(
+  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>]
+): Decoder<[A, B, C, D, E]>
+export function tuple<A, B, C, D>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>]): Decoder<[A, B, C, D]>
+export function tuple<A, B, C>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>]): Decoder<[A, B, C]>
+export function tuple<A, B>(decoders: [Decoder<A>, Decoder<B>]): Decoder<[A, B]>
+export function tuple<A>(decoders: [Decoder<A>]): Decoder<[A]>
+export function tuple(decoders: Array<Decoder<unknown>>): Decoder<Array<unknown>> {
   return {
     decode: u => {
       const e = UnknownArray.decode(u)
@@ -287,7 +292,7 @@ export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
       } else {
         const us = e.right
         const len = decoders.length
-        const a: A = new Array(len) as any
+        const a: Array<unknown> = new Array(len)
         const es: Array<[number, DE.DecodeError]> = []
         for (let i = 0; i < len; i++) {
           const e = decoders[i].decode(us[i])
@@ -416,7 +421,7 @@ export const decoder: S.Schema<URI> = {
   partial,
   record,
   array,
-  tuple: tuple as any, // TODO
+  tuple,
   intersection,
   lazy
 }

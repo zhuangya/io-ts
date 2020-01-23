@@ -160,10 +160,13 @@ export function array<A>(codec: Codec<A>): Codec<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
-  codecs: { [K in keyof A]: Codec<A[K]> }
-): Codec<A> {
-  return make(D.tuple<A>(codecs), E.tuple(codecs))
+export function tuple<A, B, C, D, E>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>]): Codec<[A, B, C, D, E]>
+export function tuple<A, B, C, D>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>]): Codec<[A, B, C, D]>
+export function tuple<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>]): Codec<[A, B, C]>
+export function tuple<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<[A, B]>
+export function tuple<A>(codecs: [Codec<A>]): Codec<[A]>
+export function tuple(codecs: any): Codec<any> {
+  return make(D.tuple(codecs), E.tuple(codecs))
 }
 
 /**

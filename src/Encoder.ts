@@ -90,9 +90,14 @@ export function array<A>(encoder: Encoder<A>): Encoder<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
-  encoders: { [K in keyof A]: Encoder<A[K]> }
-): Encoder<A> {
+export function tuple<A, B, C, D, E>(
+  encoders: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>, Encoder<E>]
+): Encoder<[A, B, C, D, E]>
+export function tuple<A, B, C, D>(encoders: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>]): Encoder<[A, B, C, D]>
+export function tuple<A, B, C>(encoders: [Encoder<A>, Encoder<B>, Encoder<C>]): Encoder<[A, B, C]>
+export function tuple<A, B>(encoders: [Encoder<A>, Encoder<B>]): Encoder<[A, B]>
+export function tuple<A>(encoders: [Encoder<A>]): Encoder<[A]>
+export function tuple(encoders: Array<Encoder<unknown>>): Encoder<Array<unknown>> {
   return {
     encode: as => encoders.map((encoder, i) => encoder.encode(as[i]))
   }

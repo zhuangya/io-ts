@@ -35,9 +35,13 @@ export interface Schema<F extends URIS> {
   readonly partial: <A>(schemas: { [K in keyof A]: Kind<F, A[K]> }) => Kind<F, Partial<A>>
   readonly record: <A>(schema: Kind<F, A>) => Kind<F, Record<string, A>>
   readonly array: <A>(schema: Kind<F, A>) => Kind<F, Array<A>>
-  readonly tuple: <A extends [unknown, unknown, ...Array<unknown>]>(
-    schemas: { [K in keyof A]: Kind<F, A[K]> }
-  ) => Kind<F, A>
+  readonly tuple: {
+    <A, B, C, D, E>(encoders: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>, Kind<F, E>]): Kind<F, [A, B, C, D, E]>
+    <A, B, C, D>(encoders: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>]): Kind<F, [A, B, C, D]>
+    <A, B, C>(encoders: [Kind<F, A>, Kind<F, B>, Kind<F, C>]): Kind<F, [A, B, C]>
+    <A, B>(encoders: [Kind<F, A>, Kind<F, B>]): Kind<F, [A, B]>
+    <A>(encoders: [Kind<F, A>]): Kind<F, [A]>
+  }
   readonly intersection: {
     <A, B, C, D, E>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>, Kind<F, E>]): Kind<F, A & B & C & D & E>
     <A, B, C, D>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>]): Kind<F, A & B & C & D>
