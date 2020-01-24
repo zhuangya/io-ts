@@ -56,18 +56,22 @@ export function fromRefinement<A>(refinement: Refinement<unknown, A>, expected: 
   }
 }
 
+function stringifyLiteral(a: string | number | boolean | null | undefined): string {
+  return a === undefined ? 'undefined' : JSON.stringify(a)
+}
+
 /**
  * @since 3.0.0
  */
 export function literal<A extends string | number | boolean | null | undefined>(a: A): Decoder<A> {
-  return fromRefinement(G.literal(a).is, a === undefined ? 'undefined' : JSON.stringify(a))
+  return fromRefinement(G.literal(a).is, stringifyLiteral(a))
 }
 
 /**
  * @since 3.0.0
  */
 export function literals<A extends string | number | boolean | null | undefined>(as: Array<A>): Decoder<A> {
-  return fromRefinement(G.literals(as).is, as.map(k => JSON.stringify(k)).join(' | '))
+  return fromRefinement(G.literals(as).is, as.map(stringifyLiteral).join(' | '))
 }
 
 // -------------------------------------------------------------------------------------

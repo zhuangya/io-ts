@@ -87,8 +87,8 @@ describe('Codec', () => {
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.literals(['a', null])
-        assert.deepStrictEqual(codec.decode('b'), E.left(DE.leaf('"a" | null', 'b')))
+        const codec = C.literals(['a', undefined])
+        assert.deepStrictEqual(codec.decode('b'), E.left(DE.leaf('"a" | undefined', 'b')))
       })
     })
   })
