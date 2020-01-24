@@ -16,7 +16,7 @@
 import { Refinement } from 'fp-ts/lib/function'
 import * as D from './Decoder'
 import * as E from './Encoder'
-import * as S from './Schema'
+import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model

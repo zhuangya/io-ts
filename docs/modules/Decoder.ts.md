@@ -147,7 +147,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const decoder: S.Schema<URI> = ...
+export const decoder: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -278,9 +278,13 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
-  decoders: { [K in keyof A]: Decoder<A[K]> }
-): Decoder<A> { ... }
+export function tuple<A, B, C, D, E>(
+  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>]
+): Decoder<[A, B, C, D, E]>
+export function tuple<A, B, C, D>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>]): Decoder<[A, B, C, D]>
+export function tuple<A, B, C>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>]): Decoder<[A, B, C]>
+export function tuple<A, B>(decoders: [Decoder<A>, Decoder<B>]): Decoder<[A, B]>
+export function tuple<A>(decoders: [Decoder<A>]): Decoder<[A]> { ... }
 ```
 
 Added in v3.0.0

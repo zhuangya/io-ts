@@ -235,9 +235,11 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A extends [unknown, unknown, ...Array<unknown>]>(
-  codecs: { [K in keyof A]: Codec<A[K]> }
-): Codec<A> { ... }
+export function tuple<A, B, C, D, E>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>]): Codec<[A, B, C, D, E]>
+export function tuple<A, B, C, D>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>]): Codec<[A, B, C, D]>
+export function tuple<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>]): Codec<[A, B, C]>
+export function tuple<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<[A, B]>
+export function tuple<A>(codecs: [Codec<A>]): Codec<[A]> { ... }
 ```
 
 Added in v3.0.0

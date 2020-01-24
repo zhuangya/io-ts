@@ -2,7 +2,7 @@
  * @since 3.0.0
  */
 import { identity } from 'fp-ts/lib/function'
-import * as S from './Schema'
+import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -164,7 +164,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const encoder: S.Schema<URI> = {
+export const encoder: S.Schemable<URI> = {
   URI,
   literal: () => id,
   keyof: () => id,

@@ -1,7 +1,7 @@
 /**
  * @since 3.0.0
  */
-import * as S from './Schema'
+import * as S from './Schemable'
 import { Refinement } from 'fp-ts/lib/function'
 
 // -------------------------------------------------------------------------------------
@@ -263,7 +263,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const guard: S.Schema<URI> = {
+export const guard: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
   URI,
   literal,
   keyof,
@@ -281,5 +281,7 @@ export const guard: S.Schema<URI> = {
   array,
   tuple,
   intersection,
-  lazy
+  lazy,
+  refinement: refinement as S.WithRefinement<URI>['refinement'],
+  union
 }

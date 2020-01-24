@@ -22,7 +22,7 @@ import { flow, Refinement } from 'fp-ts/lib/function'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as DE from './DecodeError'
 import * as G from './Guard'
-import * as S from './Schema'
+import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -405,7 +405,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const decoder: S.Schema<URI> = {
+export const decoder: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
   URI,
   literal,
   keyof,
@@ -423,5 +423,7 @@ export const decoder: S.Schema<URI> = {
   array,
   tuple,
   intersection,
-  lazy
+  lazy,
+  refinement: refinement as S.WithRefinement<URI>['refinement'],
+  union
 }
