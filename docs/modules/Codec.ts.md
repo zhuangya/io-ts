@@ -127,7 +127,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const codec: S.Schemable<URI> = ...
+export const codec: Invariant1<URI> & S.Schemable<URI> = ...
 ```
 
 Added in v3.0.0

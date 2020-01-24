@@ -14,6 +14,7 @@
  * @since 3.0.0
  */
 import { Refinement } from 'fp-ts/lib/function'
+import { Invariant1 } from 'fp-ts/lib/Invariant'
 import * as D from './Decoder'
 import * as E from './Encoder'
 import * as S from './Schemable'
@@ -201,8 +202,9 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const codec: S.Schemable<URI> = {
+export const codec: Invariant1<URI> & S.Schemable<URI> = {
   URI,
+  imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
   literal,
   literals,
   string,

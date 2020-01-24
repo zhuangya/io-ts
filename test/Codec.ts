@@ -21,6 +21,18 @@ const NumberFromString: C.Codec<number> = {
 }
 
 describe('Codec', () => {
+  describe('codec', () => {
+    it('imap', () => {
+      const codec = C.codec.imap(
+        C.string,
+        s => ({ value: s }),
+        ({ value }) => value
+      )
+      assert.deepStrictEqual(codec.decode('a'), E.right({ value: 'a' }))
+      assert.deepStrictEqual(codec.encode({ value: 'a' }), 'a')
+    })
+  })
+
   describe('string', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
