@@ -1,4 +1,7 @@
 /**
+ * TODO
+ * - optimize encode when all encoders are noop
+ *
  * @since 3.0.0
  */
 import { identity } from 'fp-ts/lib/function'
@@ -174,6 +177,7 @@ export const encoder: S.Schemable<URI> = {
   undefined: id,
   null: id,
   Int: id,
+  refinement: identity as S.Schemable<URI>['refinement'],
   UnknownArray: id,
   UnknownRecord: id,
   type,

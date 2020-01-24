@@ -6,6 +6,10 @@ parent: Modules
 
 # Encoder overview
 
+TODO
+
+- optimize encode when all encoders are noop
+
 Added in v3.0.0
 
 ---

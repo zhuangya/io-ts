@@ -14,7 +14,6 @@ Added in v3.0.0
 
 - [IntBrand (interface)](#intbrand-interface)
 - [Schemable (interface)](#schemable-interface)
-- [WithRefinement (interface)](#withrefinement-interface)
 - [WithUnion (interface)](#withunion-interface)
 - [Int (type alias)](#int-type-alias)
 
@@ -47,6 +46,11 @@ export interface Schemable<F extends URIS> {
   readonly undefined: Kind<F, undefined>
   readonly null: Kind<F, null>
   readonly Int: Kind<F, Int>
+  readonly refinement: <A, B extends A>(
+    schema: Kind<F, A>,
+    refinement: Refinement<A, B>,
+    expected: string
+  ) => Kind<F, B>
   readonly UnknownArray: Kind<F, Array<unknown>>
   readonly UnknownRecord: Kind<F, Record<string, unknown>>
   readonly type: <A>(schemas: { [K in keyof A]: Kind<F, A[K]> }) => Kind<F, A>
@@ -72,25 +76,13 @@ export interface Schemable<F extends URIS> {
 
 Added in v3.0.0
 
-# WithRefinement (interface)
-
-**Signature**
-
-```ts
-export interface WithRefinement<F extends URIS> {
-  refinement: <A, B extends A>(schema: Kind<F, A>, refinement: Refinement<A, B>, expected: string) => Kind<F, B>
-}
-```
-
-Added in v3.0.0
-
 # WithUnion (interface)
 
 **Signature**
 
 ```ts
 export interface WithUnion<F extends URIS> {
-  union: <A extends [unknown, unknown, ...Array<unknown>]>(
+  readonly union: <A extends [unknown, unknown, ...Array<unknown>]>(
     schemas: { [K in keyof A]: Kind<F, A[K]> }
   ) => Kind<F, A[number]>
 }

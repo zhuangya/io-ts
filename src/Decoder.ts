@@ -405,7 +405,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const decoder: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
+export const decoder: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
   keyof,
@@ -415,6 +415,7 @@ export const decoder: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI
   undefined: _undefined,
   null: _null,
   Int,
+  refinement: refinement as S.Schemable<URI>['refinement'],
   UnknownArray,
   UnknownRecord,
   type,
@@ -424,6 +425,5 @@ export const decoder: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI
   tuple,
   intersection,
   lazy,
-  refinement: refinement as S.WithRefinement<URI>['refinement'],
   union
 }

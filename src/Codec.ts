@@ -216,7 +216,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const codec: S.Schemable<URI> & S.WithRefinement<URI> = {
+export const codec: S.Schemable<URI> = {
   URI,
   literal,
   keyof,
@@ -226,6 +226,7 @@ export const codec: S.Schemable<URI> & S.WithRefinement<URI> = {
   undefined: _undefined,
   null: _null,
   Int,
+  refinement: refinement as S.Schemable<URI>['refinement'],
   UnknownArray,
   UnknownRecord,
   type,
@@ -234,6 +235,5 @@ export const codec: S.Schemable<URI> & S.WithRefinement<URI> = {
   array,
   tuple,
   intersection,
-  lazy,
-  refinement: refinement as S.WithRefinement<URI>['refinement']
+  lazy
 }
