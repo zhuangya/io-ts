@@ -11,7 +11,14 @@ describe('Encoder', () => {
 
   describe('literal', () => {
     it('should be the identity', () => {
-      const codec = E.encoder.literal(['a', null])
+      const codec = E.encoder.literal('a')
+      assert.deepStrictEqual(codec.encode('a'), 'a')
+    })
+  })
+
+  describe('literals', () => {
+    it('should be the identity', () => {
+      const codec = E.encoder.literals(['a', null])
       assert.deepStrictEqual(codec.encode('a'), 'a')
       assert.deepStrictEqual(codec.encode(null), null)
     })

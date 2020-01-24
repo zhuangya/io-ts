@@ -41,6 +41,7 @@ Added in v3.0.0
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
 - [literal (function)](#literal-function)
+- [literals (function)](#literals-function)
 - [make (function)](#make-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
@@ -205,7 +206,17 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends string | number | boolean | null | undefined>(as: Array<A>): Codec<A> { ... }
+export function literal<A extends string | number | boolean | null | undefined>(a: A): Codec<A> { ... }
+```
+
+Added in v3.0.0
+
+# literals (function)
+
+**Signature**
+
+```ts
+export function literals<A extends string | number | boolean | null | undefined>(as: Array<A>): Codec<A> { ... }
 ```
 
 Added in v3.0.0

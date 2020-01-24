@@ -22,7 +22,16 @@ export interface Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends string | number | boolean | null | undefined>(as: Array<A>): Guard<A> {
+export function literal<A extends string | number | boolean | null | undefined>(a: A): Guard<A> {
+  return {
+    is: (u: unknown): u is A => u === a
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function literals<A extends string | number | boolean | null | undefined>(as: Array<A>): Guard<A> {
   return {
     is: (u: unknown): u is A => as.findIndex(a => a === u) !== -1
   }
@@ -238,6 +247,7 @@ declare module 'fp-ts/lib/HKT' {
 export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
+  literals,
   string,
   number,
   boolean,
