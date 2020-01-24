@@ -28,6 +28,8 @@ export interface Schemable<F extends URIS> {
   readonly URI: F
   readonly literal: <A extends Literal>(a: A) => Kind<F, A>
   readonly literals: <A extends Literal>(as: Array<A>) => Kind<F, A>
+  readonly literalOr: <A extends Literal, B>(a: A, encoder: Kind<F, B>) => Kind<F, A | B>
+  readonly literalsOr: <A extends Literal, B>(as: Array<A>, encoder: Kind<F, B>) => Kind<F, A | B>
   readonly string: Kind<F, string>
   readonly number: Kind<F, number>
   readonly boolean: Kind<F, boolean>

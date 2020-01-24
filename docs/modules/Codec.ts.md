@@ -41,7 +41,9 @@ Added in v3.0.0
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
 - [literal (function)](#literal-function)
+- [literalOr (function)](#literalor-function)
 - [literals (function)](#literals-function)
+- [literalsOr (function)](#literalsor-function)
 - [make (function)](#make-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
@@ -211,12 +213,32 @@ export function literal<A extends S.Literal>(a: A): Codec<A> { ... }
 
 Added in v3.0.0
 
+# literalOr (function)
+
+**Signature**
+
+```ts
+export function literalOr<A extends S.Literal, B>(a: A, codec: Codec<B>): Codec<A | B> { ... }
+```
+
+Added in v3.0.0
+
 # literals (function)
 
 **Signature**
 
 ```ts
 export function literals<A extends S.Literal>(as: Array<A>): Codec<A> { ... }
+```
+
+Added in v3.0.0
+
+# literalsOr (function)
+
+**Signature**
+
+```ts
+export function literalsOr<A extends S.Literal, B>(as: Array<A>, codec: Codec<B>): Codec<A | B> { ... }
 ```
 
 Added in v3.0.0

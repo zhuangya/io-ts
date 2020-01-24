@@ -74,6 +74,20 @@ export function literals<A extends S.Literal>(as: Array<A>): Decoder<A> {
   return fromRefinement(G.literals(as).is, as.map(stringifyLiteral).join(' | '))
 }
 
+/**
+ * @since 3.0.0
+ */
+export function literalOr<A extends S.Literal, B>(a: A, decoder: Decoder<B>): Decoder<A | B> {
+  return union([literal(a), decoder])
+}
+
+/**
+ * @since 3.0.0
+ */
+export function literalsOr<A extends S.Literal, B>(as: Array<A>, decoder: Decoder<B>): Decoder<A | B> {
+  return union([literals(as), decoder])
+}
+
 // -------------------------------------------------------------------------------------
 // primitives
 // -------------------------------------------------------------------------------------
@@ -416,6 +430,8 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
   zero: () => never,
   literal,
   literals,
+  literalOr,
+  literalsOr,
   string,
   number,
   boolean,

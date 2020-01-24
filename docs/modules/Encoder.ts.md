@@ -24,6 +24,8 @@ Added in v3.0.0
 - [array (function)](#array-function)
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
+- [literalOr (function)](#literalor-function)
+- [literalsOr (function)](#literalsor-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
 - [tuple (function)](#tuple-function)
@@ -117,6 +119,26 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(f: () => Encoder<A>): Encoder<A> { ... }
+```
+
+Added in v3.0.0
+
+# literalOr (function)
+
+**Signature**
+
+```ts
+export function literalOr<A extends S.Literal, B>(a: A, encoder: Encoder<B>): Encoder<A | B> { ... }
+```
+
+Added in v3.0.0
+
+# literalsOr (function)
+
+**Signature**
+
+```ts
+export function literalsOr<A extends S.Literal, B>(a: Array<A>, encoder: Encoder<B>): Encoder<A | B> { ... }
 ```
 
 Added in v3.0.0

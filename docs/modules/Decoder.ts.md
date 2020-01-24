@@ -48,7 +48,9 @@ Added in v3.0.0
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
 - [literal (function)](#literal-function)
+- [literalOr (function)](#literalor-function)
 - [literals (function)](#literals-function)
+- [literalsOr (function)](#literalsor-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
 - [refinement (function)](#refinement-function)
@@ -243,12 +245,32 @@ export function literal<A extends S.Literal>(a: A): Decoder<A> { ... }
 
 Added in v3.0.0
 
+# literalOr (function)
+
+**Signature**
+
+```ts
+export function literalOr<A extends S.Literal, B>(a: A, decoder: Decoder<B>): Decoder<A | B> { ... }
+```
+
+Added in v3.0.0
+
 # literals (function)
 
 **Signature**
 
 ```ts
 export function literals<A extends S.Literal>(as: Array<A>): Decoder<A> { ... }
+```
+
+Added in v3.0.0
+
+# literalsOr (function)
+
+**Signature**
+
+```ts
+export function literalsOr<A extends S.Literal, B>(as: Array<A>, decoder: Decoder<B>): Decoder<A | B> { ... }
 ```
 
 Added in v3.0.0

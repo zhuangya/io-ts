@@ -37,6 +37,20 @@ export function literals<A extends S.Literal>(as: Array<A>): Guard<A> {
   }
 }
 
+/**
+ * @since 3.0.0
+ */
+export function literalOr<A extends S.Literal, B>(a: A, guard: Guard<B>): Guard<A | B> {
+  return union([literal(a), guard])
+}
+
+/**
+ * @since 3.0.0
+ */
+export function literalsOr<A extends S.Literal, B>(as: Array<A>, guard: Guard<B>): Guard<A | B> {
+  return union([literals(as), guard])
+}
+
 // -------------------------------------------------------------------------------------
 // primitives
 // -------------------------------------------------------------------------------------
@@ -248,6 +262,8 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
   literals,
+  literalOr,
+  literalsOr,
   string,
   number,
   boolean,

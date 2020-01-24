@@ -105,6 +105,60 @@ describe('Codec', () => {
     })
   })
 
+  describe('literalOr', () => {
+    describe('decode', () => {
+      it('should decode a valid input', () => {
+        const codec = C.literalOr(1, NumberFromString)
+        assert.deepStrictEqual(codec.decode(1), E.right(1))
+        assert.deepStrictEqual(codec.decode('2'), E.right(2))
+      })
+
+      it('should reject an invalid input', () => {
+        const codec = C.literalOr(1, NumberFromString)
+        assert.deepStrictEqual(
+          codec.decode(2),
+          E.left(DE.or('union', 2, [DE.leaf('1', 2), DE.leaf('NumberFromString', 2)]))
+        )
+      })
+    })
+
+    describe('encode', () => {
+      it('should encode a value', () => {
+        const codec = C.literalOr(1, NumberFromString)
+        assert.deepStrictEqual(codec.encode(1), 1)
+        assert.deepStrictEqual(codec.encode(2), '2')
+      })
+    })
+  })
+
+  describe('literalsOr', () => {
+    describe('decode', () => {
+      it('should decode a valid input', () => {
+        const codec = C.literalsOr([null, undefined], NumberFromString)
+        assert.deepStrictEqual(codec.decode(null), E.right(null))
+        assert.deepStrictEqual(codec.decode(undefined), E.right(undefined))
+        assert.deepStrictEqual(codec.decode('2'), E.right(2))
+      })
+
+      it('should reject an invalid input', () => {
+        const codec = C.literalsOr([null, undefined], NumberFromString)
+        assert.deepStrictEqual(
+          codec.decode(2),
+          E.left(DE.or('union', 2, [DE.leaf('null | undefined', 2), DE.leaf('NumberFromString', 2)]))
+        )
+      })
+    })
+
+    describe('encode', () => {
+      it('should encode a value', () => {
+        const codec = C.literalsOr([null, undefined], NumberFromString)
+        assert.deepStrictEqual(codec.encode(null), null)
+        assert.deepStrictEqual(codec.encode(undefined), undefined)
+        assert.deepStrictEqual(codec.encode(2), '2')
+      })
+    })
+  })
+
   describe('withExpected', () => {
     describe('decode', () => {
       it('should, return the provided name', () => {

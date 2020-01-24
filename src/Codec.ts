@@ -63,6 +63,20 @@ export function literals<A extends S.Literal>(as: Array<A>): Codec<A> {
   return fromDecoder(D.literals(as))
 }
 
+/**
+ * @since 3.0.0
+ */
+export function literalOr<A extends S.Literal, B>(a: A, codec: Codec<B>): Codec<A | B> {
+  return make(D.literalOr(a, codec), E.literalOr(a, codec))
+}
+
+/**
+ * @since 3.0.0
+ */
+export function literalsOr<A extends S.Literal, B>(as: Array<A>, codec: Codec<B>): Codec<A | B> {
+  return make(D.literalsOr(as, codec), E.literalsOr(as, codec))
+}
+
 // -------------------------------------------------------------------------------------
 // primitives
 // -------------------------------------------------------------------------------------
@@ -207,6 +221,8 @@ export const codec: Invariant1<URI> & S.Schemable<URI> = {
   imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
   literal,
   literals,
+  literalOr,
+  literalsOr,
   string,
   number,
   boolean,
