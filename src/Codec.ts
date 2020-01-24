@@ -192,3 +192,48 @@ export function intersection<A>(codecs: any): Codec<A> {
 export function lazy<A>(f: () => Codec<A>): Codec<A> {
   return make(D.lazy(f), E.lazy(f))
 }
+
+// -------------------------------------------------------------------------------------
+// instances
+// -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export const URI = 'Codec'
+
+/**
+ * @since 3.0.0
+ */
+export type URI = typeof URI
+
+declare module 'fp-ts/lib/HKT' {
+  interface URItoKind<A> {
+    readonly Codec: Codec<A>
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export const codec: S.Schemable<URI> & S.WithRefinement<URI> = {
+  URI,
+  literal,
+  keyof,
+  string,
+  number,
+  boolean,
+  undefined: _undefined,
+  null: _null,
+  Int,
+  UnknownArray,
+  UnknownRecord,
+  type,
+  partial,
+  record,
+  array,
+  tuple,
+  intersection,
+  lazy,
+  refinement: refinement as S.WithRefinement<URI>['refinement']
+}

@@ -27,10 +27,13 @@ Added in v3.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Codec (interface)](#codec-interface)
+- [URI (type alias)](#uri-type-alias)
 - [Int (constant)](#int-constant)
+- [URI (constant)](#uri-constant)
 - [UnknownArray (constant)](#unknownarray-constant)
 - [UnknownRecord (constant)](#unknownrecord-constant)
 - [boolean (constant)](#boolean-constant)
+- [codec (constant)](#codec-constant)
 - [number (constant)](#number-constant)
 - [string (constant)](#string-constant)
 - [array (function)](#array-function)
@@ -61,12 +64,32 @@ export interface Codec<A> extends D.Decoder<A>, E.Encoder<A> {}
 
 Added in v3.0.0
 
+# URI (type alias)
+
+**Signature**
+
+```ts
+export type URI = typeof URI
+```
+
+Added in v3.0.0
+
 # Int (constant)
 
 **Signature**
 
 ```ts
 export const Int: Codec<S.Int> = ...
+```
+
+Added in v3.0.0
+
+# URI (constant)
+
+**Signature**
+
+```ts
+export const URI: "Codec" = ...
 ```
 
 Added in v3.0.0
@@ -97,6 +120,16 @@ Added in v3.0.0
 
 ```ts
 export const boolean: Codec<boolean> = ...
+```
+
+Added in v3.0.0
+
+# codec (constant)
+
+**Signature**
+
+```ts
+export const codec: S.Schemable<URI> & S.WithRefinement<URI> = ...
 ```
 
 Added in v3.0.0
