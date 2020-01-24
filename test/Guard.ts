@@ -2,17 +2,19 @@ import * as assert from 'assert'
 import * as G from '../src/Guard'
 
 describe('Guard', () => {
-  describe('literalOr', () => {
-    it('should accepts valid inputs', () => {
-      const guard = G.literalOr('a', G.boolean)
-      assert.strictEqual(guard.is('a'), true)
-      assert.strictEqual(guard.is(true), true)
-      assert.strictEqual(guard.is(false), true)
-    })
+  describe('literals', () => {
+    describe('should optimize when used with just one value', () => {
+      it('should accepts valid inputs', () => {
+        const guard = G.literalsOr(['a'], G.boolean)
+        assert.strictEqual(guard.is('a'), true)
+        assert.strictEqual(guard.is(true), true)
+        assert.strictEqual(guard.is(false), true)
+      })
 
-    it('should rejects invalid inputs', () => {
-      const guard = G.literalOr('a', G.boolean)
-      assert.strictEqual(guard.is('b'), false)
+      it('should rejects invalid inputs', () => {
+        const guard = G.literalsOr(['a'], G.boolean)
+        assert.strictEqual(guard.is('c'), false)
+      })
     })
   })
 

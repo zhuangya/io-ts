@@ -25,8 +25,6 @@ Added in v3.0.0
 - [array (function)](#array-function)
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
-- [literal (function)](#literal-function)
-- [literalOr (function)](#literalor-function)
 - [literals (function)](#literals-function)
 - [literalsOr (function)](#literalsor-function)
 - [partial (function)](#partial-function)
@@ -175,32 +173,12 @@ export function lazy<A>(f: () => Guard<A>): Guard<A> { ... }
 
 Added in v3.0.0
 
-# literal (function)
-
-**Signature**
-
-```ts
-export function literal<A extends S.Literal>(a: A): Guard<A> { ... }
-```
-
-Added in v3.0.0
-
-# literalOr (function)
-
-**Signature**
-
-```ts
-export function literalOr<A extends S.Literal, B>(a: A, guard: Guard<B>): Guard<A | B> { ... }
-```
-
-Added in v3.0.0
-
 # literals (function)
 
 **Signature**
 
 ```ts
-export function literals<A extends S.Literal>(as: Array<A>): Guard<A> { ... }
+export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Guard<A> { ... }
 ```
 
 Added in v3.0.0
@@ -210,7 +188,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal, B>(as: Array<A>, guard: Guard<B>): Guard<A | B> { ... }
+export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, guard: Guard<B>): Guard<A | B> { ... }
 ```
 
 Added in v3.0.0

@@ -3,6 +3,7 @@
  */
 import { Kind, URIS } from 'fp-ts/lib/HKT'
 import { Refinement } from 'fp-ts/lib/function'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 
 /**
  * @since 3.0.0
@@ -26,10 +27,8 @@ export type Literal = string | number | boolean | null | undefined
  */
 export interface Schemable<F extends URIS> {
   readonly URI: F
-  readonly literal: <A extends Literal>(a: A) => Kind<F, A>
-  readonly literals: <A extends Literal>(as: Array<A>) => Kind<F, A>
-  readonly literalOr: <A extends Literal, B>(a: A, encoder: Kind<F, B>) => Kind<F, A | B>
-  readonly literalsOr: <A extends Literal, B>(as: Array<A>, encoder: Kind<F, B>) => Kind<F, A | B>
+  readonly literals: <A extends Literal>(as: NonEmptyArray<A>) => Kind<F, A>
+  readonly literalsOr: <A extends Literal, B>(as: NonEmptyArray<A>, encoder: Kind<F, B>) => Kind<F, A | B>
   readonly string: Kind<F, string>
   readonly number: Kind<F, number>
   readonly boolean: Kind<F, boolean>

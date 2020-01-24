@@ -76,20 +76,6 @@ describe('Codec', () => {
     })
   })
 
-  describe('literal', () => {
-    describe('decode', () => {
-      it('should decode a valid input', () => {
-        const codec = C.literal('a')
-        assert.deepStrictEqual(codec.decode('a'), E.right('a'))
-      })
-
-      it('should reject an invalid input', () => {
-        const codec = C.literal(undefined)
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.leaf('undefined', null)))
-      })
-    })
-  })
-
   describe('literals', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
@@ -101,32 +87,6 @@ describe('Codec', () => {
       it('should reject an invalid input', () => {
         const codec = C.literals(['a', undefined])
         assert.deepStrictEqual(codec.decode('b'), E.left(DE.leaf('"a" | undefined', 'b')))
-      })
-    })
-  })
-
-  describe('literalOr', () => {
-    describe('decode', () => {
-      it('should decode a valid input', () => {
-        const codec = C.literalOr(1, NumberFromString)
-        assert.deepStrictEqual(codec.decode(1), E.right(1))
-        assert.deepStrictEqual(codec.decode('2'), E.right(2))
-      })
-
-      it('should reject an invalid input', () => {
-        const codec = C.literalOr(1, NumberFromString)
-        assert.deepStrictEqual(
-          codec.decode(2),
-          E.left(DE.or('union', 2, [DE.leaf('1', 2), DE.leaf('NumberFromString', 2)]))
-        )
-      })
-    })
-
-    describe('encode', () => {
-      it('should encode a value', () => {
-        const codec = C.literalOr(1, NumberFromString)
-        assert.deepStrictEqual(codec.encode(1), 1)
-        assert.deepStrictEqual(codec.encode(2), '2')
       })
     })
   })

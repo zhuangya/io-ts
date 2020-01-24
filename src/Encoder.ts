@@ -9,6 +9,7 @@ import * as S from './Schemable'
 import { Contravariant1 } from 'fp-ts/lib/Contravariant'
 import { pipeable } from 'fp-ts/lib/pipeable'
 import * as G from './Guard'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -39,17 +40,7 @@ export const id: Encoder<unknown> = {
 /**
  * @since 3.0.0
  */
-export function literalOr<A extends S.Literal, B>(a: A, encoder: Encoder<B>): Encoder<A | B> {
-  const literal = G.literal(a)
-  return {
-    encode: la => (literal.is(la) ? la : encoder.encode(la))
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends S.Literal, B>(a: Array<A>, encoder: Encoder<B>): Encoder<A | B> {
+export function literalsOr<A extends S.Literal, B>(a: NonEmptyArray<A>, encoder: Encoder<B>): Encoder<A | B> {
   const literals = G.literals(a)
   return {
     encode: la => (literals.is(la) ? la : encoder.encode(la))
@@ -195,9 +186,7 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   contramap: (fa, f) => ({
     encode: b => fa.encode(f(b))
   }),
-  literal: () => id,
   literals: () => id,
-  literalOr,
   literalsOr,
   string: id,
   number: id,

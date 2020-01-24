@@ -18,6 +18,7 @@ import { Invariant1 } from 'fp-ts/lib/Invariant'
 import * as D from './Decoder'
 import * as E from './Encoder'
 import * as S from './Schemable'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -52,28 +53,14 @@ export function fromDecoder<A>(decoder: D.Decoder<A>): Codec<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends S.Literal>(a: A): Codec<A> {
-  return fromDecoder(D.literal(a))
-}
-
-/**
- * @since 3.0.0
- */
-export function literals<A extends S.Literal>(as: Array<A>): Codec<A> {
+export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Codec<A> {
   return fromDecoder(D.literals(as))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalOr<A extends S.Literal, B>(a: A, codec: Codec<B>): Codec<A | B> {
-  return make(D.literalOr(a, codec), E.literalOr(a, codec))
-}
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends S.Literal, B>(as: Array<A>, codec: Codec<B>): Codec<A | B> {
+export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> {
   return make(D.literalsOr(as, codec), E.literalsOr(as, codec))
 }
 
@@ -219,9 +206,7 @@ declare module 'fp-ts/lib/HKT' {
 export const codec: Invariant1<URI> & S.Schemable<URI> = {
   URI,
   imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
-  literal,
   literals,
-  literalOr,
   literalsOr,
   string,
   number,

@@ -3,6 +3,7 @@
  */
 import * as S from './Schemable'
 import { Refinement } from 'fp-ts/lib/function'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -22,32 +23,19 @@ export interface Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends S.Literal>(a: A): Guard<A> {
+export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Guard<A> {
+  const head = as[0]
+  const is =
+    as.length === 1 ? (u: unknown): u is A => u === head : (u: unknown): u is A => as.findIndex(a => a === u) !== -1
   return {
-    is: (u: unknown): u is A => u === a
+    is
   }
 }
 
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(as: Array<A>): Guard<A> {
-  return {
-    is: (u: unknown): u is A => as.findIndex(a => a === u) !== -1
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function literalOr<A extends S.Literal, B>(a: A, guard: Guard<B>): Guard<A | B> {
-  return union([literal(a), guard])
-}
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends S.Literal, B>(as: Array<A>, guard: Guard<B>): Guard<A | B> {
+export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, guard: Guard<B>): Guard<A | B> {
   return union([literals(as), guard])
 }
 
@@ -260,9 +248,7 @@ declare module 'fp-ts/lib/HKT' {
  */
 export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
-  literal,
   literals,
-  literalOr,
   literalsOr,
   string,
   number,
