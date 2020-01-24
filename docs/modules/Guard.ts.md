@@ -32,8 +32,6 @@ Added in v3.0.0
 - [tuple (function)](#tuple-function)
 - [type (function)](#type-function)
 - [union (function)](#union-function)
-- [null (export)](#null-export)
-- [undefined (export)](#undefined-export)
 
 ---
 
@@ -246,26 +244,6 @@ Added in v3.0.0
 export function union<A extends [unknown, unknown, ...Array<unknown>]>(
   guards: { [K in keyof A]: Guard<A[K]> }
 ): Guard<A[number]> { ... }
-```
-
-Added in v3.0.0
-
-# null (export)
-
-**Signature**
-
-```ts
-Guard<null>
-```
-
-Added in v3.0.0
-
-# undefined (export)
-
-**Signature**
-
-```ts
-Guard<undefined>
 ```
 
 Added in v3.0.0

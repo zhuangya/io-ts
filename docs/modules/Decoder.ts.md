@@ -59,8 +59,6 @@ Added in v3.0.0
 - [apFirst (export)](#apfirst-export)
 - [apSecond (export)](#apsecond-export)
 - [map (export)](#map-export)
-- [null (export)](#null-export)
-- [undefined (export)](#undefined-export)
 
 ---
 
@@ -361,26 +359,6 @@ Added in v3.0.0
 
 ```ts
 <A, B>(f: (a: A) => B) => (fa: Decoder<A>) => Decoder<B>
-```
-
-Added in v3.0.0
-
-# null (export)
-
-**Signature**
-
-```ts
-Decoder<null>
-```
-
-Added in v3.0.0
-
-# undefined (export)
-
-**Signature**
-
-```ts
-Decoder<undefined>
 ```
 
 Added in v3.0.0

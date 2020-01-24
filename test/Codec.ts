@@ -64,34 +64,6 @@ describe('Codec', () => {
     })
   })
 
-  describe('undefined', () => {
-    describe('decode', () => {
-      it('should decode a valid input', () => {
-        const codec = C.undefined
-        assert.deepStrictEqual(codec.decode(undefined), E.right(undefined))
-      })
-
-      it('should reject an invalid input', () => {
-        const codec = C.undefined
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.leaf('undefined', null)))
-      })
-    })
-  })
-
-  describe('null', () => {
-    describe('decode', () => {
-      it('should decode a valid input', () => {
-        const codec = C.null
-        assert.deepStrictEqual(codec.decode(null), E.right(null))
-      })
-
-      it('should reject an invalid input', () => {
-        const codec = C.null
-        assert.deepStrictEqual(codec.decode(undefined), E.left(DE.leaf('null', undefined)))
-      })
-    })
-  })
-
   describe('literal', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {

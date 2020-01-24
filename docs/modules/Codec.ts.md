@@ -48,8 +48,6 @@ Added in v3.0.0
 - [tuple (function)](#tuple-function)
 - [type (function)](#type-function)
 - [withExpected (function)](#withexpected-function)
-- [null (export)](#null-export)
-- [undefined (export)](#undefined-export)
 
 ---
 
@@ -282,26 +280,6 @@ Added in v3.0.0
 
 ```ts
 export function withExpected<A>(codec: Codec<A>, expected: string): Codec<A> { ... }
-```
-
-Added in v3.0.0
-
-# null (export)
-
-**Signature**
-
-```ts
-Codec<null>
-```
-
-Added in v3.0.0
-
-# undefined (export)
-
-**Signature**
-
-```ts
-Codec<undefined>
 ```
 
 Added in v3.0.0

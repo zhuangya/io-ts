@@ -74,21 +74,6 @@ export const number: Codec<number> = fromDecoder(D.number)
  */
 export const boolean: Codec<boolean> = fromDecoder(D.boolean)
 
-const _undefined: Codec<undefined> = fromDecoder(D.undefined)
-
-const _null: Codec<null> = fromDecoder(D.null)
-
-export {
-  /**
-   * @since 3.0.0
-   */
-  _undefined as undefined,
-  /**
-   * @since 3.0.0
-   */
-  _null as null
-}
-
 /**
  * @since 3.0.0
  */
@@ -215,8 +200,6 @@ export const codec: S.Schemable<URI> = {
   string,
   number,
   boolean,
-  undefined: _undefined,
-  null: _null,
   Int,
   refinement: refinement as S.Schemable<URI>['refinement'],
   UnknownArray,

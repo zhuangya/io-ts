@@ -82,21 +82,6 @@ export const number: Decoder<number> = fromRefinement(G.number.is, 'number')
  */
 export const boolean: Decoder<boolean> = fromRefinement(G.boolean.is, 'boolean')
 
-const _undefined: Decoder<undefined> = fromRefinement(G.undefined.is, 'undefined')
-
-const _null: Decoder<null> = fromRefinement(G.null.is, 'null')
-
-export {
-  /**
-   * @since 3.0.0
-   */
-  _undefined as undefined,
-  /**
-   * @since 3.0.0
-   */
-  _null as null
-}
-
 /**
  * @since 3.0.0
  */
@@ -414,8 +399,6 @@ export const decoder: Applicative1<URI> & Alt1<URI> & S.Schemable<URI> & S.WithU
   string,
   number,
   boolean,
-  undefined: _undefined,
-  null: _null,
   Int,
   refinement: refinement as S.Schemable<URI>['refinement'],
   UnknownArray,

@@ -178,8 +178,6 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   string: id,
   number: id,
   boolean: id,
-  undefined: id,
-  null: id,
   Int: id,
   refinement: identity as S.Schemable<URI>['refinement'],
   UnknownArray: id,

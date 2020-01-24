@@ -53,25 +53,6 @@ export const boolean: Guard<boolean> = {
   is: (u: unknown): u is boolean => typeof u === 'boolean'
 }
 
-const _undefined: Guard<undefined> = {
-  is: (u: unknown): u is undefined => u === undefined
-}
-
-const _null: Guard<null> = {
-  is: (u: unknown): u is null => u === null
-}
-
-export {
-  /**
-   * @since 3.0.0
-   */
-  _undefined as undefined,
-  /**
-   * @since 3.0.0
-   */
-  _null as null
-}
-
 /**
  * @since 3.0.0
  */
@@ -260,8 +241,6 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   string,
   number,
   boolean,
-  undefined: _undefined,
-  null: _null,
   Int,
   refinement: refinement as S.Schemable<URI>['refinement'],
   UnknownArray,
