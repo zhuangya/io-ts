@@ -7,6 +7,7 @@
 import { identity } from 'fp-ts/lib/function'
 import * as S from './Schemable'
 import { Contravariant1 } from 'fp-ts/lib/Contravariant'
+import { pipeable } from 'fp-ts/lib/pipeable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -191,4 +192,13 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   tuple,
   intersection,
   lazy
+}
+
+const { contramap } = pipeable(encoder)
+
+export {
+  /**
+   * @since 3.0.0
+   */
+  contramap
 }

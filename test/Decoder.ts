@@ -3,11 +3,15 @@ import * as E from 'fp-ts/lib/Either'
 import * as C from '../src/Codec'
 import * as DE from '../src/DecodeError'
 import * as D from '../src/Decoder'
+import { pipe } from 'fp-ts/lib/pipeable'
 
 describe('Decoder', () => {
   describe('decoder', () => {
     it('map', () => {
-      const decoder = D.decoder.map(D.string, s => s.length)
+      const decoder = pipe(
+        D.string,
+        D.map(s => s.length)
+      )
       assert.deepStrictEqual(decoder.decode('aaa'), E.right(3))
     })
 
@@ -20,7 +24,16 @@ describe('Decoder', () => {
     it('ap', () => {
       const fab = D.decoder.of((s: string): number => s.length)
       const fa = D.string
-      assert.deepStrictEqual(D.decoder.ap(fab, fa).decode('aaa'), E.right(3))
+      assert.deepStrictEqual(pipe(fab, D.ap(fa)).decode('aaa'), E.right(3))
+    })
+
+    it('alt', () => {
+      const decoder = pipe(
+        D.string,
+        D.alt(() => pipe(D.number, D.map(String)))
+      )
+      assert.deepStrictEqual(decoder.decode('a'), E.right('a'))
+      assert.deepStrictEqual(decoder.decode(1), E.right('1'))
     })
   })
 

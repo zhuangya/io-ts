@@ -55,6 +55,11 @@ Added in v3.0.0
 - [type (function)](#type-function)
 - [union (function)](#union-function)
 - [withExpected (function)](#withexpected-function)
+- [alt (export)](#alt-export)
+- [ap (export)](#ap-export)
+- [apFirst (export)](#apfirst-export)
+- [apSecond (export)](#apsecond-export)
+- [map (export)](#map-export)
 - [null (export)](#null-export)
 - [undefined (export)](#undefined-export)
 
@@ -147,7 +152,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const decoder: Applicative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = ...
+export const decoder: Applicative1<URI> & Alt1<URI> & S.Schemable<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -317,6 +322,56 @@ Added in v3.0.0
 
 ```ts
 export function withExpected<A>(decoder: Decoder<A>, expected: string): Decoder<A> { ... }
+```
+
+Added in v3.0.0
+
+# alt (export)
+
+**Signature**
+
+```ts
+<A>(that: () => Decoder<A>) => (fa: Decoder<A>) => Decoder<A>
+```
+
+Added in v3.0.0
+
+# ap (export)
+
+**Signature**
+
+```ts
+<A>(fa: Decoder<A>) => <B>(fab: Decoder<(a: A) => B>) => Decoder<B>
+```
+
+Added in v3.0.0
+
+# apFirst (export)
+
+**Signature**
+
+```ts
+<B>(fb: Decoder<B>) => <A>(fa: Decoder<A>) => Decoder<A>
+```
+
+Added in v3.0.0
+
+# apSecond (export)
+
+**Signature**
+
+```ts
+<B>(fb: Decoder<B>) => <A>(fa: Decoder<A>) => Decoder<B>
+```
+
+Added in v3.0.0
+
+# map (export)
+
+**Signature**
+
+```ts
+<A, B>(f: (a: A) => B) => (fa: Decoder<A>) => Decoder<B>
 ```
 
 Added in v3.0.0

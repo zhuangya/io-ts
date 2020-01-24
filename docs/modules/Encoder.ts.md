@@ -28,6 +28,7 @@ Added in v3.0.0
 - [record (function)](#record-function)
 - [tuple (function)](#tuple-function)
 - [type (function)](#type-function)
+- [contramap (export)](#contramap-export)
 
 ---
 
@@ -162,6 +163,16 @@ Added in v3.0.0
 
 ```ts
 export function type<A>(encoders: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> { ... }
+```
+
+Added in v3.0.0
+
+# contramap (export)
+
+**Signature**
+
+```ts
+<A, B>(f: (b: B) => A) => (fa: Encoder<A>) => Encoder<B>
 ```
 
 Added in v3.0.0

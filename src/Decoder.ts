@@ -24,6 +24,8 @@ import * as DE from './DecodeError'
 import * as G from './Guard'
 import * as S from './Schemable'
 import { Applicative1 } from 'fp-ts/lib/Applicative'
+import { Alt1 } from 'fp-ts/lib/Alt'
+import { pipeable } from 'fp-ts/lib/pipeable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -406,7 +408,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const decoder: Applicative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = {
+export const decoder: Applicative1<URI> & Alt1<URI> & S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   map: (fa, f) => ({
     decode: u => E.either.map(fa.decode(u), f)
@@ -416,6 +418,9 @@ export const decoder: Applicative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = 
   }),
   ap: (fab, fa) => ({
     decode: u => E.either.ap(fab.decode(u), fa.decode(u))
+  }),
+  alt: (fx, fy) => ({
+    decode: u => E.either.alt(fx.decode(u), () => fy().decode(u))
   }),
   literal,
   keyof,
@@ -436,4 +441,29 @@ export const decoder: Applicative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = 
   intersection,
   lazy,
   union
+}
+
+const { alt, ap, apFirst, apSecond, map } = pipeable(decoder)
+
+export {
+  /**
+   * @since 3.0.0
+   */
+  alt,
+  /**
+   * @since 3.0.0
+   */
+  ap,
+  /**
+   * @since 3.0.0
+   */
+  apFirst,
+  /**
+   * @since 3.0.0
+   */
+  apSecond,
+  /**
+   * @since 3.0.0
+   */
+  map
 }
