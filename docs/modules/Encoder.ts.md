@@ -68,7 +68,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const encoder: S.Schemable<URI> = ...
+export const encoder: Contravariant1<URI> & S.Schemable<URI> = ...
 ```
 
 Added in v3.0.0

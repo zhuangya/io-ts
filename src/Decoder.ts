@@ -23,6 +23,7 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as DE from './DecodeError'
 import * as G from './Guard'
 import * as S from './Schemable'
+import { Applicative1 } from 'fp-ts/lib/Applicative'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -405,8 +406,17 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const decoder: S.Schemable<URI> & S.WithUnion<URI> = {
+export const decoder: Applicative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
+  map: (fa, f) => ({
+    decode: u => E.either.map(fa.decode(u), f)
+  }),
+  of: a => ({
+    decode: () => E.right(a)
+  }),
+  ap: (fab, fa) => ({
+    decode: u => E.either.ap(fab.decode(u), fa.decode(u))
+  }),
   literal,
   keyof,
   string,

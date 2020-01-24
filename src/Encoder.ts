@@ -6,6 +6,7 @@
  */
 import { identity } from 'fp-ts/lib/function'
 import * as S from './Schemable'
+import { Contravariant1 } from 'fp-ts/lib/Contravariant'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -167,8 +168,11 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const encoder: S.Schemable<URI> = {
+export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   URI,
+  contramap: (fa, f) => ({
+    encode: b => fa.encode(f(b))
+  }),
   literal: () => id,
   keyof: () => id,
   string: id,

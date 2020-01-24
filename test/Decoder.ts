@@ -5,40 +5,59 @@ import * as DE from '../src/DecodeError'
 import * as D from '../src/Decoder'
 
 describe('Decoder', () => {
+  describe('decoder', () => {
+    it('map', () => {
+      const decoder = D.decoder.map(D.string, s => s.length)
+      assert.deepStrictEqual(decoder.decode('aaa'), E.right(3))
+    })
+
+    it('of', () => {
+      const decoder = D.decoder.of(1)
+      assert.deepStrictEqual(decoder.decode(1), E.right(1))
+      assert.deepStrictEqual(decoder.decode('a'), E.right(1))
+    })
+
+    it('ap', () => {
+      const fab = D.decoder.of((s: string): number => s.length)
+      const fa = D.string
+      assert.deepStrictEqual(D.decoder.ap(fab, fa).decode('aaa'), E.right(3))
+    })
+  })
+
   describe('Int', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.Int
-        assert.deepStrictEqual(codec.decode(1), E.right(1))
+        const decoder = C.Int
+        assert.deepStrictEqual(decoder.decode(1), E.right(1))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.Int
-        assert.deepStrictEqual(codec.decode(null), E.left(DE.leaf('number', null)))
-        assert.deepStrictEqual(codec.decode('1'), E.left(DE.leaf('number', '1')))
-        assert.deepStrictEqual(codec.decode(1.2), E.left(DE.leaf('Int', 1.2)))
+        const decoder = C.Int
+        assert.deepStrictEqual(decoder.decode(null), E.left(DE.leaf('number', null)))
+        assert.deepStrictEqual(decoder.decode('1'), E.left(DE.leaf('number', '1')))
+        assert.deepStrictEqual(decoder.decode(1.2), E.left(DE.leaf('Int', 1.2)))
       })
     })
   })
 
   describe('union', () => {
     it('should decode a valid input', () => {
-      const codec = D.union([C.string, C.number])
-      assert.deepStrictEqual(codec.decode('a'), E.right('a'))
-      assert.deepStrictEqual(codec.decode(1), E.right(1))
+      const decoder = D.union([C.string, C.number])
+      assert.deepStrictEqual(decoder.decode('a'), E.right('a'))
+      assert.deepStrictEqual(decoder.decode(1), E.right(1))
     })
 
     it('should reject an invalid input', () => {
-      const codec = D.union([C.string, C.number])
+      const decoder = D.union([C.string, C.number])
       assert.deepStrictEqual(
-        codec.decode(true),
+        decoder.decode(true),
         E.left(DE.or('union', true, [DE.leaf('string', true), DE.leaf('number', true)]))
       )
     })
 
     it('should handle empty unions', () => {
-      const codec = D.union([] as any)
-      assert.deepStrictEqual(codec.decode('a'), E.left(DE.leaf('empty union', 'a')))
+      const decoder = D.union([] as any)
+      assert.deepStrictEqual(decoder.decode('a'), E.left(DE.leaf('empty union', 'a')))
     })
   })
 })

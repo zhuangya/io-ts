@@ -147,7 +147,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const decoder: S.Schemable<URI> & S.WithUnion<URI> = ...
+export const decoder: Applicative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
