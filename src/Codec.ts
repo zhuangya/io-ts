@@ -52,14 +52,14 @@ export function fromDecoder<A>(decoder: D.Decoder<A>): Codec<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends string | number | boolean | null | undefined>(a: A): Codec<A> {
+export function literal<A extends S.Literal>(a: A): Codec<A> {
   return fromDecoder(D.literal(a))
 }
 
 /**
  * @since 3.0.0
  */
-export function literals<A extends string | number | boolean | null | undefined>(as: Array<A>): Codec<A> {
+export function literals<A extends S.Literal>(as: Array<A>): Codec<A> {
   return fromDecoder(D.literals(as))
 }
 

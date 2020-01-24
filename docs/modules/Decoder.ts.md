@@ -238,7 +238,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends string | number | boolean | null | undefined>(a: A): Decoder<A> { ... }
+export function literal<A extends S.Literal>(a: A): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -248,7 +248,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends string | number | boolean | null | undefined>(as: Array<A>): Decoder<A> { ... }
+export function literals<A extends S.Literal>(as: Array<A>): Decoder<A> { ... }
 ```
 
 Added in v3.0.0

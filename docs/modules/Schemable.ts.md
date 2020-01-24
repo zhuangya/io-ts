@@ -16,6 +16,7 @@ Added in v3.0.0
 - [Schemable (interface)](#schemable-interface)
 - [WithUnion (interface)](#withunion-interface)
 - [Int (type alias)](#int-type-alias)
+- [Literal (type alias)](#literal-type-alias)
 
 ---
 
@@ -38,8 +39,8 @@ Added in v3.0.0
 ```ts
 export interface Schemable<F extends URIS> {
   readonly URI: F
-  readonly literal: <A extends string | number | boolean | null | undefined>(a: A) => Kind<F, A>
-  readonly literals: <A extends string | number | boolean | null | undefined>(as: Array<A>) => Kind<F, A>
+  readonly literal: <A extends Literal>(a: A) => Kind<F, A>
+  readonly literals: <A extends Literal>(as: Array<A>) => Kind<F, A>
   readonly string: Kind<F, string>
   readonly number: Kind<F, number>
   readonly boolean: Kind<F, boolean>
@@ -94,6 +95,16 @@ Added in v3.0.0
 
 ```ts
 export type Int = number & IntBrand
+```
+
+Added in v3.0.0
+
+# Literal (type alias)
+
+**Signature**
+
+```ts
+export type Literal = string | number | boolean | null | undefined
 ```
 
 Added in v3.0.0

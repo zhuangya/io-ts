@@ -19,10 +19,15 @@ export type Int = number & IntBrand
 /**
  * @since 3.0.0
  */
+export type Literal = string | number | boolean | null | undefined
+
+/**
+ * @since 3.0.0
+ */
 export interface Schemable<F extends URIS> {
   readonly URI: F
-  readonly literal: <A extends string | number | boolean | null | undefined>(a: A) => Kind<F, A>
-  readonly literals: <A extends string | number | boolean | null | undefined>(as: Array<A>) => Kind<F, A>
+  readonly literal: <A extends Literal>(a: A) => Kind<F, A>
+  readonly literals: <A extends Literal>(as: Array<A>) => Kind<F, A>
   readonly string: Kind<F, string>
   readonly number: Kind<F, number>
   readonly boolean: Kind<F, boolean>

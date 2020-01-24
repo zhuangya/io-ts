@@ -22,7 +22,7 @@ export interface Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends string | number | boolean | null | undefined>(a: A): Guard<A> {
+export function literal<A extends S.Literal>(a: A): Guard<A> {
   return {
     is: (u: unknown): u is A => u === a
   }
@@ -31,7 +31,7 @@ export function literal<A extends string | number | boolean | null | undefined>(
 /**
  * @since 3.0.0
  */
-export function literals<A extends string | number | boolean | null | undefined>(as: Array<A>): Guard<A> {
+export function literals<A extends S.Literal>(as: Array<A>): Guard<A> {
   return {
     is: (u: unknown): u is A => as.findIndex(a => a === u) !== -1
   }
