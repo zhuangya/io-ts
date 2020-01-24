@@ -17,15 +17,15 @@
  *
  * @since 3.0.0
  */
+import { Alternative1 } from 'fp-ts/lib/Alternative'
+import { Applicative1 } from 'fp-ts/lib/Applicative'
 import * as E from 'fp-ts/lib/Either'
 import { flow, Refinement } from 'fp-ts/lib/function'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import { pipeable } from 'fp-ts/lib/pipeable'
 import * as DE from './DecodeError'
 import * as G from './Guard'
 import * as S from './Schemable'
-import { Applicative1 } from 'fp-ts/lib/Applicative'
-import { Alt1 } from 'fp-ts/lib/Alt'
-import { pipeable } from 'fp-ts/lib/pipeable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -66,6 +66,13 @@ export function literal<A extends string | number | boolean | null | undefined>(
 // -------------------------------------------------------------------------------------
 // primitives
 // -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export const never: Decoder<never> = {
+  decode: u => E.left(DE.leaf('never', u))
+}
 
 /**
  * @since 3.0.0
@@ -381,7 +388,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const decoder: Applicative1<URI> & Alt1<URI> & S.Schemable<URI> & S.WithUnion<URI> = {
+export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   map: (fa, f) => ({
     decode: u => E.either.map(fa.decode(u), f)
@@ -395,6 +402,7 @@ export const decoder: Applicative1<URI> & Alt1<URI> & S.Schemable<URI> & S.WithU
   alt: (fx, fy) => ({
     decode: u => E.either.alt(fx.decode(u), () => fy().decode(u))
   }),
+  zero: () => never,
   literal,
   string,
   number,

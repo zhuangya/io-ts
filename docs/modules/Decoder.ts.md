@@ -40,6 +40,7 @@ Added in v3.0.0
 - [UnknownRecord (constant)](#unknownrecord-constant)
 - [boolean (constant)](#boolean-constant)
 - [decoder (constant)](#decoder-constant)
+- [never (constant)](#never-constant)
 - [number (constant)](#number-constant)
 - [string (constant)](#string-constant)
 - [array (function)](#array-function)
@@ -149,7 +150,17 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const decoder: Applicative1<URI> & Alt1<URI> & S.Schemable<URI> & S.WithUnion<URI> = ...
+export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = ...
+```
+
+Added in v3.0.0
+
+# never (constant)
+
+**Signature**
+
+```ts
+export const never: Decoder<never> = ...
 ```
 
 Added in v3.0.0
