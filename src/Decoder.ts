@@ -59,20 +59,8 @@ export function fromRefinement<A>(refinement: Refinement<unknown, A>, expected: 
 /**
  * @since 3.0.0
  */
-export function literal<A extends string | number | boolean>(a: A): Decoder<A> {
-  return fromRefinement(G.literal(a).is, JSON.stringify(a))
-}
-
-/**
- * @since 3.0.0
- */
-export function keyof<A>(keys: Record<keyof A, unknown>): Decoder<keyof A> {
-  return fromRefinement(
-    G.keyof(keys).is,
-    Object.keys(keys)
-      .map(k => JSON.stringify(k))
-      .join(' | ')
-  )
+export function literal<A extends string | number | boolean | null | undefined>(as: Array<A>): Decoder<A> {
+  return fromRefinement(G.literal(as).is, as.map(k => JSON.stringify(k)).join(' | '))
 }
 
 // -------------------------------------------------------------------------------------
@@ -423,7 +411,6 @@ export const decoder: Applicative1<URI> & Alt1<URI> & S.Schemable<URI> & S.WithU
     decode: u => E.either.alt(fx.decode(u), () => fy().decode(u))
   }),
   literal,
-  keyof,
   string,
   number,
   boolean,

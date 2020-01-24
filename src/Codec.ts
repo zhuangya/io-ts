@@ -51,15 +51,8 @@ export function fromDecoder<A>(decoder: D.Decoder<A>): Codec<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends string | number | boolean>(a: A): Codec<A> {
-  return fromDecoder(D.literal(a))
-}
-
-/**
- * @since 3.0.0
- */
-export function keyof<A>(keys: Record<keyof A, unknown>): Codec<keyof A> {
-  return fromDecoder(D.keyof(keys))
+export function literal<A extends string | number | boolean | null | undefined>(as: Array<A>): Codec<A> {
+  return fromDecoder(D.literal(as))
 }
 
 // -------------------------------------------------------------------------------------
@@ -219,7 +212,6 @@ declare module 'fp-ts/lib/HKT' {
 export const codec: S.Schemable<URI> = {
   URI,
   literal,
-  keyof,
   string,
   number,
   boolean,

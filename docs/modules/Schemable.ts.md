@@ -38,8 +38,7 @@ Added in v3.0.0
 ```ts
 export interface Schemable<F extends URIS> {
   readonly URI: F
-  readonly literal: <A extends string | number | boolean>(a: A) => Kind<F, A>
-  readonly keyof: <A>(keys: Record<keyof A, unknown>) => Kind<F, keyof A>
+  readonly literal: <A extends string | number | boolean | null | undefined>(as: Array<A>) => Kind<F, A>
   readonly string: Kind<F, string>
   readonly number: Kind<F, number>
   readonly boolean: Kind<F, boolean>

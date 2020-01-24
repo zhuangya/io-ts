@@ -175,7 +175,6 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
     encode: b => fa.encode(f(b))
   }),
   literal: () => id,
-  keyof: () => id,
   string: id,
   number: id,
   boolean: id,

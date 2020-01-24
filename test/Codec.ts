@@ -95,13 +95,14 @@ describe('Codec', () => {
   describe('literal', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.literal('a')
+        const codec = C.literal(['a', null])
         assert.deepStrictEqual(codec.decode('a'), E.right('a'))
+        assert.deepStrictEqual(codec.decode(null), E.right(null))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.literal('a')
-        assert.deepStrictEqual(codec.decode('b'), E.left(DE.leaf('"a"', 'b')))
+        const codec = C.literal(['a', null])
+        assert.deepStrictEqual(codec.decode('b'), E.left(DE.leaf('"a" | null', 'b')))
       })
     })
   })
@@ -111,21 +112,6 @@ describe('Codec', () => {
       it('should, return the provided name', () => {
         const codec = C.withExpected(C.number, 'mynumber')
         assert.deepStrictEqual(codec.decode('a'), E.left(DE.leaf('mynumber', 'a')))
-      })
-    })
-  })
-
-  describe('keyof', () => {
-    describe('decode', () => {
-      it('should decode a valid input', () => {
-        const codec = C.keyof({ a: null, b: null })
-        assert.deepStrictEqual(codec.decode('a'), E.right('a'))
-        assert.deepStrictEqual(codec.decode('b'), E.right('b'))
-      })
-
-      it('should reject an invalid input', () => {
-        const codec = C.keyof({ a: null, b: null })
-        assert.deepStrictEqual(codec.decode('c'), E.left(DE.leaf('"a" | "b"', 'c')))
       })
     })
   })

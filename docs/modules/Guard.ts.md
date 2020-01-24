@@ -24,7 +24,6 @@ Added in v3.0.0
 - [string (constant)](#string-constant)
 - [array (function)](#array-function)
 - [intersection (function)](#intersection-function)
-- [keyof (function)](#keyof-function)
 - [lazy (function)](#lazy-function)
 - [literal (function)](#literal-function)
 - [partial (function)](#partial-function)
@@ -165,16 +164,6 @@ export function intersection<A, B>(guards: [Guard<A>, Guard<B>]): Guard<A & B> {
 
 Added in v3.0.0
 
-# keyof (function)
-
-**Signature**
-
-```ts
-export function keyof<A>(keys: Record<keyof A, unknown>): Guard<keyof A> { ... }
-```
-
-Added in v3.0.0
-
 # lazy (function)
 
 **Signature**
@@ -190,7 +179,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends string | number | boolean>(a: A): Guard<A> { ... }
+export function literal<A extends string | number | boolean | null | undefined>(as: Array<A>): Guard<A> { ... }
 ```
 
 Added in v3.0.0

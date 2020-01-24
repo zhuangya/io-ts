@@ -39,7 +39,6 @@ Added in v3.0.0
 - [array (function)](#array-function)
 - [fromDecoder (function)](#fromdecoder-function)
 - [intersection (function)](#intersection-function)
-- [keyof (function)](#keyof-function)
 - [lazy (function)](#lazy-function)
 - [literal (function)](#literal-function)
 - [make (function)](#make-function)
@@ -193,16 +192,6 @@ export function intersection<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<A & B> {
 
 Added in v3.0.0
 
-# keyof (function)
-
-**Signature**
-
-```ts
-export function keyof<A>(keys: Record<keyof A, unknown>): Codec<keyof A> { ... }
-```
-
-Added in v3.0.0
-
 # lazy (function)
 
 **Signature**
@@ -218,7 +207,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends string | number | boolean>(a: A): Codec<A> { ... }
+export function literal<A extends string | number | boolean | null | undefined>(as: Array<A>): Codec<A> { ... }
 ```
 
 Added in v3.0.0

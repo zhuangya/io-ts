@@ -22,18 +22,9 @@ export interface Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends string | number | boolean>(a: A): Guard<A> {
+export function literal<A extends string | number | boolean | null | undefined>(as: Array<A>): Guard<A> {
   return {
-    is: (u: unknown): u is A => u === a
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function keyof<A>(keys: Record<keyof A, unknown>): Guard<keyof A> {
-  return {
-    is: (u: unknown): u is keyof A => typeof u === 'string' && Object.prototype.hasOwnProperty.call(keys, u)
+    is: (u: unknown): u is A => as.findIndex(a => a === u) !== -1
   }
 }
 
@@ -266,7 +257,6 @@ declare module 'fp-ts/lib/HKT' {
 export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
-  keyof,
   string,
   number,
   boolean,
