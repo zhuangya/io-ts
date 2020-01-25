@@ -341,6 +341,57 @@ export function intersection(decoders: Array<Decoder<unknown>>): Decoder<unknown
 /**
  * @since 3.0.0
  */
+export function lazy<A>(f: () => Decoder<A>): Decoder<A> {
+  let memoized: Decoder<A>
+  function getMemoized(): Decoder<A> {
+    if (!memoized) {
+      memoized = f()
+    }
+    return memoized
+  }
+  return {
+    decode: u => getMemoized().decode(u)
+  }
+}
+
+const hasOwnProperty = <O>(o: O, k: string): k is keyof O & string => Object.prototype.hasOwnProperty.call(o, k)
+
+/**
+ * @since 3.0.0
+ */
+export function sum<T extends string>(
+  tag: T
+): <A>(def: { [K in keyof A]: Decoder<A[K]> }) => Decoder<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
+  return (def: Record<string, Decoder<any>>) => {
+    const keys = Object.keys(def)
+    if (keys.length === 0) {
+      return never
+    }
+    const expected = keys.map(k => JSON.stringify(k)).join(' | ')
+    return {
+      decode: u => {
+        const e = UnknownRecord.decode(u)
+        if (E.isLeft(e)) {
+          return e
+        }
+        const v = e.right[tag]
+        if (typeof v === 'string' && hasOwnProperty(def, v)) {
+          const er = def[v].decode(u)
+          if (E.isLeft(er)) {
+            return er
+          }
+          er.right[tag] = v
+          return er
+        }
+        return E.left(DE.labeled('sum', u, [[tag, DE.leaf(expected, v)]]))
+      }
+    }
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
 export function union<A extends [unknown, unknown, ...Array<unknown>]>(
   decoders: { [K in keyof A]: Decoder<A[K]> }
 ): Decoder<A[number]> {
@@ -357,22 +408,6 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
       }
       return E.left(isNonEmpty(es) ? DE.or('union', u, es) : DE.leaf('empty union', u))
     }
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function lazy<A>(f: () => Decoder<A>): Decoder<A> {
-  let memoized: Decoder<A>
-  function getMemoized(): Decoder<A> {
-    if (!memoized) {
-      memoized = f()
-    }
-    return memoized
-  }
-  return {
-    decode: u => getMemoized().decode(u)
   }
 }
 
@@ -430,6 +465,7 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
   tuple,
   intersection,
   lazy,
+  sum,
   union
 }
 

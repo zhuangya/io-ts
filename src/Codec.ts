@@ -180,6 +180,17 @@ export function lazy<A>(f: () => Codec<A>): Codec<A> {
   return make(D.lazy(f), E.lazy(f))
 }
 
+/**
+ * @since 3.0.0
+ */
+export function sum<T extends string>(
+  tag: T
+): <A>(def: { [K in keyof A]: Codec<A[K]> }) => Codec<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
+  const Dsum = D.sum(tag)
+  const Esum = E.sum(tag)
+  return def => make(Dsum(def), Esum(def))
+}
+
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
@@ -221,5 +232,6 @@ export const codec: Invariant1<URI> & S.Schemable<URI> = {
   array,
   tuple,
   intersection,
-  lazy
+  lazy,
+  sum
 }

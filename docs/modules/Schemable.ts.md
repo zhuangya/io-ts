@@ -66,6 +66,9 @@ export interface Schemable<F extends URIS> {
     <A, B>(schemas: [Kind<F, A>, Kind<F, B>]): Kind<F, A & B>
   }
   readonly lazy: <A>(f: () => Kind<F, A>) => Kind<F, A>
+  readonly sum: <T extends string>(
+    tag: T
+  ) => <A>(def: { [K in keyof A]: Kind<F, A[K]> }) => Kind<F, { [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]>
 }
 ```
 

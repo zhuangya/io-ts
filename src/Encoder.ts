@@ -206,6 +206,24 @@ export function lazy<A>(f: () => Encoder<A>): Encoder<A> {
   }
 }
 
+/**
+ * @since 3.0.0
+ */
+export function sum<T extends string>(
+  tag: T
+): <A>(def: { [K in keyof A]: Encoder<A[K]> }) => Encoder<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
+  return def => {
+    return {
+      encode: a => {
+        const v = a[tag]
+        const encoder = def[v]
+        const o: any = encoder.encode(a as any)
+        return { ...o, [tag]: a[tag] }
+      }
+    }
+  }
+}
+
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
@@ -249,7 +267,8 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   array,
   tuple,
   intersection,
-  lazy
+  lazy,
+  sum
 }
 
 const { contramap } = pipeable(encoder)

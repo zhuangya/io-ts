@@ -340,7 +340,7 @@ describe('Codec', () => {
     })
   })
 
-  describe('recursive', () => {
+  describe('lazy', () => {
     interface Rec {
       a: number
       b: Array<Rec>
@@ -379,6 +379,53 @@ describe('Codec', () => {
     describe('encode', () => {
       it('should encode a value', () => {
         assert.deepStrictEqual(codec.encode({ a: 1, b: [{ a: 2, b: [] }] }), { a: '1', b: [{ a: '2', b: [] }] })
+      })
+    })
+  })
+
+  describe('sum', () => {
+    const sum = C.sum('_tag')
+
+    describe('decode', () => {
+      it('should decode a valid input', () => {
+        const codec = sum({
+          A: C.type({ a: C.string }),
+          B: C.type({ b: C.number })
+        })
+        assert.deepStrictEqual(codec.decode({ _tag: 'A', a: 'a' }), E.right({ _tag: 'A', a: 'a' }))
+        assert.deepStrictEqual(codec.decode({ _tag: 'B', b: 1 }), E.right({ _tag: 'B', b: 1 }))
+      })
+
+      it('should reject an invalid input', () => {
+        const codec = sum({
+          A: C.type({ a: C.string }),
+          B: C.type({ b: C.number })
+        })
+        assert.deepStrictEqual(codec.decode(null), E.left(DE.leaf('Record<string, unknown>', null)))
+        assert.deepStrictEqual(
+          codec.decode({}),
+          E.left(DE.labeled('sum', {}, [['_tag', DE.leaf('"A" | "B"', undefined)]]))
+        )
+        assert.deepStrictEqual(
+          codec.decode({ _tag: 'A', a: 1 }),
+          E.left(DE.labeled('type', { _tag: 'A', a: 1 }, [['a', DE.leaf('string', 1)]]))
+        )
+      })
+
+      it('should support empty records', () => {
+        const decoder = sum({})
+        assert.deepStrictEqual(decoder.decode({}), E.left(DE.leaf('never', {})))
+      })
+    })
+
+    describe('encode', () => {
+      it('should encode a value', () => {
+        const codec = sum({
+          A: C.type({ a: C.string }),
+          B: C.type({ b: NumberFromString })
+        })
+        assert.deepStrictEqual(codec.encode({ _tag: 'A', a: 'a' }), { _tag: 'A', a: 'a' })
+        assert.deepStrictEqual(codec.encode({ _tag: 'B', b: 1 }), { _tag: 'B', b: '1' })
       })
     })
   })

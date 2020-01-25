@@ -30,6 +30,7 @@ Added in v3.0.0
 - [literalsOr (function)](#literalsor-function)
 - [partial (function)](#partial-function)
 - [refinement (function)](#refinement-function)
+- [sum (function)](#sum-function)
 - [tuple (function)](#tuple-function)
 
 ---
@@ -213,6 +214,18 @@ Added in v3.0.0
 
 ```ts
 export function refinement<A, B extends A>(eq: Eq<A>, _refinement: Refinement<A, B>): Eq<B> { ... }
+```
+
+Added in v3.0.0
+
+# sum (function)
+
+**Signature**
+
+```ts
+export function sum<T extends string>(
+  tag: T
+): <A>(def: { [K in keyof A]: Eq<A[K]> }) => Eq<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> { ... }
 ```
 
 Added in v3.0.0

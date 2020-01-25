@@ -223,6 +223,30 @@ export function lazy<A>(f: () => Guard<A>): Guard<A> {
   }
 }
 
+const hasOwnProperty = <O>(o: O, k: string): k is keyof O & string => Object.prototype.hasOwnProperty.call(o, k)
+
+/**
+ * @since 3.0.0
+ */
+export function sum<T extends string>(
+  tag: T
+): <A>(def: { [K in keyof A]: Guard<A[K]> }) => Guard<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
+  return <A>(def: { [K in keyof A]: Guard<A[K]> }) => {
+    return {
+      is: (u): u is { [K in keyof A]: { [F in T]: K } & A[K] }[keyof A] => {
+        if (!UnknownRecord.is(u)) {
+          return false
+        }
+        const v = u[tag]
+        if (typeof v === 'string' && hasOwnProperty(def, v)) {
+          return def[v].is(u)
+        }
+        return false
+      }
+    }
+  }
+}
+
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
@@ -264,5 +288,6 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   tuple,
   intersection,
   lazy,
+  sum,
   union
 }

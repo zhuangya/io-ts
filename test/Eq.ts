@@ -72,4 +72,17 @@ describe('Eq', () => {
     assert.strictEqual(eq.equals({ a: 1, b: [] }, { a: 2, b: [] }), false)
     assert.strictEqual(eq.equals({ a: 1, b: [{ a: 2, b: [] }] }, { a: 1, b: [{ a: 3, b: [] }] }), false)
   })
+
+  it('sum', () => {
+    const sum = E.sum('_tag')
+    const eq = sum({
+      A: E.type({ a: E.string }),
+      B: E.type({ b: E.number })
+    })
+    assert.strictEqual(eq.equals({ _tag: 'A', a: 'a' }, { _tag: 'A', a: 'a' }), true)
+    assert.strictEqual(eq.equals({ _tag: 'B', b: 1 }, { _tag: 'B', b: 1 }), true)
+    assert.strictEqual(eq.equals({ _tag: 'A', a: 'a' }, { _tag: 'B', b: 1 }), false)
+    assert.strictEqual(eq.equals({ _tag: 'A', a: 'a' }, { _tag: 'A', a: 'b' }), false)
+    assert.strictEqual(eq.equals({ _tag: 'B', b: 1 }, { _tag: 'B', b: 2 }), false)
+  })
 })

@@ -170,4 +170,26 @@ describe('Guard', () => {
       assert.strictEqual(guard.is(undefined), false)
     })
   })
+
+  describe('sum', () => {
+    const sum = G.sum('_tag')
+
+    it('should accepts valid inputs', () => {
+      const guard = sum({
+        A: G.type({ a: G.string }),
+        B: G.type({ b: G.number })
+      })
+      assert.deepStrictEqual(guard.is({ _tag: 'A', a: 'a' }), true)
+      assert.deepStrictEqual(guard.is({ _tag: 'B', b: 1 }), true)
+    })
+
+    it('should rejects invalid inputs', () => {
+      const guard = sum({
+        A: G.type({ a: G.string }),
+        B: G.type({ b: G.number })
+      })
+      assert.strictEqual(guard.is(undefined), false)
+      assert.strictEqual(guard.is({}), false)
+    })
+  })
 })

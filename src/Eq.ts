@@ -171,6 +171,26 @@ export function lazy<A>(f: () => Eq<A>): Eq<A> {
 /**
  * @since 3.0.0
  */
+export function sum<T extends string>(
+  tag: T
+): <A>(def: { [K in keyof A]: Eq<A[K]> }) => Eq<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
+  return def => {
+    return {
+      equals: (x, y) => {
+        const vx = x[tag]
+        const vy = y[tag]
+        if (vx !== vy) {
+          return false
+        }
+        return def[vx].equals(x as any, y as any)
+      }
+    }
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
 export const eq: typeof E.eq & S.Schemable<E.URI> = {
   ...E.eq,
   literals,
@@ -188,5 +208,6 @@ export const eq: typeof E.eq & S.Schemable<E.URI> = {
   array,
   tuple,
   intersection,
-  lazy
+  lazy,
+  sum
 }
