@@ -33,11 +33,7 @@ export interface Schemable<F extends URIS> {
   readonly number: Kind<F, number>
   readonly boolean: Kind<F, boolean>
   readonly Int: Kind<F, Int>
-  readonly refinement: <A, B extends A>(
-    schema: Kind<F, A>,
-    refinement: Refinement<A, B>,
-    expected: string
-  ) => Kind<F, B>
+  readonly refinement: <A, B extends A>(schema: Kind<F, A>, refinement: Refinement<A, B>) => Kind<F, B>
   readonly UnknownArray: Kind<F, Array<unknown>>
   readonly UnknownRecord: Kind<F, Record<string, unknown>>
   readonly type: <A>(schemas: { [K in keyof A]: Kind<F, A[K]> }) => Kind<F, A>

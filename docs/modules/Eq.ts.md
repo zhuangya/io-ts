@@ -212,7 +212,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(eq: Eq<A>, _refinement: Refinement<A, B>, _expected: string): Eq<B> { ... }
+export function refinement<A, B extends A>(eq: Eq<A>, _refinement: Refinement<A, B>): Eq<B> { ... }
 ```
 
 Added in v3.0.0

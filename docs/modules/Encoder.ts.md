@@ -235,11 +235,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(
-  _decoder: Encoder<A>,
-  _refinement: Refinement<A, B>,
-  _expected: string
-): Encoder<B> { ... }
+export function refinement<A, B extends A>(_encoder: Encoder<A>, _refinement: Refinement<A, B>): Encoder<B> { ... }
 ```
 
 Added in v3.0.0

@@ -90,7 +90,7 @@ export const Int: Eq<S.Int> = E.eqNumber
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(eq: Eq<A>, _refinement: Refinement<A, B>, _expected: string): Eq<B> {
+export function refinement<A, B extends A>(eq: Eq<A>, _refinement: Refinement<A, B>): Eq<B> {
   return eq
 }
 
