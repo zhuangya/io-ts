@@ -147,7 +147,7 @@ describe('Guard', () => {
     })
   })
 
-  describe('recursive', () => {
+  describe('lazy', () => {
     interface Rec {
       a: number
       b: Array<Rec>

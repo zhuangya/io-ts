@@ -4,7 +4,7 @@
  *
  * @since 3.0.0
  */
-import { identity } from 'fp-ts/lib/function'
+import { identity, Refinement } from 'fp-ts/lib/function'
 import * as S from './Schemable'
 import { Contravariant1 } from 'fp-ts/lib/Contravariant'
 import { pipeable } from 'fp-ts/lib/pipeable'
@@ -23,6 +23,27 @@ export interface Encoder<A> {
 }
 
 // -------------------------------------------------------------------------------------
+// constructors
+// -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export function literals<A extends S.Literal>(_as: NonEmptyArray<A>): Encoder<A> {
+  return id
+}
+
+/**
+ * @since 3.0.0
+ */
+export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, encoder: Encoder<B>): Encoder<A | B> {
+  const literals = G.literals(as)
+  return {
+    encode: ab => (literals.is(ab) ? ab : encoder.encode(ab))
+  }
+}
+
+// -------------------------------------------------------------------------------------
 // primitives
 // -------------------------------------------------------------------------------------
 
@@ -33,6 +54,36 @@ export const id: Encoder<unknown> = {
   encode: identity
 }
 
+/**
+ * @since 3.0.0
+ */
+export const string: Encoder<string> = id
+
+/**
+ * @since 3.0.0
+ */
+export const number: Encoder<number> = id
+
+/**
+ * @since 3.0.0
+ */
+export const boolean: Encoder<boolean> = id
+
+/**
+ * @since 3.0.0
+ */
+export const UnknownArray: Encoder<Array<unknown>> = id
+
+/**
+ * @since 3.0.0
+ */
+export const UnknownRecord: Encoder<Record<string, unknown>> = id
+
+/**
+ * @since 3.0.0
+ */
+export const Int: Encoder<S.Int> = id
+
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
@@ -40,11 +91,12 @@ export const id: Encoder<unknown> = {
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(a: NonEmptyArray<A>, encoder: Encoder<B>): Encoder<A | B> {
-  const literals = G.literals(a)
-  return {
-    encode: la => (literals.is(la) ? la : encoder.encode(la))
-  }
+export function refinement<A, B extends A>(
+  _decoder: Encoder<A>,
+  _refinement: Refinement<A, B>,
+  _expected: string
+): Encoder<B> {
+  return id
 }
 
 /**
@@ -186,15 +238,15 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   contramap: (fa, f) => ({
     encode: b => fa.encode(f(b))
   }),
-  literals: () => id,
+  literals,
   literalsOr,
-  string: id,
-  number: id,
-  boolean: id,
-  Int: id,
-  refinement: identity as S.Schemable<URI>['refinement'],
-  UnknownArray: id,
-  UnknownRecord: id,
+  string,
+  number,
+  boolean,
+  Int,
+  refinement: refinement as S.Schemable<URI>['refinement'],
+  UnknownArray,
+  UnknownRecord,
   type,
   partial,
   record,

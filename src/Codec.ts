@@ -113,7 +113,7 @@ export function withExpected<A>(codec: Codec<A>, expected: string): Codec<A> {
  * @since 3.0.0
  */
 export function refinement<A, B extends A>(codec: Codec<A>, refinement: Refinement<A, B>, expected: string): Codec<B> {
-  return make(D.refinement(codec, refinement, expected), codec)
+  return make(D.refinement(codec, refinement, expected), E.refinement(codec, refinement, expected))
 }
 
 /**
