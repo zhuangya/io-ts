@@ -29,12 +29,12 @@ function assert<A>(schema: Schema<A>): void {
 }
 
 describe('Arbitrary', () => {
-  it('literals', () => {
-    assert(make(S => S.literals(['a', null])))
+  it('constants', () => {
+    assert(make(S => S.constants(['a', null])))
   })
 
-  it('literalsOr', () => {
-    assert(make(S => S.literalsOr(['a', null], S.type({ a: S.string }))))
+  it('constantsOr', () => {
+    assert(make(S => S.constantsOr(['a', null], S.type({ a: S.string }))))
   })
 
   it('refinement', () => {
@@ -79,20 +79,25 @@ describe('Arbitrary', () => {
     assert(make(S => S.intersection([S.type({ a: S.string }), S.type({ b: S.number })])))
   })
 
-  it.skip('lazy', () => {
+  it('lazy', () => {
     interface Rec {
       a: number
       b: Array<Rec>
     }
-    const Rec: Schema<Rec> = make(S =>
-      S.lazy(() =>
-        S.type({
-          a: S.number,
-          b: S.array(Rec as any)
-        })
-      )
+    const end: Rec = { a: 0, b: [] }
+    const schema: Schema<Rec> = make(S =>
+      S.lazy((...args: Array<any>) => {
+        const iterations: number = args[0]
+        if (iterations && iterations < 2) {
+          return S.type({
+            a: S.number,
+            b: S.array(schema(S))
+          })
+        }
+        return S.constants([end])
+      })
     )
-    assert(Rec)
+    assert(schema)
   })
 
   it('sum', () => {

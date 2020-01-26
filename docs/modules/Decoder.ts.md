@@ -25,11 +25,11 @@ Added in v3.0.0
 - [number (constant)](#number-constant)
 - [string (constant)](#string-constant)
 - [array (function)](#array-function)
+- [constants (function)](#constants-function)
+- [constantsOr (function)](#constantsor-function)
 - [fromRefinement (function)](#fromrefinement-function)
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
-- [literals (function)](#literals-function)
-- [literalsOr (function)](#literalsor-function)
 - [mapLeft (function)](#mapleft-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
@@ -179,6 +179,26 @@ export function array<A>(decoder: Decoder<A>): Decoder<Array<A>> { ... }
 
 Added in v3.0.0
 
+# constants (function)
+
+**Signature**
+
+```ts
+export function constants<A>(as: NonEmptyArray<A>): Decoder<A> { ... }
+```
+
+Added in v3.0.0
+
+# constantsOr (function)
+
+**Signature**
+
+```ts
+export function constantsOr<A, B>(as: NonEmptyArray<A>, decoder: Decoder<B>): Decoder<A | B> { ... }
+```
+
+Added in v3.0.0
+
 # fromRefinement (function)
 
 **Signature**
@@ -212,26 +232,6 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(f: () => Decoder<A>): Decoder<A> { ... }
-```
-
-Added in v3.0.0
-
-# literals (function)
-
-**Signature**
-
-```ts
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Decoder<A> { ... }
-```
-
-Added in v3.0.0
-
-# literalsOr (function)
-
-**Signature**
-
-```ts
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, decoder: Decoder<B>): Decoder<A | B> { ... }
 ```
 
 Added in v3.0.0

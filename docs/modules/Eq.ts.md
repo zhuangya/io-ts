@@ -22,10 +22,10 @@ Added in v3.0.0
 - [record (constant)](#record-constant)
 - [string (constant)](#string-constant)
 - [type (constant)](#type-constant)
+- [constants (function)](#constants-function)
+- [constantsOr (function)](#constantsor-function)
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
-- [literals (function)](#literals-function)
-- [literalsOr (function)](#literalsor-function)
 - [partial (function)](#partial-function)
 - [refinement (function)](#refinement-function)
 - [sum (function)](#sum-function)
@@ -133,6 +133,26 @@ export const type: <A>(eqs: { [K in keyof A]: Eq<A[K]> }) => Eq<A> = ...
 
 Added in v3.0.0
 
+# constants (function)
+
+**Signature**
+
+```ts
+export function constants<A>(_as: NonEmptyArray<A>): Eq<A> { ... }
+```
+
+Added in v3.0.0
+
+# constantsOr (function)
+
+**Signature**
+
+```ts
+export function constantsOr<A, B>(as: NonEmptyArray<A>, eq: Eq<B>): Eq<A | B> { ... }
+```
+
+Added in v3.0.0
+
 # intersection (function)
 
 **Signature**
@@ -152,26 +172,6 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(f: () => Eq<A>): Eq<A> { ... }
-```
-
-Added in v3.0.0
-
-# literals (function)
-
-**Signature**
-
-```ts
-export function literals<A extends S.Literal>(_as: NonEmptyArray<A>): Eq<A> { ... }
-```
-
-Added in v3.0.0
-
-# literalsOr (function)
-
-**Signature**
-
-```ts
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, eq: Eq<B>): Eq<A | B> { ... }
 ```
 
 Added in v3.0.0

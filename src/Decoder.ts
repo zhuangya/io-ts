@@ -10,7 +10,7 @@ import { pipeable } from 'fp-ts/lib/pipeable'
 import * as DE from './DecodeError'
 import * as G from './Guard'
 import * as S from './Schemable'
-import { hasOwnProperty, isNonEmpty, showLiteral, memoize } from './util'
+import { hasOwnProperty, isNonEmpty, showConstant, memoize } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -44,15 +44,15 @@ export function fromRefinement<A>(refinement: Refinement<unknown, A>, expected: 
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Decoder<A> {
-  return fromRefinement(G.literals(as).is, as.map(showLiteral).join(' | '))
+export function constants<A>(as: NonEmptyArray<A>): Decoder<A> {
+  return fromRefinement(G.constants(as).is, as.map(showConstant).join(' | '))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, decoder: Decoder<B>): Decoder<A | B> {
-  return union([literals(as), decoder])
+export function constantsOr<A, B>(as: NonEmptyArray<A>, decoder: Decoder<B>): Decoder<A | B> {
+  return union([constants(as), decoder])
 }
 
 // -------------------------------------------------------------------------------------
@@ -427,8 +427,8 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
     decode: u => E.either.alt(fx.decode(u), () => fy().decode(u))
   }),
   zero: () => never,
-  literals,
-  literalsOr,
+  constants,
+  constantsOr,
   string,
   number,
   boolean,

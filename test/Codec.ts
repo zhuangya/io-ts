@@ -76,32 +76,32 @@ describe('Codec', () => {
     })
   })
 
-  describe('literals', () => {
+  describe('constants', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.literals(['a', null])
+        const codec = C.constants(['a', null])
         assert.deepStrictEqual(codec.decode('a'), E.right('a'))
         assert.deepStrictEqual(codec.decode(null), E.right(null))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.literals(['a', undefined])
+        const codec = C.constants(['a', undefined])
         assert.deepStrictEqual(codec.decode('b'), E.left(DE.leaf('"a" | undefined', 'b')))
       })
     })
   })
 
-  describe('literalsOr', () => {
+  describe('constantsOr', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.literalsOr([null, undefined], NumberFromString)
+        const codec = C.constantsOr([null, undefined], NumberFromString)
         assert.deepStrictEqual(codec.decode(null), E.right(null))
         assert.deepStrictEqual(codec.decode(undefined), E.right(undefined))
         assert.deepStrictEqual(codec.decode('2'), E.right(2))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.literalsOr([null, undefined], NumberFromString)
+        const codec = C.constantsOr([null, undefined], NumberFromString)
         assert.deepStrictEqual(
           codec.decode(2),
           E.left(DE.or('union', 2, [DE.leaf('null | undefined', 2), DE.leaf('NumberFromString', 2)]))
@@ -111,7 +111,7 @@ describe('Codec', () => {
 
     describe('encode', () => {
       it('should encode a value', () => {
-        const codec = C.literalsOr([null, undefined], NumberFromString)
+        const codec = C.constantsOr([null, undefined], NumberFromString)
         assert.deepStrictEqual(codec.encode(null), null)
         assert.deepStrictEqual(codec.encode(undefined), undefined)
         assert.deepStrictEqual(codec.encode(2), '2')

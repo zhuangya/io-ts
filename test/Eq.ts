@@ -3,15 +3,15 @@ import * as E from '../src/Eq'
 import { Eq } from 'fp-ts/lib/Eq'
 
 describe('Eq', () => {
-  it('literals', () => {
-    const eq = E.literals(['a', null])
+  it('constants', () => {
+    const eq = E.constants(['a', null])
     assert.deepStrictEqual(eq.equals('a', 'a'), true)
     assert.deepStrictEqual(eq.equals(null, null), true)
     assert.deepStrictEqual(eq.equals('a', null), false)
   })
 
-  it('literalsOr', () => {
-    const eq = E.literalsOr([undefined], E.string)
+  it('constantsOr', () => {
+    const eq = E.constantsOr([undefined], E.string)
     assert.deepStrictEqual(eq.equals('a', 'a'), true)
     assert.deepStrictEqual(eq.equals(undefined, undefined), true)
     assert.deepStrictEqual(eq.equals('a', 'b'), false)

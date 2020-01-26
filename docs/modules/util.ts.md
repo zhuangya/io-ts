@@ -17,7 +17,7 @@ Added in v3.0.0
 - [hasOwnProperty (function)](#hasownproperty-function)
 - [isNonEmpty (function)](#isnonempty-function)
 - [memoize (function)](#memoize-function)
-- [showLiteral (function)](#showliteral-function)
+- [showConstant (function)](#showconstant-function)
 
 ---
 
@@ -71,12 +71,12 @@ export function memoize<A>(f: () => A): () => A { ... }
 
 Added in v3.0.0
 
-# showLiteral (function)
+# showConstant (function)
 
 **Signature**
 
 ```ts
-export function showLiteral(a: S.Literal): string { ... }
+export function showConstant(a: unknown): string { ... }
 ```
 
 Added in v3.0.0

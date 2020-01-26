@@ -63,15 +63,15 @@ export function fromDecoder<A>(decoder: D.Decoder<A>): Codec<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Codec<A> {
-  return fromDecoder(D.literals(as))
+export function constants<A>(as: NonEmptyArray<A>): Codec<A> {
+  return fromDecoder(D.constants(as))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> {
-  return make(D.literalsOr(as, codec), E.literalsOr(as, codec))
+export function constantsOr<A, B>(as: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> {
+  return make(D.constantsOr(as, codec), E.constantsOr(as, codec))
 }
 
 // -------------------------------------------------------------------------------------
@@ -227,8 +227,8 @@ declare module 'fp-ts/lib/HKT' {
 export const codec: Invariant1<URI> & S.Schemable<URI> = {
   URI,
   imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
-  literals,
-  literalsOr,
+  constants,
+  constantsOr,
   string,
   number,
   boolean,

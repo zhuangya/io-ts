@@ -30,17 +30,17 @@ export interface Encoder<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(_as: NonEmptyArray<A>): Encoder<A> {
+export function constants<A>(_as: NonEmptyArray<A>): Encoder<A> {
   return id
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, encoder: Encoder<B>): Encoder<A | B> {
-  const literals = G.literals(as)
+export function constantsOr<A, B>(as: NonEmptyArray<A>, encoder: Encoder<B>): Encoder<A | B> {
+  const constants = G.constants(as)
   return {
-    encode: ab => (literals.is(ab) ? ab : encoder.encode(ab))
+    encode: ab => (constants.is(ab) ? ab : encoder.encode(ab))
   }
 }
 
@@ -247,8 +247,8 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   contramap: (fa, f) => ({
     encode: b => fa.encode(f(b))
   }),
-  literals,
-  literalsOr,
+  constants,
+  constantsOr,
   string,
   number,
   boolean,

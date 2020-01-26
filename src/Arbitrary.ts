@@ -14,15 +14,15 @@ import Arbitrary = fc.Arbitrary
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Arbitrary<A> {
+export function constants<A>(as: NonEmptyArray<A>): Arbitrary<A> {
   return fc.oneof(...as.map(a => fc.constant(a)))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, arb: Arbitrary<B>): Arbitrary<A | B> {
-  return fc.oneof<A | B>(literals(as), arb)
+export function constantsOr<A, B>(as: NonEmptyArray<A>, arb: Arbitrary<B>): Arbitrary<A | B> {
+  return fc.oneof<A | B>(constants(as), arb)
 }
 
 // -------------------------------------------------------------------------------------
@@ -134,12 +134,12 @@ export function intersection(arbs: Array<Arbitrary<any>>): Arbitrary<any> {
 /**
  * @since 3.0.0
  */
-/* istanbul ignore next */
-export function lazy<A>(f: (self: Arbitrary<A>) => Arbitrary<A>): Arbitrary<A> {
-  // TODO
-  return fc.letrec(tie => ({
-    out: f(tie('out') as any)
-  })).out
+export function lazy<A>(f: (iterations: number) => Arbitrary<A>): Arbitrary<A> {
+  let iterations = 0
+  const get = () => {
+    return f(iterations)
+  }
+  return fc.constant(null).chain(() => get())
 }
 
 /**
@@ -178,8 +178,8 @@ declare module 'fp-ts/lib/HKT' {
  */
 export const arbitrary: S.Schemable<URI> = {
   URI,
-  literals,
-  literalsOr,
+  constants,
+  constantsOr,
   string,
   number,
   boolean,

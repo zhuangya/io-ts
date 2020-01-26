@@ -3,7 +3,6 @@
  */
 import { Eq } from 'fp-ts/lib/Eq'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import * as S from './Schemable'
 
 /**
  * @since 3.0.0
@@ -22,7 +21,7 @@ export function hasOwnProperty<O extends Record<string, unknown>>(o: O, k: strin
 /**
  * @since 3.0.0
  */
-export function showLiteral(a: S.Literal): string {
+export function showConstant(a: unknown): string {
   return a === undefined ? 'undefined' : JSON.stringify(a)
 }
 
