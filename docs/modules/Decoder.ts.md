@@ -6,25 +6,6 @@ parent: Modules
 
 # Decoder overview
 
-FAQ
-
-- is it possible to provide a custom message?
-  - yes, use `withMessage`
-- how to change a field? (for example snake case to camel case)
-  - mapping
-
-Open problems:
-
-- is it possible to optimize unions (sum types)?
-
-Open questions:
-
-- is it possible to define a Semigroup for DecodeError?
-- is it possible to handle `enum`s?
-- is it possible to define a Decoder which fails with additional fields?
-- is it possible to get only the first error?
-- readonly?
-
 Added in v3.0.0
 
 ---
@@ -331,9 +312,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
-  decoders: { [K in keyof A]: Decoder<A[K]> }
-): Decoder<A[number]> { ... }
+export function union<A extends Array<unknown>>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<A[number]> { ... }
 ```
 
 Added in v3.0.0

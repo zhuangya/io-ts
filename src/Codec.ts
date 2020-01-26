@@ -6,6 +6,22 @@
  * - remove `brand` combinator
  * - rename `recursive` to `lazy`
  *
+ * FAQ
+ * - is it possible to provide a custom message?
+ *   - yes, use `withMessage`
+ * - how to change a field? (for example snake case to camel case)
+ *   - mapping
+ *
+ * Open problems:
+ * - is it possible to optimize unions (sum types)?
+ *
+ * Open questions:
+ * - is it possible to define a Semigroup for DecodeError?
+ * - is it possible to handle `enum`s?
+ * - is it possible to define a Decoder which fails with additional fields?
+ * - is it possible to get only the first error?
+ * - readonly?
+ *
  * TODO
  * - refactor DecodeError
  * - make expected optional

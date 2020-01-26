@@ -1,20 +1,4 @@
 /**
- * FAQ
- * - is it possible to provide a custom message?
- *   - yes, use `withMessage`
- * - how to change a field? (for example snake case to camel case)
- *   - mapping
- *
- * Open problems:
- * - is it possible to optimize unions (sum types)?
- *
- * Open questions:
- * - is it possible to define a Semigroup for DecodeError?
- * - is it possible to handle `enum`s?
- * - is it possible to define a Decoder which fails with additional fields?
- * - is it possible to get only the first error?
- * - readonly?
- *
  * @since 3.0.0
  */
 import { Alternative1 } from 'fp-ts/lib/Alternative'
@@ -392,21 +376,27 @@ export function sum<T extends string>(
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
-  decoders: { [K in keyof A]: Decoder<A[K]> }
-): Decoder<A[number]> {
+export function union<A extends Array<unknown>>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<A[number]> {
+  const len = decoders.length
+  if (len === 0) {
+    return never
+  }
   return {
     decode: u => {
-      const es: Array<DE.DecodeError> = []
-      for (let i = 0; i < decoders.length; i++) {
+      const e = decoders[0].decode(u)
+      if (E.isRight(e)) {
+        return e
+      }
+      const es: NonEmptyArray<DE.DecodeError> = [e.left]
+      for (let i = 1; i < len; i++) {
         const e = decoders[i].decode(u)
-        if (E.isLeft(e)) {
-          es.push(e.left)
-        } else {
+        if (E.isRight(e)) {
           return e
+        } else {
+          es.push(e.left)
         }
       }
-      return E.left(isNonEmpty(es) ? DE.or('union', u, es) : DE.leaf('empty union', u))
+      return E.left(DE.or('union', u, es))
     }
   }
 }
