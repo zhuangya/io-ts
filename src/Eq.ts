@@ -13,6 +13,7 @@ import * as R from 'fp-ts/lib/Record'
 // -------------------------------------------------------------------------------------
 import Eq = E.Eq
 import { Refinement } from 'fp-ts/lib/function'
+import { strict, always } from './util'
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -38,20 +39,6 @@ export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, eq: Eq<
 // -------------------------------------------------------------------------------------
 // primitives
 // -------------------------------------------------------------------------------------
-
-/**
- * @since 3.0.0
- */
-export const strict: Eq<unknown> = {
-  equals: E.strictEqual
-}
-
-/**
- * @since 3.0.0
- */
-export const always: Eq<unknown> = {
-  equals: () => true
-}
 
 /**
  * @since 3.0.0

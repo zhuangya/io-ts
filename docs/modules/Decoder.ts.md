@@ -30,6 +30,7 @@ Added in v3.0.0
 - [lazy (function)](#lazy-function)
 - [literals (function)](#literals-function)
 - [literalsOr (function)](#literalsor-function)
+- [mapLeft (function)](#mapleft-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
 - [refinement (function)](#refinement-function)
@@ -231,6 +232,16 @@ Added in v3.0.0
 
 ```ts
 export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, decoder: Decoder<B>): Decoder<A | B> { ... }
+```
+
+Added in v3.0.0
+
+# mapLeft (function)
+
+**Signature**
+
+```ts
+export function mapLeft<A>(decoder: Decoder<A>, f: (e: DE.DecodeError) => DE.DecodeError): Decoder<A> { ... }
 ```
 
 Added in v3.0.0

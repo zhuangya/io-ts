@@ -10,6 +10,7 @@ import { pipeable } from 'fp-ts/lib/pipeable'
 import * as DE from './DecodeError'
 import * as G from './Guard'
 import * as S from './Schemable'
+import { isNonEmpty, hasOwnProperty, showLiteral } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -40,15 +41,11 @@ export function fromRefinement<A>(refinement: Refinement<unknown, A>, expected: 
   }
 }
 
-function stringifyLiteral(a: S.Literal): string {
-  return a === undefined ? 'undefined' : JSON.stringify(a)
-}
-
 /**
  * @since 3.0.0
  */
 export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Decoder<A> {
-  return fromRefinement(G.literals(as).is, as.map(stringifyLiteral).join(' | '))
+  return fromRefinement(G.literals(as).is, as.map(showLiteral).join(' | '))
 }
 
 /**
@@ -106,7 +103,10 @@ export const Int: Decoder<S.Int> = refinement(number, (n: number): n is S.Int =>
 // combinators
 // -------------------------------------------------------------------------------------
 
-function mapLeft<A>(decoder: Decoder<A>, f: (e: DE.DecodeError) => DE.DecodeError): Decoder<A> {
+/**
+ * @since 3.0.0
+ */
+export function mapLeft<A>(decoder: Decoder<A>, f: (e: DE.DecodeError) => DE.DecodeError): Decoder<A> {
   return {
     decode: flow(decoder.decode, E.mapLeft(f))
   }
@@ -134,10 +134,6 @@ export function refinement<A, B extends A>(
       return E.isLeft(e) ? e : fromPredicate(e.right)
     }
   }
-}
-
-function isNonEmpty<A>(as: Array<A>): as is NonEmptyArray<A> {
-  return as.length > 0
 }
 
 /**
@@ -337,8 +333,6 @@ export function lazy<A>(f: () => Decoder<A>): Decoder<A> {
     decode: u => getMemoized().decode(u)
   }
 }
-
-const hasOwnProperty = <O>(o: O, k: string): k is keyof O & string => Object.prototype.hasOwnProperty.call(o, k)
 
 /**
  * @since 3.0.0

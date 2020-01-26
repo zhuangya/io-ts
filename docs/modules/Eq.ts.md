@@ -15,13 +15,11 @@ Added in v3.0.0
 - [Int (constant)](#int-constant)
 - [UnknownArray (constant)](#unknownarray-constant)
 - [UnknownRecord (constant)](#unknownrecord-constant)
-- [always (constant)](#always-constant)
 - [array (constant)](#array-constant)
 - [boolean (constant)](#boolean-constant)
 - [eq (constant)](#eq-constant)
 - [number (constant)](#number-constant)
 - [record (constant)](#record-constant)
-- [strict (constant)](#strict-constant)
 - [string (constant)](#string-constant)
 - [type (constant)](#type-constant)
 - [intersection (function)](#intersection-function)
@@ -61,16 +59,6 @@ Added in v3.0.0
 
 ```ts
 export const UnknownRecord: Eq<Record<string, unknown>> = ...
-```
-
-Added in v3.0.0
-
-# always (constant)
-
-**Signature**
-
-```ts
-export const always: Eq<unknown> = ...
 ```
 
 Added in v3.0.0
@@ -121,16 +109,6 @@ Added in v3.0.0
 
 ```ts
 export const record: <A>(eq: Eq<A>) => Eq<Record<string, A>> = ...
-```
-
-Added in v3.0.0
-
-# strict (constant)
-
-**Signature**
-
-```ts
-export const strict: Eq<unknown> = ...
 ```
 
 Added in v3.0.0

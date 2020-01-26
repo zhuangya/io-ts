@@ -4,6 +4,7 @@
 import * as S from './Schemable'
 import { Refinement } from 'fp-ts/lib/function'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import { hasOwnProperty } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -222,8 +223,6 @@ export function lazy<A>(f: () => Guard<A>): Guard<A> {
     is: (u: unknown): u is A => getMemoized().is(u)
   }
 }
-
-const hasOwnProperty = <O>(o: O, k: string): k is keyof O & string => Object.prototype.hasOwnProperty.call(o, k)
 
 /**
  * @since 3.0.0
