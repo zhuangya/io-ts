@@ -10,7 +10,7 @@ import { pipeable } from 'fp-ts/lib/pipeable'
 import * as DE from './DecodeError'
 import * as G from './Guard'
 import * as S from './Schemable'
-import { hasOwnProperty, isNonEmpty, showLiteral } from './util'
+import { hasOwnProperty, isNonEmpty, showLiteral, memoize } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -322,15 +322,9 @@ export function intersection(decoders: Array<Decoder<unknown>>): Decoder<unknown
  * @since 3.0.0
  */
 export function lazy<A>(f: () => Decoder<A>): Decoder<A> {
-  let memoized: Decoder<A>
-  function getMemoized(): Decoder<A> {
-    if (!memoized) {
-      memoized = f()
-    }
-    return memoized
-  }
+  const get = memoize(f)
   return {
-    decode: u => getMemoized().decode(u)
+    decode: u => get().decode(u)
   }
 }
 

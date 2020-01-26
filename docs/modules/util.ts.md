@@ -1,6 +1,6 @@
 ---
 title: util.ts
-nav_order: 12
+nav_order: 13
 parent: Modules
 ---
 
@@ -16,6 +16,7 @@ Added in v3.0.0
 - [strict (constant)](#strict-constant)
 - [hasOwnProperty (function)](#hasownproperty-function)
 - [isNonEmpty (function)](#isnonempty-function)
+- [memoize (function)](#memoize-function)
 - [showLiteral (function)](#showliteral-function)
 
 ---
@@ -56,6 +57,16 @@ Added in v3.0.0
 
 ```ts
 export function isNonEmpty<A>(as: Array<A>): as is NonEmptyArray<A> { ... }
+```
+
+Added in v3.0.0
+
+# memoize (function)
+
+**Signature**
+
+```ts
+export function memoize<A>(f: () => A): () => A { ... }
 ```
 
 Added in v3.0.0

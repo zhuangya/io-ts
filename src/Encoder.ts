@@ -10,6 +10,7 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { pipeable } from 'fp-ts/lib/pipeable'
 import * as G from './Guard'
 import * as S from './Schemable'
+import { memoize } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -194,15 +195,9 @@ export function intersection<A>(encoders: Array<Encoder<A>>): Encoder<A> {
  * @since 3.0.0
  */
 export function lazy<A>(f: () => Encoder<A>): Encoder<A> {
-  let memoized: Encoder<A>
-  function getMemoized(): Encoder<A> {
-    if (!memoized) {
-      memoized = f()
-    }
-    return memoized
-  }
+  const get = memoize(f)
   return {
-    encode: a => getMemoized().encode(a)
+    encode: a => get().encode(a)
   }
 }
 

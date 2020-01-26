@@ -1,8 +1,6 @@
 /**
  * Breaking changes:
  * - remove all optional `name` arguments (use `withName` instead)
- * - `refinement`
- *   - `name` is mandatory
  * - remove `brand` combinator
  * - rename `recursive` to `lazy`
  *
@@ -14,18 +12,14 @@
  *
  * Open problems:
  * - is it possible to optimize unions (sum types)?
+ * - is it possible to define lazy Arbitrary?
  *
  * Open questions:
  * - is it possible to define a Semigroup for DecodeError?
  * - is it possible to handle `enum`s?
- * - is it possible to define a Decoder which fails with additional fields?
+ * - is it possible to define a Decoder which fails on additional fields?
  * - is it possible to get only the first error?
  * - readonly?
- *
- * TODO
- * - refactor DecodeError
- * - make expected optional
- * - add composeIso?
  *
  * @since 3.0.0
  */

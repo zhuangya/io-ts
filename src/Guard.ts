@@ -4,7 +4,7 @@
 import { Refinement } from 'fp-ts/lib/function'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as S from './Schemable'
-import { hasOwnProperty } from './util'
+import { hasOwnProperty, memoize } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -212,15 +212,9 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
  * @since 3.0.0
  */
 export function lazy<A>(f: () => Guard<A>): Guard<A> {
-  let memoized: Guard<A>
-  function getMemoized(): Guard<A> {
-    if (!memoized) {
-      memoized = f()
-    }
-    return memoized
-  }
+  const get = memoize(f)
   return {
-    is: (u: unknown): u is A => getMemoized().is(u)
+    is: (u: unknown): u is A => get().is(u)
   }
 }
 

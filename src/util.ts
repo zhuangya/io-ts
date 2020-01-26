@@ -39,3 +39,18 @@ export const strict: Eq<unknown> = {
 export const always: Eq<unknown> = {
   equals: () => true
 }
+
+/**
+ * @since 3.0.0
+ */
+export function memoize<A>(f: () => A): () => A {
+  let cache: A
+  let isEmpty: boolean = true
+  return () => {
+    if (isEmpty) {
+      cache = f()
+      isEmpty = false
+    }
+    return cache
+  }
+}

@@ -8,7 +8,7 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as R from 'fp-ts/lib/Record'
 import * as G from './Guard'
 import * as S from './Schemable'
-import { always, strict } from './util'
+import { always, strict, memoize } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -143,15 +143,9 @@ export function intersection<A>(eqs: Array<Eq<A>>): Eq<A> {
  * @since 3.0.0
  */
 export function lazy<A>(f: () => Eq<A>): Eq<A> {
-  let memoized: Eq<A>
-  function getMemoized(): Eq<A> {
-    if (!memoized) {
-      memoized = f()
-    }
-    return memoized
-  }
+  const get = memoize(f)
   return {
-    equals: (x, y) => getMemoized().equals(x, y)
+    equals: (x, y) => get().equals(x, y)
   }
 }
 
