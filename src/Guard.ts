@@ -1,9 +1,9 @@
 /**
  * @since 3.0.0
  */
-import * as S from './Schemable'
 import { Refinement } from 'fp-ts/lib/function'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import * as S from './Schemable'
 import { hasOwnProperty } from './util'
 
 // -------------------------------------------------------------------------------------

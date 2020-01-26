@@ -1,9 +1,9 @@
 /**
  * @since 3.0.0
  */
+import { Eq } from 'fp-ts/lib/Eq'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as S from './Schemable'
-import { Eq } from 'fp-ts/lib/Eq'
 
 /**
  * @since 3.0.0

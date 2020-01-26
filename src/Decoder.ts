@@ -10,7 +10,7 @@ import { pipeable } from 'fp-ts/lib/pipeable'
 import * as DE from './DecodeError'
 import * as G from './Guard'
 import * as S from './Schemable'
-import { isNonEmpty, hasOwnProperty, showLiteral } from './util'
+import { hasOwnProperty, isNonEmpty, showLiteral } from './util'
 
 // -------------------------------------------------------------------------------------
 // model

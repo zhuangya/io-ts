@@ -4,12 +4,12 @@
  *
  * @since 3.0.0
  */
-import { identity, Refinement } from 'fp-ts/lib/function'
-import * as S from './Schemable'
 import { Contravariant1 } from 'fp-ts/lib/Contravariant'
+import { identity, Refinement } from 'fp-ts/lib/function'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { pipeable } from 'fp-ts/lib/pipeable'
 import * as G from './Guard'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model

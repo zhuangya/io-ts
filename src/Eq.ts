@@ -1,19 +1,19 @@
 /**
  * @since 3.0.0
  */
-import * as E from 'fp-ts/lib/Eq'
-import * as S from './Schemable'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import * as G from './Guard'
 import * as A from 'fp-ts/lib/Array'
+import * as E from 'fp-ts/lib/Eq'
+import { Refinement } from 'fp-ts/lib/function'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as R from 'fp-ts/lib/Record'
+import * as G from './Guard'
+import * as S from './Schemable'
+import { always, strict } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
 // -------------------------------------------------------------------------------------
 import Eq = E.Eq
-import { Refinement } from 'fp-ts/lib/function'
-import { strict, always } from './util'
 
 // -------------------------------------------------------------------------------------
 // constructors

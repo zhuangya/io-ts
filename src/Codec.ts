@@ -31,10 +31,10 @@
  */
 import { Refinement } from 'fp-ts/lib/function'
 import { Invariant1 } from 'fp-ts/lib/Invariant'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as D from './Decoder'
 import * as E from './Encoder'
 import * as S from './Schemable'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 
 // -------------------------------------------------------------------------------------
 // model

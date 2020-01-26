@@ -1,8 +1,8 @@
 /**
  * @since 3.0.0
  */
-import { Kind, URIS } from 'fp-ts/lib/HKT'
 import { Refinement } from 'fp-ts/lib/function'
+import { Kind, URIS } from 'fp-ts/lib/HKT'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 
 /**
