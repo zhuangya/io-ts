@@ -104,8 +104,8 @@ describe('Arbitrary', () => {
     assert(
       make(S =>
         S.sum('_tag')({
-          A: S.type({ a: S.string }),
-          B: S.type({ b: S.number })
+          A: S.type({ _tag: S.constants(['A']), a: S.string }),
+          B: S.type({ _tag: S.constants(['B']), b: S.number })
         })
       )
     )

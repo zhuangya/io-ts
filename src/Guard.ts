@@ -225,10 +225,10 @@ export function lazy<A>(f: () => Guard<A>): Guard<A> {
  */
 export function sum<T extends string>(
   tag: T
-): <A>(def: { [K in keyof A]: Guard<A[K]> }) => Guard<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
-  return <A>(def: { [K in keyof A]: Guard<A[K]> }) => {
+): <A>(def: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => Guard<A[keyof A]> {
+  return <A>(def: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => {
     return {
-      is: (u): u is { [K in keyof A]: { [F in T]: K } & A[K] }[keyof A] => {
+      is: (u): u is A[keyof A] => {
         if (!UnknownRecord.is(u)) {
           return false
         }

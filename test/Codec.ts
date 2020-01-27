@@ -382,8 +382,8 @@ describe('Codec', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
         const codec = sum({
-          A: C.type({ a: C.string }),
-          B: C.type({ b: C.number })
+          A: C.type({ _tag: C.constants(['A']), a: C.string }),
+          B: C.type({ _tag: C.constants(['B']), b: C.number })
         })
         assert.deepStrictEqual(codec.decode({ _tag: 'A', a: 'a' }), right({ _tag: 'A', a: 'a' }))
         assert.deepStrictEqual(codec.decode({ _tag: 'B', b: 1 }), right({ _tag: 'B', b: 1 }))
@@ -391,8 +391,8 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = sum({
-          A: C.type({ a: C.string }),
-          B: C.type({ b: C.number })
+          A: C.type({ _tag: C.constants(['A']), a: C.string }),
+          B: C.type({ _tag: C.constants(['B']), b: C.number })
         })
         assert.deepStrictEqual(codec.decode(null), left(DE.leaf('Record<string, unknown>', null)))
         assert.deepStrictEqual(
@@ -414,8 +414,8 @@ describe('Codec', () => {
     describe('encode', () => {
       it('should encode a value', () => {
         const codec = sum({
-          A: C.type({ a: C.string }),
-          B: C.type({ b: NumberFromString })
+          A: C.type({ _tag: C.constants(['A']), a: C.string }),
+          B: C.type({ _tag: C.constants(['B']), b: NumberFromString })
         })
         assert.deepStrictEqual(codec.encode({ _tag: 'A', a: 'a' }), { _tag: 'A', a: 'a' })
         assert.deepStrictEqual(codec.encode({ _tag: 'B', b: 1 }), { _tag: 'B', b: '1' })

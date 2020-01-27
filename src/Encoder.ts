@@ -206,15 +206,10 @@ export function lazy<A>(f: () => Encoder<A>): Encoder<A> {
  */
 export function sum<T extends string>(
   tag: T
-): <A>(def: { [K in keyof A]: Encoder<A[K]> }) => Encoder<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
-  return def => {
+): <A>(def: { [K in keyof A]: Encoder<A[K] & Record<T, K>> }) => Encoder<A[keyof A]> {
+  return (def: any) => {
     return {
-      encode: a => {
-        const v = a[tag]
-        const encoder = def[v]
-        const o: any = encoder.encode(a as any)
-        return { ...o, [tag]: a[tag] }
-      }
+      encode: (a: any) => def[a[tag]].encode(a)
     }
   }
 }

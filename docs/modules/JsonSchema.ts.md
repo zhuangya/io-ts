@@ -297,7 +297,7 @@ Added in v3.0.0
 ```ts
 export declare function sum<T extends string>(
   tag: T
-): <A>(def: { [K in keyof A]: JsonSchema<A[K]> }) => JsonSchema<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> { ... }
+): <A>(def: { [K in keyof A]: JsonSchema<A[K] & Record<T, K>> }) => JsonSchema<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0

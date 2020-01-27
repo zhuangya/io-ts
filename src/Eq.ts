@@ -151,18 +151,16 @@ export function lazy<A>(f: () => Eq<A>): Eq<A> {
 /**
  * @since 3.0.0
  */
-export function sum<T extends string>(
-  tag: T
-): <A>(def: { [K in keyof A]: Eq<A[K]> }) => Eq<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
-  return def => {
+export function sum<T extends string>(tag: T): <A>(def: { [K in keyof A]: Eq<A[K] & Record<T, K>> }) => Eq<A[keyof A]> {
+  return (def: any) => {
     return {
-      equals: (x, y) => {
+      equals: (x: any, y: any) => {
         const vx = x[tag]
         const vy = y[tag]
         if (vx !== vy) {
           return false
         }
-        return def[vx].equals(x as any, y as any)
+        return def[vx].equals(x, y)
       }
     }
   }

@@ -76,8 +76,8 @@ describe('Eq', () => {
   it('sum', () => {
     const sum = E.sum('_tag')
     const eq = sum({
-      A: E.type({ a: E.string }),
-      B: E.type({ b: E.number })
+      A: E.type({ _tag: E.constants(['A']), a: E.string }),
+      B: E.type({ _tag: E.constants(['B']), b: E.number })
     })
     assert.strictEqual(eq.equals({ _tag: 'A', a: 'a' }, { _tag: 'A', a: 'a' }), true)
     assert.strictEqual(eq.equals({ _tag: 'B', b: 1 }, { _tag: 'B', b: 1 }), true)
