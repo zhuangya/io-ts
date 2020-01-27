@@ -25,8 +25,8 @@ describe('Eq', () => {
     assert.deepStrictEqual(eq.equals(['a'], ['a', 'b']), false)
   })
 
-  it('refinement', () => {
-    const eq = E.refinement(E.string, (s): s is 'a' | 'b' => s === 'a' || s === 'b')
+  it('parse', () => {
+    const eq: Eq<'a' | 'b'> = E.parse(E.string)
     assert.deepStrictEqual(eq.equals('a', 'a'), true)
     assert.deepStrictEqual(eq.equals('b', 'b'), true)
     assert.deepStrictEqual(eq.equals('a', 'b'), false)

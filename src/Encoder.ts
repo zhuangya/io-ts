@@ -5,7 +5,7 @@
  * @since 3.0.0
  */
 import { Contravariant1 } from 'fp-ts/lib/Contravariant'
-import { identity, Refinement } from 'fp-ts/lib/function'
+import { identity } from 'fp-ts/lib/function'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { pipeable } from 'fp-ts/lib/pipeable'
 import * as G from './Guard'
@@ -92,8 +92,8 @@ export const Int: Encoder<S.Int> = id
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(_encoder: Encoder<A>, _refinement: Refinement<A, B>): Encoder<B> {
-  return id
+export function parse<A, B extends A>(encoder: Encoder<A>): Encoder<B> {
+  return encoder
 }
 
 /**
@@ -253,7 +253,7 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   number,
   boolean,
   Int,
-  refinement: refinement as S.Schemable<URI>['refinement'],
+  parse,
   UnknownArray,
   UnknownRecord,
   type,

@@ -1,9 +1,9 @@
 /**
  * @since 3.0.0
  */
-import { Refinement } from 'fp-ts/lib/function'
 import { Kind, URIS } from 'fp-ts/lib/HKT'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import { Either } from 'fp-ts/lib/Either'
 
 /**
  * @since 3.0.0
@@ -28,7 +28,7 @@ export interface Schemable<F extends URIS> {
   readonly number: Kind<F, number>
   readonly boolean: Kind<F, boolean>
   readonly Int: Kind<F, Int>
-  readonly refinement: <A, B extends A>(schema: Kind<F, A>, refinement: Refinement<A, B>) => Kind<F, B>
+  readonly parse: <A, B>(decoder: Kind<F, A>, parser: (a: A) => Either<string, B>) => Kind<F, A>
   readonly UnknownArray: Kind<F, Array<unknown>>
   readonly UnknownRecord: Kind<F, Record<string, unknown>>
   readonly type: <A>(schemas: { [K in keyof A]: Kind<F, A[K]> }) => Kind<F, A>

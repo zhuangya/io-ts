@@ -15,14 +15,14 @@ Breaking changes:
 FAQ
 
 - is it possible to provide a custom message?
-  - yes, use `withMessage`
+  - `parse`
+  - `withMessage` (already existing codecs)
 - how to change a field? (for example snake case to camel case)
-  - mapping
+  - `map`
 
 Open problems:
 
 - is it possible to optimize unions (sum types)?
-- is it possible to define lazy Arbitrary?
 
 Open questions:
 
@@ -54,9 +54,9 @@ Added in v3.0.0
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
 - [make (function)](#make-function)
+- [parse (function)](#parse-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
-- [refinement (function)](#refinement-function)
 - [sum (function)](#sum-function)
 - [tuple (function)](#tuple-function)
 - [type (function)](#type-function)
@@ -233,6 +233,16 @@ export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> 
 
 Added in v3.0.0
 
+# parse (function)
+
+**Signature**
+
+```ts
+export function parse<A, B extends A>(codec: Codec<A>, parser: (a: A) => Either<string, B>): Codec<B> { ... }
+```
+
+Added in v3.0.0
+
 # partial (function)
 
 **Signature**
@@ -249,16 +259,6 @@ Added in v3.0.0
 
 ```ts
 export function record<A>(codec: Codec<A>): Codec<Record<string, A>> { ... }
-```
-
-Added in v3.0.0
-
-# refinement (function)
-
-**Signature**
-
-```ts
-export function refinement<A, B extends A>(codec: Codec<A>, refinement: Refinement<A, B>, expected: string): Codec<B> { ... }
 ```
 
 Added in v3.0.0

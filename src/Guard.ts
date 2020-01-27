@@ -1,10 +1,10 @@
 /**
  * @since 3.0.0
  */
-import { Refinement } from 'fp-ts/lib/function'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as S from './Schemable'
 import { hasOwnProperty, memoize } from './util'
+import { Either } from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -85,7 +85,9 @@ export const UnknownRecord: Guard<Record<string, unknown>> = {
 /**
  * @since 3.0.0
  */
-export const Int: Guard<S.Int> = refinement(number, (n: number): n is S.Int => Number.isInteger(n))
+export const Int: Guard<S.Int> = {
+  is: (u: unknown): u is S.Int => number.is(u) && Number.isInteger(u)
+}
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -94,9 +96,9 @@ export const Int: Guard<S.Int> = refinement(number, (n: number): n is S.Int => N
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(guard: Guard<A>, refinement: Refinement<A, B>): Guard<B> {
+export function parse<A, B extends A>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> {
   return {
-    is: (u: unknown): u is B => guard.is(u) && refinement(u)
+    is: (u: unknown): u is B => guard.is(u) && parser(u)._tag === 'Right'
   }
 }
 
@@ -271,7 +273,7 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   number,
   boolean,
   Int,
-  refinement: refinement as S.Schemable<URI>['refinement'],
+  parse: parse as S.Schemable<URI>['parse'],
   UnknownArray,
   UnknownRecord,
   type,

@@ -26,8 +26,8 @@ Added in v3.0.0
 - [constantsOr (function)](#constantsor-function)
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
+- [parse (function)](#parse-function)
 - [partial (function)](#partial-function)
-- [refinement (function)](#refinement-function)
 - [sum (function)](#sum-function)
 - [tuple (function)](#tuple-function)
 
@@ -176,22 +176,22 @@ export function lazy<A>(f: () => Eq<A>): Eq<A> { ... }
 
 Added in v3.0.0
 
+# parse (function)
+
+**Signature**
+
+```ts
+export function parse<A, B extends A>(eq: Eq<A>): Eq<B> { ... }
+```
+
+Added in v3.0.0
+
 # partial (function)
 
 **Signature**
 
 ```ts
 export function partial<A>(eqs: { [K in keyof A]: Eq<A[K]> }): Eq<Partial<A>> { ... }
-```
-
-Added in v3.0.0
-
-# refinement (function)
-
-**Signature**
-
-```ts
-export function refinement<A, B extends A>(eq: Eq<A>, _refinement: Refinement<A, B>): Eq<B> { ... }
 ```
 
 Added in v3.0.0

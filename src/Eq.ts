@@ -3,7 +3,6 @@
  */
 import * as A from 'fp-ts/lib/Array'
 import * as E from 'fp-ts/lib/Eq'
-import { Refinement } from 'fp-ts/lib/function'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as R from 'fp-ts/lib/Record'
 import * as G from './Guard'
@@ -77,7 +76,7 @@ export const Int: Eq<S.Int> = E.eqNumber
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(eq: Eq<A>, _refinement: Refinement<A, B>): Eq<B> {
+export function parse<A, B extends A>(eq: Eq<A>): Eq<B> {
   return eq
 }
 
@@ -180,7 +179,7 @@ export const eq: typeof E.eq & S.Schemable<E.URI> = {
   number,
   boolean,
   Int,
-  refinement: refinement as S.Schemable<E.URI>['refinement'],
+  parse,
   UnknownArray,
   UnknownRecord,
   type,

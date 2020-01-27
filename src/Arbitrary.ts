@@ -2,10 +2,10 @@
  * @since 3.0.0
  */
 import * as fc from 'fast-check'
-import { Refinement } from 'fp-ts/lib/function'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as S from './Schemable'
 import Arbitrary = fc.Arbitrary
+import { Either } from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -66,8 +66,8 @@ export const Int: Arbitrary<S.Int> = fc.integer() as any
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(arb: Arbitrary<A>, refinement: Refinement<A, B>): Arbitrary<B> {
-  return arb.filter(refinement) as any
+export function parse<A, B extends A>(arb: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> {
+  return arb.filter(a => parser(a)._tag === 'Right') as any
 }
 
 /**
@@ -184,7 +184,7 @@ export const arbitrary: S.Schemable<URI> = {
   number,
   boolean,
   Int,
-  refinement: refinement as S.Schemable<URI>['refinement'],
+  parse: parse as S.Schemable<URI>['parse'],
   UnknownArray,
   UnknownRecord,
   type,

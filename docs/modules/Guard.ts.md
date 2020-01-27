@@ -27,9 +27,9 @@ Added in v3.0.0
 - [constantsOr (function)](#constantsor-function)
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
+- [parse (function)](#parse-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
-- [refinement (function)](#refinement-function)
 - [sum (function)](#sum-function)
 - [tuple (function)](#tuple-function)
 - [type (function)](#type-function)
@@ -194,6 +194,16 @@ export function lazy<A>(f: () => Guard<A>): Guard<A> { ... }
 
 Added in v3.0.0
 
+# parse (function)
+
+**Signature**
+
+```ts
+export function parse<A, B extends A>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> { ... }
+```
+
+Added in v3.0.0
+
 # partial (function)
 
 **Signature**
@@ -210,16 +220,6 @@ Added in v3.0.0
 
 ```ts
 export function record<A>(guard: Guard<A>): Guard<Record<string, A>> { ... }
-```
-
-Added in v3.0.0
-
-# refinement (function)
-
-**Signature**
-
-```ts
-export function refinement<A, B extends A>(guard: Guard<A>, refinement: Refinement<A, B>): Guard<B> { ... }
 ```
 
 Added in v3.0.0

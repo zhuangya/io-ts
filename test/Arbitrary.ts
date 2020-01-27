@@ -5,7 +5,7 @@ import * as E from '../src/Eq'
 import * as G from '../src/Guard'
 import { URIS, Kind } from 'fp-ts/lib/HKT'
 import * as S from '../src/Schemable'
-import { isRight } from 'fp-ts/lib/Either'
+import { isRight, right, left } from 'fp-ts/lib/Either'
 
 interface Schema<A> {
   <S extends URIS>(S: S.Schemable<S>): Kind<S, A>
@@ -37,8 +37,8 @@ describe('Arbitrary', () => {
     assert(make(S => S.constantsOr(['a', null], S.type({ a: S.string }))))
   })
 
-  it('refinement', () => {
-    assert(make(S => S.refinement(S.number, (n): n is number => n > 0)))
+  it('parse', () => {
+    assert(make(S => S.parse(S.number, n => (n > 0 ? right(n) : left('Positive')))))
   })
 
   it('type', () => {

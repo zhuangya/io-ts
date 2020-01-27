@@ -27,13 +27,13 @@ Added in v3.0.0
 - [array (function)](#array-function)
 - [constants (function)](#constants-function)
 - [constantsOr (function)](#constantsor-function)
-- [fromRefinement (function)](#fromrefinement-function)
+- [fromGuard (function)](#fromguard-function)
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
 - [mapLeft (function)](#mapleft-function)
+- [parse (function)](#parse-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
-- [refinement (function)](#refinement-function)
 - [sum (function)](#sum-function)
 - [tuple (function)](#tuple-function)
 - [type (function)](#type-function)
@@ -199,12 +199,12 @@ export function constantsOr<A, B>(as: NonEmptyArray<A>, decoder: Decoder<B>): De
 
 Added in v3.0.0
 
-# fromRefinement (function)
+# fromGuard (function)
 
 **Signature**
 
 ```ts
-export function fromRefinement<A>(refinement: Refinement<unknown, A>, expected: string): Decoder<A> { ... }
+export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -246,6 +246,16 @@ export function mapLeft<A>(decoder: Decoder<A>, f: (e: DE.DecodeError) => DE.Dec
 
 Added in v3.0.0
 
+# parse (function)
+
+**Signature**
+
+```ts
+export function parse<A, B>(decoder: Decoder<A>, parser: (a: A) => E.Either<string, B>): Decoder<B> { ... }
+```
+
+Added in v3.0.0
+
 # partial (function)
 
 **Signature**
@@ -262,20 +272,6 @@ Added in v3.0.0
 
 ```ts
 export function record<A>(decoder: Decoder<A>): Decoder<Record<string, A>> { ... }
-```
-
-Added in v3.0.0
-
-# refinement (function)
-
-**Signature**
-
-```ts
-export function refinement<A, B extends A>(
-  decoder: Decoder<A>,
-  refinement: Refinement<A, B>,
-  expected: string
-): Decoder<B> { ... }
 ```
 
 Added in v3.0.0

@@ -4,7 +4,7 @@
 import { Alternative1 } from 'fp-ts/lib/Alternative'
 import { Applicative1 } from 'fp-ts/lib/Applicative'
 import * as E from 'fp-ts/lib/Either'
-import { flow, Refinement } from 'fp-ts/lib/function'
+import { flow } from 'fp-ts/lib/function'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { pipeable } from 'fp-ts/lib/pipeable'
 import * as DE from './DecodeError'
@@ -35,9 +35,9 @@ export type TypeOf<D> = D extends Decoder<infer A> ? A : never
 /**
  * @since 3.0.0
  */
-export function fromRefinement<A>(refinement: Refinement<unknown, A>, expected: string): Decoder<A> {
+export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
   return {
-    decode: E.fromPredicate(refinement, u => DE.leaf(expected, u))
+    decode: E.fromPredicate(guard.is, u => DE.leaf(expected, u))
   }
 }
 
@@ -45,7 +45,7 @@ export function fromRefinement<A>(refinement: Refinement<unknown, A>, expected: 
  * @since 3.0.0
  */
 export function constants<A>(as: NonEmptyArray<A>): Decoder<A> {
-  return fromRefinement(G.constants(as).is, as.map(showConstant).join(' | '))
+  return fromGuard(G.constants(as), as.map(showConstant).join(' | '))
 }
 
 /**
@@ -69,35 +69,32 @@ export const never: Decoder<never> = {
 /**
  * @since 3.0.0
  */
-export const string: Decoder<string> = fromRefinement(G.string.is, 'string')
+export const string: Decoder<string> = fromGuard(G.string, 'string')
 
 /**
  * @since 3.0.0
  */
-export const number: Decoder<number> = fromRefinement(G.number.is, 'number')
+export const number: Decoder<number> = fromGuard(G.number, 'number')
 
 /**
  * @since 3.0.0
  */
-export const boolean: Decoder<boolean> = fromRefinement(G.boolean.is, 'boolean')
+export const boolean: Decoder<boolean> = fromGuard(G.boolean, 'boolean')
 
 /**
  * @since 3.0.0
  */
-export const UnknownArray: Decoder<Array<unknown>> = fromRefinement(G.UnknownArray.is, 'Array<unknown>')
+export const UnknownArray: Decoder<Array<unknown>> = fromGuard(G.UnknownArray, 'Array<unknown>')
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: Decoder<Record<string, unknown>> = fromRefinement(
-  G.UnknownRecord.is,
-  'Record<string, unknown>'
-)
+export const UnknownRecord: Decoder<Record<string, unknown>> = fromGuard(G.UnknownRecord, 'Record<string, unknown>')
 
 /**
  * @since 3.0.0
  */
-export const Int: Decoder<S.Int> = refinement(number, (n: number): n is S.Int => Number.isInteger(n), 'Int')
+export const Int: Decoder<S.Int> = fromGuard(G.Int, 'Int')
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -122,16 +119,18 @@ export function withExpected<A>(decoder: Decoder<A>, expected: string): Decoder<
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(
-  decoder: Decoder<A>,
-  refinement: Refinement<A, B>,
-  expected: string
-): Decoder<B> {
-  const fromPredicate = E.fromPredicate(refinement, a => DE.leaf(expected, a))
+export function parse<A, B>(decoder: Decoder<A>, parser: (a: A) => E.Either<string, B>): Decoder<B> {
   return {
     decode: u => {
       const e = decoder.decode(u)
-      return E.isLeft(e) ? e : fromPredicate(e.right)
+      if (E.isLeft(e)) {
+        return e
+      }
+      const pe = parser(e.right)
+      if (E.isLeft(pe)) {
+        return E.left(DE.leaf(pe.left, u))
+      }
+      return pe
     }
   }
 }
@@ -433,7 +432,7 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
   number,
   boolean,
   Int,
-  refinement: refinement as S.Schemable<URI>['refinement'],
+  parse: parse as S.Schemable<URI>['parse'],
   UnknownArray,
   UnknownRecord,
   type,

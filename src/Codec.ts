@@ -6,13 +6,13 @@
  *
  * FAQ
  * - is it possible to provide a custom message?
- *   - yes, use `withMessage`
+ *   - `parse`
+ *   - `withMessage` (already existing codecs)
  * - how to change a field? (for example snake case to camel case)
- *   - mapping
+ *   - `map`
  *
  * Open problems:
  * - is it possible to optimize unions (sum types)?
- * - is it possible to define lazy Arbitrary?
  *
  * Open questions:
  * - is it possible to define a Semigroup for DecodeError?
@@ -23,12 +23,12 @@
  *
  * @since 3.0.0
  */
-import { Refinement } from 'fp-ts/lib/function'
 import { Invariant1 } from 'fp-ts/lib/Invariant'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as D from './Decoder'
 import * as E from './Encoder'
 import * as S from './Schemable'
+import { Either } from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -115,8 +115,8 @@ export function withExpected<A>(codec: Codec<A>, expected: string): Codec<A> {
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(codec: Codec<A>, refinement: Refinement<A, B>, expected: string): Codec<B> {
-  return make(D.refinement(codec, refinement, expected), E.refinement(codec, refinement))
+export function parse<A, B extends A>(codec: Codec<A>, parser: (a: A) => Either<string, B>): Codec<B> {
+  return make(D.parse(codec, parser), E.parse(codec))
 }
 
 /**
@@ -226,7 +226,7 @@ export const codec: Invariant1<URI> & S.Schemable<URI> = {
   number,
   boolean,
   Int,
-  refinement: refinement as S.Schemable<URI>['refinement'],
+  parse: parse as S.Schemable<URI>['parse'],
   UnknownArray,
   UnknownRecord,
   type,
