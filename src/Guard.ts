@@ -265,7 +265,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const guard: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
+export const guard: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
   constants,
   constantsOr,
@@ -281,8 +281,8 @@ export const guard: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   array,
   tuple,
   intersection,
-  lazy,
   sum,
+  lazy,
   parse,
   union
 }

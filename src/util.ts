@@ -14,7 +14,7 @@ export function isNonEmpty<A>(as: Array<A>): as is NonEmptyArray<A> {
 /**
  * @since 3.0.0
  */
-export function hasOwnProperty<O extends Record<string, unknown>>(o: O, k: string): k is keyof O & string {
+export function hasOwnProperty<O extends object>(o: O, k: string): k is keyof O & string {
   return Object.prototype.hasOwnProperty.call(o, k)
 }
 

@@ -14,6 +14,7 @@ Added in v3.0.0
 
 - [IntBrand (interface)](#intbrand-interface)
 - [Schemable (interface)](#schemable-interface)
+- [WithLazy (interface)](#withlazy-interface)
 - [WithParse (interface)](#withparse-interface)
 - [WithUnion (interface)](#withunion-interface)
 - [Int (type alias)](#int-type-alias)
@@ -64,10 +65,21 @@ export interface Schemable<F extends URIS> {
     <A, B, C>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>]): Kind<F, A & B & C>
     <A, B>(schemas: [Kind<F, A>, Kind<F, B>]): Kind<F, A & B>
   }
-  readonly lazy: <A>(f: () => Kind<F, A>) => Kind<F, A>
   readonly sum: <T extends string>(
     tag: T
   ) => <A>(schemas: { [K in keyof A]: Kind<F, A[K] & Record<T, K>> }) => Kind<F, A[keyof A]>
+}
+```
+
+Added in v3.0.0
+
+# WithLazy (interface)
+
+**Signature**
+
+```ts
+export interface WithLazy<F extends URIS> {
+  readonly lazy: <A>(f: () => Kind<F, A>) => Kind<F, A>
 }
 ```
 

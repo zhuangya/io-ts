@@ -22,7 +22,7 @@
  * - readonly?
  *
  * Schemas:
- * - S.Schemable<URI>
+ * - S.Schemable<URI> & S.WithLazy<URI>
  *   - Codec
  *   - Encoder
  *   - Eq
@@ -30,6 +30,7 @@
  *   - JsonSchema
  * - S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI>
  *   - Arbitrary
+ * - S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI>
  *   - Decoder
  *   - Guard
  *
@@ -221,7 +222,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const codec: Invariant1<URI> & S.Schemable<URI> = {
+export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = {
   URI,
   imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
   constants,
@@ -238,6 +239,6 @@ export const codec: Invariant1<URI> & S.Schemable<URI> = {
   array,
   tuple,
   intersection,
-  lazy,
-  sum
+  sum,
+  lazy
 }

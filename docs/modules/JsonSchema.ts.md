@@ -26,18 +26,11 @@ Added in v3.0.0
 - [constants (function)](#constants-function)
 - [constantsOr (function)](#constantsor-function)
 - [intersection (function)](#intersection-function)
-- [intersection (function)](#intersection-function-1)
-- [intersection (function)](#intersection-function-2)
-- [intersection (function)](#intersection-function-3)
-- [lazy (function)](#lazy-function)
+- [make (function)](#make-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
 - [sum (function)](#sum-function)
 - [tuple (function)](#tuple-function)
-- [tuple (function)](#tuple-function-1)
-- [tuple (function)](#tuple-function-2)
-- [tuple (function)](#tuple-function-3)
-- [tuple (function)](#tuple-function-4)
 - [type (function)](#type-function)
 - [union (function)](#union-function)
 
@@ -148,7 +141,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export declare function array<A>(jsonSchema: JsonSchema<A>): JsonSchema<Array<A>> { ... }
+export function array<A>(jsonSchema: JsonSchema<A>): JsonSchema<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -158,7 +151,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export declare function constants<A>(as: NonEmptyArray<A>): JsonSchema<A> { ... }
+export function constants<A>(as: NonEmptyArray<A>): JsonSchema<A> { ... }
 ```
 
 Added in v3.0.0
@@ -168,7 +161,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export declare function constantsOr<A, B>(as: NonEmptyArray<A>, jsonSchema: JsonSchema<B>): JsonSchema<A | B> { ... }
+export function constantsOr<A, B>(as: NonEmptyArray<A>, jsonSchema: JsonSchema<B>): JsonSchema<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -178,83 +171,24 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export declare function intersection<A, B, C, D, E>(
+export function intersection<A, B, C, D, E>(
   jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
 ): JsonSchema<A & B & C & D & E>
-export declare function intersection<A, B, C, D>(
+export function intersection<A, B, C, D>(
   jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
 ): JsonSchema<A & B & C & D>
-export declare function intersection<A, B, C>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]
-): JsonSchema<A & B & C>
-export declare function intersection<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B> { ... }
+export function intersection<A, B, C>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]): JsonSchema<A & B & C>
+export function intersection<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B> { ... }
 ```
 
 Added in v3.0.0
 
-# intersection (function)
+# make (function)
 
 **Signature**
 
 ```ts
-export declare function intersection<A, B, C, D, E>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
-): JsonSchema<A & B & C & D & E>
-export declare function intersection<A, B, C, D>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
-): JsonSchema<A & B & C & D>
-export declare function intersection<A, B, C>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]
-): JsonSchema<A & B & C>
-export declare function intersection<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B> { ... }
-```
-
-Added in v3.0.0
-
-# intersection (function)
-
-**Signature**
-
-```ts
-export declare function intersection<A, B, C, D, E>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
-): JsonSchema<A & B & C & D & E>
-export declare function intersection<A, B, C, D>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
-): JsonSchema<A & B & C & D>
-export declare function intersection<A, B, C>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]
-): JsonSchema<A & B & C>
-export declare function intersection<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B> { ... }
-```
-
-Added in v3.0.0
-
-# intersection (function)
-
-**Signature**
-
-```ts
-export declare function intersection<A, B, C, D, E>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
-): JsonSchema<A & B & C & D & E>
-export declare function intersection<A, B, C, D>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
-): JsonSchema<A & B & C & D>
-export declare function intersection<A, B, C>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]
-): JsonSchema<A & B & C>
-export declare function intersection<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B> { ... }
-```
-
-Added in v3.0.0
-
-# lazy (function)
-
-**Signature**
-
-```ts
-export declare function lazy<A>(f: () => JsonSchema<A>): JsonSchema<A> { ... }
+export function make<A>(u: unknown): JsonSchema<A> { ... }
 ```
 
 Added in v3.0.0
@@ -264,7 +198,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export declare function partial<A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<Partial<A>> { ... }
+export function partial<A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -274,7 +208,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export declare function record<A>(jsonSchema: JsonSchema<A>): JsonSchema<Record<string, A>> { ... }
+export function record<A>(jsonSchema: JsonSchema<A>): JsonSchema<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -284,8 +218,8 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export declare function sum<T extends string>(
-  tag: T
+export function sum<T extends string>(
+  _tag: T
 ): <A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K] & Record<T, K>> }) => JsonSchema<A[keyof A]> { ... }
 ```
 
@@ -296,97 +230,15 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export declare function tuple<A, B, C, D, E>(
+export function tuple<A, B, C, D, E>(
   jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
 ): JsonSchema<[A, B, C, D, E]>
-export declare function tuple<A, B, C, D>(
+export function tuple<A, B, C, D>(
   jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
 ): JsonSchema<[A, B, C, D]>
-export declare function tuple<A, B, C>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]
-): JsonSchema<[A, B, C]>
-export declare function tuple<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<[A, B]>
-export declare function tuple<A>(jsonSchemas: [JsonSchema<A>]): JsonSchema<[A]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple (function)
-
-**Signature**
-
-```ts
-export declare function tuple<A, B, C, D, E>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
-): JsonSchema<[A, B, C, D, E]>
-export declare function tuple<A, B, C, D>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
-): JsonSchema<[A, B, C, D]>
-export declare function tuple<A, B, C>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]
-): JsonSchema<[A, B, C]>
-export declare function tuple<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<[A, B]>
-export declare function tuple<A>(jsonSchemas: [JsonSchema<A>]): JsonSchema<[A]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple (function)
-
-**Signature**
-
-```ts
-export declare function tuple<A, B, C, D, E>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
-): JsonSchema<[A, B, C, D, E]>
-export declare function tuple<A, B, C, D>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
-): JsonSchema<[A, B, C, D]>
-export declare function tuple<A, B, C>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]
-): JsonSchema<[A, B, C]>
-export declare function tuple<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<[A, B]>
-export declare function tuple<A>(jsonSchemas: [JsonSchema<A>]): JsonSchema<[A]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple (function)
-
-**Signature**
-
-```ts
-export declare function tuple<A, B, C, D, E>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
-): JsonSchema<[A, B, C, D, E]>
-export declare function tuple<A, B, C, D>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
-): JsonSchema<[A, B, C, D]>
-export declare function tuple<A, B, C>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]
-): JsonSchema<[A, B, C]>
-export declare function tuple<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<[A, B]>
-export declare function tuple<A>(jsonSchemas: [JsonSchema<A>]): JsonSchema<[A]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple (function)
-
-**Signature**
-
-```ts
-export declare function tuple<A, B, C, D, E>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
-): JsonSchema<[A, B, C, D, E]>
-export declare function tuple<A, B, C, D>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
-): JsonSchema<[A, B, C, D]>
-export declare function tuple<A, B, C>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]
-): JsonSchema<[A, B, C]>
-export declare function tuple<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<[A, B]>
-export declare function tuple<A>(jsonSchemas: [JsonSchema<A>]): JsonSchema<[A]> { ... }
+export function tuple<A, B, C>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]): JsonSchema<[A, B, C]>
+export function tuple<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<[A, B]>
+export function tuple<A>(jsonSchemas: [JsonSchema<A>]): JsonSchema<[A]> { ... }
 ```
 
 Added in v3.0.0
@@ -396,7 +248,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export declare function type<A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<A> { ... }
+export function type<A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<A> { ... }
 ```
 
 Added in v3.0.0
@@ -406,7 +258,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export declare function union<A extends Array<unknown>>(
+export function union<A extends [unknown, unknown, ...Array<unknown>]>(
   jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }
 ): JsonSchema<A[number]> { ... }
 ```

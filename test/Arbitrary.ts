@@ -3,9 +3,17 @@ import * as A from '../src/Arbitrary'
 import * as D from '../src/Decoder'
 import * as E from '../src/Eq'
 import * as G from '../src/Guard'
+import * as J from '../src/JsonSchema'
 import { URIS, Kind } from 'fp-ts/lib/HKT'
 import * as S from '../src/Schemable'
 import { isRight, right, left } from 'fp-ts/lib/Either'
+import * as Ajv from 'ajv'
+
+const ajv = new Ajv()
+
+function run<A>(jsonSchema: J.JsonSchema<A>, a: A): boolean {
+  return ajv.compile(jsonSchema)(a) as any
+}
 
 interface Schema<A> {
   <S extends URIS>(S: S.Schemable<S>): Kind<S, A>
@@ -20,8 +28,8 @@ function assert<A>(schema: Schema<A>): void {
   const decoder = schema(D.decoder)
   const eq = schema(E.eq)
   const guard = schema(G.guard)
-  // TODO JsonSchema
-  fc.assert(fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(decoder.decode(a))))
+  const jsonSchema = schema(J.jsonSchema)
+  fc.assert(fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(decoder.decode(a)) && run(jsonSchema, a)))
 }
 
 interface SchemaWithUnion<A> {
@@ -36,8 +44,8 @@ function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
   const arb = schema(A.arbitrary)
   const decoder = schema(D.decoder)
   const guard = schema(G.guard)
-  // TODO JsonSchema
-  fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a))))
+  const jsonSchema = schema(J.jsonSchema)
+  fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a)) && run(jsonSchema, a)))
 }
 
 interface SchemaWithParse<A> {
@@ -56,6 +64,26 @@ function assertWithParse<A>(schema: SchemaWithParse<A>): void {
 }
 
 describe('Arbitrary', () => {
+  it('string', () => {
+    assert(make(S => S.string))
+  })
+
+  it('number', () => {
+    assert(make(S => S.number))
+  })
+
+  it('boolean', () => {
+    assert(make(S => S.boolean))
+  })
+
+  it('UnknownArray', () => {
+    assert(make(S => S.UnknownArray))
+  })
+
+  it('UnknownRecord', () => {
+    assert(make(S => S.UnknownRecord))
+  })
+
   it('constants', () => {
     assert(make(S => S.constants(['a', null])))
   })
@@ -100,27 +128,6 @@ describe('Arbitrary', () => {
 
   it('intersection', () => {
     assert(make(S => S.intersection([S.type({ a: S.string }), S.type({ b: S.number })])))
-  })
-
-  it('lazy', () => {
-    interface Rec {
-      a: number
-      b: Array<Rec>
-    }
-    const end: Rec = { a: 0, b: [] }
-    const schema: Schema<Rec> = make(S =>
-      S.lazy((...args: Array<any>) => {
-        const iterations: number = args[0]
-        if (iterations && iterations < 10) {
-          return S.type({
-            a: S.number,
-            b: S.array(schema(S))
-          })
-        }
-        return S.constants([end])
-      })
-    )
-    assert(schema)
   })
 
   it('sum', () => {

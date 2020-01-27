@@ -46,7 +46,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function hasOwnProperty<O extends Record<string, unknown>>(o: O, k: string): k is keyof O & string { ... }
+export function hasOwnProperty<O extends object>(o: O, k: string): k is keyof O & string { ... }
 ```
 
 Added in v3.0.0

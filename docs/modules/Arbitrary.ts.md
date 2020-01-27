@@ -25,7 +25,6 @@ Added in v3.0.0
 - [constants (function)](#constants-function)
 - [constantsOr (function)](#constantsor-function)
 - [intersection (function)](#intersection-function)
-- [lazy (function)](#lazy-function)
 - [parse (function)](#parse-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
@@ -171,16 +170,6 @@ export function intersection<A, B, C, D>(
 ): Arbitrary<A & B & C & D>
 export function intersection<A, B, C>(arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>]): Arbitrary<A & B & C>
 export function intersection<A, B>(arbs: [Arbitrary<A>, Arbitrary<B>]): Arbitrary<A & B> { ... }
-```
-
-Added in v3.0.0
-
-# lazy (function)
-
-**Signature**
-
-```ts
-export function lazy<A>(f: (iterations: number) => Arbitrary<A>): Arbitrary<A> { ... }
 ```
 
 Added in v3.0.0

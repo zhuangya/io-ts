@@ -34,7 +34,7 @@ Open questions:
 
 Schemas:
 
-- S.Schemable<URI>
+- S.Schemable<URI> & S.WithLazy<URI>
   - Codec
   - Encoder
   - Eq
@@ -42,6 +42,7 @@ Schemas:
   - JsonSchema
 - S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI>
   - Arbitrary
+- S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI>
   - Decoder
   - Guard
 
@@ -151,7 +152,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const codec: Invariant1<URI> & S.Schemable<URI> = ...
+export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = ...
 ```
 
 Added in v3.0.0

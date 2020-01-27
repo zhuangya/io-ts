@@ -408,7 +408,12 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
+export const decoder: Applicative1<URI> &
+  Alternative1<URI> &
+  S.Schemable<URI> &
+  S.WithLazy<URI> &
+  S.WithParse<URI> &
+  S.WithUnion<URI> = {
   URI,
   map: (fa, f) => ({
     decode: u => E.either.map(fa.decode(u), f)
@@ -437,8 +442,8 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
   array,
   tuple,
   intersection,
-  lazy,
   sum,
+  lazy,
   parse,
   union
 }

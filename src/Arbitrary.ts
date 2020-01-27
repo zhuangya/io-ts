@@ -134,17 +134,6 @@ export function intersection(arbs: Array<Arbitrary<any>>): Arbitrary<any> {
 /**
  * @since 3.0.0
  */
-export function lazy<A>(f: (iterations: number) => Arbitrary<A>): Arbitrary<A> {
-  let iterations = 0
-  const get = () => {
-    return f(iterations)
-  }
-  return fc.constant(null).chain(() => get())
-}
-
-/**
- * @since 3.0.0
- */
 export function sum<T extends string>(
   tag: T
 ): <A>(arbs: { [K in keyof A]: Arbitrary<A[K]> }) => Arbitrary<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
@@ -201,7 +190,6 @@ export const arbitrary: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> =
   array,
   tuple,
   intersection,
-  lazy,
   sum,
   parse,
   union
