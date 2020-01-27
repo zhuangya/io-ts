@@ -134,7 +134,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = ...
+export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -319,7 +319,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends Array<unknown>>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<A[number]> { ... }
+export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+  decoders: { [K in keyof A]: Decoder<A[K]> }
+): Decoder<A[number]> { ... }
 ```
 
 Added in v3.0.0

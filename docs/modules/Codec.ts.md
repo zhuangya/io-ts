@@ -32,6 +32,19 @@ Open questions:
 - is it possible to get only the first error?
 - readonly?
 
+Schemas:
+
+- S.Schemable<URI>
+  - Codec
+  - Encoder
+  - Eq
+- S.Schemable<URI> & S.WithUnion<URI>
+  - JsonSchema
+- S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI>
+  - Arbitrary
+  - Decoder
+  - Guard
+
 Added in v3.0.0
 
 ---
@@ -54,7 +67,6 @@ Added in v3.0.0
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
 - [make (function)](#make-function)
-- [parse (function)](#parse-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
 - [sum (function)](#sum-function)
@@ -229,16 +241,6 @@ Added in v3.0.0
 
 ```ts
 export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> { ... }
-```
-
-Added in v3.0.0
-
-# parse (function)
-
-**Signature**
-
-```ts
-export function parse<A, B extends A>(codec: Codec<A>, parser: (a: A) => Either<string, B>): Codec<B> { ... }
 ```
 
 Added in v3.0.0

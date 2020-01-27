@@ -66,7 +66,7 @@ export const Int: Arbitrary<S.Int> = fc.integer() as any
 /**
  * @since 3.0.0
  */
-export function parse<A, B extends A>(arb: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> {
+export function parse<A, B>(arb: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> {
   return arb.filter(a => parser(a)._tag === 'Right') as any
 }
 
@@ -153,6 +153,15 @@ export function sum<T extends string>(
   }
 }
 
+/**
+ * @since 3.0.0
+ */
+export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+  arbs: { [K in keyof A]: Arbitrary<A[K]> }
+): Arbitrary<A[number]> {
+  return fc.oneof(...arbs)
+}
+
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
@@ -176,7 +185,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const arbitrary: S.Schemable<URI> = {
+export const arbitrary: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
   constants,
   constantsOr,
@@ -184,7 +193,6 @@ export const arbitrary: S.Schemable<URI> = {
   number,
   boolean,
   Int,
-  parse: parse as S.Schemable<URI>['parse'],
   UnknownArray,
   UnknownRecord,
   type,
@@ -194,5 +202,7 @@ export const arbitrary: S.Schemable<URI> = {
   tuple,
   intersection,
   lazy,
-  sum
+  sum,
+  parse,
+  union
 }

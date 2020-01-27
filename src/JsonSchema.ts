@@ -4,7 +4,6 @@
 import * as C from 'fp-ts/lib/Const'
 import * as S from './Schemable'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import * as E from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -66,11 +65,6 @@ export const Int: JsonSchema<S.Int> = C.make({ type: 'string' })
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
-
-/**
- * @since 3.0.0
- */
-export declare function parse<A, B>(jsonSchema: JsonSchema<A>, parser: (a: A) => E.Either<string, B>): JsonSchema<B>
 
 /**
  * @since 3.0.0
@@ -171,7 +165,6 @@ export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = {
   number,
   boolean,
   Int,
-  parse: parse as S.Schemable<URI>['parse'],
   UnknownArray,
   UnknownRecord,
   type,

@@ -114,7 +114,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const guard: S.Schemable<URI> & S.WithUnion<URI> = ...
+export const guard: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -199,7 +199,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function parse<A, B extends A>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> { ... }
+export function parse<A, B>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> { ... }
 ```
 
 Added in v3.0.0

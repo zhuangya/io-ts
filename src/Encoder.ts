@@ -92,13 +92,6 @@ export const Int: Encoder<S.Int> = id
 /**
  * @since 3.0.0
  */
-export function parse<A, B extends A>(encoder: Encoder<A>): Encoder<B> {
-  return encoder
-}
-
-/**
- * @since 3.0.0
- */
 export function type<A>(encoders: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> {
   return {
     encode: a => {
@@ -248,7 +241,6 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   number,
   boolean,
   Int,
-  parse,
   UnknownArray,
   UnknownRecord,
   type,

@@ -96,7 +96,7 @@ export const Int: Guard<S.Int> = {
 /**
  * @since 3.0.0
  */
-export function parse<A, B extends A>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> {
+export function parse<A, B>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> {
   return {
     is: (u: unknown): u is B => guard.is(u) && parser(u)._tag === 'Right'
   }
@@ -265,7 +265,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
+export const guard: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
   constants,
   constantsOr,
@@ -273,7 +273,6 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   number,
   boolean,
   Int,
-  parse: parse as S.Schemable<URI>['parse'],
   UnknownArray,
   UnknownRecord,
   type,
@@ -284,5 +283,6 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   intersection,
   lazy,
   sum,
+  parse,
   union
 }

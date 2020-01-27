@@ -25,13 +25,6 @@ describe('Eq', () => {
     assert.deepStrictEqual(eq.equals(['a'], ['a', 'b']), false)
   })
 
-  it('parse', () => {
-    const eq: Eq<'a' | 'b'> = E.parse(E.string)
-    assert.deepStrictEqual(eq.equals('a', 'a'), true)
-    assert.deepStrictEqual(eq.equals('b', 'b'), true)
-    assert.deepStrictEqual(eq.equals('a', 'b'), false)
-  })
-
   it('partial', () => {
     const eq = E.partial({ a: E.number })
     assert.deepStrictEqual(eq.equals({ a: 1 }, { a: 1 }), true)

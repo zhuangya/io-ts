@@ -32,6 +32,7 @@ Added in v3.0.0
 - [sum (function)](#sum-function)
 - [tuple (function)](#tuple-function)
 - [type (function)](#type-function)
+- [union (function)](#union-function)
 
 ---
 
@@ -90,7 +91,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const arbitrary: S.Schemable<URI> = ...
+export const arbitrary: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -189,7 +190,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function parse<A, B extends A>(arb: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> { ... }
+export function parse<A, B>(arb: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> { ... }
 ```
 
 Added in v3.0.0
@@ -250,6 +251,18 @@ Added in v3.0.0
 
 ```ts
 export function type<A>(arbs: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<A> { ... }
+```
+
+Added in v3.0.0
+
+# union (function)
+
+**Signature**
+
+```ts
+export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+  arbs: { [K in keyof A]: Arbitrary<A[K]> }
+): Arbitrary<A[number]> { ... }
 ```
 
 Added in v3.0.0

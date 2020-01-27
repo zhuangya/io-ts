@@ -21,6 +21,18 @@
  * - is it possible to get only the first error?
  * - readonly?
  *
+ * Schemas:
+ * - S.Schemable<URI>
+ *   - Codec
+ *   - Encoder
+ *   - Eq
+ * - S.Schemable<URI> & S.WithUnion<URI>
+ *   - JsonSchema
+ * - S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI>
+ *   - Arbitrary
+ *   - Decoder
+ *   - Guard
+ *
  * @since 3.0.0
  */
 import { Invariant1 } from 'fp-ts/lib/Invariant'
@@ -28,7 +40,6 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as D from './Decoder'
 import * as E from './Encoder'
 import * as S from './Schemable'
-import { Either } from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -110,13 +121,6 @@ export const Int: Codec<S.Int> = make(D.Int, E.Int)
  */
 export function withExpected<A>(codec: Codec<A>, expected: string): Codec<A> {
   return make(D.withExpected(codec, expected), codec)
-}
-
-/**
- * @since 3.0.0
- */
-export function parse<A, B extends A>(codec: Codec<A>, parser: (a: A) => Either<string, B>): Codec<B> {
-  return make(D.parse(codec, parser), E.parse(codec))
 }
 
 /**
@@ -226,7 +230,6 @@ export const codec: Invariant1<URI> & S.Schemable<URI> = {
   number,
   boolean,
   Int,
-  parse: parse as S.Schemable<URI>['parse'],
   UnknownArray,
   UnknownRecord,
   type,

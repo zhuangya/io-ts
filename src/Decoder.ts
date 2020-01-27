@@ -358,7 +358,9 @@ export function sum<T extends string>(
 /**
  * @since 3.0.0
  */
-export function union<A extends Array<unknown>>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<A[number]> {
+export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+  decoders: { [K in keyof A]: Decoder<A[K]> }
+): Decoder<A[number]> {
   const len = decoders.length
   if (len === 0) {
     return never
@@ -406,7 +408,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = {
+export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
   map: (fa, f) => ({
     decode: u => E.either.map(fa.decode(u), f)
@@ -427,7 +429,6 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
   number,
   boolean,
   Int,
-  parse: parse as S.Schemable<URI>['parse'],
   UnknownArray,
   UnknownRecord,
   type,
@@ -438,6 +439,7 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
   intersection,
   lazy,
   sum,
+  parse,
   union
 }
 

@@ -30,7 +30,6 @@ Added in v3.0.0
 - [intersection (function)](#intersection-function-2)
 - [intersection (function)](#intersection-function-3)
 - [lazy (function)](#lazy-function)
-- [parse (function)](#parse-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
 - [sum (function)](#sum-function)
@@ -256,16 +255,6 @@ Added in v3.0.0
 
 ```ts
 export declare function lazy<A>(f: () => JsonSchema<A>): JsonSchema<A> { ... }
-```
-
-Added in v3.0.0
-
-# parse (function)
-
-**Signature**
-
-```ts
-export declare function parse<A, B>(jsonSchema: JsonSchema<A>, parser: (a: A) => E.Either<string, B>): JsonSchema<B> { ... }
 ```
 
 Added in v3.0.0

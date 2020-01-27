@@ -76,13 +76,6 @@ export const Int: Eq<S.Int> = E.eqNumber
 /**
  * @since 3.0.0
  */
-export function parse<A, B extends A>(eq: Eq<A>): Eq<B> {
-  return eq
-}
-
-/**
- * @since 3.0.0
- */
 export const type: <A>(eqs: { [K in keyof A]: Eq<A[K]> }) => Eq<A> = E.getStructEq
 
 /**
@@ -177,7 +170,6 @@ export const eq: typeof E.eq & S.Schemable<E.URI> = {
   number,
   boolean,
   Int,
-  parse,
   UnknownArray,
   UnknownRecord,
   type,

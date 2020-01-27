@@ -2,6 +2,7 @@ import * as assert from 'assert'
 import { left, right } from 'fp-ts/lib/Either'
 import * as C from '../src/Codec'
 import * as D from '../src/Decoder'
+import * as E from '../src/Encoder'
 import * as DE from '../src/DecodeError'
 
 const NumberFromString: C.Codec<number> = C.make(
@@ -16,7 +17,10 @@ interface PositiveBrand {
   readonly Positive: unique symbol
 }
 type Positive = number & PositiveBrand
-const Positive = C.parse(C.number, n => (n > 0 ? right(n as Positive) : left('Positive')))
+const Positive = C.make(
+  D.parse(C.number, n => (n > 0 ? right(n as Positive) : left('Positive'))),
+  E.id
+)
 
 describe('Codec', () => {
   describe('codec', () => {

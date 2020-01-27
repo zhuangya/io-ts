@@ -28,7 +28,6 @@ export interface Schemable<F extends URIS> {
   readonly number: Kind<F, number>
   readonly boolean: Kind<F, boolean>
   readonly Int: Kind<F, Int>
-  readonly parse: <A, B>(decoder: Kind<F, A>, parser: (a: A) => Either<string, B>) => Kind<F, A>
   readonly UnknownArray: Kind<F, Array<unknown>>
   readonly UnknownRecord: Kind<F, Record<string, unknown>>
   readonly type: <A>(schemas: { [K in keyof A]: Kind<F, A[K]> }) => Kind<F, A>
@@ -52,6 +51,13 @@ export interface Schemable<F extends URIS> {
   readonly sum: <T extends string>(
     tag: T
   ) => <A>(def: { [K in keyof A]: Kind<F, A[K] & Record<T, K>> }) => Kind<F, A[keyof A]>
+}
+
+/**
+ * @since 3.0.0
+ */
+export interface WithParse<F extends URIS> {
+  readonly parse: <A, B>(decoder: Kind<F, A>, parser: (a: A) => Either<string, B>) => Kind<F, B>
 }
 
 /**
