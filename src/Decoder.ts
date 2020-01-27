@@ -44,15 +44,15 @@ export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
 /**
  * @since 3.0.0
  */
-export function constants<A>(as: NonEmptyArray<A>): Decoder<A> {
-  return fromGuard(G.constants(as), as.map(showConstant).join(' | '))
+export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Decoder<A> {
+  return fromGuard(G.literals(as), as.map(showConstant).join(' | '))
 }
 
 /**
  * @since 3.0.0
  */
-export function constantsOr<A, B>(as: NonEmptyArray<A>, decoder: Decoder<B>): Decoder<A | B> {
-  return union([constants(as), decoder])
+export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, decoder: Decoder<B>): Decoder<A | B> {
+  return union([literals(as), decoder])
 }
 
 // -------------------------------------------------------------------------------------
@@ -428,8 +428,8 @@ export const decoder: Applicative1<URI> &
     decode: u => E.either.alt(fx.decode(u), () => fy().decode(u))
   }),
   zero: () => never,
-  constants,
-  constantsOr,
+  literals,
+  literalsOr,
   string,
   number,
   boolean,

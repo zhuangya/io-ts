@@ -1,52 +1,114 @@
 import * as Benchmark from 'benchmark'
 import * as t from '../src'
-
-/*
-space-object (good) x 435,472 ops/sec ±0.61% (83 runs sampled)
-space-object (bad) x 392,528 ops/sec ±2.39% (87 runs sampled)
-*/
+import * as D from '../src/Decoder'
+import * as Ajv from 'ajv'
+import * as J from '../src/JsonSchema'
 
 const suite = new Benchmark.Suite()
 
-const Vector = t.tuple([t.number, t.number, t.number])
+const TVector = t.tuple([t.number, t.number, t.number])
+const DVector = D.tuple([D.number, D.number, D.number])
+const JVector = J.tuple([J.number, J.number, J.number])
 
-const Asteroid = t.type({
+const TAsteroid = t.type({
   type: t.literal('asteroid'),
-  location: Vector,
+  location: TVector,
   mass: t.number
 })
+const DAsteroid = D.type({
+  type: D.literals(['asteroid']),
+  location: DVector,
+  mass: D.number
+})
+const JAsteroid = J.type({
+  type: J.literals(['asteroid']),
+  location: JVector,
+  mass: J.number
+})
 
-const Planet = t.type({
+const TPlanet = t.type({
   type: t.literal('planet'),
-  location: Vector,
+  location: TVector,
   mass: t.number,
   population: t.number,
   habitable: t.boolean
 })
+const DPlanet = D.type({
+  type: D.literals(['planet']),
+  location: DVector,
+  mass: D.number,
+  population: D.number,
+  habitable: D.boolean
+})
+const JPlanet = J.type({
+  type: J.literals(['planet']),
+  location: JVector,
+  mass: J.number,
+  population: J.number,
+  habitable: J.boolean
+})
 
-const Rank = t.keyof({
+const TRank = t.keyof({
   captain: null,
   'first mate': null,
   officer: null,
   ensign: null
 })
+const DRank = D.literals(['captain', 'first mate', 'officer', 'ensign'])
+const JRank = J.literals(['captain', 'first mate', 'officer', 'ensign'])
 
-const CrewMember = t.type({
+const TCrewMember = t.type({
   name: t.string,
   age: t.number,
-  rank: Rank,
-  home: Planet
+  rank: TRank,
+  home: TPlanet
+})
+const DCrewMember = D.type({
+  name: D.string,
+  age: D.number,
+  rank: DRank,
+  home: DPlanet
+})
+const JCrewMember = J.type({
+  name: J.string,
+  age: J.number,
+  rank: JRank,
+  home: JPlanet
 })
 
-const Ship = t.type({
+const TShip = t.type({
   type: t.literal('ship'),
-  location: Vector,
+  location: TVector,
   mass: t.number,
   name: t.string,
-  crew: t.array(CrewMember)
+  crew: t.array(TCrewMember)
+})
+const DShip = D.type({
+  type: D.literals(['ship']),
+  location: DVector,
+  mass: D.number,
+  name: D.string,
+  crew: D.array(DCrewMember)
+})
+const JShip = J.type({
+  type: J.literals(['ship']),
+  location: JVector,
+  mass: J.number,
+  name: J.string,
+  crew: J.array(JCrewMember)
 })
 
-const T = t.union([Asteroid, Planet, Ship])
+const TUnion = t.union([TAsteroid, TPlanet, TShip])
+const DUnion = D.sum('type')({
+  asteroid: DAsteroid,
+  planet: DPlanet,
+  ship: DShip
+})
+const JUnion = J.sum('type')({
+  asteroid: JAsteroid,
+  planet: JPlanet,
+  ship: JShip
+})
 
 const good = {
   type: 'ship',
@@ -90,15 +152,30 @@ const bad = {
   ]
 }
 
-// console.log(T.decode(good))
-// console.log(T.decode(bad))
+const ajv = new Ajv()
+
+function run<A>(jsonSchema: object, a: A): boolean {
+  return ajv.compile(jsonSchema)(a) as any
+}
 
 suite
-  .add('space-object (good)', function() {
-    T.decode(good)
+  .add('TUnion (good)', function() {
+    TUnion.decode(good)
   })
-  .add('space-object (bad)', function() {
-    T.decode(bad)
+  .add('DUnion (good)', function() {
+    DUnion.decode(good)
+  })
+  .add('JUnion (good)', function() {
+    run(JUnion, good)
+  })
+  .add('TUnion (bad)', function() {
+    TUnion.decode(bad)
+  })
+  .add('DUnion (bad)', function() {
+    DUnion.decode(bad)
+  })
+  .add('JUnion (bad)', function() {
+    run(JUnion, bad)
   })
   .on('cycle', function(event: any) {
     console.log(String(event.target))

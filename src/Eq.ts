@@ -21,17 +21,17 @@ import Eq = E.Eq
 /**
  * @since 3.0.0
  */
-export function constants<A>(_as: NonEmptyArray<A>): Eq<A> {
+export function literals<A extends S.Literal>(_as: NonEmptyArray<A>): Eq<A> {
   return strict
 }
 
 /**
  * @since 3.0.0
  */
-export function constantsOr<A, B>(as: NonEmptyArray<A>, eq: Eq<B>): Eq<A | B> {
-  const constants = G.constants(as)
+export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, eq: Eq<B>): Eq<A | B> {
+  const literals = G.literals(as)
   return {
-    equals: (x, y) => (constants.is(x) || constants.is(y) ? x === y : eq.equals(x, y))
+    equals: (x, y) => (literals.is(x) || literals.is(y) ? x === y : eq.equals(x, y))
   }
 }
 
@@ -164,8 +164,8 @@ export function sum<T extends string>(tag: T): <A>(eqs: { [K in keyof A]: Eq<A[K
  */
 export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithLazy<E.URI> = {
   ...E.eq,
-  constants,
-  constantsOr,
+  literals,
+  literalsOr,
   string,
   number,
   boolean,

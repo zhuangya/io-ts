@@ -20,15 +20,13 @@ describe('JsonSchema', () => {
     assert.strictEqual(run(J.Int, 1.2), false)
   })
 
-  it('constants', () => {
-    assert.strictEqual(run(J.constants(['a']), 'a'), true)
-    assert.strictEqual(run(J.constants(['a']), 1), false)
-    assert.strictEqual(run(J.constants([{ a: 1 }]), { a: 1 }), true)
-    assert.strictEqual(run(J.constants([{ a: 1 }]), { a: 2 }), false)
+  it('literals', () => {
+    assert.strictEqual(run(J.literals(['a']), 'a'), true)
+    assert.strictEqual(run(J.literals(['a']), 1), false)
   })
 
-  it('constantsOr', () => {
-    const schema = J.constantsOr([undefined], J.type({ a: J.string, b: J.number }))
+  it('literalsOr', () => {
+    const schema = J.literalsOr([undefined], J.type({ a: J.string, b: J.number }))
     assert.strictEqual(run(schema, undefined), true)
     assert.strictEqual(run(schema, { a: 'a', b: 1 }), true)
   })
@@ -91,8 +89,8 @@ describe('JsonSchema', () => {
     const sum = J.sum('_tag')
 
     const schema = sum({
-      A: J.type({ _tag: J.constants(['A']), a: J.string }),
-      B: J.type({ _tag: J.constants(['B']), b: J.number })
+      A: J.type({ _tag: J.literals(['A']), a: J.string }),
+      B: J.type({ _tag: J.literals(['B']), b: J.number })
     })
     assert.strictEqual(run(schema, { _tag: 'A', a: 'a' }), true)
     assert.strictEqual(run(schema, { _tag: 'B', b: 1 }), true)

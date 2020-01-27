@@ -20,6 +20,9 @@
  * - is it possible to define a Decoder which fails on additional fields?
  * - is it possible to get only the first error?
  * - readonly?
+ * - does it support recursion in schemas?
+ * - Is there a way to generate newtypes?
+ * - Is there a way to generate branded types + smart constructors based on a user provided predicate?
  *
  * Schemas:
  * - S.Schemable<URI> & S.WithLazy<URI>
@@ -68,15 +71,15 @@ export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> 
 /**
  * @since 3.0.0
  */
-export function constants<A>(as: NonEmptyArray<A>): Codec<A> {
-  return make(D.constants(as), E.constants(as))
+export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Codec<A> {
+  return make(D.literals(as), E.literals(as))
 }
 
 /**
  * @since 3.0.0
  */
-export function constantsOr<A, B>(as: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> {
-  return make(D.constantsOr(as, codec), E.constantsOr(as, codec))
+export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> {
+  return make(D.literalsOr(as, codec), E.literalsOr(as, codec))
 }
 
 // -------------------------------------------------------------------------------------
@@ -225,8 +228,8 @@ declare module 'fp-ts/lib/HKT' {
 export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = {
   URI,
   imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
-  constants,
-  constantsOr,
+  literals,
+  literalsOr,
   string,
   number,
   boolean,

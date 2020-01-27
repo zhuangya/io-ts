@@ -14,15 +14,15 @@ import { Either } from 'fp-ts/lib/Either'
 /**
  * @since 3.0.0
  */
-export function constants<A>(as: NonEmptyArray<A>): Arbitrary<A> {
+export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Arbitrary<A> {
   return fc.oneof(...as.map(a => fc.constant(a)))
 }
 
 /**
  * @since 3.0.0
  */
-export function constantsOr<A, B>(as: NonEmptyArray<A>, arb: Arbitrary<B>): Arbitrary<A | B> {
-  return fc.oneof<A | B>(constants(as), arb)
+export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, arb: Arbitrary<B>): Arbitrary<A | B> {
+  return fc.oneof<A | B>(literals(as), arb)
 }
 
 // -------------------------------------------------------------------------------------
@@ -176,8 +176,8 @@ declare module 'fp-ts/lib/HKT' {
  */
 export const arbitrary: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
-  constants,
-  constantsOr,
+  literals,
+  literalsOr,
   string,
   number,
   boolean,

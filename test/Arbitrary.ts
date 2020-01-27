@@ -84,12 +84,12 @@ describe('Arbitrary', () => {
     assert(make(S => S.UnknownRecord))
   })
 
-  it('constants', () => {
-    assert(make(S => S.constants(['a', null])))
+  it('literals', () => {
+    assert(make(S => S.literals(['a', null])))
   })
 
-  it('constantsOr', () => {
-    assert(make(S => S.constantsOr(['a', null], S.type({ a: S.string }))))
+  it('literalsOr', () => {
+    assert(make(S => S.literalsOr(['a', null], S.type({ a: S.string }))))
   })
 
   it('type', () => {
@@ -134,8 +134,8 @@ describe('Arbitrary', () => {
     assert(
       make(S =>
         S.sum('_tag')({
-          A: S.type({ _tag: S.constants(['A']), a: S.string }),
-          B: S.type({ _tag: S.constants(['B']), b: S.number })
+          A: S.type({ _tag: S.literals(['A']), a: S.string }),
+          B: S.type({ _tag: S.literals(['B']), b: S.number })
         })
       )
     )

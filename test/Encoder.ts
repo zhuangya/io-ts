@@ -9,8 +9,8 @@ describe('Encoder', () => {
     })
   })
 
-  it('constants', () => {
-    const codec = E.encoder.constants(['a', null])
+  it('literals', () => {
+    const codec = E.encoder.literals(['a', null])
     assert.deepStrictEqual(codec.encode('a'), 'a')
     assert.deepStrictEqual(codec.encode(null), null)
   })

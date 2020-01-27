@@ -22,9 +22,9 @@ Added in v3.0.0
 - [number (constant)](#number-constant)
 - [string (constant)](#string-constant)
 - [array (function)](#array-function)
-- [constants (function)](#constants-function)
-- [constantsOr (function)](#constantsor-function)
 - [intersection (function)](#intersection-function)
+- [literals (function)](#literals-function)
+- [literalsOr (function)](#literalsor-function)
 - [parse (function)](#parse-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
@@ -135,26 +135,6 @@ export function array<A>(arb: Arbitrary<A>): Arbitrary<Array<A>> { ... }
 
 Added in v3.0.0
 
-# constants (function)
-
-**Signature**
-
-```ts
-export function constants<A>(as: NonEmptyArray<A>): Arbitrary<A> { ... }
-```
-
-Added in v3.0.0
-
-# constantsOr (function)
-
-**Signature**
-
-```ts
-export function constantsOr<A, B>(as: NonEmptyArray<A>, arb: Arbitrary<B>): Arbitrary<A | B> { ... }
-```
-
-Added in v3.0.0
-
 # intersection (function)
 
 **Signature**
@@ -170,6 +150,26 @@ export function intersection<A, B, C, D>(
 ): Arbitrary<A & B & C & D>
 export function intersection<A, B, C>(arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>]): Arbitrary<A & B & C>
 export function intersection<A, B>(arbs: [Arbitrary<A>, Arbitrary<B>]): Arbitrary<A & B> { ... }
+```
+
+Added in v3.0.0
+
+# literals (function)
+
+**Signature**
+
+```ts
+export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Arbitrary<A> { ... }
+```
+
+Added in v3.0.0
+
+# literalsOr (function)
+
+**Signature**
+
+```ts
+export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, arb: Arbitrary<B>): Arbitrary<A | B> { ... }
 ```
 
 Added in v3.0.0

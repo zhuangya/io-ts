@@ -78,32 +78,32 @@ describe('Codec', () => {
     })
   })
 
-  describe('constants', () => {
+  describe('literals', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.constants(['a', null])
+        const codec = C.literals(['a', null])
         assert.deepStrictEqual(codec.decode('a'), right('a'))
         assert.deepStrictEqual(codec.decode(null), right(null))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.constants(['a', undefined])
+        const codec = C.literals(['a', undefined])
         assert.deepStrictEqual(codec.decode('b'), left(DE.leaf('"a" | undefined', 'b')))
       })
     })
   })
 
-  describe('constantsOr', () => {
+  describe('literalsOr', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.constantsOr([null, undefined], NumberFromString)
+        const codec = C.literalsOr([null, undefined], NumberFromString)
         assert.deepStrictEqual(codec.decode(null), right(null))
         assert.deepStrictEqual(codec.decode(undefined), right(undefined))
         assert.deepStrictEqual(codec.decode('2'), right(2))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.constantsOr([null, undefined], NumberFromString)
+        const codec = C.literalsOr([null, undefined], NumberFromString)
         assert.deepStrictEqual(
           codec.decode(2),
           left(DE.or('union', 2, [DE.leaf('null | undefined', 2), DE.leaf('string', 2)]))
@@ -117,7 +117,7 @@ describe('Codec', () => {
 
     describe('encode', () => {
       it('should encode a value', () => {
-        const codec = C.constantsOr([null, undefined], NumberFromString)
+        const codec = C.literalsOr([null, undefined], NumberFromString)
         assert.deepStrictEqual(codec.encode(null), null)
         assert.deepStrictEqual(codec.encode(undefined), undefined)
         assert.deepStrictEqual(codec.encode(2), '2')
@@ -386,8 +386,8 @@ describe('Codec', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
         const codec = sum({
-          A: C.type({ _tag: C.constants(['A']), a: C.string }),
-          B: C.type({ _tag: C.constants(['B']), b: C.number })
+          A: C.type({ _tag: C.literals(['A']), a: C.string }),
+          B: C.type({ _tag: C.literals(['B']), b: C.number })
         })
         assert.deepStrictEqual(codec.decode({ _tag: 'A', a: 'a' }), right({ _tag: 'A', a: 'a' }))
         assert.deepStrictEqual(codec.decode({ _tag: 'B', b: 1 }), right({ _tag: 'B', b: 1 }))
@@ -395,8 +395,8 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = sum({
-          A: C.type({ _tag: C.constants(['A']), a: C.string }),
-          B: C.type({ _tag: C.constants(['B']), b: C.number })
+          A: C.type({ _tag: C.literals(['A']), a: C.string }),
+          B: C.type({ _tag: C.literals(['B']), b: C.number })
         })
         assert.deepStrictEqual(codec.decode(null), left(DE.leaf('Record<string, unknown>', null)))
         assert.deepStrictEqual(
@@ -418,8 +418,8 @@ describe('Codec', () => {
     describe('encode', () => {
       it('should encode a value', () => {
         const codec = sum({
-          A: C.type({ _tag: C.constants(['A']), a: C.string }),
-          B: C.type({ _tag: C.constants(['B']), b: NumberFromString })
+          A: C.type({ _tag: C.literals(['A']), a: C.string }),
+          B: C.type({ _tag: C.literals(['B']), b: NumberFromString })
         })
         assert.deepStrictEqual(codec.encode({ _tag: 'A', a: 'a' }), { _tag: 'A', a: 'a' })
         assert.deepStrictEqual(codec.encode({ _tag: 'B', b: 1 }), { _tag: 'B', b: '1' })

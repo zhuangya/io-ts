@@ -28,7 +28,7 @@ export function make<A>(u: unknown): JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function constants<A>(as: NonEmptyArray<A>): JsonSchema<A> {
+export function literals<A extends S.Literal>(as: NonEmptyArray<A>): JsonSchema<A> {
   const anyOf = as.map(a => ({ enum: [a] }))
   return C.make({
     anyOf
@@ -38,9 +38,9 @@ export function constants<A>(as: NonEmptyArray<A>): JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function constantsOr<A, B>(as: NonEmptyArray<A>, jsonSchema: JsonSchema<B>): JsonSchema<A | B> {
+export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, jsonSchema: JsonSchema<B>): JsonSchema<A | B> {
   return C.make({
-    anyOf: [constants(as), jsonSchema]
+    anyOf: [literals(as), jsonSchema]
   })
 }
 
@@ -210,8 +210,8 @@ declare module 'fp-ts/lib/HKT' {
  */
 export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
-  constants,
-  constantsOr,
+  literals,
+  literalsOr,
   string,
   number,
   boolean,

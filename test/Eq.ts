@@ -3,15 +3,15 @@ import * as E from '../src/Eq'
 import { Eq } from 'fp-ts/lib/Eq'
 
 describe('Eq', () => {
-  it('constants', () => {
-    const eq = E.constants(['a', null])
+  it('literals', () => {
+    const eq = E.literals(['a', null])
     assert.deepStrictEqual(eq.equals('a', 'a'), true)
     assert.deepStrictEqual(eq.equals(null, null), true)
     assert.deepStrictEqual(eq.equals('a', null), false)
   })
 
-  it('constantsOr', () => {
-    const eq = E.constantsOr([undefined], E.string)
+  it('literalsOr', () => {
+    const eq = E.literalsOr([undefined], E.string)
     assert.deepStrictEqual(eq.equals('a', 'a'), true)
     assert.deepStrictEqual(eq.equals(undefined, undefined), true)
     assert.deepStrictEqual(eq.equals('a', 'b'), false)
@@ -69,8 +69,8 @@ describe('Eq', () => {
   it('sum', () => {
     const sum = E.sum('_tag')
     const eq = sum({
-      A: E.type({ _tag: E.constants(['A']), a: E.string }),
-      B: E.type({ _tag: E.constants(['B']), b: E.number })
+      A: E.type({ _tag: E.literals(['A']), a: E.string }),
+      B: E.type({ _tag: E.literals(['B']), b: E.number })
     })
     assert.strictEqual(eq.equals({ _tag: 'A', a: 'a' }, { _tag: 'A', a: 'a' }), true)
     assert.strictEqual(eq.equals({ _tag: 'B', b: 1 }, { _tag: 'B', b: 1 }), true)
