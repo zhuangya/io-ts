@@ -88,7 +88,7 @@ describe('Arbitrary', () => {
     const schema: Schema<Rec> = make(S =>
       S.lazy((...args: Array<any>) => {
         const iterations: number = args[0]
-        if (iterations && iterations < 2) {
+        if (iterations && iterations < 10) {
           return S.type({
             a: S.number,
             b: S.array(schema(S))
