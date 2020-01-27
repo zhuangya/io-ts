@@ -283,7 +283,7 @@ Added in v3.0.0
 ```ts
 export function sum<T extends string>(
   tag: T
-): <A>(def: { [K in keyof A]: Decoder<A[K] & Record<T, K>> }) => Decoder<A[keyof A]> { ... }
+): <A>(decoders: { [K in keyof A]: Decoder<A[K] & Record<T, K>> }) => Decoder<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0

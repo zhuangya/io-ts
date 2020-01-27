@@ -222,7 +222,7 @@ Added in v3.0.0
 ```ts
 export function sum<T extends string>(
   tag: T
-): <A>(def: { [K in keyof A]: Arbitrary<A[K]> }) => Arbitrary<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> { ... }
+): <A>(arbs: { [K in keyof A]: Arbitrary<A[K]> }) => Arbitrary<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> { ... }
 ```
 
 Added in v3.0.0

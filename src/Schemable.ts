@@ -23,7 +23,7 @@ export type Int = number & IntBrand
 export interface Schemable<F extends URIS> {
   readonly URI: F
   readonly constants: <A>(as: NonEmptyArray<A>) => Kind<F, A>
-  readonly constantsOr: <A, B>(as: NonEmptyArray<A>, encoder: Kind<F, B>) => Kind<F, A | B>
+  readonly constantsOr: <A, B>(as: NonEmptyArray<A>, schema: Kind<F, B>) => Kind<F, A | B>
   readonly string: Kind<F, string>
   readonly number: Kind<F, number>
   readonly boolean: Kind<F, boolean>
@@ -35,11 +35,11 @@ export interface Schemable<F extends URIS> {
   readonly record: <A>(schema: Kind<F, A>) => Kind<F, Record<string, A>>
   readonly array: <A>(schema: Kind<F, A>) => Kind<F, Array<A>>
   readonly tuple: {
-    <A, B, C, D, E>(encoders: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>, Kind<F, E>]): Kind<F, [A, B, C, D, E]>
-    <A, B, C, D>(encoders: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>]): Kind<F, [A, B, C, D]>
-    <A, B, C>(encoders: [Kind<F, A>, Kind<F, B>, Kind<F, C>]): Kind<F, [A, B, C]>
-    <A, B>(encoders: [Kind<F, A>, Kind<F, B>]): Kind<F, [A, B]>
-    <A>(encoders: [Kind<F, A>]): Kind<F, [A]>
+    <A, B, C, D, E>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>, Kind<F, E>]): Kind<F, [A, B, C, D, E]>
+    <A, B, C, D>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>]): Kind<F, [A, B, C, D]>
+    <A, B, C>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>]): Kind<F, [A, B, C]>
+    <A, B>(schemas: [Kind<F, A>, Kind<F, B>]): Kind<F, [A, B]>
+    <A>(schemas: [Kind<F, A>]): Kind<F, [A]>
   }
   readonly intersection: {
     <A, B, C, D, E>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>, Kind<F, E>]): Kind<F, A & B & C & D & E>
@@ -50,14 +50,14 @@ export interface Schemable<F extends URIS> {
   readonly lazy: <A>(f: () => Kind<F, A>) => Kind<F, A>
   readonly sum: <T extends string>(
     tag: T
-  ) => <A>(def: { [K in keyof A]: Kind<F, A[K] & Record<T, K>> }) => Kind<F, A[keyof A]>
+  ) => <A>(schemas: { [K in keyof A]: Kind<F, A[K] & Record<T, K>> }) => Kind<F, A[keyof A]>
 }
 
 /**
  * @since 3.0.0
  */
 export interface WithParse<F extends URIS> {
-  readonly parse: <A, B>(decoder: Kind<F, A>, parser: (a: A) => Either<string, B>) => Kind<F, B>
+  readonly parse: <A, B>(schema: Kind<F, A>, parser: (a: A) => Either<string, B>) => Kind<F, B>
 }
 
 /**

@@ -125,7 +125,7 @@ export declare function lazy<A>(f: () => JsonSchema<A>): JsonSchema<A>
  */
 export declare function sum<T extends string>(
   tag: T
-): <A>(def: { [K in keyof A]: JsonSchema<A[K] & Record<T, K>> }) => JsonSchema<A[keyof A]>
+): <A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K] & Record<T, K>> }) => JsonSchema<A[keyof A]>
 
 /**
  * @since 3.0.0

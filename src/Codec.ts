@@ -192,10 +192,10 @@ export function lazy<A>(f: () => Codec<A>): Codec<A> {
  */
 export function sum<T extends string>(
   tag: T
-): <A>(def: { [K in keyof A]: Codec<A[K] & Record<T, K>> }) => Codec<A[keyof A]> {
+): <A>(codecs: { [K in keyof A]: Codec<A[K] & Record<T, K>> }) => Codec<A[keyof A]> {
   const Dsum = D.sum(tag)
   const Esum = E.sum(tag)
-  return def => make(Dsum(def), Esum(def))
+  return codecs => make(Dsum(codecs), Esum(codecs))
 }
 
 // -------------------------------------------------------------------------------------

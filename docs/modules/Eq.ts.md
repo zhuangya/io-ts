@@ -190,7 +190,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function sum<T extends string>(tag: T): <A>(def: { [K in keyof A]: Eq<A[K] & Record<T, K>> }) => Eq<A[keyof A]> { ... }
+export function sum<T extends string>(tag: T): <A>(eqs: { [K in keyof A]: Eq<A[K] & Record<T, K>> }) => Eq<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0

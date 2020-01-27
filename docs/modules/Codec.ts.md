@@ -272,7 +272,7 @@ Added in v3.0.0
 ```ts
 export function sum<T extends string>(
   tag: T
-): <A>(def: { [K in keyof A]: Codec<A[K] & Record<T, K>> }) => Codec<A[keyof A]> { ... }
+): <A>(codecs: { [K in keyof A]: Codec<A[K] & Record<T, K>> }) => Codec<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0

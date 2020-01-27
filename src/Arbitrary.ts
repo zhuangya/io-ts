@@ -147,9 +147,9 @@ export function lazy<A>(f: (iterations: number) => Arbitrary<A>): Arbitrary<A> {
  */
 export function sum<T extends string>(
   tag: T
-): <A>(def: { [K in keyof A]: Arbitrary<A[K]> }) => Arbitrary<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
-  return (def: any) => {
-    return fc.oneof(...Object.keys(def).map(k => def[k].map((a: any) => ({ ...a, [tag]: k }))))
+): <A>(arbs: { [K in keyof A]: Arbitrary<A[K]> }) => Arbitrary<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
+  return (arbs: any) => {
+    return fc.oneof(...Object.keys(arbs).map(k => arbs[k].map((a: any) => ({ ...a, [tag]: k }))))
   }
 }
 
