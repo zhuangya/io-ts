@@ -51,7 +51,6 @@ Added in v3.0.0
 - [array (function)](#array-function)
 - [constants (function)](#constants-function)
 - [constantsOr (function)](#constantsor-function)
-- [fromDecoder (function)](#fromdecoder-function)
 - [intersection (function)](#intersection-function)
 - [lazy (function)](#lazy-function)
 - [make (function)](#make-function)
@@ -191,16 +190,6 @@ Added in v3.0.0
 
 ```ts
 export function constantsOr<A, B>(as: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> { ... }
-```
-
-Added in v3.0.0
-
-# fromDecoder (function)
-
-**Signature**
-
-```ts
-export function fromDecoder<A>(decoder: D.Decoder<A>): Codec<A> { ... }
 ```
 
 Added in v3.0.0

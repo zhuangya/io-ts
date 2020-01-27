@@ -56,15 +56,8 @@ export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> 
 /**
  * @since 3.0.0
  */
-export function fromDecoder<A>(decoder: D.Decoder<A>): Codec<A> {
-  return make(decoder, E.id)
-}
-
-/**
- * @since 3.0.0
- */
 export function constants<A>(as: NonEmptyArray<A>): Codec<A> {
-  return fromDecoder(D.constants(as))
+  return make(D.constants(as), E.constants(as))
 }
 
 /**
@@ -81,32 +74,32 @@ export function constantsOr<A, B>(as: NonEmptyArray<A>, codec: Codec<B>): Codec<
 /**
  * @since 3.0.0
  */
-export const string: Codec<string> = fromDecoder(D.string)
+export const string: Codec<string> = make(D.string, E.string)
 
 /**
  * @since 3.0.0
  */
-export const number: Codec<number> = fromDecoder(D.number)
+export const number: Codec<number> = make(D.number, E.number)
 
 /**
  * @since 3.0.0
  */
-export const boolean: Codec<boolean> = fromDecoder(D.boolean)
+export const boolean: Codec<boolean> = make(D.boolean, E.boolean)
 
 /**
  * @since 3.0.0
  */
-export const UnknownArray: Codec<Array<unknown>> = fromDecoder(D.UnknownArray)
+export const UnknownArray: Codec<Array<unknown>> = make(D.UnknownArray, E.UnknownArray)
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: Codec<Record<string, unknown>> = fromDecoder(D.UnknownRecord)
+export const UnknownRecord: Codec<Record<string, unknown>> = make(D.UnknownRecord, E.UnknownRecord)
 
 /**
  * @since 3.0.0
  */
-export const Int: Codec<S.Int> = fromDecoder(D.Int)
+export const Int: Codec<S.Int> = make(D.Int, E.Int)
 
 // -------------------------------------------------------------------------------------
 // combinators
