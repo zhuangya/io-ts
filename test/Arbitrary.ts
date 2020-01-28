@@ -131,14 +131,9 @@ describe('Arbitrary', () => {
   })
 
   it('sum', () => {
-    assert(
-      make(S =>
-        S.sum('_tag')({
-          A: S.type({ _tag: S.literals(['A']), a: S.string }),
-          B: S.type({ _tag: S.literals(['B']), b: S.number })
-        })
-      )
-    )
+    const A = make(S => S.type({ _tag: S.literals(['A']), a: S.string }))
+    const B = make(S => S.type({ _tag: S.literals(['B']), b: S.number }))
+    assert(make(S => S.sum('_tag')({ A: A(S), B: B(S) })))
   })
 
   it('parse', () => {

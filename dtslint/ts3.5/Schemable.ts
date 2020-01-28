@@ -87,7 +87,7 @@ make(S => S.tuple([S.string, S.number])) // $ExpectType Schema<[string, number]>
 make(S => S.intersection([S.type({ a: S.string }), S.type({ b: S.number })])) // $ExpectType Schema<{ a: string; } & { b: number; }>
 
 //
-// sum (FIXME)
+// sum
 //
 const S1 = make(S => S.type({ _tag: S.literals(['A']), a: S.string }))
 const S2 = make(S => S.type({ _tag: S.literals(['B']), b: S.number }))

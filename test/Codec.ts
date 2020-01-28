@@ -380,19 +380,17 @@ describe('Codec', () => {
 
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = sum({
-          A: C.type({ _tag: C.literals(['A']), a: C.string }),
-          B: C.type({ _tag: C.literals(['B']), b: C.number })
-        })
+        const A = C.type({ _tag: C.literals(['A']), a: C.string })
+        const B = C.type({ _tag: C.literals(['B']), b: C.number })
+        const codec = sum({ A, B })
         assert.deepStrictEqual(codec.decode({ _tag: 'A', a: 'a' }), right({ _tag: 'A', a: 'a' }))
         assert.deepStrictEqual(codec.decode({ _tag: 'B', b: 1 }), right({ _tag: 'B', b: 1 }))
       })
 
       it('should reject an invalid input', () => {
-        const codec = sum({
-          A: C.type({ _tag: C.literals(['A']), a: C.string }),
-          B: C.type({ _tag: C.literals(['B']), b: C.number })
-        })
+        const A = C.type({ _tag: C.literals(['A']), a: C.string })
+        const B = C.type({ _tag: C.literals(['B']), b: C.number })
+        const codec = sum({ A, B })
         assert.deepStrictEqual(codec.decode(null), left(DE.leaf('Record<string, unknown>', null)))
         assert.deepStrictEqual(
           codec.decode({}),
@@ -412,10 +410,9 @@ describe('Codec', () => {
 
     describe('encode', () => {
       it('should encode a value', () => {
-        const codec = sum({
-          A: C.type({ _tag: C.literals(['A']), a: C.string }),
-          B: C.type({ _tag: C.literals(['B']), b: NumberFromString })
-        })
+        const A = C.type({ _tag: C.literals(['A']), a: C.string })
+        const B = C.type({ _tag: C.literals(['B']), b: NumberFromString })
+        const codec = sum({ A, B })
         assert.deepStrictEqual(codec.encode({ _tag: 'A', a: 'a' }), { _tag: 'A', a: 'a' })
         assert.deepStrictEqual(codec.encode({ _tag: 'B', b: 1 }), { _tag: 'B', b: '1' })
       })

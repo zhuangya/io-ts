@@ -88,10 +88,9 @@ describe('JsonSchema', () => {
   it('sum', () => {
     const sum = J.sum('_tag')
 
-    const schema = sum({
-      A: J.type({ _tag: J.literals(['A']), a: J.string }),
-      B: J.type({ _tag: J.literals(['B']), b: J.number })
-    })
+    const A = J.type({ _tag: J.literals(['A']), a: J.string })
+    const B = J.type({ _tag: J.literals(['B']), b: J.number })
+    const schema = sum({ A, B })
     assert.strictEqual(run(schema, { _tag: 'A', a: 'a' }), true)
     assert.strictEqual(run(schema, { _tag: 'B', b: 1 }), true)
     assert.strictEqual(run(schema, undefined), false)
