@@ -296,9 +296,6 @@ export function intersection(decoders: Array<Decoder<unknown>>): Decoder<unknown
   return {
     decode: u => {
       const len = decoders.length
-      if (len === 0) {
-        return E.right(u)
-      }
       const as: Array<unknown> = []
       const es: Array<DE.DecodeError> = []
       for (let i = 0; i < len; i++) {
@@ -309,10 +306,11 @@ export function intersection(decoders: Array<Decoder<unknown>>): Decoder<unknown
           as[i] = e.right
         }
       }
-      const a: unknown = as.some(a => Object.prototype.toString.call(a) !== '[object Object]')
-        ? as[as.length - 1]
-        : Object.assign({}, ...as)
-      return isNonEmpty(es) ? E.left(DE.and('intersection', u, es)) : E.right(a)
+      if (isNonEmpty(es)) {
+        return E.left(DE.and('intersection', u, es))
+      }
+      const a = as.every(G.UnknownRecord.is) ? Object.assign({}, ...as) : as[as.length - 1]
+      return E.right(a)
     }
   }
 }
@@ -361,10 +359,6 @@ export function sum<T extends string>(
 export function union<A extends [unknown, unknown, ...Array<unknown>]>(
   decoders: { [K in keyof A]: Decoder<A[K]> }
 ): Decoder<A[number]> {
-  const len = decoders.length
-  if (len === 0) {
-    return never
-  }
   return {
     decode: u => {
       const e = decoders[0].decode(u)
@@ -372,7 +366,7 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
         return e
       }
       const es: NonEmptyArray<DE.DecodeError> = [e.left]
-      for (let i = 1; i < len; i++) {
+      for (let i = 1; i < decoders.length; i++) {
         const e = decoders[i].decode(u)
         if (E.isRight(e)) {
           return e

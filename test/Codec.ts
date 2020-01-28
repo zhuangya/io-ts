@@ -320,11 +320,6 @@ describe('Codec', () => {
           )
         )
       })
-
-      it('should handle empty intersections', () => {
-        const codec = D.intersection([] as any)
-        assert.deepStrictEqual(codec.decode('a'), right('a'))
-      })
     })
 
     describe('encode', () => {

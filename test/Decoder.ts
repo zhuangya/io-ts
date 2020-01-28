@@ -69,10 +69,5 @@ describe('Decoder', () => {
         E.left(DE.or('union', true, [DE.leaf('string', true), DE.leaf('number', true)]))
       )
     })
-
-    it('should handle empty unions', () => {
-      const decoder = D.union([] as any)
-      assert.deepStrictEqual(decoder.decode('a'), E.left(DE.leaf('never', 'a')))
-    })
   })
 })

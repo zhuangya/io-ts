@@ -31,6 +31,9 @@ Open questions:
 - is it possible to define a Decoder which fails on additional fields?
 - is it possible to get only the first error?
 - readonly?
+- does it support recursion in schemas?
+- Is there a way to generate newtypes?
+- Is there a way to generate branded types + smart constructors based on a user provided predicate?
 
 Schemas:
 
