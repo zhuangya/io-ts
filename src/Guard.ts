@@ -24,10 +24,12 @@ export interface Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Guard<A> {
-  const head = as[0]
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Guard<A> {
+  const head = values[0]
   const is =
-    as.length === 1 ? (u: unknown): u is A => u === head : (u: unknown): u is A => as.findIndex(a => a === u) !== -1
+    values.length === 1
+      ? (u: unknown): u is A => u === head
+      : (u: unknown): u is A => values.findIndex(a => a === u) !== -1
   return {
     is
   }
@@ -36,8 +38,8 @@ export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, guard: Guard<B>): Guard<A | B> {
-  return union([literals(as), guard])
+export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, guard: Guard<B>): Guard<A | B> {
+  return union([literals(values), guard])
 }
 
 // -------------------------------------------------------------------------------------

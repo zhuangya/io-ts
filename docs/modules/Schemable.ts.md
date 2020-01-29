@@ -1,6 +1,6 @@
 ---
 title: Schemable.ts
-nav_order: 12
+nav_order: 13
 parent: Modules
 ---
 
@@ -42,8 +42,8 @@ Added in v3.0.0
 ```ts
 export interface Schemable<F extends URIS> {
   readonly URI: F
-  readonly literals: <A extends Literal>(as: NonEmptyArray<A>) => Kind<F, A>
-  readonly literalsOr: <A extends Literal, B>(as: NonEmptyArray<A>, schema: Kind<F, B>) => Kind<F, A | B>
+  readonly literals: <A extends Literal>(values: NonEmptyArray<A>) => Kind<F, A>
+  readonly literalsOr: <A extends Literal, B>(values: NonEmptyArray<A>, schema: Kind<F, B>) => Kind<F, A | B>
   readonly string: Kind<F, string>
   readonly number: Kind<F, number>
   readonly boolean: Kind<F, boolean>

@@ -71,15 +71,15 @@ export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> 
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Codec<A> {
-  return make(D.literals(as), E.literals(as))
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Codec<A> {
+  return make(D.literals(values), E.literals(values))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> {
-  return make(D.literalsOr(as, codec), E.literalsOr(as, codec))
+export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> {
+  return make(D.literalsOr(values, codec), E.literalsOr(values, codec))
 }
 
 // -------------------------------------------------------------------------------------

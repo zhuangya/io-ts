@@ -1,6 +1,6 @@
 ---
 title: Guard.ts
-nav_order: 7
+nav_order: 8
 parent: Modules
 ---
 
@@ -179,7 +179,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Guard<A> { ... }
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Guard<A> { ... }
 ```
 
 Added in v3.0.0
@@ -189,7 +189,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, guard: Guard<B>): Guard<A | B> { ... }
+export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, guard: Guard<B>): Guard<A | B> { ... }
 ```
 
 Added in v3.0.0

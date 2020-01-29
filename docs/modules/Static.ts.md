@@ -1,6 +1,6 @@
 ---
 title: Static.ts
-nav_order: 13
+nav_order: 14
 parent: Modules
 ---
 
@@ -166,7 +166,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Static<A> { ... }
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Static<A> { ... }
 ```
 
 Added in v3.0.0
@@ -176,7 +176,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, type: Static<B>): Static<A | B> { ... }
+export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, type: Static<B>): Static<A | B> { ... }
 ```
 
 Added in v3.0.0

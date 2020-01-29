@@ -90,7 +90,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const arbitrary: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
+export const arbitrary: S.Schemable<URI> & S.WithInt<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -159,7 +159,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Arbitrary<A> { ... }
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Arbitrary<A> { ... }
 ```
 
 Added in v3.0.0
@@ -169,7 +169,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, arb: Arbitrary<B>): Arbitrary<A | B> { ... }
+export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, arb: Arbitrary<B>): Arbitrary<A | B> { ... }
 ```
 
 Added in v3.0.0

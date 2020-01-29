@@ -29,15 +29,15 @@ export function make<A>(s: string): Static<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Static<A> {
-  return make(`(${as.map(showLiteral).join(' | ')})`)
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Static<A> {
+  return make(`(${values.map(showLiteral).join(' | ')})`)
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, type: Static<B>): Static<A | B> {
-  return make(union([literals(as), type]))
+export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, type: Static<B>): Static<A | B> {
+  return make(union([literals(values), type]))
 }
 
 // -------------------------------------------------------------------------------------

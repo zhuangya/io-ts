@@ -44,15 +44,15 @@ export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Decoder<A> {
-  return fromGuard(G.literals(as), as.map(showLiteral).join(' | '))
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Decoder<A> {
+  return fromGuard(G.literals(values), values.map(showLiteral).join(' | '))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, decoder: Decoder<B>): Decoder<A | B> {
-  return union([literals(as), decoder])
+export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, decoder: Decoder<B>): Decoder<A | B> {
+  return union([literals(values), decoder])
 }
 
 // -------------------------------------------------------------------------------------

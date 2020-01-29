@@ -28,8 +28,8 @@ export function make<A>(u: unknown): JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): JsonSchema<A> {
-  const anyOf = as.map(a => ({ enum: [a] }))
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>): JsonSchema<A> {
+  const anyOf = values.map(a => ({ enum: [a] }))
   return make({
     anyOf
   })
@@ -38,9 +38,12 @@ export function literals<A extends S.Literal>(as: NonEmptyArray<A>): JsonSchema<
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, jsonSchema: JsonSchema<B>): JsonSchema<A | B> {
+export function literalsOr<A extends S.Literal, B>(
+  values: NonEmptyArray<A>,
+  jsonSchema: JsonSchema<B>
+): JsonSchema<A | B> {
   return make({
-    anyOf: [literals(as), jsonSchema]
+    anyOf: [literals(values), jsonSchema]
   })
 }
 

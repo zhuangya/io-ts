@@ -227,7 +227,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Decoder<A> { ... }
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -237,7 +237,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, decoder: Decoder<B>): Decoder<A | B> { ... }
+export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, decoder: Decoder<B>): Decoder<A | B> { ... }
 ```
 
 Added in v3.0.0
