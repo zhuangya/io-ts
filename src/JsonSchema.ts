@@ -30,7 +30,7 @@ export function make<A>(u: unknown): JsonSchema<A> {
  */
 export function literals<A extends S.Literal>(as: NonEmptyArray<A>): JsonSchema<A> {
   const anyOf = as.map(a => ({ enum: [a] }))
-  return C.make({
+  return make({
     anyOf
   })
 }
@@ -39,7 +39,7 @@ export function literals<A extends S.Literal>(as: NonEmptyArray<A>): JsonSchema<
  * @since 3.0.0
  */
 export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, jsonSchema: JsonSchema<B>): JsonSchema<A | B> {
-  return C.make({
+  return make({
     anyOf: [literals(as), jsonSchema]
   })
 }
@@ -51,32 +51,32 @@ export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, jsonSch
 /**
  * @since 3.0.0
  */
-export const string: JsonSchema<string> = C.make({ type: 'string' })
+export const string: JsonSchema<string> = make({ type: 'string' })
 
 /**
  * @since 3.0.0
  */
-export const number: JsonSchema<number> = C.make({ type: 'number' })
+export const number: JsonSchema<number> = make({ type: 'number' })
 
 /**
  * @since 3.0.0
  */
-export const boolean: JsonSchema<boolean> = C.make({ type: 'boolean' })
+export const boolean: JsonSchema<boolean> = make({ type: 'boolean' })
 
 /**
  * @since 3.0.0
  */
-export const UnknownArray: JsonSchema<Array<unknown>> = C.make({ type: 'array' })
+export const UnknownArray: JsonSchema<Array<unknown>> = make({ type: 'array' })
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: JsonSchema<Record<string, unknown>> = C.make({ type: 'object' })
+export const UnknownRecord: JsonSchema<Record<string, unknown>> = make({ type: 'object' })
 
 /**
  * @since 3.0.0
  */
-export const Int: JsonSchema<S.Int> = C.make({ type: 'integer' })
+export const Int: JsonSchema<S.Int> = make({ type: 'integer' })
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -86,7 +86,7 @@ export const Int: JsonSchema<S.Int> = C.make({ type: 'integer' })
  * @since 3.0.0
  */
 export function type<A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<A> {
-  return C.make({
+  return make({
     type: 'object',
     properties: jsonSchemas,
     required: Object.keys(jsonSchemas)
@@ -97,7 +97,7 @@ export function type<A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }): Json
  * @since 3.0.0
  */
 export function partial<A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<Partial<A>> {
-  return C.make({
+  return make({
     type: 'object',
     properties: jsonSchemas
   })
@@ -107,7 +107,7 @@ export function partial<A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }): J
  * @since 3.0.0
  */
 export function record<A>(jsonSchema: JsonSchema<A>): JsonSchema<Record<string, A>> {
-  return C.make({
+  return make({
     type: 'object',
     additionalProperties: jsonSchema
   })
@@ -117,7 +117,7 @@ export function record<A>(jsonSchema: JsonSchema<A>): JsonSchema<Record<string, 
  * @since 3.0.0
  */
 export function array<A>(jsonSchema: JsonSchema<A>): JsonSchema<Array<A>> {
-  return C.make({
+  return make({
     type: 'array',
     items: jsonSchema
   })
@@ -137,7 +137,7 @@ export function tuple<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSc
 export function tuple<A>(jsonSchemas: [JsonSchema<A>]): JsonSchema<[A]>
 export function tuple(jsonSchemas: Array<JsonSchema<any>>): JsonSchema<any> {
   const len = jsonSchemas.length
-  return C.make({
+  return make({
     type: 'array',
     items: jsonSchemas,
     minItems: len,
@@ -157,7 +157,7 @@ export function intersection<A, B, C, D>(
 export function intersection<A, B, C>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]): JsonSchema<A & B & C>
 export function intersection<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B>
 export function intersection(jsonSchemas: Array<JsonSchema<any>>): JsonSchema<any> {
-  return C.make({
+  return make({
     allOf: jsonSchemas
   })
 }
@@ -169,7 +169,7 @@ export function sum<T extends string>(
   _tag: T
 ): <A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K] & Record<T, K>> }) => JsonSchema<A[keyof A]> {
   return (jsonSchemas: any) =>
-    C.make({
+    make({
       oneOf: Object.keys(jsonSchemas).map((k: any) => jsonSchemas[k])
     })
 }
@@ -180,7 +180,7 @@ export function sum<T extends string>(
 export function union<A extends [unknown, unknown, ...Array<unknown>]>(
   jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }
 ): JsonSchema<A[number]> {
-  return C.make({
+  return make({
     oneOf: jsonSchemas
   })
 }

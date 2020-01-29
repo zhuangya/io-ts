@@ -10,7 +10,7 @@ import { pipeable } from 'fp-ts/lib/pipeable'
 import * as DE from './DecodeError'
 import * as G from './Guard'
 import * as S from './Schemable'
-import { hasOwnProperty, isNonEmpty, showConstant, memoize } from './util'
+import { hasOwnProperty, isNonEmpty, showLiteral, memoize } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -45,7 +45,7 @@ export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
  * @since 3.0.0
  */
 export function literals<A extends S.Literal>(as: NonEmptyArray<A>): Decoder<A> {
-  return fromGuard(G.literals(as), as.map(showConstant).join(' | '))
+  return fromGuard(G.literals(as), as.map(showLiteral).join(' | '))
 }
 
 /**
