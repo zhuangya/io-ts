@@ -162,7 +162,7 @@ export function sum<T extends string>(tag: T): <A>(eqs: { [K in keyof A]: Eq<A[K
 /**
  * @since 3.0.0
  */
-export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithLazy<E.URI> = {
+export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithInt<E.URI> & S.WithLazy<E.URI> = {
   ...E.eq,
   literals,
   literalsOr,

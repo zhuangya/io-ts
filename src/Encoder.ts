@@ -230,7 +230,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = {
+export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> = {
   URI,
   contramap: (fa, f) => ({
     encode: b => fa.encode(f(b))

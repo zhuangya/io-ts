@@ -25,15 +25,15 @@
  * - Is there a way to generate branded types + smart constructors based on a user provided predicate?
  *
  * Schemas:
- * - S.Schemable<URI> & S.WithLazy<URI>
+ * - S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI>
  *   - Codec
  *   - Encoder
  *   - Eq
- * - S.Schemable<URI> & S.WithUnion<URI>
+ * - S.Schemable<URI> & S.WithInt<URI> & S.WithUnion<URI>
  *   - JsonSchema
- * - S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI>
+ * - S.Schemable<URI> & S.WithInt<URI> & S.WithParse<URI> & S.WithUnion<URI>
  *   - Arbitrary
- * - S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI>
+ * - S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI>
  *   - Decoder
  *   - Guard
  *
@@ -225,7 +225,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = {
+export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> = {
   URI,
   imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
   literals,

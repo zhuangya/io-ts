@@ -14,6 +14,7 @@ Added in v3.0.0
 
 - [IntBrand (interface)](#intbrand-interface)
 - [Schemable (interface)](#schemable-interface)
+- [WithInt (interface)](#withint-interface)
 - [WithLazy (interface)](#withlazy-interface)
 - [WithParse (interface)](#withparse-interface)
 - [WithUnion (interface)](#withunion-interface)
@@ -46,7 +47,6 @@ export interface Schemable<F extends URIS> {
   readonly string: Kind<F, string>
   readonly number: Kind<F, number>
   readonly boolean: Kind<F, boolean>
-  readonly Int: Kind<F, Int>
   readonly UnknownArray: Kind<F, Array<unknown>>
   readonly UnknownRecord: Kind<F, Record<string, unknown>>
   readonly type: <A>(schemas: { [K in keyof A]: Kind<F, A[K]> }) => Kind<F, A>
@@ -69,6 +69,18 @@ export interface Schemable<F extends URIS> {
   readonly sum: <T extends string>(
     tag: T
   ) => <A>(schemas: { [K in keyof A]: Kind<F, A[K] & Record<T, K>> }) => Kind<F, A[keyof A]>
+}
+```
+
+Added in v3.0.0
+
+# WithInt (interface)
+
+**Signature**
+
+```ts
+export interface WithInt<F extends URIS> {
+  readonly Int: Kind<F, Int>
 }
 ```
 

@@ -87,7 +87,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithLazy<E.URI> = ...
+export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithInt<E.URI> & S.WithLazy<E.URI> = ...
 ```
 
 Added in v3.0.0

@@ -1,6 +1,6 @@
 ---
 title: util.ts
-nav_order: 14
+nav_order: 15
 parent: Modules
 ---
 
@@ -17,7 +17,7 @@ Added in v3.0.0
 - [hasOwnProperty (function)](#hasownproperty-function)
 - [isNonEmpty (function)](#isnonempty-function)
 - [memoize (function)](#memoize-function)
-- [showConstant (function)](#showconstant-function)
+- [showLiteral (function)](#showliteral-function)
 
 ---
 
@@ -71,12 +71,12 @@ export function memoize<A>(f: () => A): () => A { ... }
 
 Added in v3.0.0
 
-# showConstant (function)
+# showLiteral (function)
 
 **Signature**
 
 ```ts
-export function showConstant(a: unknown): string { ... }
+export function showLiteral<A extends Literal>(a: A): string { ... }
 ```
 
 Added in v3.0.0

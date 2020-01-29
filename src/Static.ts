@@ -183,7 +183,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const s: S.Schemable<URI> & S.WithUnion<URI> = {
+export const s: S.Schemable<URI> & S.WithInt<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,

@@ -41,11 +41,6 @@ make(S => S.number) // $ExpectType Schema<number>
 make(S => S.boolean) // $ExpectType Schema<boolean>
 
 //
-// Int
-//
-make(S => S.Int) // $ExpectType Schema<Int>
-
-//
 // UnknownArray
 //
 make(S => S.UnknownArray) // $ExpectType Schema<unknown[]>

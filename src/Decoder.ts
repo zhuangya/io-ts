@@ -405,6 +405,7 @@ declare module 'fp-ts/lib/HKT' {
 export const decoder: Applicative1<URI> &
   Alternative1<URI> &
   S.Schemable<URI> &
+  S.WithInt<URI> &
   S.WithLazy<URI> &
   S.WithParse<URI> &
   S.WithUnion<URI> = {
