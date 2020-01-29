@@ -190,7 +190,6 @@ export const s: S.Schemable<URI> & S.WithInt<URI> & S.WithUnion<URI> = {
   string,
   number,
   boolean,
-  Int,
   UnknownArray,
   UnknownRecord,
   type,
@@ -200,5 +199,6 @@ export const s: S.Schemable<URI> & S.WithInt<URI> & S.WithUnion<URI> = {
   tuple,
   intersection,
   sum,
+  Int,
   union
 }

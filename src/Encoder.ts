@@ -240,7 +240,6 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithInt<URI> & 
   string,
   number,
   boolean,
-  Int,
   UnknownArray,
   UnknownRecord,
   type,
@@ -250,6 +249,7 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithInt<URI> & 
   tuple,
   intersection,
   sum,
+  Int,
   lazy
 }
 

@@ -169,7 +169,6 @@ export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithInt<E.URI> & S.WithLaz
   string,
   number,
   boolean,
-  Int,
   UnknownArray,
   UnknownRecord,
   type,
@@ -179,5 +178,6 @@ export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithInt<E.URI> & S.WithLaz
   tuple,
   intersection,
   sum,
+  Int,
   lazy
 }

@@ -10,7 +10,7 @@ import * as C from '../src/Codec'
 const Person = <F extends URIS>(S: S.Schemable<F>) =>
   S.type({
     name: S.string,
-    age: S.Int
+    age: S.number
   })
 
 describe('Schemable', () => {
@@ -19,7 +19,7 @@ describe('Schemable', () => {
   })
 
   it('should handle encoders', () => {
-    assert.deepStrictEqual(Person(E.encoder).encode({ name: 'name', age: 46 as S.Int }), { name: 'name', age: 46 })
+    assert.deepStrictEqual(Person(E.encoder).encode({ name: 'name', age: 46 }), { name: 'name', age: 46 })
   })
 
   it('should handle guards', () => {
@@ -28,6 +28,6 @@ describe('Schemable', () => {
 
   it('should handle codecs', () => {
     assert.deepStrictEqual(Person(C.codec).decode({ name: 'name', age: 46 }), right({ name: 'name', age: 46 }))
-    assert.deepStrictEqual(Person(E.encoder).encode({ name: 'name', age: 46 as S.Int }), { name: 'name', age: 46 })
+    assert.deepStrictEqual(Person(E.encoder).encode({ name: 'name', age: 46 }), { name: 'name', age: 46 })
   })
 })

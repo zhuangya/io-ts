@@ -233,7 +233,6 @@ export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithInt<URI> & S.With
   string,
   number,
   boolean,
-  Int,
   UnknownArray,
   UnknownRecord,
   type,
@@ -243,5 +242,6 @@ export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithInt<URI> & S.With
   tuple,
   intersection,
   sum,
+  Int,
   lazy
 }

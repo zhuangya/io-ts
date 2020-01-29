@@ -67,6 +67,8 @@ export type Model =
   | { _tag: 'intersection'; models: [Model, Model, ...Array<Model>] }
   | { _tag: 'sum'; tag: string; models: Record<string, Model> }
   | { _tag: 'union'; models: [Model, Model, ...Array<Model>] }
+  | { _tag: 'lazy'; f: () => Model }
+  | { _tag: '$ref'; id: string }
 ```
 
 Added in v3.0.0

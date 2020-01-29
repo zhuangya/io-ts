@@ -274,7 +274,6 @@ export const guard: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.With
   string,
   number,
   boolean,
-  Int,
   UnknownArray,
   UnknownRecord,
   type,
@@ -284,6 +283,7 @@ export const guard: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.With
   tuple,
   intersection,
   sum,
+  Int,
   lazy,
   parse,
   union

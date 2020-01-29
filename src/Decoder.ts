@@ -428,7 +428,6 @@ export const decoder: Applicative1<URI> &
   string,
   number,
   boolean,
-  Int,
   UnknownArray,
   UnknownRecord,
   type,
@@ -438,6 +437,7 @@ export const decoder: Applicative1<URI> &
   tuple,
   intersection,
   sum,
+  Int,
   lazy,
   parse,
   union
