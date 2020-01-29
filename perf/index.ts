@@ -1,30 +1,46 @@
+import * as Ajv from 'ajv'
 import * as Benchmark from 'benchmark'
+import { Kind, URIS } from 'fp-ts/lib/HKT'
 import * as t from '../src'
 import * as D from '../src/Decoder'
-import * as Ajv from 'ajv'
 import * as J from '../src/JsonSchema'
+import * as S from '../src/Schemable'
+
+/*
+index (good) x 425,596 ops/sec ±0.50% (88 runs sampled)
+decoder (good) x 692,827 ops/sec ±0.75% (85 runs sampled)
+AJV (good) x 10,998 ops/sec ±1.67% (84 runs sampled)
+index (bad) x 374,653 ops/sec ±2.27% (85 runs sampled)
+decoder (bad) x 571,560 ops/sec ±2.67% (90 runs sampled)
+AJV (bad) x 10,885 ops/sec ±2.24% (86 runs sampled)
+Fastest is decoder (good)
+*/
 
 const suite = new Benchmark.Suite()
 
+interface Schema<A> {
+  <S extends URIS>(S: S.Schemable<S>): Kind<S, A>
+}
+
+function make<A>(f: Schema<A>): Schema<A> {
+  return f
+}
+
 const TVector = t.tuple([t.number, t.number, t.number])
-const DVector = D.tuple([D.number, D.number, D.number])
-const JVector = J.tuple([J.number, J.number, J.number])
+const Vector = make(S => S.tuple([S.number, S.number, S.number]))
 
 const TAsteroid = t.type({
   type: t.literal('asteroid'),
   location: TVector,
   mass: t.number
 })
-const DAsteroid = D.type({
-  type: D.literals(['asteroid']),
-  location: DVector,
-  mass: D.number
-})
-const JAsteroid = J.type({
-  type: J.literals(['asteroid']),
-  location: JVector,
-  mass: J.number
-})
+const Asteroid = make(S =>
+  S.type({
+    type: S.literals(['asteroid']),
+    location: Vector(S),
+    mass: S.number
+  })
+)
 
 const TPlanet = t.type({
   type: t.literal('planet'),
@@ -33,20 +49,15 @@ const TPlanet = t.type({
   population: t.number,
   habitable: t.boolean
 })
-const DPlanet = D.type({
-  type: D.literals(['planet']),
-  location: DVector,
-  mass: D.number,
-  population: D.number,
-  habitable: D.boolean
-})
-const JPlanet = J.type({
-  type: J.literals(['planet']),
-  location: JVector,
-  mass: J.number,
-  population: J.number,
-  habitable: J.boolean
-})
+const Planet = make(S =>
+  S.type({
+    type: S.literals(['planet']),
+    location: Vector(S),
+    mass: S.number,
+    population: S.number,
+    habitable: S.boolean
+  })
+)
 
 const TRank = t.keyof({
   captain: null,
@@ -54,8 +65,7 @@ const TRank = t.keyof({
   officer: null,
   ensign: null
 })
-const DRank = D.literals(['captain', 'first mate', 'officer', 'ensign'])
-const JRank = J.literals(['captain', 'first mate', 'officer', 'ensign'])
+const Rank = make(S => S.literals(['captain', 'first mate', 'officer', 'ensign']))
 
 const TCrewMember = t.type({
   name: t.string,
@@ -63,18 +73,14 @@ const TCrewMember = t.type({
   rank: TRank,
   home: TPlanet
 })
-const DCrewMember = D.type({
-  name: D.string,
-  age: D.number,
-  rank: DRank,
-  home: DPlanet
-})
-const JCrewMember = J.type({
-  name: J.string,
-  age: J.number,
-  rank: JRank,
-  home: JPlanet
-})
+const CrewMember = make(S =>
+  S.type({
+    name: S.string,
+    age: S.number,
+    rank: Rank(S),
+    home: Planet(S)
+  })
+)
 
 const TShip = t.type({
   type: t.literal('ship'),
@@ -83,32 +89,26 @@ const TShip = t.type({
   name: t.string,
   crew: t.array(TCrewMember)
 })
-const DShip = D.type({
-  type: D.literals(['ship']),
-  location: DVector,
-  mass: D.number,
-  name: D.string,
-  crew: D.array(DCrewMember)
-})
-const JShip = J.type({
-  type: J.literals(['ship']),
-  location: JVector,
-  mass: J.number,
-  name: J.string,
-  crew: J.array(JCrewMember)
-})
+const Ship = make(S =>
+  S.type({
+    type: S.literals(['ship']),
+    location: Vector(S),
+    mass: S.number,
+    name: S.string,
+    crew: S.array(CrewMember(S))
+  })
+)
 
 const TUnion = t.union([TAsteroid, TPlanet, TShip])
-const DUnion = D.sum('type')({
-  asteroid: DAsteroid,
-  planet: DPlanet,
-  ship: DShip
-})
-const JUnion = J.sum('type')({
-  asteroid: JAsteroid,
-  planet: JPlanet,
-  ship: JShip
-})
+const Union = make(S =>
+  S.sum('type')({
+    asteroid: Asteroid(S),
+    planet: Planet(S),
+    ship: Ship(S)
+  })
+)
+const DUnion = Union(D.decoder)
+const JUnion = Union(J.jsonSchema)
 
 const good = {
   type: 'ship',
@@ -159,22 +159,22 @@ function run<A>(jsonSchema: object, a: A): boolean {
 }
 
 suite
-  .add('TUnion (good)', function() {
+  .add('index (good)', function() {
     TUnion.decode(good)
   })
-  .add('DUnion (good)', function() {
+  .add('decoder (good)', function() {
     DUnion.decode(good)
   })
-  .add('JUnion (good)', function() {
+  .add('AJV (good)', function() {
     run(JUnion, good)
   })
-  .add('TUnion (bad)', function() {
+  .add('index (bad)', function() {
     TUnion.decode(bad)
   })
-  .add('DUnion (bad)', function() {
+  .add('decoder (bad)', function() {
     DUnion.decode(bad)
   })
-  .add('JUnion (bad)', function() {
+  .add('AJV (bad)', function() {
     run(JUnion, bad)
   })
   .on('cycle', function(event: any) {

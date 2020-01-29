@@ -1,10 +1,30 @@
+import * as Ajv from 'ajv'
 import * as Benchmark from 'benchmark'
+import { Kind, URIS } from 'fp-ts/lib/HKT'
 import * as t from '../../src'
 import * as D from '../../src/Decoder'
-import * as Ajv from 'ajv'
 import * as J from '../../src/JsonSchema'
+import * as S from '../../src/Schemable'
+
+/*
+index (good) x 3,372,830 ops/sec ±1.42% (87 runs sampled)
+decoder (good) x 4,350,520 ops/sec ±0.75% (87 runs sampled)
+AJV (good) x 65,193 ops/sec ±0.81% (89 runs sampled)
+index (bad) x 2,704,714 ops/sec ±3.35% (84 runs sampled)
+decoder (bad) x 3,392,211 ops/sec ±2.05% (88 runs sampled)
+AJV (bad) x 64,509 ops/sec ±1.48% (89 runs sampled)
+Fastest is decoder (good)
+*/
 
 const suite = new Benchmark.Suite()
+
+interface Schema<A> {
+  <S extends URIS>(S: S.Schemable<S>): Kind<S, A>
+}
+
+function make<A>(f: Schema<A>): Schema<A> {
+  return f
+}
 
 const TSum = t.union([
   t.type({
@@ -17,15 +37,16 @@ const TSum = t.union([
   })
 ])
 
-const DSum = D.sum('_tag')({
-  A: D.type({ _tag: D.literals(['A']), a: D.string }),
-  B: D.type({ _tag: D.literals(['B']), b: D.string })
-})
+const Sum = make(S =>
+  S.sum('_tag')({
+    A: S.type({ _tag: S.literals(['A']), a: S.string }),
+    B: S.type({ _tag: S.literals(['B']), b: S.string })
+  })
+)
 
-const JSum = J.sum('_tag')({
-  A: J.type({ _tag: J.literals(['A']), a: J.string }),
-  B: J.type({ _tag: J.literals(['B']), b: J.string })
-})
+const DSum = Sum(D.decoder)
+
+const JSum = Sum(J.jsonSchema)
 
 const ajv = new Ajv()
 
@@ -44,22 +65,22 @@ const bad = {
 }
 
 suite
-  .add('TSum (good)', function() {
+  .add('index (good)', function() {
     TSum.decode(good)
   })
-  .add('DSum (good)', function() {
+  .add('decoder (good)', function() {
     DSum.decode(good)
   })
-  .add('JSum (good)', function() {
+  .add('AJV (good)', function() {
     run(JSum, good)
   })
-  .add('TSum (bad)', function() {
+  .add('index (bad)', function() {
     TSum.decode(bad)
   })
-  .add('DSum (bad)', function() {
+  .add('decoder (bad)', function() {
     DSum.decode(bad)
   })
-  .add('JSum (bad)', function() {
+  .add('AJV (bad)', function() {
     run(JSum, bad)
   })
   .on('cycle', function(event: any) {
