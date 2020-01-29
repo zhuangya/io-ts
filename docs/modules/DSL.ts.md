@@ -24,6 +24,7 @@ Added in v3.0.0
 - [string (constant)](#string-constant)
 - [array (function)](#array-function)
 - [intersection (function)](#intersection-function)
+- [lazy (function)](#lazy-function)
 - [literals (function)](#literals-function)
 - [literalsOr (function)](#literalsor-function)
 - [make (function)](#make-function)
@@ -41,7 +42,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export type DSL<A> = C.Const<Model, A>
+export type DSL<A> = C.Const<IO<Model>, A>
 ```
 
 Added in v3.0.0
@@ -67,7 +68,7 @@ export type Model =
   | { _tag: 'intersection'; models: [Model, Model, ...Array<Model>] }
   | { _tag: 'sum'; tag: string; models: Record<string, Model> }
   | { _tag: 'union'; models: [Model, Model, ...Array<Model>] }
-  | { _tag: 'lazy'; f: () => Model }
+  | { _tag: 'lazy'; model: Model }
   | { _tag: '$ref'; id: string }
 ```
 
@@ -176,6 +177,16 @@ export function intersection<A, B>(dsls: [DSL<A>, DSL<B>]): DSL<A & B> { ... }
 
 Added in v3.0.0
 
+# lazy (function)
+
+**Signature**
+
+```ts
+export function lazy<A>(f: () => DSL<A>): DSL<A> { ... }
+```
+
+Added in v3.0.0
+
 # literals (function)
 
 **Signature**
@@ -201,7 +212,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(model: Model): DSL<A> { ... }
+export function make<A>(model: IO<Model>): DSL<A> { ... }
 ```
 
 Added in v3.0.0

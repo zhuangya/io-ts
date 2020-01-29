@@ -2,7 +2,7 @@ import * as assert from 'assert'
 import * as DSL from '../src/DSL'
 
 function assertDSL<A>(dsl: DSL.DSL<A>, model: DSL.Model): void {
-  assert.deepStrictEqual(dsl, model)
+  assert.deepStrictEqual(dsl(), model)
 }
 
 describe('DSL', () => {
@@ -126,5 +126,28 @@ describe('DSL', () => {
   it('union', () => {
     const schema = DSL.union([DSL.string, DSL.number])
     assertDSL(schema, { _tag: 'union', models: [{ _tag: 'string' }, { _tag: 'number' }] })
+  })
+
+  it('lazy', () => {
+    interface A {
+      a: string
+      as: Array<A>
+    }
+    const schema: DSL.DSL<A> = DSL.lazy(() =>
+      DSL.type({
+        a: DSL.string,
+        as: DSL.array(schema)
+      })
+    )
+    assertDSL(schema, {
+      _tag: 'lazy',
+      model: {
+        _tag: 'type',
+        models: {
+          a: { _tag: 'string' },
+          as: { _tag: 'array', model: { _tag: '$ref', id: 'id' } }
+        }
+      }
+    })
   })
 })
