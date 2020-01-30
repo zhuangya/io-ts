@@ -67,7 +67,7 @@ export type Model =
   | { readonly _tag: 'partial'; readonly models: Record<string, Model> }
   | { readonly _tag: 'record'; readonly model: Model }
   | { readonly _tag: 'array'; readonly model: Model }
-  | { readonly _tag: 'tuple'; readonly models: [Model, ...Array<Model>] }
+  | { readonly _tag: 'tuple'; readonly models: NonEmptyArray<Model> }
   | { readonly _tag: 'intersection'; readonly models: [Model, Model, ...Array<Model>] }
   | { readonly _tag: 'sum'; readonly tag: string; readonly models: Record<string, Model> }
   | { readonly _tag: 'union'; readonly models: [Model, Model, ...Array<Model>] }

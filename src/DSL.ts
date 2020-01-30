@@ -30,7 +30,7 @@ export type Model =
   | { readonly _tag: 'partial'; readonly models: Record<string, Model> }
   | { readonly _tag: 'record'; readonly model: Model }
   | { readonly _tag: 'array'; readonly model: Model }
-  | { readonly _tag: 'tuple'; readonly models: [Model, ...Array<Model>] }
+  | { readonly _tag: 'tuple'; readonly models: NonEmptyArray<Model> }
   | { readonly _tag: 'intersection'; readonly models: [Model, Model, ...Array<Model>] }
   | { readonly _tag: 'sum'; readonly tag: string; readonly models: Record<string, Model> }
   | { readonly _tag: 'union'; readonly models: [Model, Model, ...Array<Model>] }
@@ -153,7 +153,7 @@ export function tuple<A, B>(dsls: [DSL<A>, DSL<B>]): DSL<[A, B]>
 export function tuple<A>(dsls: [DSL<A>]): DSL<[A]>
 export function tuple(dsls: Array<DSL<any>>): DSL<any> {
   return C.make(() => {
-    const models: IO<[Model, ...Array<Model>]> = sequenceA(dsls) as any
+    const models: IO<NonEmptyArray<Model>> = sequenceA(dsls) as any
     return { _tag: 'tuple', models: models() }
   })
 }

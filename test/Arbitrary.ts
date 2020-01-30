@@ -11,8 +11,8 @@ import * as Ajv from 'ajv'
 
 const ajv = new Ajv()
 
-function run<A>(jsonSchema: J.JsonSchema<A>, a: A): boolean {
-  return ajv.compile(jsonSchema)(a) as any
+function run<A>(jsonSchema: J.JsonSchema<A>, u: unknown): boolean {
+  return Boolean(ajv.compile(jsonSchema())(u))
 }
 
 interface Schema<A> {

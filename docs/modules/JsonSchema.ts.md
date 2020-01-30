@@ -12,7 +12,8 @@ Added in v3.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [JsonSchema (interface)](#jsonschema-interface)
+- [JsonSchema (type alias)](#jsonschema-type-alias)
+- [Model (type alias)](#model-type-alias)
 - [URI (type alias)](#uri-type-alias)
 - [Int (constant)](#int-constant)
 - [URI (constant)](#uri-constant)
@@ -24,6 +25,7 @@ Added in v3.0.0
 - [string (constant)](#string-constant)
 - [array (function)](#array-function)
 - [intersection (function)](#intersection-function)
+- [lazy (function)](#lazy-function)
 - [literals (function)](#literals-function)
 - [literalsOr (function)](#literalsor-function)
 - [partial (function)](#partial-function)
@@ -35,12 +37,43 @@ Added in v3.0.0
 
 ---
 
-# JsonSchema (interface)
+# JsonSchema (type alias)
 
 **Signature**
 
 ```ts
-export interface JsonSchema<A> extends C.Const<unknown, A> {}
+export type JsonSchema<A> = C.Const<IO<Model>, A>
+```
+
+Added in v3.0.0
+
+# Model (type alias)
+
+**Signature**
+
+```ts
+export type Model =
+  | { readonly type: 'string' }
+  | { readonly type: 'number'; readonly minimum?: number }
+  | { readonly type: 'boolean' }
+  | { readonly type: 'integer' }
+  | {
+      readonly type: 'array'
+      readonly items?: Model | NonEmptyArray<Model>
+      readonly minItems?: number
+      readonly maxItems?: number
+    }
+  | {
+      readonly type: 'object'
+      readonly properties?: Record<string, Model>
+      readonly required?: Array<string>
+      readonly additionalProperties?: Model
+    }
+  | { readonly enum: NonEmptyArray<S.Literal> }
+  | { readonly anyOf: [Model, Model, ...Array<Model>] }
+  | { readonly allOf: [Model, Model, ...Array<Model>] }
+  | { readonly oneOf: [Model, Model, ...Array<Model>] }
+  | { readonly $ref: string; readonly $id?: string; readonly definitions?: Record<string, Model> }
 ```
 
 Added in v3.0.0
@@ -110,7 +143,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const jsonSchema: S.Schemable<URI> & S.WithInt<URI> & S.WithUnion<URI> = ...
+export const jsonSchema: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -158,6 +191,16 @@ export function intersection<A, B, C, D>(
 ): JsonSchema<A & B & C & D>
 export function intersection<A, B, C>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]): JsonSchema<A & B & C>
 export function intersection<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B> { ... }
+```
+
+Added in v3.0.0
+
+# lazy (function)
+
+**Signature**
+
+```ts
+export function lazy<A>(f: () => JsonSchema<A>): JsonSchema<A> { ... }
 ```
 
 Added in v3.0.0
