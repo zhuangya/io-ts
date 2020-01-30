@@ -34,7 +34,7 @@ export type Model =
   | { readonly _tag: 'intersection'; readonly models: [Model, Model, ...Array<Model>] }
   | { readonly _tag: 'sum'; readonly tag: string; readonly models: Record<string, Model> }
   | { readonly _tag: 'union'; readonly models: [Model, Model, ...Array<Model>] }
-  | { readonly _tag: 'lazy'; readonly model: Model }
+  | { readonly _tag: 'lazy'; readonly model: Model; readonly id: string }
   | { readonly _tag: '$ref'; readonly id: string }
 
 /**
@@ -197,17 +197,19 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
   })
 }
 
+let refCounter = 0
+
 /**
  * @since 3.0.0
  */
 export function lazy<A>(f: () => DSL<A>): DSL<A> {
-  let counter = 0
+  let id: string
   return C.make(() => {
-    if (counter === 0) {
-      counter++
-      return { _tag: 'lazy', model: f()() }
+    if (!id) {
+      id = `$Ref${++refCounter}`
+      return { _tag: 'lazy', model: f()(), id }
     }
-    return { _tag: '$ref', id: 'id' } // <= FIXME
+    return { _tag: '$ref', id }
   })
 }
 

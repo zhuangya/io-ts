@@ -141,8 +141,15 @@ describe('DSL', () => {
         _tag: 'type',
         models: {
           a: { _tag: 'string' },
-          as: { _tag: 'array', model: { _tag: '$ref', id: 'id' } }
+          as: { _tag: 'array', model: { _tag: '$ref', id: '$Ref1' } }
         }
+      },
+      id: '$Ref1'
+    })
+    assertDSL(DSL.type({ a: schema }), {
+      _tag: 'type',
+      models: {
+        a: { _tag: '$ref', id: '$Ref1' }
       }
     })
   })
