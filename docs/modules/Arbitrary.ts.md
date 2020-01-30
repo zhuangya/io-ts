@@ -12,6 +12,7 @@ Added in v3.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [Arbitrary (interface)](#arbitrary-interface)
 - [URI (type alias)](#uri-type-alias)
 - [Int (constant)](#int-constant)
 - [URI (constant)](#uri-constant)
@@ -23,6 +24,7 @@ Added in v3.0.0
 - [string (constant)](#string-constant)
 - [array (function)](#array-function)
 - [intersection (function)](#intersection-function)
+- [lazy (function)](#lazy-function)
 - [literals (function)](#literals-function)
 - [literalsOr (function)](#literalsor-function)
 - [parse (function)](#parse-function)
@@ -34,6 +36,16 @@ Added in v3.0.0
 - [union (function)](#union-function)
 
 ---
+
+# Arbitrary (interface)
+
+**Signature**
+
+```ts
+export interface Arbitrary<A> extends fc.Arbitrary<A> {}
+```
+
+Added in v3.0.0
 
 # URI (type alias)
 
@@ -90,7 +102,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const arbitrary: S.Schemable<URI> & S.WithInt<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
+export const arbitrary: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -150,6 +162,16 @@ export function intersection<A, B, C, D>(
 ): Arbitrary<A & B & C & D>
 export function intersection<A, B, C>(arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>]): Arbitrary<A & B & C>
 export function intersection<A, B>(arbs: [Arbitrary<A>, Arbitrary<B>]): Arbitrary<A & B> { ... }
+```
+
+Added in v3.0.0
+
+# lazy (function)
+
+**Signature**
+
+```ts
+export function lazy<A>(f: () => Arbitrary<A>): Arbitrary<A> { ... }
 ```
 
 Added in v3.0.0

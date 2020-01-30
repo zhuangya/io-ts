@@ -1,12 +1,13 @@
 /**
  * @since 3.0.0
  */
-import * as C from 'fp-ts/lib/Const'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import * as S from './Schemable'
-import { IO, of, io } from 'fp-ts/lib/IO'
-import * as R from 'fp-ts/lib/Record'
 import * as A from 'fp-ts/lib/Array'
+import * as C from 'fp-ts/lib/Const'
+import * as E from 'fp-ts/lib/Either'
+import { IO, io, of } from 'fp-ts/lib/IO'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import * as R from 'fp-ts/lib/Record'
+import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -23,6 +24,8 @@ export type Model =
   | { _tag: 'boolean' }
   | { _tag: 'UnknownArray' }
   | { _tag: 'UnknownRecord' }
+  | { _tag: 'Int' }
+  | { _tag: 'parse'; model: Model; parser: (a: any) => E.Either<string, unknown> }
   | { _tag: 'type'; models: Record<string, Model> }
   | { _tag: 'partial'; models: Record<string, Model> }
   | { _tag: 'record'; model: Model }
@@ -37,7 +40,7 @@ export type Model =
 /**
  * @since 3.0.0
  */
-export type DSL<A> = C.Const<IO<Model>, A>
+export type DSL<A> = C.Const<() => Model, A>
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -46,7 +49,7 @@ export type DSL<A> = C.Const<IO<Model>, A>
 /**
  * @since 3.0.0
  */
-export function make<A>(model: IO<Model>): DSL<A> {
+export function make<A>(model: () => Model): DSL<A> {
   return C.make(model)
 }
 
@@ -93,9 +96,21 @@ export const UnknownArray: DSL<Array<unknown>> = make(of({ _tag: 'UnknownArray' 
  */
 export const UnknownRecord: DSL<Record<string, unknown>> = make(of({ _tag: 'UnknownRecord' }))
 
+/**
+ * @since 3.0.0
+ */
+export const Int: DSL<S.Int> = make(of({ _tag: 'Int' }))
+
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export function parse<A, B>(dsl: DSL<A>, parser: (a: A) => E.Either<string, B>): DSL<B> {
+  return make(() => ({ _tag: 'parse', model: dsl(), parser }))
+}
 
 /**
  * @since 3.0.0
@@ -222,7 +237,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const dsl: S.Schemable<URI> & S.WithUnion<URI> = {
+export const dsl: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,
@@ -238,5 +253,8 @@ export const dsl: S.Schemable<URI> & S.WithUnion<URI> = {
   tuple,
   intersection,
   sum,
+  Int,
+  lazy,
+  parse,
   union
 }

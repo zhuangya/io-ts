@@ -1,5 +1,6 @@
 import * as assert from 'assert'
 import * as DSL from '../src/DSL'
+import * as E from 'fp-ts/lib/Either'
 
 function assertDSL<A>(dsl: DSL.DSL<A>, model: DSL.Model): void {
   assert.deepStrictEqual(dsl(), model)
@@ -123,11 +124,6 @@ describe('DSL', () => {
     })
   })
 
-  it('union', () => {
-    const schema = DSL.union([DSL.string, DSL.number])
-    assertDSL(schema, { _tag: 'union', models: [{ _tag: 'string' }, { _tag: 'number' }] })
-  })
-
   it('lazy', () => {
     interface A {
       a: string
@@ -149,5 +145,16 @@ describe('DSL', () => {
         }
       }
     })
+  })
+
+  it('parse', () => {
+    const parser = (s: string): E.Either<string, string> => (s.length > 0 ? E.right(s) : E.left('empty string'))
+    const schema = DSL.parse(DSL.string, parser)
+    assertDSL(schema, { _tag: 'parse', model: { _tag: 'string' }, parser })
+  })
+
+  it('union', () => {
+    const schema = DSL.union([DSL.string, DSL.number])
+    assertDSL(schema, { _tag: 'union', models: [{ _tag: 'string' }, { _tag: 'number' }] })
   })
 })

@@ -43,9 +43,9 @@ Schemas:
   - Eq
 - S.Schemable<URI> & S.WithInt<URI> & S.WithUnion<URI>
   - JsonSchema
-- S.Schemable<URI> & S.WithInt<URI> & S.WithParse<URI> & S.WithUnion<URI>
-  - Arbitrary
+  - Static
 - S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI>
+  - Arbitrary
   - Decoder
   - Guard
 

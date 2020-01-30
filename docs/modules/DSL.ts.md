@@ -15,6 +15,7 @@ Added in v3.0.0
 - [DSL (type alias)](#dsl-type-alias)
 - [Model (type alias)](#model-type-alias)
 - [URI (type alias)](#uri-type-alias)
+- [Int (constant)](#int-constant)
 - [URI (constant)](#uri-constant)
 - [UnknownArray (constant)](#unknownarray-constant)
 - [UnknownRecord (constant)](#unknownrecord-constant)
@@ -28,6 +29,7 @@ Added in v3.0.0
 - [literals (function)](#literals-function)
 - [literalsOr (function)](#literalsor-function)
 - [make (function)](#make-function)
+- [parse (function)](#parse-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
 - [sum (function)](#sum-function)
@@ -42,7 +44,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export type DSL<A> = C.Const<IO<Model>, A>
+export type DSL<A> = C.Const<() => Model, A>
 ```
 
 Added in v3.0.0
@@ -60,6 +62,8 @@ export type Model =
   | { _tag: 'boolean' }
   | { _tag: 'UnknownArray' }
   | { _tag: 'UnknownRecord' }
+  | { _tag: 'Int' }
+  | { _tag: 'parse'; model: Model; parser: (a: any) => E.Either<string, unknown> }
   | { _tag: 'type'; models: Record<string, Model> }
   | { _tag: 'partial'; models: Record<string, Model> }
   | { _tag: 'record'; model: Model }
@@ -80,6 +84,16 @@ Added in v3.0.0
 
 ```ts
 export type URI = typeof URI
+```
+
+Added in v3.0.0
+
+# Int (constant)
+
+**Signature**
+
+```ts
+export const Int: DSL<S.Int> = ...
 ```
 
 Added in v3.0.0
@@ -129,7 +143,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const dsl: S.Schemable<URI> & S.WithUnion<URI> = ...
+export const dsl: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -212,7 +226,17 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(model: IO<Model>): DSL<A> { ... }
+export function make<A>(model: () => Model): DSL<A> { ... }
+```
+
+Added in v3.0.0
+
+# parse (function)
+
+**Signature**
+
+```ts
+export function parse<A, B>(dsl: DSL<A>, parser: (a: A) => E.Either<string, B>): DSL<B> { ... }
 ```
 
 Added in v3.0.0

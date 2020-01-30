@@ -4,8 +4,17 @@
 import * as fc from 'fast-check'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as S from './Schemable'
-import Arbitrary = fc.Arbitrary
 import { Either } from 'fp-ts/lib/Either'
+import { memoize } from './util'
+
+// -------------------------------------------------------------------------------------
+// model
+// -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export interface Arbitrary<A> extends fc.Arbitrary<A> {}
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -145,6 +154,14 @@ export function sum<T extends string>(
 /**
  * @since 3.0.0
  */
+export function lazy<A>(f: () => Arbitrary<A>): Arbitrary<A> {
+  const get = memoize(f)
+  return fc.constant(null).chain(() => get())
+}
+
+/**
+ * @since 3.0.0
+ */
 export function union<A extends [unknown, unknown, ...Array<unknown>]>(
   arbs: { [K in keyof A]: Arbitrary<A[K]> }
 ): Arbitrary<A[number]> {
@@ -174,14 +191,13 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const arbitrary: S.Schemable<URI> & S.WithInt<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
+export const arbitrary: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,
   string,
   number,
   boolean,
-  Int,
   UnknownArray,
   UnknownRecord,
   type,
@@ -191,6 +207,8 @@ export const arbitrary: S.Schemable<URI> & S.WithInt<URI> & S.WithParse<URI> & S
   tuple,
   intersection,
   sum,
+  Int,
+  lazy,
   parse,
   union
 }

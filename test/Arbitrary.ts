@@ -1,5 +1,5 @@
 import * as fc from 'fast-check'
-import * as A from '../src/Arbitrary'
+import * as Arb from '../src/Arbitrary'
 import * as D from '../src/Decoder'
 import * as E from '../src/Eq'
 import * as G from '../src/Guard'
@@ -24,7 +24,7 @@ function make<A>(f: Schema<A>): Schema<A> {
 }
 
 function assert<A>(schema: Schema<A>): void {
-  const arb = schema(A.arbitrary)
+  const arb = schema(Arb.arbitrary)
   const decoder = schema(D.decoder)
   const eq = schema(E.eq)
   const guard = schema(G.guard)
@@ -41,7 +41,7 @@ function makeWithUnion<A>(f: SchemaWithUnion<A>): SchemaWithUnion<A> {
 }
 
 function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
-  const arb = schema(A.arbitrary)
+  const arb = schema(Arb.arbitrary)
   const decoder = schema(D.decoder)
   const guard = schema(G.guard)
   const jsonSchema = schema(J.jsonSchema)
@@ -57,7 +57,22 @@ function makeWithParse<A>(f: SchemaWithParse<A>): SchemaWithParse<A> {
 }
 
 function assertWithParse<A>(schema: SchemaWithParse<A>): void {
-  const arb = schema(A.arbitrary)
+  const arb = schema(Arb.arbitrary)
+  const decoder = schema(D.decoder)
+  const guard = schema(G.guard)
+  fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a))))
+}
+
+interface SchemaWithLazy<A> {
+  <S extends URIS>(S: S.Schemable<S> & S.WithLazy<S>): Kind<S, A>
+}
+
+function makeWithLazy<A>(f: SchemaWithLazy<A>): SchemaWithLazy<A> {
+  return f
+}
+
+function assertWithLazy<A>(schema: SchemaWithLazy<A>): void {
+  const arb = schema(Arb.arbitrary)
   const decoder = schema(D.decoder)
   const guard = schema(G.guard)
   fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a))))
@@ -142,5 +157,21 @@ describe('Arbitrary', () => {
 
   it('union', () => {
     assertWithUnion(makeWithUnion(S => S.union([S.type({ a: S.string }), S.type({ b: S.number })])))
+  })
+
+  it('lazy', () => {
+    interface A {
+      a: string
+      b: undefined | A
+    }
+    const schema: SchemaWithLazy<A> = makeWithLazy(S =>
+      S.lazy(() =>
+        S.type({
+          a: S.string,
+          b: S.literalsOr([undefined], schema(S))
+        })
+      )
+    )
+    assertWithLazy(schema)
   })
 })
