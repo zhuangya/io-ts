@@ -7,15 +7,13 @@ import * as J from '../../src/JsonSchema'
 import * as S from '../../src/Schemable'
 
 /*
-index (good) x 694,970 ops/sec ±0.70% (88 runs sampled)
-decoder (good) x 1,357,466 ops/sec ±0.78% (87 runs sampled)
-decoder with expected (good) x 1,279,203 ops/sec ±2.20% (86 runs sampled)
-AJV (good) x 48,323 ops/sec ±2.78% (88 runs sampled)
-index (bad) x 1,156,739 ops/sec ±2.58% (84 runs sampled)
-decoder (bad) x 1,237,579 ops/sec ±2.62% (86 runs sampled)
-decoder with expected (bad) x 903,575 ops/sec ±2.31% (88 runs sampled)
-AJV (good) x 43,797 ops/sec ±3.56% (84 runs sampled)
-Fastest is decoder (bad)
+index (good) x 692,993 ops/sec ±2.05% (83 runs sampled)
+decoder (good) x 1,363,445 ops/sec ±0.51% (85 runs sampled)
+AJV (good) x 33,714,367 ops/sec ±1.24% (83 runs sampled)
+index (bad) x 1,149,093 ops/sec ±2.39% (86 runs sampled)
+decoder (bad) x 1,225,891 ops/sec ±3.16% (88 runs sampled)
+AJV (bad) x 6,963,926 ops/sec ±2.11% (85 runs sampled)
+Fastest is AJV (good)
 */
 
 const suite = new Benchmark.Suite()
@@ -50,8 +48,6 @@ const Person = make(S =>
 
 const DPerson = Person(D.decoder)
 
-const DPersonWithExpected = D.withExpected(DPerson, 'DPerson')
-
 const AJVPerson = Person(J.jsonSchema)
 
 const good = {
@@ -72,11 +68,8 @@ const bad = {
   }
 }
 
-const ajv = new Ajv()
-
-function run<A>(jsonSchema: object, a: A): boolean {
-  return ajv.compile(jsonSchema)(a) as any
-}
+const ajv = new Ajv({ allErrors: true })
+const validateJSON = ajv.compile(AJVPerson)
 
 suite
   .add('index (good)', function() {
@@ -85,11 +78,8 @@ suite
   .add('decoder (good)', function() {
     DPerson.decode(good)
   })
-  .add('decoder with expected (good)', function() {
-    DPersonWithExpected.decode(good)
-  })
   .add('AJV (good)', function() {
-    run(AJVPerson, good)
+    validateJSON(good)
   })
   .add('index (bad)', function() {
     TPerson.decode(bad)
@@ -97,11 +87,8 @@ suite
   .add('decoder (bad)', function() {
     DPerson.decode(bad)
   })
-  .add('decoder with expected (bad)', function() {
-    DPersonWithExpected.decode(bad)
-  })
   .add('AJV (bad)', function() {
-    run(AJVPerson, bad)
+    validateJSON(bad)
   })
   .on('cycle', function(event: any) {
     console.log(String(event.target))

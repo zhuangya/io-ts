@@ -7,13 +7,13 @@ import * as J from '../src/JsonSchema'
 import * as S from '../src/Schemable'
 
 /*
-index (good) x 425,596 ops/sec ±0.50% (88 runs sampled)
-decoder (good) x 692,827 ops/sec ±0.75% (85 runs sampled)
-AJV (good) x 10,998 ops/sec ±1.67% (84 runs sampled)
-index (bad) x 374,653 ops/sec ±2.27% (85 runs sampled)
-decoder (bad) x 571,560 ops/sec ±2.67% (90 runs sampled)
-AJV (bad) x 10,885 ops/sec ±2.24% (86 runs sampled)
-Fastest is decoder (good)
+index (good) x 436,539 ops/sec ±0.54% (83 runs sampled)
+decoder (good) x 698,811 ops/sec ±0.57% (88 runs sampled)
+AJV (good) x 1,805,587 ops/sec ±0.53% (88 runs sampled)
+index (bad) x 378,278 ops/sec ±3.38% (82 runs sampled)
+decoder (bad) x 579,156 ops/sec ±2.07% (89 runs sampled)
+AJV (bad) x 1,557,123 ops/sec ±2.86% (87 runs sampled)
+Fastest is AJV (good)
 */
 
 const suite = new Benchmark.Suite()
@@ -152,11 +152,8 @@ const bad = {
   ]
 }
 
-const ajv = new Ajv()
-
-function run<A>(jsonSchema: object, a: A): boolean {
-  return ajv.compile(jsonSchema)(a) as any
-}
+const ajv = new Ajv({ allErrors: true })
+const validateJSON = ajv.compile(JUnion)
 
 suite
   .add('index (good)', function() {
@@ -166,7 +163,7 @@ suite
     DUnion.decode(good)
   })
   .add('AJV (good)', function() {
-    run(JUnion, good)
+    validateJSON(good)
   })
   .add('index (bad)', function() {
     TUnion.decode(bad)
@@ -175,7 +172,7 @@ suite
     DUnion.decode(bad)
   })
   .add('AJV (bad)', function() {
-    run(JUnion, bad)
+    validateJSON(bad)
   })
   .on('cycle', function(event: any) {
     console.log(String(event.target))

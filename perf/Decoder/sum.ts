@@ -7,13 +7,13 @@ import * as J from '../../src/JsonSchema'
 import * as S from '../../src/Schemable'
 
 /*
-index (good) x 3,372,830 ops/sec ±1.42% (87 runs sampled)
-decoder (good) x 4,350,520 ops/sec ±0.75% (87 runs sampled)
-AJV (good) x 65,193 ops/sec ±0.81% (89 runs sampled)
-index (bad) x 2,704,714 ops/sec ±3.35% (84 runs sampled)
-decoder (bad) x 3,392,211 ops/sec ±2.05% (88 runs sampled)
-AJV (bad) x 64,509 ops/sec ±1.48% (89 runs sampled)
-Fastest is decoder (good)
+index (good) x 3,392,031 ops/sec ±0.56% (87 runs sampled)
+decoder (good) x 4,266,755 ops/sec ±1.25% (89 runs sampled)
+AJV (good) x 4,624,733 ops/sec ±0.38% (87 runs sampled)
+index (bad) x 2,677,015 ops/sec ±3.62% (84 runs sampled)
+decoder (bad) x 3,425,453 ops/sec ±2.18% (86 runs sampled)
+AJV (bad) x 3,598,042 ops/sec ±3.14% (87 runs sampled)
+Fastest is AJV (good)
 */
 
 const suite = new Benchmark.Suite()
@@ -48,11 +48,8 @@ const DSum = Sum(D.decoder)
 
 const JSum = Sum(J.jsonSchema)
 
-const ajv = new Ajv()
-
-function run<A>(jsonSchema: object, a: A): boolean {
-  return ajv.compile(jsonSchema)(a) as any
-}
+const ajv = new Ajv({ allErrors: true })
+const validateJSON = ajv.compile(JSum)
 
 const good = {
   _tag: 'B',
@@ -72,7 +69,7 @@ suite
     DSum.decode(good)
   })
   .add('AJV (good)', function() {
-    run(JSum, good)
+    validateJSON(good)
   })
   .add('index (bad)', function() {
     TSum.decode(bad)
@@ -81,7 +78,7 @@ suite
     DSum.decode(bad)
   })
   .add('AJV (bad)', function() {
-    run(JSum, bad)
+    validateJSON(bad)
   })
   .on('cycle', function(event: any) {
     console.log(String(event.target))
