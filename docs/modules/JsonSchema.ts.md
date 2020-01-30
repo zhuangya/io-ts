@@ -26,7 +26,6 @@ Added in v3.0.0
 - [intersection (function)](#intersection-function)
 - [literals (function)](#literals-function)
 - [literalsOr (function)](#literalsor-function)
-- [make (function)](#make-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
 - [sum (function)](#sum-function)
@@ -182,16 +181,6 @@ export function literalsOr<A extends S.Literal, B>(
   values: NonEmptyArray<A>,
   jsonSchema: JsonSchema<B>
 ): JsonSchema<A | B> { ... }
-```
-
-Added in v3.0.0
-
-# make (function)
-
-**Signature**
-
-```ts
-export function make<A>(u: unknown): JsonSchema<A> { ... }
 ```
 
 Added in v3.0.0

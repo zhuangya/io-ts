@@ -1,6 +1,7 @@
 import * as assert from 'assert'
 import * as Ajv from 'ajv'
 import * as J from '../src/JsonSchema'
+import * as C from 'fp-ts/lib/Const'
 
 const ajv = new Ajv()
 
@@ -73,7 +74,7 @@ describe('JsonSchema', () => {
       assert.strictEqual(run(schema, { a: 'a' }), false)
     })
 
-    const Positive: J.JsonSchema<number> = J.make({
+    const Positive: J.JsonSchema<number> = C.make({
       type: 'number',
       minimum: 0
     })

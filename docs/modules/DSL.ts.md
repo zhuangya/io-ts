@@ -28,7 +28,6 @@ Added in v3.0.0
 - [lazy (function)](#lazy-function)
 - [literals (function)](#literals-function)
 - [literalsOr (function)](#literalsor-function)
-- [make (function)](#make-function)
 - [parse (function)](#parse-function)
 - [partial (function)](#partial-function)
 - [record (function)](#record-function)
@@ -44,7 +43,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export type DSL<A> = C.Const<() => Model, A>
+export type DSL<A> = C.Const<IO<Model>, A>
 ```
 
 Added in v3.0.0
@@ -55,25 +54,25 @@ Added in v3.0.0
 
 ```ts
 export type Model =
-  | { _tag: 'literals'; values: NonEmptyArray<S.Literal> }
-  | { _tag: 'literalsOr'; values: NonEmptyArray<S.Literal>; model: Model }
-  | { _tag: 'string' }
-  | { _tag: 'number' }
-  | { _tag: 'boolean' }
-  | { _tag: 'UnknownArray' }
-  | { _tag: 'UnknownRecord' }
-  | { _tag: 'Int' }
-  | { _tag: 'parse'; model: Model; parser: (a: any) => E.Either<string, unknown> }
-  | { _tag: 'type'; models: Record<string, Model> }
-  | { _tag: 'partial'; models: Record<string, Model> }
-  | { _tag: 'record'; model: Model }
-  | { _tag: 'array'; model: Model }
-  | { _tag: 'tuple'; models: [Model, ...Array<Model>] }
-  | { _tag: 'intersection'; models: [Model, Model, ...Array<Model>] }
-  | { _tag: 'sum'; tag: string; models: Record<string, Model> }
-  | { _tag: 'union'; models: [Model, Model, ...Array<Model>] }
-  | { _tag: 'lazy'; model: Model }
-  | { _tag: '$ref'; id: string }
+  | { readonly _tag: 'literals'; readonly values: NonEmptyArray<S.Literal> }
+  | { readonly _tag: 'literalsOr'; readonly values: NonEmptyArray<S.Literal>; readonly model: Model }
+  | { readonly _tag: 'string' }
+  | { readonly _tag: 'number' }
+  | { readonly _tag: 'boolean' }
+  | { readonly _tag: 'UnknownArray' }
+  | { readonly _tag: 'UnknownRecord' }
+  | { readonly _tag: 'Int' }
+  | { readonly _tag: 'parse'; readonly model: Model; readonly parser: (a: any) => E.Either<string, unknown> }
+  | { readonly _tag: 'type'; readonly models: Record<string, Model> }
+  | { readonly _tag: 'partial'; readonly models: Record<string, Model> }
+  | { readonly _tag: 'record'; readonly model: Model }
+  | { readonly _tag: 'array'; readonly model: Model }
+  | { readonly _tag: 'tuple'; readonly models: [Model, ...Array<Model>] }
+  | { readonly _tag: 'intersection'; readonly models: [Model, Model, ...Array<Model>] }
+  | { readonly _tag: 'sum'; readonly tag: string; readonly models: Record<string, Model> }
+  | { readonly _tag: 'union'; readonly models: [Model, Model, ...Array<Model>] }
+  | { readonly _tag: 'lazy'; readonly model: Model }
+  | { readonly _tag: '$ref'; readonly id: string }
 ```
 
 Added in v3.0.0
@@ -217,16 +216,6 @@ Added in v3.0.0
 
 ```ts
 export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, dsl: DSL<B>): DSL<A | B> { ... }
-```
-
-Added in v3.0.0
-
-# make (function)
-
-**Signature**
-
-```ts
-export function make<A>(model: () => Model): DSL<A> { ... }
 ```
 
 Added in v3.0.0
