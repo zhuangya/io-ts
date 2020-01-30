@@ -1,12 +1,13 @@
 import * as fc from 'fast-check'
 import * as Arb from '../src/Arbitrary'
+import * as ArbMut from '../src/ArbitraryMutation'
 import * as D from '../src/Decoder'
 import * as E from '../src/Eq'
 import * as G from '../src/Guard'
 import * as J from '../src/JsonSchema'
 import { URIS, Kind } from 'fp-ts/lib/HKT'
 import * as S from '../src/Schemable'
-import { isRight, right, left } from 'fp-ts/lib/Either'
+import { isRight, right, left, isLeft } from 'fp-ts/lib/Either'
 import * as Ajv from 'ajv'
 
 const ajv = new Ajv()
@@ -16,7 +17,7 @@ function run<A>(jsonSchema: J.JsonSchema<A>, u: unknown): boolean {
 }
 
 interface Schema<A> {
-  <S extends URIS>(S: S.Schemable<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S> & S.WithInt<S>): Kind<S, A>
 }
 
 function make<A>(f: Schema<A>): Schema<A> {
@@ -25,15 +26,19 @@ function make<A>(f: Schema<A>): Schema<A> {
 
 function assert<A>(schema: Schema<A>): void {
   const arb = schema(Arb.arbitrary)
+  const mutation = schema(ArbMut.arbitraryMutation)
   const decoder = schema(D.decoder)
   const eq = schema(E.eq)
   const guard = schema(G.guard)
-  const jsonSchema = schema(J.jsonSchema)
-  fc.assert(fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(decoder.decode(a)) && run(jsonSchema, a)))
+  const jasonSchema = ajv.compile(schema(J.jsonSchema)())
+  fc.assert(
+    fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(decoder.decode(a)) && Boolean(jasonSchema(a)))
+  )
+  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
 }
 
 interface SchemaWithUnion<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithUnion<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S> & S.WithInt<S> & S.WithUnion<S>): Kind<S, A>
 }
 
 function makeWithUnion<A>(f: SchemaWithUnion<A>): SchemaWithUnion<A> {
@@ -49,7 +54,7 @@ function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
 }
 
 interface SchemaWithParse<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithParse<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S> & S.WithInt<S> & S.WithParse<S>): Kind<S, A>
 }
 
 function makeWithParse<A>(f: SchemaWithParse<A>): SchemaWithParse<A> {
@@ -112,7 +117,7 @@ describe('Arbitrary', () => {
       make(S =>
         S.type({
           name: S.string,
-          age: S.number
+          age: S.Int
         })
       )
     )
@@ -123,7 +128,7 @@ describe('Arbitrary', () => {
       make(S =>
         S.partial({
           name: S.string,
-          age: S.number
+          age: S.Int
         })
       )
     )
