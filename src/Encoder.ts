@@ -10,7 +10,7 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { pipeable } from 'fp-ts/lib/pipeable'
 import * as G from './Guard'
 import * as S from './Schemable'
-import { memoize } from './util'
+import * as U from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -170,12 +170,7 @@ export function intersection<A, B, C>(encoders: [Encoder<A>, Encoder<B>, Encoder
 export function intersection<A, B>(encoders: [Encoder<A>, Encoder<B>]): Encoder<A & B>
 export function intersection<A>(encoders: Array<Encoder<A>>): Encoder<A> {
   return {
-    encode: a => {
-      const us: Array<unknown> = encoders.map(encoder => encoder.encode(a))
-      return us.some(u => Object.prototype.toString.call(u) !== '[object Object]')
-        ? us[us.length - 1]
-        : Object.assign({}, ...us)
-    }
+    encode: a => encoders.map(encoder => encoder.encode(a)).reduce(U.intersection.concat)
   }
 }
 
@@ -183,7 +178,7 @@ export function intersection<A>(encoders: Array<Encoder<A>>): Encoder<A> {
  * @since 3.0.0
  */
 export function lazy<A>(f: () => Encoder<A>): Encoder<A> {
-  const get = memoize(f)
+  const get = U.memoize(f)
   return {
     encode: a => get().encode(a)
   }

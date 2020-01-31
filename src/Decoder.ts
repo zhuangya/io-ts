@@ -10,7 +10,7 @@ import { pipeable } from 'fp-ts/lib/pipeable'
 import * as DE from './DecodeError'
 import * as G from './Guard'
 import * as S from './Schemable'
-import { hasOwnProperty, isNonEmpty, showLiteral, memoize } from './util'
+import * as U from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -45,7 +45,7 @@ export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
  * @since 3.0.0
  */
 export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Decoder<A> {
-  return fromGuard(G.literals(values), values.map(showLiteral).join(' | '))
+  return fromGuard(G.literals(values), values.map(U.showLiteral).join(' | '))
 }
 
 /**
@@ -151,7 +151,7 @@ export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<A>
             a[k] = e.right
           }
         }
-        return isNonEmpty(es) ? E.left(DE.labeled('type', u, es)) : E.right(a)
+        return U.isNonEmpty(es) ? E.left(DE.labeled('type', u, es)) : E.right(a)
       }
     }
   }
@@ -180,7 +180,7 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder
             }
           }
         }
-        return isNonEmpty(es) ? E.left(DE.labeled('partial', u, es)) : E.right(a)
+        return U.isNonEmpty(es) ? E.left(DE.labeled('partial', u, es)) : E.right(a)
       }
     }
   }
@@ -207,7 +207,7 @@ export function record<A>(decoder: Decoder<A>): Decoder<Record<string, A>> {
             a[k] = e.right
           }
         }
-        return isNonEmpty(es) ? E.left(DE.labeled('record', u, es)) : E.right(a)
+        return U.isNonEmpty(es) ? E.left(DE.labeled('record', u, es)) : E.right(a)
       }
     }
   }
@@ -235,7 +235,7 @@ export function array<A>(decoder: Decoder<A>): Decoder<Array<A>> {
             a[i] = e.right
           }
         }
-        return isNonEmpty(es) ? E.left(DE.indexed('array', u, es)) : E.right(a)
+        return U.isNonEmpty(es) ? E.left(DE.indexed('array', u, es)) : E.right(a)
       }
     }
   }
@@ -270,7 +270,7 @@ export function tuple(decoders: Array<Decoder<unknown>>): Decoder<Array<unknown>
             a[i] = e.right
           }
         }
-        return isNonEmpty(es) ? E.left(DE.indexed('tuple', u, es)) : E.right(a)
+        return U.isNonEmpty(es) ? E.left(DE.indexed('tuple', u, es)) : E.right(a)
       }
     }
   }
@@ -301,11 +301,10 @@ export function intersection(decoders: Array<Decoder<unknown>>): Decoder<unknown
           as[i] = e.right
         }
       }
-      if (isNonEmpty(es)) {
+      if (U.isNonEmpty(es)) {
         return E.left(DE.and('intersection', u, es))
       }
-      const a = as.every(G.UnknownRecord.is) ? Object.assign({}, ...as) : as[as.length - 1]
-      return E.right(a)
+      return E.right(as.reduce(U.intersection.concat))
     }
   }
 }
@@ -314,7 +313,7 @@ export function intersection(decoders: Array<Decoder<unknown>>): Decoder<unknown
  * @since 3.0.0
  */
 export function lazy<A>(f: () => Decoder<A>): Decoder<A> {
-  const get = memoize(f)
+  const get = U.memoize(f)
   return {
     decode: u => get().decode(u)
   }
@@ -339,7 +338,7 @@ export function sum<T extends string>(
           return e
         }
         const v = e.right[tag]
-        if (typeof v === 'string' && hasOwnProperty(decoders, v)) {
+        if (typeof v === 'string' && U.hasOwnProperty(decoders, v)) {
           return decoders[v].decode(u)
         }
         return E.left(DE.labeled('sum', u, [[tag, DE.leaf(expected, v)]]))
