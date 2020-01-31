@@ -22,7 +22,6 @@ Added in v3.0.0
 
 ```ts
 export const arbitraryMutation: S.Schemable<Arb.URI> &
-  S.WithInt<Arb.URI> &
   S.WithLazy<Arb.URI> &
   S.WithParse<Arb.URI> &
   S.WithUnion<Arb.URI> = ...

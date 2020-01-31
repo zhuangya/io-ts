@@ -24,7 +24,6 @@ export type Model =
   | { readonly _tag: 'boolean' }
   | { readonly _tag: 'UnknownArray' }
   | { readonly _tag: 'UnknownRecord' }
-  | { readonly _tag: 'Int' }
   | { readonly _tag: 'parse'; readonly model: Model; readonly parser: (a: any) => E.Either<string, unknown> }
   | { readonly _tag: 'type'; readonly models: Record<string, Model> }
   | { readonly _tag: 'partial'; readonly models: Record<string, Model> }
@@ -88,11 +87,6 @@ export const UnknownArray: DSL<Array<unknown>> = C.make(io.of({ _tag: 'UnknownAr
  * @since 3.0.0
  */
 export const UnknownRecord: DSL<Record<string, unknown>> = C.make(io.of({ _tag: 'UnknownRecord' }))
-
-/**
- * @since 3.0.0
- */
-export const Int: DSL<S.Int> = C.make(io.of({ _tag: 'Int' }))
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -236,7 +230,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const dsl: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
+export const dsl: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,
@@ -252,7 +246,6 @@ export const dsl: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithPa
   tuple,
   intersection,
   sum,
-  Int,
   lazy,
   parse,
   union

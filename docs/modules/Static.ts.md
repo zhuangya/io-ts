@@ -14,7 +14,6 @@ Added in v3.0.0
 
 - [Static (type alias)](#static-type-alias)
 - [URI (type alias)](#uri-type-alias)
-- [Int (constant)](#int-constant)
 - [URI (constant)](#uri-constant)
 - [UnknownArray (constant)](#unknownarray-constant)
 - [UnknownRecord (constant)](#unknownrecord-constant)
@@ -51,16 +50,6 @@ Added in v3.0.0
 
 ```ts
 export type URI = typeof URI
-```
-
-Added in v3.0.0
-
-# Int (constant)
-
-**Signature**
-
-```ts
-export const Int: Static<S.Int> = ...
 ```
 
 Added in v3.0.0
@@ -120,7 +109,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const s: S.Schemable<URI> & S.WithInt<URI> & S.WithUnion<URI> = ...
+export const s: S.Schemable<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0

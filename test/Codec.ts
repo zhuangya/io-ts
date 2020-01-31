@@ -22,6 +22,15 @@ const Positive = C.make(
   E.id
 )
 
+interface IntBrand {
+  readonly Int: unique symbol
+}
+type Int = number & IntBrand
+const Int = C.make(
+  D.parse(C.number, n => (Number.isInteger(n) ? right(n as Positive) : left('Int'))),
+  E.id
+)
+
 describe('Codec', () => {
   describe('codec', () => {
     it('imap', () => {
@@ -307,7 +316,7 @@ describe('Codec', () => {
       })
 
       it('should handle primitives', () => {
-        const codec = C.intersection([C.Int, Positive])
+        const codec = C.intersection([Int, Positive])
         assert.deepStrictEqual(codec.decode(1), right(1))
       })
 
@@ -329,7 +338,7 @@ describe('Codec', () => {
       })
 
       it('should handle primitives', () => {
-        const codec = C.intersection([C.Int, C.Int])
+        const codec = C.intersection([Int, Positive])
         assert.deepStrictEqual(codec.encode(1 as any), 1)
       })
     })

@@ -13,9 +13,7 @@ Added in v3.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [JsonSchema (type alias)](#jsonschema-type-alias)
-- [Model (type alias)](#model-type-alias)
 - [URI (type alias)](#uri-type-alias)
-- [Int (constant)](#int-constant)
 - [URI (constant)](#uri-constant)
 - [UnknownArray (constant)](#unknownarray-constant)
 - [UnknownRecord (constant)](#unknownrecord-constant)
@@ -42,38 +40,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export type JsonSchema<A> = C.Const<IO<Model>, A>
-```
-
-Added in v3.0.0
-
-# Model (type alias)
-
-**Signature**
-
-```ts
-export type Model =
-  | { readonly type: 'string' }
-  | { readonly type: 'number'; readonly minimum?: number }
-  | { readonly type: 'boolean' }
-  | { readonly type: 'integer' }
-  | {
-      readonly type: 'array'
-      readonly items?: Model | NonEmptyArray<Model>
-      readonly minItems?: number
-      readonly maxItems?: number
-    }
-  | {
-      readonly type: 'object'
-      readonly properties?: Record<string, Model>
-      readonly required?: Array<string>
-      readonly additionalProperties?: Model
-    }
-  | { readonly enum: NonEmptyArray<S.Literal> }
-  | { readonly anyOf: [Model, Model, ...Array<Model>] }
-  | { readonly allOf: [Model, Model, ...Array<Model>] }
-  | { readonly oneOf: [Model, Model, ...Array<Model>] }
-  | { readonly $ref: string; readonly $id?: string; readonly definitions?: Record<string, Model> }
+export type JsonSchema<A> = C.Const<IO<object>, A>
 ```
 
 Added in v3.0.0
@@ -84,16 +51,6 @@ Added in v3.0.0
 
 ```ts
 export type URI = typeof URI
-```
-
-Added in v3.0.0
-
-# Int (constant)
-
-**Signature**
-
-```ts
-export const Int: JsonSchema<S.Int> = ...
 ```
 
 Added in v3.0.0
@@ -143,7 +100,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const jsonSchema: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithUnion<URI> = ...
+export const jsonSchema: S.Schemable<URI> & S.WithLazy<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0

@@ -62,11 +62,6 @@ export const UnknownArray: Static<Array<unknown>> = C.make('array')
  */
 export const UnknownRecord: Static<Record<string, unknown>> = C.make('object')
 
-/**
- * @since 3.0.0
- */
-export const Int: Static<S.Int> = C.make('Int')
-
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
@@ -176,7 +171,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const s: S.Schemable<URI> & S.WithInt<URI> & S.WithUnion<URI> = {
+export const s: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,
@@ -192,6 +187,5 @@ export const s: S.Schemable<URI> & S.WithInt<URI> & S.WithUnion<URI> = {
   tuple,
   intersection,
   sum,
-  Int,
   union
 }

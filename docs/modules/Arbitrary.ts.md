@@ -14,7 +14,6 @@ Added in v3.0.0
 
 - [Arbitrary (interface)](#arbitrary-interface)
 - [URI (type alias)](#uri-type-alias)
-- [Int (constant)](#int-constant)
 - [URI (constant)](#uri-constant)
 - [UnknownArray (constant)](#unknownarray-constant)
 - [UnknownRecord (constant)](#unknownrecord-constant)
@@ -57,16 +56,6 @@ export type URI = typeof URI
 
 Added in v3.0.0
 
-# Int (constant)
-
-**Signature**
-
-```ts
-export const Int: Arbitrary<S.Int> = ...
-```
-
-Added in v3.0.0
-
 # URI (constant)
 
 **Signature**
@@ -102,7 +91,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const arbitrary: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
+export const arbitrary: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0

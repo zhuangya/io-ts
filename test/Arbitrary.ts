@@ -17,7 +17,7 @@ function run<A>(jsonSchema: J.JsonSchema<A>, u: unknown): boolean {
 }
 
 interface Schema<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithInt<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S>): Kind<S, A>
 }
 
 function make<A>(f: Schema<A>): Schema<A> {
@@ -38,7 +38,7 @@ function assert<A>(schema: Schema<A>): void {
 }
 
 interface SchemaWithUnion<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithInt<S> & S.WithUnion<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S> & S.WithUnion<S>): Kind<S, A>
 }
 
 function makeWithUnion<A>(f: SchemaWithUnion<A>): SchemaWithUnion<A> {
@@ -54,7 +54,7 @@ function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
 }
 
 interface SchemaWithParse<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithInt<S> & S.WithParse<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S> & S.WithParse<S>): Kind<S, A>
 }
 
 function makeWithParse<A>(f: SchemaWithParse<A>): SchemaWithParse<A> {
@@ -117,7 +117,7 @@ describe('Arbitrary', () => {
       make(S =>
         S.type({
           name: S.string,
-          age: S.Int
+          age: S.number
         })
       )
     )
@@ -128,7 +128,7 @@ describe('Arbitrary', () => {
       make(S =>
         S.partial({
           name: S.string,
-          age: S.Int
+          age: S.number
         })
       )
     )

@@ -18,7 +18,6 @@ Added in v3.0.0
 
 - [Encoder (interface)](#encoder-interface)
 - [URI (type alias)](#uri-type-alias)
-- [Int (constant)](#int-constant)
 - [URI (constant)](#uri-constant)
 - [UnknownArray (constant)](#unknownarray-constant)
 - [UnknownRecord (constant)](#unknownrecord-constant)
@@ -59,16 +58,6 @@ Added in v3.0.0
 
 ```ts
 export type URI = typeof URI
-```
-
-Added in v3.0.0
-
-# Int (constant)
-
-**Signature**
-
-```ts
-export const Int: Encoder<S.Int> = ...
 ```
 
 Added in v3.0.0
@@ -118,7 +107,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> = ...
+export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = ...
 ```
 
 Added in v3.0.0

@@ -13,7 +13,6 @@ import * as S from './Schemable'
  * @since 3.0.0
  */
 export const arbitraryMutation: S.Schemable<Arb.URI> &
-  S.WithInt<Arb.URI> &
   S.WithLazy<Arb.URI> &
   S.WithParse<Arb.URI> &
   S.WithUnion<Arb.URI> = {
@@ -32,7 +31,6 @@ export const arbitraryMutation: S.Schemable<Arb.URI> &
   tuple: Arb.tuple,
   intersection: Arb.intersection,
   sum: Arb.sum,
-  Int: fc.float().filter(n => !Number.isInteger(n)) as any,
   lazy: Arb.lazy,
   parse: Arb.parse,
   union: Arb.union

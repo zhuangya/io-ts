@@ -15,7 +15,6 @@ Added in v3.0.0
 - [Decoder (interface)](#decoder-interface)
 - [TypeOf (type alias)](#typeof-type-alias)
 - [URI (type alias)](#uri-type-alias)
-- [Int (constant)](#int-constant)
 - [URI (constant)](#uri-constant)
 - [UnknownArray (constant)](#unknownarray-constant)
 - [UnknownRecord (constant)](#unknownrecord-constant)
@@ -79,16 +78,6 @@ export type URI = typeof URI
 
 Added in v3.0.0
 
-# Int (constant)
-
-**Signature**
-
-```ts
-export const Int: Decoder<S.Int> = ...
-```
-
-Added in v3.0.0
-
 # URI (constant)
 
 **Signature**
@@ -137,7 +126,6 @@ Added in v3.0.0
 export const decoder: Applicative1<URI> &
   Alternative1<URI> &
   S.Schemable<URI> &
-  S.WithInt<URI> &
   S.WithLazy<URI> &
   S.WithParse<URI> &
   S.WithUnion<URI> = ...

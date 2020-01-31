@@ -64,11 +64,6 @@ export const UnknownArray: Eq<Array<unknown>> = A.getEq(always)
  */
 export const UnknownRecord: Eq<Record<string, unknown>> = R.getEq(always)
 
-/**
- * @since 3.0.0
- */
-export const Int: Eq<S.Int> = E.eqNumber
-
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
@@ -162,7 +157,7 @@ export function sum<T extends string>(tag: T): <A>(eqs: { [K in keyof A]: Eq<A[K
 /**
  * @since 3.0.0
  */
-export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithInt<E.URI> & S.WithLazy<E.URI> = {
+export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithLazy<E.URI> = {
   ...E.eq,
   literals,
   literalsOr,
@@ -178,6 +173,5 @@ export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithInt<E.URI> & S.WithLaz
   tuple,
   intersection,
   sum,
-  Int,
   lazy
 }

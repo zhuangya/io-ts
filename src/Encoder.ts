@@ -80,11 +80,6 @@ export const UnknownArray: Encoder<Array<unknown>> = id
  */
 export const UnknownRecord: Encoder<Record<string, unknown>> = id
 
-/**
- * @since 3.0.0
- */
-export const Int: Encoder<S.Int> = id
-
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
@@ -230,7 +225,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> = {
+export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = {
   URI,
   contramap: (fa, f) => ({
     encode: b => fa.encode(f(b))
@@ -249,7 +244,6 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithInt<URI> & 
   tuple,
   intersection,
   sum,
-  Int,
   lazy
 }
 

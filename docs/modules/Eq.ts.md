@@ -12,7 +12,6 @@ Added in v3.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [Int (constant)](#int-constant)
 - [UnknownArray (constant)](#unknownarray-constant)
 - [UnknownRecord (constant)](#unknownrecord-constant)
 - [array (constant)](#array-constant)
@@ -31,16 +30,6 @@ Added in v3.0.0
 - [tuple (function)](#tuple-function)
 
 ---
-
-# Int (constant)
-
-**Signature**
-
-```ts
-export const Int: Eq<S.Int> = ...
-```
-
-Added in v3.0.0
 
 # UnknownArray (constant)
 
@@ -87,7 +76,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithInt<E.URI> & S.WithLazy<E.URI> = ...
+export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithLazy<E.URI> = ...
 ```
 
 Added in v3.0.0

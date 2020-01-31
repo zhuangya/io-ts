@@ -6,10 +6,6 @@ describe('Static', () => {
     assert.strictEqual(S.string, 'string')
   })
 
-  it('Int', () => {
-    assert.strictEqual(S.Int, 'Int')
-  })
-
   it('literals', () => {
     assert.strictEqual(S.literals(['a', 1]), '("a" | 1)')
   })

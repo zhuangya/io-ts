@@ -12,13 +12,6 @@ describe('JsonSchema', () => {
     assert.strictEqual(validate(1), false)
   })
 
-  it('Int', () => {
-    const validate = ajv.compile(J.Int())
-    assert.strictEqual(validate(1), true)
-    assert.strictEqual(validate('a'), false)
-    assert.strictEqual(validate(1.2), false)
-  })
-
   it('literals', () => {
     const validate = ajv.compile(J.literals(['a'])())
     assert.strictEqual(validate('a'), true)
@@ -73,13 +66,21 @@ describe('JsonSchema', () => {
       assert.strictEqual(validate({ a: 'a' }), false)
     })
 
+    interface IntBrand {
+      readonly Int: unique symbol
+    }
+    type Int = number & IntBrand
+
+    const Int: J.JsonSchema<Int> = C.make(() => ({
+      type: 'integer'
+    }))
     const Positive: J.JsonSchema<number> = C.make(() => ({
       type: 'number',
       minimum: 0
     }))
 
     it('should handle primitives', () => {
-      const validate = ajv.compile(J.intersection([J.Int, Positive])())
+      const validate = ajv.compile(J.intersection([Int, Positive])())
       assert.strictEqual(validate(1), true)
       assert.strictEqual(validate(-1), false)
     })

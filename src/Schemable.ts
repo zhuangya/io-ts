@@ -8,18 +8,6 @@ import { Either } from 'fp-ts/lib/Either'
 /**
  * @since 3.0.0
  */
-export interface IntBrand {
-  readonly Int: unique symbol
-}
-
-/**
- * @since 3.0.0
- */
-export type Int = number & IntBrand
-
-/**
- * @since 3.0.0
- */
 export type Literal = string | number | boolean | null | undefined
 
 /**
@@ -54,13 +42,6 @@ export interface Schemable<F extends URIS> {
   readonly sum: <T extends string>(
     tag: T
   ) => <A>(schemas: { [K in keyof A]: Kind<F, A[K] & Record<T, K>> }) => Kind<F, A[keyof A]>
-}
-
-/**
- * @since 3.0.0
- */
-export interface WithInt<F extends URIS> {
-  readonly Int: Kind<F, Int>
 }
 
 /**

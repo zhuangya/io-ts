@@ -63,11 +63,6 @@ export const UnknownArray: Arbitrary<Array<unknown>> = fc.array(fc.anything())
  */
 export const UnknownRecord: Arbitrary<Record<string, unknown>> = fc.dictionary(string, fc.anything())
 
-/**
- * @since 3.0.0
- */
-export const Int: Arbitrary<S.Int> = fc.integer() as any
-
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
@@ -191,7 +186,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const arbitrary: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
+export const arbitrary: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,
@@ -207,7 +202,6 @@ export const arbitrary: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.
   tuple,
   intersection,
   sum,
-  Int,
   lazy,
   parse,
   union

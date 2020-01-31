@@ -12,28 +12,13 @@ Added in v3.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [IntBrand (interface)](#intbrand-interface)
 - [Schemable (interface)](#schemable-interface)
-- [WithInt (interface)](#withint-interface)
 - [WithLazy (interface)](#withlazy-interface)
 - [WithParse (interface)](#withparse-interface)
 - [WithUnion (interface)](#withunion-interface)
-- [Int (type alias)](#int-type-alias)
 - [Literal (type alias)](#literal-type-alias)
 
 ---
-
-# IntBrand (interface)
-
-**Signature**
-
-```ts
-export interface IntBrand {
-  readonly Int: unique symbol
-}
-```
-
-Added in v3.0.0
 
 # Schemable (interface)
 
@@ -74,18 +59,6 @@ export interface Schemable<F extends URIS> {
 
 Added in v3.0.0
 
-# WithInt (interface)
-
-**Signature**
-
-```ts
-export interface WithInt<F extends URIS> {
-  readonly Int: Kind<F, Int>
-}
-```
-
-Added in v3.0.0
-
 # WithLazy (interface)
 
 **Signature**
@@ -120,16 +93,6 @@ export interface WithUnion<F extends URIS> {
     schemas: { [K in keyof A]: Kind<F, A[K]> }
   ) => Kind<F, A[number]>
 }
-```
-
-Added in v3.0.0
-
-# Int (type alias)
-
-**Signature**
-
-```ts
-export type Int = number & IntBrand
 ```
 
 Added in v3.0.0

@@ -25,14 +25,15 @@
  * - Is there a way to generate branded types + smart constructors based on a user provided predicate?
  *
  * Schemas:
- * - S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI>
+ * - S.Schemable<URI> & S.WithUnion<URI>
+ *   - Static
+ * - S.Schemable<URI> & S.WithLazy<URI>
  *   - Codec
  *   - Encoder
  *   - Eq
- * - S.Schemable<URI> & S.WithInt<URI> & S.WithUnion<URI>
+ * - S.Schemable<URI> & S.WithLazy<URI> & S.WithUnion<URI>
  *   - JsonSchema
- *   - Static
- * - S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI>
+ * - S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI>
  *   - Arbitrary
  *   - Decoder
  *   - Guard
@@ -110,11 +111,6 @@ export const UnknownArray: Codec<Array<unknown>> = make(D.UnknownArray, E.Unknow
  * @since 3.0.0
  */
 export const UnknownRecord: Codec<Record<string, unknown>> = make(D.UnknownRecord, E.UnknownRecord)
-
-/**
- * @since 3.0.0
- */
-export const Int: Codec<S.Int> = make(D.Int, E.Int)
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -225,7 +221,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> = {
+export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = {
   URI,
   imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
   literals,
@@ -242,6 +238,5 @@ export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithInt<URI> & S.With
   tuple,
   intersection,
   sum,
-  Int,
   lazy
 }

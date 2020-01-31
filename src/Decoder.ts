@@ -91,11 +91,6 @@ export const UnknownArray: Decoder<Array<unknown>> = fromGuard(G.UnknownArray, '
  */
 export const UnknownRecord: Decoder<Record<string, unknown>> = fromGuard(G.UnknownRecord, 'Record<string, unknown>')
 
-/**
- * @since 3.0.0
- */
-export const Int: Decoder<S.Int> = fromGuard(G.Int, 'Int')
-
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
@@ -405,7 +400,6 @@ declare module 'fp-ts/lib/HKT' {
 export const decoder: Applicative1<URI> &
   Alternative1<URI> &
   S.Schemable<URI> &
-  S.WithInt<URI> &
   S.WithLazy<URI> &
   S.WithParse<URI> &
   S.WithUnion<URI> = {
@@ -437,7 +431,6 @@ export const decoder: Applicative1<URI> &
   tuple,
   intersection,
   sum,
-  Int,
   lazy,
   parse,
   union

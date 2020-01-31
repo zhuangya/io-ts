@@ -15,7 +15,6 @@ Added in v3.0.0
 - [DSL (type alias)](#dsl-type-alias)
 - [Model (type alias)](#model-type-alias)
 - [URI (type alias)](#uri-type-alias)
-- [Int (constant)](#int-constant)
 - [URI (constant)](#uri-constant)
 - [UnknownArray (constant)](#unknownarray-constant)
 - [UnknownRecord (constant)](#unknownrecord-constant)
@@ -61,7 +60,6 @@ export type Model =
   | { readonly _tag: 'boolean' }
   | { readonly _tag: 'UnknownArray' }
   | { readonly _tag: 'UnknownRecord' }
-  | { readonly _tag: 'Int' }
   | { readonly _tag: 'parse'; readonly model: Model; readonly parser: (a: any) => E.Either<string, unknown> }
   | { readonly _tag: 'type'; readonly models: Record<string, Model> }
   | { readonly _tag: 'partial'; readonly models: Record<string, Model> }
@@ -83,16 +81,6 @@ Added in v3.0.0
 
 ```ts
 export type URI = typeof URI
-```
-
-Added in v3.0.0
-
-# Int (constant)
-
-**Signature**
-
-```ts
-export const Int: DSL<S.Int> = ...
 ```
 
 Added in v3.0.0
@@ -142,7 +130,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const dsl: S.Schemable<URI> & S.WithInt<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
+export const dsl: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
