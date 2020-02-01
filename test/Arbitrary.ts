@@ -129,7 +129,7 @@ describe('Arbitrary', () => {
     )
   })
 
-  describe('partial', () => {
+  it('partial', () => {
     assert(
       make(S =>
         S.partial({

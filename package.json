@@ -39,11 +39,13 @@
   "homepage": "https://github.com/gcanti/io-ts",
   "dependencies": {},
   "peerDependencies": {
-    "fp-ts": "^2.0.0"
+    "fp-ts": "^2.0.0",
+    "@types/json-schema": "^7.0.4"
   },
   "devDependencies": {
     "@types/benchmark": "1.0.31",
     "@types/jest": "^23.3.8",
+    "@types/json-schema": "^7.0.4",
     "@types/node": "7.0.4",
     "ajv": "^6.11.0",
     "benchmark": "2.1.4",

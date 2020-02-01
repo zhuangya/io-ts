@@ -4,7 +4,7 @@
 import * as fc from 'fast-check'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as S from './Schemable'
-import { Either } from 'fp-ts/lib/Either'
+import { Either, isRight } from 'fp-ts/lib/Either'
 import { memoize } from './util'
 
 // -------------------------------------------------------------------------------------
@@ -71,7 +71,10 @@ export const UnknownRecord: Arbitrary<Record<string, unknown>> = fc.dictionary(s
  * @since 3.0.0
  */
 export function parse<A, B>(arb: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> {
-  return arb.filter(a => parser(a)._tag === 'Right') as any
+  return arb
+    .map(parser)
+    .filter(isRight)
+    .map((e: any) => e.right)
 }
 
 /**

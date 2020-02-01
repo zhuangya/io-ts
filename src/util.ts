@@ -5,6 +5,7 @@ import { Eq } from 'fp-ts/lib/Eq'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { Literal } from './Schemable'
 import { Semigroup } from 'fp-ts/lib/Semigroup'
+import { IO } from 'fp-ts/lib/IO'
 
 /**
  * @since 3.0.0
@@ -81,4 +82,16 @@ export const intersection: Semigroup<unknown> = {
       return y
     }
   }
+}
+
+/**
+ * @since 3.0.0
+ * @internal
+ */
+export function runSequence<A>(r: Record<string, IO<A>>): Record<string, A> {
+  const out: Record<string, A> = {}
+  for (const k in r) {
+    out[k] = r[k]()
+  }
+  return out
 }

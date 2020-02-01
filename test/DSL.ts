@@ -38,6 +38,14 @@ describe('DSL', () => {
     assertDSL(DSL.boolean, { _tag: 'boolean' })
   })
 
+  it('UnknownArray', () => {
+    assertDSL(DSL.UnknownArray, { _tag: 'UnknownArray' })
+  })
+
+  it('UnknownRecord', () => {
+    assertDSL(DSL.UnknownRecord, { _tag: 'UnknownRecord' })
+  })
+
   it('type', () => {
     const schema = DSL.type({ a: DSL.string, b: DSL.number })
     assertDSL(schema, {
@@ -76,7 +84,11 @@ describe('DSL', () => {
   })
 
   it('intersection', () => {
-    const schema = DSL.intersection([DSL.type({ a: DSL.string }), DSL.type({ b: DSL.number })])
+    const schema = DSL.intersection([
+      DSL.type({ a: DSL.string }),
+      DSL.type({ b: DSL.number }),
+      DSL.type({ c: DSL.boolean })
+    ])
     assertDSL(schema, {
       _tag: 'intersection',
       models: [
@@ -90,6 +102,12 @@ describe('DSL', () => {
           _tag: 'type',
           models: {
             b: { _tag: 'number' }
+          }
+        },
+        {
+          _tag: 'type',
+          models: {
+            c: { _tag: 'boolean' }
           }
         }
       ]
@@ -161,7 +179,7 @@ describe('DSL', () => {
   })
 
   it('union', () => {
-    const schema = DSL.union([DSL.string, DSL.number])
-    assertDSL(schema, { _tag: 'union', models: [{ _tag: 'string' }, { _tag: 'number' }] })
+    const schema = DSL.union([DSL.string, DSL.number, DSL.boolean])
+    assertDSL(schema, { _tag: 'union', models: [{ _tag: 'string' }, { _tag: 'number' }, { _tag: 'boolean' }] })
   })
 })

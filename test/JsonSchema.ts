@@ -19,13 +19,15 @@ describe('JsonSchema', () => {
   })
 
   it('literalsOr', () => {
-    const validate = ajv.compile(J.literalsOr([undefined], J.type({ a: J.string, b: J.number }))())
+    const schema = J.literalsOr([undefined], J.type({ a: J.string, b: J.number }))()
+    const validate = ajv.compile(schema)
     assert.strictEqual(validate(undefined), true)
     assert.strictEqual(validate({ a: 'a', b: 1 }), true)
   })
 
   it('type', () => {
-    const validate = ajv.compile(J.type({ a: J.string, b: J.number })())
+    const schema = J.type({ a: J.string, b: J.number })()
+    const validate = ajv.compile(schema)
     assert.strictEqual(validate({ a: 'a', b: 1 }), true)
     assert.strictEqual(validate({ a: 'a' }), false)
     assert.strictEqual(validate({ a: 'a', b: 'b' }), false)

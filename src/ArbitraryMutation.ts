@@ -7,6 +7,8 @@ import { Either, isLeft } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as A from './Arbitrary'
 import * as S from './Schemable'
+import * as G from './Guard'
+import { not } from 'fp-ts/lib/function'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -39,10 +41,7 @@ export function make<A>(mutation: fc.Arbitrary<unknown>, arb: fc.Arbitrary<A>): 
  * @since 3.0.0
  */
 export function literals<A extends S.Literal>(values: NonEmptyArray<A>): ArbitraryMutation<A> {
-  return make(
-    fc.string().filter(value => values.indexOf(value as any) === -1),
-    A.literals(values)
-  )
+  return make(fc.string().filter(not(G.literals(values).is)), A.literals(values))
 }
 
 /**
@@ -93,7 +92,10 @@ export const UnknownRecord: ArbitraryMutation<Record<string, unknown>> = make(A.
  */
 export function parse<A, B>(mutation: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> {
   return make(
-    mutation.arb.filter(a => isLeft(parser(a))),
+    mutation.arb
+      .map(parser)
+      .filter(isLeft)
+      .map((e: any) => e.left),
     A.parse(mutation.arb, parser)
   )
 }

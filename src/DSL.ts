@@ -1,13 +1,12 @@
 /**
  * @since 3.0.0
  */
-import * as A from 'fp-ts/lib/Array'
 import * as C from 'fp-ts/lib/Const'
 import * as E from 'fp-ts/lib/Either'
-import { IO, io } from 'fp-ts/lib/IO'
+import { IO } from 'fp-ts/lib/IO'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import * as R from 'fp-ts/lib/Record'
 import * as S from './Schemable'
+import { runSequence } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -49,7 +48,7 @@ export type DSL<A> = C.Const<IO<Model>, A>
  * @since 3.0.0
  */
 export function literals<A extends S.Literal>(values: NonEmptyArray<A>): DSL<A> {
-  return C.make(io.of({ _tag: 'literals', values }))
+  return C.make(() => ({ _tag: 'literals', values }))
 }
 
 /**
@@ -66,27 +65,27 @@ export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, dsl
 /**
  * @since 3.0.0
  */
-export const string: DSL<string> = C.make(io.of({ _tag: 'string' }))
+export const string: DSL<string> = C.make(() => ({ _tag: 'string' }))
 
 /**
  * @since 3.0.0
  */
-export const number: DSL<number> = C.make(io.of({ _tag: 'number' }))
+export const number: DSL<number> = C.make(() => ({ _tag: 'number' }))
 
 /**
  * @since 3.0.0
  */
-export const boolean: DSL<boolean> = C.make(io.of({ _tag: 'boolean' }))
+export const boolean: DSL<boolean> = C.make(() => ({ _tag: 'boolean' }))
 
 /**
  * @since 3.0.0
  */
-export const UnknownArray: DSL<Array<unknown>> = C.make(io.of({ _tag: 'UnknownArray' }))
+export const UnknownArray: DSL<Array<unknown>> = C.make(() => ({ _tag: 'UnknownArray' }))
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: DSL<Record<string, unknown>> = C.make(io.of({ _tag: 'UnknownRecord' }))
+export const UnknownRecord: DSL<Record<string, unknown>> = C.make(() => ({ _tag: 'UnknownRecord' }))
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -99,26 +98,18 @@ export function parse<A, B>(dsl: DSL<A>, parser: (a: A) => E.Either<string, B>):
   return C.make(() => ({ _tag: 'parse', model: dsl(), parser }))
 }
 
-const sequenceR = R.record.sequence(io)
-
 /**
  * @since 3.0.0
  */
 export function type<A>(dsls: { [K in keyof A]: DSL<A[K]> }): DSL<A> {
-  return C.make(() => {
-    const models: IO<Record<string, Model>> = sequenceR(dsls)
-    return { _tag: 'type', models: models() }
-  })
+  return C.make(() => ({ _tag: 'type', models: runSequence(dsls) }))
 }
 
 /**
  * @since 3.0.0
  */
 export function partial<A>(dsls: { [K in keyof A]: DSL<A[K]> }): DSL<Partial<A>> {
-  return C.make(() => {
-    const models: IO<Record<string, Model>> = sequenceR(dsls)
-    return { _tag: 'partial', models: models() }
-  })
+  return C.make(() => ({ _tag: 'partial', models: runSequence(dsls) }))
 }
 
 /**
@@ -135,8 +126,6 @@ export function array<A>(dsl: DSL<A>): DSL<Array<A>> {
   return C.make(() => ({ _tag: 'array', model: dsl() }))
 }
 
-const sequenceA = A.array.sequence(io)
-
 /**
  * @since 3.0.0
  */
@@ -146,10 +135,7 @@ export function tuple<A, B, C>(dsls: [DSL<A>, DSL<B>, DSL<C>]): DSL<[A, B, C]>
 export function tuple<A, B>(dsls: [DSL<A>, DSL<B>]): DSL<[A, B]>
 export function tuple<A>(dsls: [DSL<A>]): DSL<[A]>
 export function tuple(dsls: Array<DSL<any>>): DSL<any> {
-  return C.make(() => {
-    const models: IO<NonEmptyArray<Model>> = sequenceA(dsls) as any
-    return { _tag: 'tuple', models: models() }
-  })
+  return C.make(() => ({ _tag: 'tuple', models: [dsls[0](), ...dsls.slice(1).map(dsl => dsl())] }))
 }
 
 /**
@@ -160,10 +146,7 @@ export function intersection<A, B, C, D>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>])
 export function intersection<A, B, C>(dsls: [DSL<A>, DSL<B>, DSL<C>]): DSL<A & B & C>
 export function intersection<A, B>(dsls: [DSL<A>, DSL<B>]): DSL<A & B>
 export function intersection(dsls: Array<DSL<any>>): DSL<any> {
-  return C.make(() => {
-    const models: IO<[Model, Model, ...Array<Model>]> = sequenceA(dsls) as any
-    return { _tag: 'intersection', models: models() }
-  })
+  return C.make(() => ({ _tag: 'intersection', models: [dsls[0](), dsls[1](), ...dsls.slice(2).map(dsl => dsl())] }))
 }
 
 /**
@@ -172,11 +155,7 @@ export function intersection(dsls: Array<DSL<any>>): DSL<any> {
 export function sum<T extends string>(
   tag: T
 ): <A>(dsls: { [K in keyof A]: DSL<A[K] & Record<T, K>> }) => DSL<A[keyof A]> {
-  return dsls =>
-    C.make(() => {
-      const models: IO<Record<string, Model>> = sequenceR(dsls)
-      return { _tag: 'sum', tag, models: models() }
-    })
+  return dsls => C.make(() => ({ _tag: 'sum', tag, models: runSequence(dsls) }))
 }
 
 /**
@@ -185,10 +164,7 @@ export function sum<T extends string>(
 export function union<A extends [unknown, unknown, ...Array<unknown>]>(
   dsls: { [K in keyof A]: DSL<A[K]> }
 ): DSL<A[number]> {
-  return C.make(() => {
-    const models: IO<[Model, Model, ...Array<Model>]> = sequenceA(dsls) as any
-    return { _tag: 'union', models: models() }
-  })
+  return C.make(() => ({ _tag: 'union', models: [dsls[0](), dsls[1](), ...dsls.slice(2).map(dsl => dsl())] }))
 }
 
 let refCounter = 0

@@ -13,6 +13,7 @@ Added in v3.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [JsonSchema (type alias)](#jsonschema-type-alias)
+- [Model (type alias)](#model-type-alias)
 - [URI (type alias)](#uri-type-alias)
 - [URI](#uri)
 - [UnknownArray](#unknownarray)
@@ -40,7 +41,17 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export type JsonSchema<A> = C.Const<IO<object>, A>
+export type JsonSchema<A> = C.Const<IO<Model>, A>
+```
+
+Added in v3.0.0
+
+# Model (type alias)
+
+**Signature**
+
+```ts
+export type Model = J.JSONSchema7
 ```
 
 Added in v3.0.0
