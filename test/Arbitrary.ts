@@ -7,7 +7,7 @@ import * as G from '../src/Guard'
 import * as J from '../src/JsonSchema'
 import { URIS, Kind } from 'fp-ts/lib/HKT'
 import * as S from '../src/Schemable'
-import { isRight, right, left, isLeft } from 'fp-ts/lib/Either'
+import { isRight, right, left, isLeft, Either } from 'fp-ts/lib/Either'
 import * as Ajv from 'ajv'
 
 const ajv = new Ajv()
@@ -47,10 +47,12 @@ function makeWithUnion<A>(f: SchemaWithUnion<A>): SchemaWithUnion<A> {
 
 function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
   const arb = schema(Arb.arbitrary)
+  const mutation = schema(ArbMut.arbitraryMutation)
   const decoder = schema(D.decoder)
   const guard = schema(G.guard)
   const jsonSchema = schema(J.jsonSchema)
   fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a)) && run(jsonSchema, a)))
+  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
 }
 
 interface SchemaWithParse<A> {
@@ -63,13 +65,15 @@ function makeWithParse<A>(f: SchemaWithParse<A>): SchemaWithParse<A> {
 
 function assertWithParse<A>(schema: SchemaWithParse<A>): void {
   const arb = schema(Arb.arbitrary)
+  const mutation = schema(ArbMut.arbitraryMutation)
   const decoder = schema(D.decoder)
   const guard = schema(G.guard)
   fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a))))
+  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
 }
 
 interface SchemaWithLazy<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithLazy<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S> & S.WithLazy<S> & S.WithParse<S>): Kind<S, A>
 }
 
 function makeWithLazy<A>(f: SchemaWithLazy<A>): SchemaWithLazy<A> {
@@ -78,9 +82,11 @@ function makeWithLazy<A>(f: SchemaWithLazy<A>): SchemaWithLazy<A> {
 
 function assertWithLazy<A>(schema: SchemaWithLazy<A>): void {
   const arb = schema(Arb.arbitrary)
+  const mutation = schema(ArbMut.arbitraryMutation)
   const decoder = schema(D.decoder)
   const guard = schema(G.guard)
   fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a))))
+  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
 }
 
 describe('Arbitrary', () => {
@@ -123,7 +129,7 @@ describe('Arbitrary', () => {
     )
   })
 
-  it('partial', () => {
+  describe('partial', () => {
     assert(
       make(S =>
         S.partial({
@@ -169,12 +175,26 @@ describe('Arbitrary', () => {
       a: string
       b: undefined | A
     }
-    const schema: SchemaWithLazy<A> = makeWithLazy(S =>
+
+    interface NonEmptyABrand {
+      readonly NonEmptyA: unique symbol
+    }
+
+    type NonEmptyA = A & NonEmptyABrand
+
+    function parser(a: A): Either<string, NonEmptyA> {
+      return a.a.length > 0 ? right(a as any) : left('NonEmptyA')
+    }
+
+    const schema: SchemaWithLazy<NonEmptyA> = makeWithLazy(S =>
       S.lazy(() =>
-        S.type({
-          a: S.string,
-          b: S.literalsOr([undefined], schema(S))
-        })
+        S.parse(
+          S.type({
+            a: S.string,
+            b: S.literalsOr([undefined], schema(S))
+          }),
+          parser
+        )
       )
     )
     assertWithLazy(schema)
