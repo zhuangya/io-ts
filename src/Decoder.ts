@@ -171,12 +171,19 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder
         let a: Partial<A> = {}
         const es: Array<[string, DE.DecodeError]> = []
         for (const k in decoders) {
-          if (r[k] !== undefined) {
-            const e = decoders[k].decode(r[k])
-            if (E.isLeft(e)) {
-              es.push([k, e.left])
+          // don't add missing fields
+          if (U.hasOwnProperty(r, k)) {
+            const rk = r[k]
+            // don't strip undefined fields
+            if (rk === undefined) {
+              a[k] = undefined
             } else {
-              a[k] = e.right
+              const e = decoders[k].decode(rk)
+              if (E.isLeft(e)) {
+                es.push([k, e.left])
+              } else {
+                a[k] = e.right
+              }
             }
           }
         }

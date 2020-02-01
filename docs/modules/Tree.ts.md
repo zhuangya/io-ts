@@ -12,11 +12,11 @@ Added in v3.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [toTree (function)](#totree-function)
+- [toTree](#totree)
 
 ---
 
-# toTree (function)
+# toTree
 
 **Signature**
 

@@ -18,11 +18,11 @@ Added in v3.0.0
 - [Leaf (interface)](#leaf-interface)
 - [Or (interface)](#or-interface)
 - [DecodeError (type alias)](#decodeerror-type-alias)
-- [and (function)](#and-function)
-- [indexed (function)](#indexed-function)
-- [labeled (function)](#labeled-function)
-- [leaf (function)](#leaf-function)
-- [or (function)](#or-function)
+- [and](#and)
+- [indexed](#indexed)
+- [labeled](#labeled)
+- [leaf](#leaf)
+- [or](#or)
 
 ---
 
@@ -110,7 +110,7 @@ export type DecodeError = Leaf | And | Or | Indexed | Labeled
 
 Added in v3.0.0
 
-# and (function)
+# and
 
 **Signature**
 
@@ -120,7 +120,7 @@ export function and(expected: string, actual: unknown, errors: NonEmptyArray<Dec
 
 Added in v3.0.0
 
-# indexed (function)
+# indexed
 
 **Signature**
 
@@ -130,7 +130,7 @@ export function indexed(expected: string, actual: unknown, errors: NonEmptyArray
 
 Added in v3.0.0
 
-# labeled (function)
+# labeled
 
 **Signature**
 
@@ -140,7 +140,7 @@ export function labeled(expected: string, actual: unknown, errors: NonEmptyArray
 
 Added in v3.0.0
 
-# leaf (function)
+# leaf
 
 **Signature**
 
@@ -150,7 +150,7 @@ export function leaf(expected: string, actual: unknown): DecodeError { ... }
 
 Added in v3.0.0
 
-# or (function)
+# or
 
 **Signature**
 

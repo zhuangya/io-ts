@@ -47,7 +47,7 @@
     "@types/node": "7.0.4",
     "ajv": "^6.11.0",
     "benchmark": "2.1.4",
-    "docs-ts": "^0.3.0",
+    "docs-ts": "^0.3.4",
     "doctoc": "^1.4.0",
     "dtslint": "github:gcanti/dtslint",
     "fast-check": "^1.21.0",

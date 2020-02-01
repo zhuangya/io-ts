@@ -188,24 +188,28 @@ describe('Codec', () => {
   describe('partial', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.partial({
-          a: C.string
-        })
+        const codec = C.partial({ a: C.string })
         assert.deepStrictEqual(codec.decode({ a: 'a' }), right({ a: 'a' }))
         assert.deepStrictEqual(codec.decode({}), right({}))
       })
 
       it('should strip additional fields', () => {
-        const codec = C.partial({
-          a: C.string
-        })
+        const codec = C.partial({ a: C.string })
         assert.deepStrictEqual(codec.decode({ a: 'a', b: 1 }), right({ a: 'a' }))
       })
 
+      it('should not add missing fields', () => {
+        const codec = C.partial({ a: C.string })
+        assert.deepStrictEqual(codec.decode({}), right({}))
+      })
+
+      it('should not strip undefined fields', () => {
+        const codec = C.partial({ a: C.string })
+        assert.deepStrictEqual(codec.decode({ a: undefined }), right({ a: undefined }))
+      })
+
       it('should reject an invalid input', () => {
-        const codec = C.partial({
-          a: C.string
-        })
+        const codec = C.partial({ a: C.string })
         assert.deepStrictEqual(codec.decode(undefined), left(DE.leaf('Record<string, unknown>', undefined)))
         assert.deepStrictEqual(
           codec.decode({ a: 1 }),
@@ -222,9 +226,19 @@ describe('Codec', () => {
       })
 
       it('should strip additional fields', () => {
-        const codec = C.partial({ a: C.number })
-        const a = { a: 1, b: true }
-        assert.deepStrictEqual(codec.encode(a), { a: 1 })
+        const codec = C.partial({ a: C.string })
+        const a = { a: 'a', b: true }
+        assert.deepStrictEqual(codec.encode(a), { a: 'a' })
+      })
+
+      it('should not add missing fields', () => {
+        const codec = C.partial({ a: C.string })
+        assert.deepStrictEqual(codec.encode({}), {})
+      })
+
+      it('should not strip undefined fields', () => {
+        const codec = C.partial({ a: C.string })
+        assert.deepStrictEqual(codec.encode({ a: undefined }), { a: undefined })
       })
     })
   })

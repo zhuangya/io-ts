@@ -12,11 +12,11 @@ Added in v3.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [arbitraryMutation (constant)](#arbitrarymutation-constant)
+- [arbitraryMutation](#arbitrarymutation)
 
 ---
 
-# arbitraryMutation (constant)
+# arbitraryMutation
 
 **Signature**
 

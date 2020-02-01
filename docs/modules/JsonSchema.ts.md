@@ -14,24 +14,24 @@ Added in v3.0.0
 
 - [JsonSchema (type alias)](#jsonschema-type-alias)
 - [URI (type alias)](#uri-type-alias)
-- [URI (constant)](#uri-constant)
-- [UnknownArray (constant)](#unknownarray-constant)
-- [UnknownRecord (constant)](#unknownrecord-constant)
-- [boolean (constant)](#boolean-constant)
-- [jsonSchema (constant)](#jsonschema-constant)
-- [number (constant)](#number-constant)
-- [string (constant)](#string-constant)
-- [array (function)](#array-function)
-- [intersection (function)](#intersection-function)
-- [lazy (function)](#lazy-function)
-- [literals (function)](#literals-function)
-- [literalsOr (function)](#literalsor-function)
-- [partial (function)](#partial-function)
-- [record (function)](#record-function)
-- [sum (function)](#sum-function)
-- [tuple (function)](#tuple-function)
-- [type (function)](#type-function)
-- [union (function)](#union-function)
+- [URI](#uri)
+- [UnknownArray](#unknownarray)
+- [UnknownRecord](#unknownrecord)
+- [array](#array)
+- [boolean](#boolean)
+- [intersection](#intersection)
+- [jsonSchema](#jsonschema)
+- [lazy](#lazy)
+- [literals](#literals)
+- [literalsOr](#literalsor)
+- [number](#number)
+- [partial](#partial)
+- [record](#record)
+- [string](#string)
+- [sum](#sum)
+- [tuple](#tuple)
+- [type](#type)
+- [union](#union)
 
 ---
 
@@ -55,7 +55,7 @@ export type URI = typeof URI
 
 Added in v3.0.0
 
-# URI (constant)
+# URI
 
 **Signature**
 
@@ -65,7 +65,7 @@ export const URI: "JsonSchema" = ...
 
 Added in v3.0.0
 
-# UnknownArray (constant)
+# UnknownArray
 
 **Signature**
 
@@ -75,7 +75,7 @@ export const UnknownArray: JsonSchema<Array<unknown>> = ...
 
 Added in v3.0.0
 
-# UnknownRecord (constant)
+# UnknownRecord
 
 **Signature**
 
@@ -85,47 +85,7 @@ export const UnknownRecord: JsonSchema<Record<string, unknown>> = ...
 
 Added in v3.0.0
 
-# boolean (constant)
-
-**Signature**
-
-```ts
-export const boolean: JsonSchema<boolean> = ...
-```
-
-Added in v3.0.0
-
-# jsonSchema (constant)
-
-**Signature**
-
-```ts
-export const jsonSchema: S.Schemable<URI> & S.WithLazy<URI> & S.WithUnion<URI> = ...
-```
-
-Added in v3.0.0
-
-# number (constant)
-
-**Signature**
-
-```ts
-export const number: JsonSchema<number> = ...
-```
-
-Added in v3.0.0
-
-# string (constant)
-
-**Signature**
-
-```ts
-export const string: JsonSchema<string> = ...
-```
-
-Added in v3.0.0
-
-# array (function)
+# array
 
 **Signature**
 
@@ -135,7 +95,17 @@ export function array<A>(jsonSchema: JsonSchema<A>): JsonSchema<Array<A>> { ... 
 
 Added in v3.0.0
 
-# intersection (function)
+# boolean
+
+**Signature**
+
+```ts
+export const boolean: JsonSchema<boolean> = ...
+```
+
+Added in v3.0.0
+
+# intersection
 
 **Signature**
 
@@ -152,7 +122,17 @@ export function intersection<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]):
 
 Added in v3.0.0
 
-# lazy (function)
+# jsonSchema
+
+**Signature**
+
+```ts
+export const jsonSchema: S.Schemable<URI> & S.WithLazy<URI> & S.WithUnion<URI> = ...
+```
+
+Added in v3.0.0
+
+# lazy
 
 **Signature**
 
@@ -162,7 +142,7 @@ export function lazy<A>(f: () => JsonSchema<A>): JsonSchema<A> { ... }
 
 Added in v3.0.0
 
-# literals (function)
+# literals
 
 **Signature**
 
@@ -172,7 +152,7 @@ export function literals<A extends S.Literal>(values: NonEmptyArray<A>): JsonSch
 
 Added in v3.0.0
 
-# literalsOr (function)
+# literalsOr
 
 **Signature**
 
@@ -185,7 +165,17 @@ export function literalsOr<A extends S.Literal, B>(
 
 Added in v3.0.0
 
-# partial (function)
+# number
+
+**Signature**
+
+```ts
+export const number: JsonSchema<number> = ...
+```
+
+Added in v3.0.0
+
+# partial
 
 **Signature**
 
@@ -195,7 +185,7 @@ export function partial<A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }): J
 
 Added in v3.0.0
 
-# record (function)
+# record
 
 **Signature**
 
@@ -205,7 +195,17 @@ export function record<A>(jsonSchema: JsonSchema<A>): JsonSchema<Record<string, 
 
 Added in v3.0.0
 
-# sum (function)
+# string
+
+**Signature**
+
+```ts
+export const string: JsonSchema<string> = ...
+```
+
+Added in v3.0.0
+
+# sum
 
 **Signature**
 
@@ -217,7 +217,7 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple (function)
+# tuple
 
 **Signature**
 
@@ -235,7 +235,7 @@ export function tuple<A>(jsonSchemas: [JsonSchema<A>]): JsonSchema<[A]> { ... }
 
 Added in v3.0.0
 
-# type (function)
+# type
 
 **Signature**
 
@@ -245,7 +245,7 @@ export function type<A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }): Json
 
 Added in v3.0.0
 
-# union (function)
+# union
 
 **Signature**
 

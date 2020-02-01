@@ -58,25 +58,25 @@ Added in v3.0.0
 
 - [Codec (interface)](#codec-interface)
 - [URI (type alias)](#uri-type-alias)
-- [URI (constant)](#uri-constant)
-- [UnknownArray (constant)](#unknownarray-constant)
-- [UnknownRecord (constant)](#unknownrecord-constant)
-- [boolean (constant)](#boolean-constant)
-- [codec (constant)](#codec-constant)
-- [number (constant)](#number-constant)
-- [string (constant)](#string-constant)
-- [array (function)](#array-function)
-- [intersection (function)](#intersection-function)
-- [lazy (function)](#lazy-function)
-- [literals (function)](#literals-function)
-- [literalsOr (function)](#literalsor-function)
-- [make (function)](#make-function)
-- [partial (function)](#partial-function)
-- [record (function)](#record-function)
-- [sum (function)](#sum-function)
-- [tuple (function)](#tuple-function)
-- [type (function)](#type-function)
-- [withExpected (function)](#withexpected-function)
+- [URI](#uri)
+- [UnknownArray](#unknownarray)
+- [UnknownRecord](#unknownrecord)
+- [array](#array)
+- [boolean](#boolean)
+- [codec](#codec)
+- [intersection](#intersection)
+- [lazy](#lazy)
+- [literals](#literals)
+- [literalsOr](#literalsor)
+- [make](#make)
+- [number](#number)
+- [partial](#partial)
+- [record](#record)
+- [string](#string)
+- [sum](#sum)
+- [tuple](#tuple)
+- [type](#type)
+- [withExpected](#withexpected)
 
 ---
 
@@ -100,7 +100,7 @@ export type URI = typeof URI
 
 Added in v3.0.0
 
-# URI (constant)
+# URI
 
 **Signature**
 
@@ -110,7 +110,7 @@ export const URI: "Codec" = ...
 
 Added in v3.0.0
 
-# UnknownArray (constant)
+# UnknownArray
 
 **Signature**
 
@@ -120,7 +120,7 @@ export const UnknownArray: Codec<Array<unknown>> = ...
 
 Added in v3.0.0
 
-# UnknownRecord (constant)
+# UnknownRecord
 
 **Signature**
 
@@ -130,47 +130,7 @@ export const UnknownRecord: Codec<Record<string, unknown>> = ...
 
 Added in v3.0.0
 
-# boolean (constant)
-
-**Signature**
-
-```ts
-export const boolean: Codec<boolean> = ...
-```
-
-Added in v3.0.0
-
-# codec (constant)
-
-**Signature**
-
-```ts
-export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = ...
-```
-
-Added in v3.0.0
-
-# number (constant)
-
-**Signature**
-
-```ts
-export const number: Codec<number> = ...
-```
-
-Added in v3.0.0
-
-# string (constant)
-
-**Signature**
-
-```ts
-export const string: Codec<string> = ...
-```
-
-Added in v3.0.0
-
-# array (function)
+# array
 
 **Signature**
 
@@ -180,7 +140,27 @@ export function array<A>(codec: Codec<A>): Codec<Array<A>> { ... }
 
 Added in v3.0.0
 
-# intersection (function)
+# boolean
+
+**Signature**
+
+```ts
+export const boolean: Codec<boolean> = ...
+```
+
+Added in v3.0.0
+
+# codec
+
+**Signature**
+
+```ts
+export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = ...
+```
+
+Added in v3.0.0
+
+# intersection
 
 **Signature**
 
@@ -199,7 +179,7 @@ export function intersection<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<A & B> {
 
 Added in v3.0.0
 
-# lazy (function)
+# lazy
 
 **Signature**
 
@@ -209,7 +189,7 @@ export function lazy<A>(f: () => Codec<A>): Codec<A> { ... }
 
 Added in v3.0.0
 
-# literals (function)
+# literals
 
 **Signature**
 
@@ -219,7 +199,7 @@ export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Codec<A
 
 Added in v3.0.0
 
-# literalsOr (function)
+# literalsOr
 
 **Signature**
 
@@ -229,7 +209,7 @@ export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, cod
 
 Added in v3.0.0
 
-# make (function)
+# make
 
 **Signature**
 
@@ -239,7 +219,17 @@ export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> 
 
 Added in v3.0.0
 
-# partial (function)
+# number
+
+**Signature**
+
+```ts
+export const number: Codec<number> = ...
+```
+
+Added in v3.0.0
+
+# partial
 
 **Signature**
 
@@ -249,7 +239,7 @@ export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<Parti
 
 Added in v3.0.0
 
-# record (function)
+# record
 
 **Signature**
 
@@ -259,7 +249,17 @@ export function record<A>(codec: Codec<A>): Codec<Record<string, A>> { ... }
 
 Added in v3.0.0
 
-# sum (function)
+# string
+
+**Signature**
+
+```ts
+export const string: Codec<string> = ...
+```
+
+Added in v3.0.0
+
+# sum
 
 **Signature**
 
@@ -271,7 +271,7 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple (function)
+# tuple
 
 **Signature**
 
@@ -285,7 +285,7 @@ export function tuple<A>(codecs: [Codec<A>]): Codec<[A]> { ... }
 
 Added in v3.0.0
 
-# type (function)
+# type
 
 **Signature**
 
@@ -295,7 +295,7 @@ export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<A> { ...
 
 Added in v3.0.0
 
-# withExpected (function)
+# withExpected
 
 **Signature**
 

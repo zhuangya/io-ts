@@ -108,8 +108,10 @@ export function partial<A>(encoders: { [K in keyof A]: Encoder<A[K]> }): Encoder
       const o: Record<string, unknown> = {}
       for (const k in encoders) {
         const v: A[Extract<keyof A, string>] | undefined = a[k]
-        if (v !== undefined) {
-          o[k] = encoders[k].encode(v)
+        // don't add missing fields
+        if (U.hasOwnProperty(a, k)) {
+          // don't strip undefined fields
+          o[k] = v === undefined ? v : encoders[k].encode(v)
         }
       }
       return o

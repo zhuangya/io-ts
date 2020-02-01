@@ -15,34 +15,34 @@ Added in v3.0.0
 - [Decoder (interface)](#decoder-interface)
 - [TypeOf (type alias)](#typeof-type-alias)
 - [URI (type alias)](#uri-type-alias)
-- [URI (constant)](#uri-constant)
-- [UnknownArray (constant)](#unknownarray-constant)
-- [UnknownRecord (constant)](#unknownrecord-constant)
-- [boolean (constant)](#boolean-constant)
-- [decoder (constant)](#decoder-constant)
-- [never (constant)](#never-constant)
-- [number (constant)](#number-constant)
-- [string (constant)](#string-constant)
-- [array (function)](#array-function)
-- [fromGuard (function)](#fromguard-function)
-- [intersection (function)](#intersection-function)
-- [lazy (function)](#lazy-function)
-- [literals (function)](#literals-function)
-- [literalsOr (function)](#literalsor-function)
-- [mapLeft (function)](#mapleft-function)
-- [parse (function)](#parse-function)
-- [partial (function)](#partial-function)
-- [record (function)](#record-function)
-- [sum (function)](#sum-function)
-- [tuple (function)](#tuple-function)
-- [type (function)](#type-function)
-- [union (function)](#union-function)
-- [withExpected (function)](#withexpected-function)
-- [alt (export)](#alt-export)
-- [ap (export)](#ap-export)
-- [apFirst (export)](#apfirst-export)
-- [apSecond (export)](#apsecond-export)
-- [map (export)](#map-export)
+- [URI](#uri)
+- [UnknownArray](#unknownarray)
+- [UnknownRecord](#unknownrecord)
+- [alt](#alt)
+- [ap](#ap)
+- [apFirst](#apfirst)
+- [apSecond](#apsecond)
+- [array](#array)
+- [boolean](#boolean)
+- [decoder](#decoder)
+- [fromGuard](#fromguard)
+- [intersection](#intersection)
+- [lazy](#lazy)
+- [literals](#literals)
+- [literalsOr](#literalsor)
+- [map](#map)
+- [mapLeft](#mapleft)
+- [never](#never)
+- [number](#number)
+- [parse](#parse)
+- [partial](#partial)
+- [record](#record)
+- [string](#string)
+- [sum](#sum)
+- [tuple](#tuple)
+- [type](#type)
+- [union](#union)
+- [withExpected](#withexpected)
 
 ---
 
@@ -78,7 +78,7 @@ export type URI = typeof URI
 
 Added in v3.0.0
 
-# URI (constant)
+# URI
 
 **Signature**
 
@@ -88,7 +88,7 @@ export const URI: "Decoder" = ...
 
 Added in v3.0.0
 
-# UnknownArray (constant)
+# UnknownArray
 
 **Signature**
 
@@ -98,7 +98,7 @@ export const UnknownArray: Decoder<Array<unknown>> = ...
 
 Added in v3.0.0
 
-# UnknownRecord (constant)
+# UnknownRecord
 
 **Signature**
 
@@ -108,7 +108,57 @@ export const UnknownRecord: Decoder<Record<string, unknown>> = ...
 
 Added in v3.0.0
 
-# boolean (constant)
+# alt
+
+**Signature**
+
+```ts
+<A>(that: () => Decoder<A>) => (fa: Decoder<A>) => Decoder<A>
+```
+
+Added in v3.0.0
+
+# ap
+
+**Signature**
+
+```ts
+<A>(fa: Decoder<A>) => <B>(fab: Decoder<(a: A) => B>) => Decoder<B>
+```
+
+Added in v3.0.0
+
+# apFirst
+
+**Signature**
+
+```ts
+<B>(fb: Decoder<B>) => <A>(fa: Decoder<A>) => Decoder<A>
+```
+
+Added in v3.0.0
+
+# apSecond
+
+**Signature**
+
+```ts
+<B>(fb: Decoder<B>) => <A>(fa: Decoder<A>) => Decoder<B>
+```
+
+Added in v3.0.0
+
+# array
+
+**Signature**
+
+```ts
+export function array<A>(decoder: Decoder<A>): Decoder<Array<A>> { ... }
+```
+
+Added in v3.0.0
+
+# boolean
 
 **Signature**
 
@@ -118,7 +168,7 @@ export const boolean: Decoder<boolean> = ...
 
 Added in v3.0.0
 
-# decoder (constant)
+# decoder
 
 **Signature**
 
@@ -133,47 +183,7 @@ export const decoder: Applicative1<URI> &
 
 Added in v3.0.0
 
-# never (constant)
-
-**Signature**
-
-```ts
-export const never: Decoder<never> = ...
-```
-
-Added in v3.0.0
-
-# number (constant)
-
-**Signature**
-
-```ts
-export const number: Decoder<number> = ...
-```
-
-Added in v3.0.0
-
-# string (constant)
-
-**Signature**
-
-```ts
-export const string: Decoder<string> = ...
-```
-
-Added in v3.0.0
-
-# array (function)
-
-**Signature**
-
-```ts
-export function array<A>(decoder: Decoder<A>): Decoder<Array<A>> { ... }
-```
-
-Added in v3.0.0
-
-# fromGuard (function)
+# fromGuard
 
 **Signature**
 
@@ -183,7 +193,7 @@ export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> { 
 
 Added in v3.0.0
 
-# intersection (function)
+# intersection
 
 **Signature**
 
@@ -200,7 +210,7 @@ export function intersection<A, B>(decoders: [Decoder<A>, Decoder<B>]): Decoder<
 
 Added in v3.0.0
 
-# lazy (function)
+# lazy
 
 **Signature**
 
@@ -210,7 +220,7 @@ export function lazy<A>(f: () => Decoder<A>): Decoder<A> { ... }
 
 Added in v3.0.0
 
-# literals (function)
+# literals
 
 **Signature**
 
@@ -220,7 +230,7 @@ export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Decoder
 
 Added in v3.0.0
 
-# literalsOr (function)
+# literalsOr
 
 **Signature**
 
@@ -230,7 +240,17 @@ export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, dec
 
 Added in v3.0.0
 
-# mapLeft (function)
+# map
+
+**Signature**
+
+```ts
+<A, B>(f: (a: A) => B) => (fa: Decoder<A>) => Decoder<B>
+```
+
+Added in v3.0.0
+
+# mapLeft
 
 **Signature**
 
@@ -240,7 +260,27 @@ export function mapLeft<A>(decoder: Decoder<A>, f: (e: DE.DecodeError) => DE.Dec
 
 Added in v3.0.0
 
-# parse (function)
+# never
+
+**Signature**
+
+```ts
+export const never: Decoder<never> = ...
+```
+
+Added in v3.0.0
+
+# number
+
+**Signature**
+
+```ts
+export const number: Decoder<number> = ...
+```
+
+Added in v3.0.0
+
+# parse
 
 **Signature**
 
@@ -250,7 +290,7 @@ export function parse<A, B>(decoder: Decoder<A>, parser: (a: A) => E.Either<stri
 
 Added in v3.0.0
 
-# partial (function)
+# partial
 
 **Signature**
 
@@ -260,7 +300,7 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder
 
 Added in v3.0.0
 
-# record (function)
+# record
 
 **Signature**
 
@@ -270,7 +310,17 @@ export function record<A>(decoder: Decoder<A>): Decoder<Record<string, A>> { ...
 
 Added in v3.0.0
 
-# sum (function)
+# string
+
+**Signature**
+
+```ts
+export const string: Decoder<string> = ...
+```
+
+Added in v3.0.0
+
+# sum
 
 **Signature**
 
@@ -282,7 +332,7 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple (function)
+# tuple
 
 **Signature**
 
@@ -298,7 +348,7 @@ export function tuple<A>(decoders: [Decoder<A>]): Decoder<[A]> { ... }
 
 Added in v3.0.0
 
-# type (function)
+# type
 
 **Signature**
 
@@ -308,7 +358,7 @@ export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }): Decoder<A>
 
 Added in v3.0.0
 
-# union (function)
+# union
 
 **Signature**
 
@@ -320,62 +370,12 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
 
 Added in v3.0.0
 
-# withExpected (function)
+# withExpected
 
 **Signature**
 
 ```ts
 export function withExpected<A>(decoder: Decoder<A>, expected: string): Decoder<A> { ... }
-```
-
-Added in v3.0.0
-
-# alt (export)
-
-**Signature**
-
-```ts
-<A>(that: () => Decoder<A>) => (fa: Decoder<A>) => Decoder<A>
-```
-
-Added in v3.0.0
-
-# ap (export)
-
-**Signature**
-
-```ts
-<A>(fa: Decoder<A>) => <B>(fab: Decoder<(a: A) => B>) => Decoder<B>
-```
-
-Added in v3.0.0
-
-# apFirst (export)
-
-**Signature**
-
-```ts
-<B>(fb: Decoder<B>) => <A>(fa: Decoder<A>) => Decoder<A>
-```
-
-Added in v3.0.0
-
-# apSecond (export)
-
-**Signature**
-
-```ts
-<B>(fb: Decoder<B>) => <A>(fa: Decoder<A>) => Decoder<B>
-```
-
-Added in v3.0.0
-
-# map (export)
-
-**Signature**
-
-```ts
-<A, B>(f: (a: A) => B) => (fa: Decoder<A>) => Decoder<B>
 ```
 
 Added in v3.0.0

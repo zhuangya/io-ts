@@ -14,25 +14,25 @@ Added in v3.0.0
 
 - [Arbitrary (interface)](#arbitrary-interface)
 - [URI (type alias)](#uri-type-alias)
-- [URI (constant)](#uri-constant)
-- [UnknownArray (constant)](#unknownarray-constant)
-- [UnknownRecord (constant)](#unknownrecord-constant)
-- [arbitrary (constant)](#arbitrary-constant)
-- [boolean (constant)](#boolean-constant)
-- [number (constant)](#number-constant)
-- [string (constant)](#string-constant)
-- [array (function)](#array-function)
-- [intersection (function)](#intersection-function)
-- [lazy (function)](#lazy-function)
-- [literals (function)](#literals-function)
-- [literalsOr (function)](#literalsor-function)
-- [parse (function)](#parse-function)
-- [partial (function)](#partial-function)
-- [record (function)](#record-function)
-- [sum (function)](#sum-function)
-- [tuple (function)](#tuple-function)
-- [type (function)](#type-function)
-- [union (function)](#union-function)
+- [URI](#uri)
+- [UnknownArray](#unknownarray)
+- [UnknownRecord](#unknownrecord)
+- [arbitrary](#arbitrary)
+- [array](#array)
+- [boolean](#boolean)
+- [intersection](#intersection)
+- [lazy](#lazy)
+- [literals](#literals)
+- [literalsOr](#literalsor)
+- [number](#number)
+- [parse](#parse)
+- [partial](#partial)
+- [record](#record)
+- [string](#string)
+- [sum](#sum)
+- [tuple](#tuple)
+- [type](#type)
+- [union](#union)
 
 ---
 
@@ -56,7 +56,7 @@ export type URI = typeof URI
 
 Added in v3.0.0
 
-# URI (constant)
+# URI
 
 **Signature**
 
@@ -66,7 +66,7 @@ export const URI: "Arbitrary" = ...
 
 Added in v3.0.0
 
-# UnknownArray (constant)
+# UnknownArray
 
 **Signature**
 
@@ -76,7 +76,7 @@ export const UnknownArray: Arbitrary<Array<unknown>> = ...
 
 Added in v3.0.0
 
-# UnknownRecord (constant)
+# UnknownRecord
 
 **Signature**
 
@@ -86,7 +86,7 @@ export const UnknownRecord: Arbitrary<Record<string, unknown>> = ...
 
 Added in v3.0.0
 
-# arbitrary (constant)
+# arbitrary
 
 **Signature**
 
@@ -96,37 +96,7 @@ export const arbitrary: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & 
 
 Added in v3.0.0
 
-# boolean (constant)
-
-**Signature**
-
-```ts
-export const boolean: Arbitrary<boolean> = ...
-```
-
-Added in v3.0.0
-
-# number (constant)
-
-**Signature**
-
-```ts
-export const number: Arbitrary<number> = ...
-```
-
-Added in v3.0.0
-
-# string (constant)
-
-**Signature**
-
-```ts
-export const string: Arbitrary<string> = ...
-```
-
-Added in v3.0.0
-
-# array (function)
+# array
 
 **Signature**
 
@@ -136,7 +106,17 @@ export function array<A>(arb: Arbitrary<A>): Arbitrary<Array<A>> { ... }
 
 Added in v3.0.0
 
-# intersection (function)
+# boolean
+
+**Signature**
+
+```ts
+export const boolean: Arbitrary<boolean> = ...
+```
+
+Added in v3.0.0
+
+# intersection
 
 **Signature**
 
@@ -155,7 +135,7 @@ export function intersection<A, B>(arbs: [Arbitrary<A>, Arbitrary<B>]): Arbitrar
 
 Added in v3.0.0
 
-# lazy (function)
+# lazy
 
 **Signature**
 
@@ -165,7 +145,7 @@ export function lazy<A>(f: () => Arbitrary<A>): Arbitrary<A> { ... }
 
 Added in v3.0.0
 
-# literals (function)
+# literals
 
 **Signature**
 
@@ -175,7 +155,7 @@ export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Arbitra
 
 Added in v3.0.0
 
-# literalsOr (function)
+# literalsOr
 
 **Signature**
 
@@ -185,7 +165,17 @@ export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, arb
 
 Added in v3.0.0
 
-# parse (function)
+# number
+
+**Signature**
+
+```ts
+export const number: Arbitrary<number> = ...
+```
+
+Added in v3.0.0
+
+# parse
 
 **Signature**
 
@@ -195,7 +185,7 @@ export function parse<A, B>(arb: Arbitrary<A>, parser: (a: A) => Either<string, 
 
 Added in v3.0.0
 
-# partial (function)
+# partial
 
 **Signature**
 
@@ -205,7 +195,7 @@ export function partial<A>(arbs: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary
 
 Added in v3.0.0
 
-# record (function)
+# record
 
 **Signature**
 
@@ -215,7 +205,17 @@ export function record<A>(arb: Arbitrary<A>): Arbitrary<Record<string, A>> { ...
 
 Added in v3.0.0
 
-# sum (function)
+# string
+
+**Signature**
+
+```ts
+export const string: Arbitrary<string> = ...
+```
+
+Added in v3.0.0
+
+# sum
 
 **Signature**
 
@@ -227,7 +227,7 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple (function)
+# tuple
 
 **Signature**
 
@@ -245,7 +245,7 @@ export function tuple<A>(arbs: [Arbitrary<A>]): Arbitrary<[A]> { ... }
 
 Added in v3.0.0
 
-# type (function)
+# type
 
 **Signature**
 
@@ -255,7 +255,7 @@ export function type<A>(arbs: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<A>
 
 Added in v3.0.0
 
-# union (function)
+# union
 
 **Signature**
 

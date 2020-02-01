@@ -14,23 +14,23 @@ Added in v3.0.0
 
 - [Static (type alias)](#static-type-alias)
 - [URI (type alias)](#uri-type-alias)
-- [URI (constant)](#uri-constant)
-- [UnknownArray (constant)](#unknownarray-constant)
-- [UnknownRecord (constant)](#unknownrecord-constant)
-- [boolean (constant)](#boolean-constant)
-- [number (constant)](#number-constant)
-- [s (constant)](#s-constant)
-- [string (constant)](#string-constant)
-- [array (function)](#array-function)
-- [intersection (function)](#intersection-function)
-- [literals (function)](#literals-function)
-- [literalsOr (function)](#literalsor-function)
-- [partial (function)](#partial-function)
-- [record (function)](#record-function)
-- [sum (function)](#sum-function)
-- [tuple (function)](#tuple-function)
-- [type (function)](#type-function)
-- [union (function)](#union-function)
+- [URI](#uri)
+- [UnknownArray](#unknownarray)
+- [UnknownRecord](#unknownrecord)
+- [array](#array)
+- [boolean](#boolean)
+- [intersection](#intersection)
+- [literals](#literals)
+- [literalsOr](#literalsor)
+- [number](#number)
+- [partial](#partial)
+- [record](#record)
+- [s](#s)
+- [string](#string)
+- [sum](#sum)
+- [tuple](#tuple)
+- [type](#type)
+- [union](#union)
 
 ---
 
@@ -54,7 +54,7 @@ export type URI = typeof URI
 
 Added in v3.0.0
 
-# URI (constant)
+# URI
 
 **Signature**
 
@@ -64,7 +64,7 @@ export const URI: "Static" = ...
 
 Added in v3.0.0
 
-# UnknownArray (constant)
+# UnknownArray
 
 **Signature**
 
@@ -74,7 +74,7 @@ export const UnknownArray: Static<Array<unknown>> = ...
 
 Added in v3.0.0
 
-# UnknownRecord (constant)
+# UnknownRecord
 
 **Signature**
 
@@ -84,47 +84,7 @@ export const UnknownRecord: Static<Record<string, unknown>> = ...
 
 Added in v3.0.0
 
-# boolean (constant)
-
-**Signature**
-
-```ts
-export const boolean: Static<boolean> = ...
-```
-
-Added in v3.0.0
-
-# number (constant)
-
-**Signature**
-
-```ts
-export const number: Static<number> = ...
-```
-
-Added in v3.0.0
-
-# s (constant)
-
-**Signature**
-
-```ts
-export const s: S.Schemable<URI> & S.WithUnion<URI> = ...
-```
-
-Added in v3.0.0
-
-# string (constant)
-
-**Signature**
-
-```ts
-export const string: Static<string> = ...
-```
-
-Added in v3.0.0
-
-# array (function)
+# array
 
 **Signature**
 
@@ -134,7 +94,17 @@ export function array<A>(type: Static<A>): Static<Array<A>> { ... }
 
 Added in v3.0.0
 
-# intersection (function)
+# boolean
+
+**Signature**
+
+```ts
+export const boolean: Static<boolean> = ...
+```
+
+Added in v3.0.0
+
+# intersection
 
 **Signature**
 
@@ -149,7 +119,7 @@ export function intersection<A, B>(types: [Static<A>, Static<B>]): Static<A & B>
 
 Added in v3.0.0
 
-# literals (function)
+# literals
 
 **Signature**
 
@@ -159,7 +129,7 @@ export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Static<
 
 Added in v3.0.0
 
-# literalsOr (function)
+# literalsOr
 
 **Signature**
 
@@ -169,7 +139,17 @@ export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, typ
 
 Added in v3.0.0
 
-# partial (function)
+# number
+
+**Signature**
+
+```ts
+export const number: Static<number> = ...
+```
+
+Added in v3.0.0
+
+# partial
 
 **Signature**
 
@@ -179,7 +159,7 @@ export function partial<A>(types: { [K in keyof A]: Static<A[K]> }): Static<Part
 
 Added in v3.0.0
 
-# record (function)
+# record
 
 **Signature**
 
@@ -189,7 +169,27 @@ export function record<A>(type: Static<A>): Static<Record<string, A>> { ... }
 
 Added in v3.0.0
 
-# sum (function)
+# s
+
+**Signature**
+
+```ts
+export const s: S.Schemable<URI> & S.WithUnion<URI> = ...
+```
+
+Added in v3.0.0
+
+# string
+
+**Signature**
+
+```ts
+export const string: Static<string> = ...
+```
+
+Added in v3.0.0
+
+# sum
 
 **Signature**
 
@@ -201,7 +201,7 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple (function)
+# tuple
 
 **Signature**
 
@@ -217,7 +217,7 @@ export function tuple<A>(types: [Static<A>]): Static<[A]> { ... }
 
 Added in v3.0.0
 
-# type (function)
+# type
 
 **Signature**
 
@@ -227,7 +227,7 @@ export function type<A>(types: { [K in keyof A]: Static<A[K]> }): Static<A> { ..
 
 Added in v3.0.0
 
-# union (function)
+# union
 
 **Signature**
 
