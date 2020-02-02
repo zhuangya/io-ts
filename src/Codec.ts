@@ -25,15 +25,14 @@
  * - Is there a way to generate branded types + smart constructors based on a user provided predicate?
  *
  * Schemas:
- * - S.Schemable<URI> & S.WithUnion<URI>
- *   - Static
- * - S.Schemable<URI> & S.WithLazy<URI>
+ * - S.Schemable<URI> & S.WithRefinement<URI>
  *   - Codec
  *   - Encoder
  *   - Eq
- * - S.Schemable<URI> & S.WithLazy<URI> & S.WithUnion<URI>
+ * - S.Schemable<URI> & S.WithUnion<URI>
  *   - JsonSchema
- * - S.Schemable<URI> & S.WithLazy<URI> & S.WithRefinement<URI> & S.WithUnion<URI>
+ *   - Static
+ * - S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI>
  *   - Arbitrary
  *   - ArbitraryMutation
  *   - Decoder
@@ -47,6 +46,7 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as D from './Decoder'
 import * as E from './Encoder'
 import * as S from './Schemable'
+import { Either } from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -128,6 +128,13 @@ export function withExpected<A>(codec: Codec<A>, expected: string): Codec<A> {
 /**
  * @since 3.0.0
  */
+export function refinement<A, B extends A>(codec: Codec<A>, parser: (a: A) => Either<string, B>): Codec<B> {
+  return make(D.parse(codec, parser), codec)
+}
+
+/**
+ * @since 3.0.0
+ */
 export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<A> {
   return make(D.type(codecs), E.type(codecs))
 }
@@ -185,19 +192,19 @@ export function intersection<A>(codecs: any): Codec<A> {
 /**
  * @since 3.0.0
  */
-export function lazy<A>(f: () => Codec<A>): Codec<A> {
-  return make(D.lazy(f), E.lazy(f))
-}
-
-/**
- * @since 3.0.0
- */
 export function sum<T extends string>(
   tag: T
 ): <A>(codecs: { [K in keyof A]: Codec<A[K] & Record<T, K>> }) => Codec<A[keyof A]> {
   const Dsum = D.sum(tag)
   const Esum = E.sum(tag)
   return codecs => make(Dsum(codecs), Esum(codecs))
+}
+
+/**
+ * @since 3.0.0
+ */
+export function lazy<A>(f: () => Codec<A>): Codec<A> {
+  return make(D.lazy(f), E.lazy(f))
 }
 
 // -------------------------------------------------------------------------------------
@@ -223,7 +230,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = {
+export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> = {
   URI,
   imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
   literals,
@@ -240,5 +247,6 @@ export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = {
   tuple,
   intersection,
   sum,
-  lazy
+  lazy,
+  refinement: refinement as S.WithRefinement<URI>['refinement']
 }

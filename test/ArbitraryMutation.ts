@@ -8,7 +8,7 @@ import * as G from '../src/Guard'
 import * as S from '../src/Schemable'
 
 interface Schema<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithLazy<S> & S.WithRefinement<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S> & S.WithRefinement<S>): Kind<S, A>
 }
 
 function make<A>(f: Schema<A>): Schema<A> {

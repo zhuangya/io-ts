@@ -13,6 +13,7 @@ import { always, strict, memoize } from './util'
 // model
 // -------------------------------------------------------------------------------------
 import Eq = E.Eq
+import { Either } from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -67,6 +68,13 @@ export const UnknownRecord: Eq<Record<string, unknown>> = R.getEq(always)
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export function refinement<A, B extends A>(eq: Eq<A>, _parser: (a: A) => Either<string, B>): Eq<B> {
+  return eq
+}
 
 /**
  * @since 3.0.0
@@ -129,16 +137,6 @@ export function intersection<A>(eqs: Array<Eq<A>>): Eq<A> {
 /**
  * @since 3.0.0
  */
-export function lazy<A>(f: () => Eq<A>): Eq<A> {
-  const get = memoize(f)
-  return {
-    equals: (x, y) => get().equals(x, y)
-  }
-}
-
-/**
- * @since 3.0.0
- */
 export function sum<T extends string>(tag: T): <A>(eqs: { [K in keyof A]: Eq<A[K] & Record<T, K>> }) => Eq<A[keyof A]> {
   return (eqs: any) => {
     return {
@@ -157,7 +155,17 @@ export function sum<T extends string>(tag: T): <A>(eqs: { [K in keyof A]: Eq<A[K
 /**
  * @since 3.0.0
  */
-export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithLazy<E.URI> = {
+export function lazy<A>(f: () => Eq<A>): Eq<A> {
+  const get = memoize(f)
+  return {
+    equals: (x, y) => get().equals(x, y)
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = {
   ...E.eq,
   literals,
   literalsOr,
@@ -173,5 +181,6 @@ export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithLazy<E.URI> = {
   tuple,
   intersection,
   sum,
-  lazy
+  lazy,
+  refinement: refinement as S.WithRefinement<E.URI>['refinement']
 }

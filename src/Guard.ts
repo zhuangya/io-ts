@@ -210,16 +210,6 @@ export function union<A extends [unknown, unknown, ...Array<unknown>]>(
 /**
  * @since 3.0.0
  */
-export function lazy<A>(f: () => Guard<A>): Guard<A> {
-  const get = memoize(f)
-  return {
-    is: (u: unknown): u is A => get().is(u)
-  }
-}
-
-/**
- * @since 3.0.0
- */
 export function sum<T extends string>(
   tag: T
 ): <A>(guards: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => Guard<A[keyof A]> {
@@ -236,6 +226,16 @@ export function sum<T extends string>(
         return false
       }
     }
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function lazy<A>(f: () => Guard<A>): Guard<A> {
+  const get = memoize(f)
+  return {
+    is: (u: unknown): u is A => get().is(u)
   }
 }
 
@@ -262,7 +262,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const guard: S.Schemable<URI> & S.WithLazy<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
+export const guard: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,

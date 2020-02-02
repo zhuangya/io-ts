@@ -1,6 +1,7 @@
 import * as assert from 'assert'
 import * as E from '../src/Eq'
 import { Eq } from 'fp-ts/lib/Eq'
+import { right, left } from 'fp-ts/lib/Either'
 
 describe('Eq', () => {
   it('literals', () => {
@@ -77,5 +78,10 @@ describe('Eq', () => {
     assert.strictEqual(eq.equals({ _tag: 'A', a: 'a' }, { _tag: 'B', b: 1 }), false)
     assert.strictEqual(eq.equals({ _tag: 'A', a: 'a' }, { _tag: 'A', a: 'b' }), false)
     assert.strictEqual(eq.equals({ _tag: 'B', b: 1 }, { _tag: 'B', b: 2 }), false)
+  })
+
+  it('refinement', () => {
+    const eq = E.refinement(E.string, s => (s === 'a' ? right<string, 'a'>(s) : left('"a"')))
+    assert.strictEqual(eq, E.string)
   })
 })

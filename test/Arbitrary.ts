@@ -2,6 +2,7 @@ import * as fc from 'fast-check'
 import * as Arb from '../src/Arbitrary'
 import * as ArbMut from '../src/ArbitraryMutation'
 import * as D from '../src/Decoder'
+import * as C from '../src/Codec'
 import * as E from '../src/Eq'
 import * as G from '../src/Guard'
 import * as J from '../src/JsonSchema'
@@ -33,6 +34,16 @@ function assert<A>(schema: Schema<A>): void {
   fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
 }
 
+function assertWithLazy<A>(schema: Schema<A>): void {
+  const arb = schema(Arb.arbitrary)
+  const mutation = schema(ArbMut.arbitraryMutation)
+  const codec = schema(C.codec)
+  const eq = schema(E.eq)
+  const guard = schema(G.guard)
+  fc.assert(fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(codec.decode(a))))
+  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(codec.decode(m))))
+}
+
 interface SchemaWithUnion<A> {
   <S extends URIS>(S: S.Schemable<S> & S.WithUnion<S>): Kind<S, A>
 }
@@ -51,38 +62,21 @@ function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
   fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
 }
 
-interface SchemaWithParse<A> {
+interface SchemaWithRefinement<A> {
   <S extends URIS>(S: S.Schemable<S> & S.WithRefinement<S>): Kind<S, A>
 }
 
-function makeWithParse<A>(f: SchemaWithParse<A>): SchemaWithParse<A> {
+function makeWithRefinement<A>(f: SchemaWithRefinement<A>): SchemaWithRefinement<A> {
   return f
 }
 
-function assertWithParse<A>(schema: SchemaWithParse<A>): void {
+function assertWithRefinement<A>(schema: SchemaWithRefinement<A>): void {
   const arb = schema(Arb.arbitrary)
   const mutation = schema(ArbMut.arbitraryMutation)
-  const decoder = schema(D.decoder)
+  const codec = schema(C.codec)
   const guard = schema(G.guard)
-  fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a))))
-  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
-}
-
-interface SchemaWithLazy<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithLazy<S> & S.WithRefinement<S>): Kind<S, A>
-}
-
-function makeWithLazy<A>(f: SchemaWithLazy<A>): SchemaWithLazy<A> {
-  return f
-}
-
-function assertWithLazy<A>(schema: SchemaWithLazy<A>): void {
-  const arb = schema(Arb.arbitrary)
-  const mutation = schema(ArbMut.arbitraryMutation)
-  const decoder = schema(D.decoder)
-  const guard = schema(G.guard)
-  fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a))))
-  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
+  fc.assert(fc.property(arb, a => guard.is(a) && isRight(codec.decode(a))))
+  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(codec.decode(m))))
 }
 
 describe('Arbitrary', () => {
@@ -158,8 +152,8 @@ describe('Arbitrary', () => {
     assert(make(S => S.sum('_tag')({ A: A(S), B: B(S) })))
   })
 
-  it('parse', () => {
-    assertWithParse(makeWithParse(S => S.refinement(S.number, n => (n > 0 ? right(n) : left('Positive')))))
+  it('refinement', () => {
+    assertWithRefinement(makeWithRefinement(S => S.refinement(S.number, n => (n > 0 ? right(n) : left('Positive')))))
   })
 
   it('union', () => {
@@ -172,7 +166,7 @@ describe('Arbitrary', () => {
       b: undefined | A
     }
 
-    const schema: SchemaWithLazy<A> = makeWithLazy(S =>
+    const schema: Schema<A> = make(S =>
       S.lazy(() =>
         S.type({
           a: S.string,

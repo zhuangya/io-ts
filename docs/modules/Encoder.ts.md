@@ -33,6 +33,7 @@ Added in v3.0.0
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
+- [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
 - [tuple](#tuple)
@@ -127,7 +128,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = ...
+export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> = ...
 ```
 
 Added in v3.0.0
@@ -215,6 +216,16 @@ Added in v3.0.0
 
 ```ts
 export function record<A>(encoder: Encoder<A>): Encoder<Record<string, A>> { ... }
+```
+
+Added in v3.0.0
+
+# refinement
+
+**Signature**
+
+```ts
+export function refinement<A, B extends A>(encoder: Encoder<A>, _parser: (a: A) => Either<string, B>): Encoder<B> { ... }
 ```
 
 Added in v3.0.0

@@ -140,7 +140,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const dsl: S.Schemable<URI> & S.WithLazy<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = ...
+export const dsl: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0

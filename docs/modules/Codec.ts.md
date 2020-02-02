@@ -37,15 +37,14 @@ Open questions:
 
 Schemas:
 
-- S.Schemable<URI> & S.WithUnion<URI>
-  - Static
-- S.Schemable<URI> & S.WithLazy<URI>
+- S.Schemable<URI> & S.WithRefinement<URI>
   - Codec
   - Encoder
   - Eq
-- S.Schemable<URI> & S.WithLazy<URI> & S.WithUnion<URI>
+- S.Schemable<URI> & S.WithUnion<URI>
   - JsonSchema
-- S.Schemable<URI> & S.WithLazy<URI> & S.WithRefinement<URI> & S.WithUnion<URI>
+  - Static
+- S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI>
   - Arbitrary
   - ArbitraryMutation
   - Decoder
@@ -74,6 +73,7 @@ Added in v3.0.0
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
+- [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
 - [tuple](#tuple)
@@ -157,7 +157,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = ...
+export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> = ...
 ```
 
 Added in v3.0.0
@@ -247,6 +247,16 @@ Added in v3.0.0
 
 ```ts
 export function record<A>(codec: Codec<A>): Codec<Record<string, A>> { ... }
+```
+
+Added in v3.0.0
+
+# refinement
+
+**Signature**
+
+```ts
+export function refinement<A, B extends A>(codec: Codec<A>, parser: (a: A) => Either<string, B>): Codec<B> { ... }
 ```
 
 Added in v3.0.0

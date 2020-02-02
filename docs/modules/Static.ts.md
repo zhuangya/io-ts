@@ -12,6 +12,7 @@ Added in v3.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [Model (type alias)](#model-type-alias)
 - [Static (type alias)](#static-type-alias)
 - [URI (type alias)](#uri-type-alias)
 - [URI](#uri)
@@ -20,6 +21,7 @@ Added in v3.0.0
 - [array](#array)
 - [boolean](#boolean)
 - [intersection](#intersection)
+- [lazy](#lazy)
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [number](#number)
@@ -34,12 +36,22 @@ Added in v3.0.0
 
 ---
 
+# Model (type alias)
+
+**Signature**
+
+```ts
+export type Model = string
+```
+
+Added in v3.0.0
+
 # Static (type alias)
 
 **Signature**
 
 ```ts
-export type Static<A> = C.Const<string, A>
+export type Static<A> = C.Const<IO<Model>, A>
 ```
 
 Added in v3.0.0
@@ -115,6 +127,16 @@ export function intersection<A, B, C, D, E>(
 export function intersection<A, B, C, D>(types: [Static<A>, Static<B>, Static<C>, Static<D>]): Static<A & B & C & D>
 export function intersection<A, B, C>(types: [Static<A>, Static<B>, Static<C>]): Static<A & B & C>
 export function intersection<A, B>(types: [Static<A>, Static<B>]): Static<A & B> { ... }
+```
+
+Added in v3.0.0
+
+# lazy
+
+**Signature**
+
+```ts
+export function lazy<A>(f: () => Static<A>): Static<A> { ... }
 ```
 
 Added in v3.0.0

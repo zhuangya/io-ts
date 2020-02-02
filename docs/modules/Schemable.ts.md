@@ -13,7 +13,6 @@ Added in v3.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Schemable (interface)](#schemable-interface)
-- [WithLazy (interface)](#withlazy-interface)
 - [WithRefinement (interface)](#withrefinement-interface)
 - [WithUnion (interface)](#withunion-interface)
 - [Literal (type alias)](#literal-type-alias)
@@ -54,17 +53,6 @@ export interface Schemable<F extends URIS> {
   readonly sum: <T extends string>(
     tag: T
   ) => <A>(schemas: { [K in keyof A]: Kind<F, A[K] & Record<T, K>> }) => Kind<F, A[keyof A]>
-}
-```
-
-Added in v3.0.0
-
-# WithLazy (interface)
-
-**Signature**
-
-```ts
-export interface WithLazy<F extends URIS> {
   readonly lazy: <A>(f: () => Kind<F, A>) => Kind<F, A>
 }
 ```

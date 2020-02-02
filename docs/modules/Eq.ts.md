@@ -24,6 +24,7 @@ Added in v3.0.0
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
+- [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
 - [tuple](#tuple)
@@ -76,7 +77,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithLazy<E.URI> = ...
+export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = ...
 ```
 
 Added in v3.0.0
@@ -150,6 +151,16 @@ Added in v3.0.0
 
 ```ts
 export const record: <A>(eq: Eq<A>) => Eq<Record<string, A>> = ...
+```
+
+Added in v3.0.0
+
+# refinement
+
+**Signature**
+
+```ts
+export function refinement<A, B extends A>(eq: Eq<A>, _parser: (a: A) => Either<string, B>): Eq<B> { ... }
 ```
 
 Added in v3.0.0

@@ -11,6 +11,7 @@ import { pipeable } from 'fp-ts/lib/pipeable'
 import * as G from './Guard'
 import * as S from './Schemable'
 import * as U from './util'
+import { Either } from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -83,6 +84,13 @@ export const UnknownRecord: Encoder<Record<string, unknown>> = id
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
+
+/**
+ * @since 3.0.0
+ */
+export function refinement<A, B extends A>(encoder: Encoder<A>, _parser: (a: A) => Either<string, B>): Encoder<B> {
+  return encoder
+}
 
 /**
  * @since 3.0.0
@@ -179,16 +187,6 @@ export function intersection<A>(encoders: Array<Encoder<A>>): Encoder<A> {
 /**
  * @since 3.0.0
  */
-export function lazy<A>(f: () => Encoder<A>): Encoder<A> {
-  const get = U.memoize(f)
-  return {
-    encode: a => get().encode(a)
-  }
-}
-
-/**
- * @since 3.0.0
- */
 export function sum<T extends string>(
   tag: T
 ): <A>(encoders: { [K in keyof A]: Encoder<A[K] & Record<T, K>> }) => Encoder<A[keyof A]> {
@@ -196,6 +194,16 @@ export function sum<T extends string>(
     return {
       encode: (a: any) => encoders[a[tag]].encode(a)
     }
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function lazy<A>(f: () => Encoder<A>): Encoder<A> {
+  const get = U.memoize(f)
+  return {
+    encode: a => get().encode(a)
   }
 }
 
@@ -222,7 +230,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> = {
+export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> = {
   URI,
   contramap: (fa, f) => ({
     encode: b => fa.encode(f(b))
@@ -241,7 +249,8 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithLazy<URI> =
   tuple,
   intersection,
   sum,
-  lazy
+  lazy,
+  refinement: refinement as S.WithRefinement<URI>['refinement']
 }
 
 const { contramap } = pipeable(encoder)

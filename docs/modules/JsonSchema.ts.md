@@ -138,7 +138,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const jsonSchema: S.Schemable<URI> & S.WithLazy<URI> & S.WithUnion<URI> = ...
+export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0

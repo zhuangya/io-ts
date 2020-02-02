@@ -165,15 +165,6 @@ export function sum<T extends string>(
   return (jsonSchemas: any) => C.make(() => ({ oneOf: Object.keys(jsonSchemas).map(k => jsonSchemas[k]()) }))
 }
 
-/**
- * @since 3.0.0
- */
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
-  jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }
-): JsonSchema<A[number]> {
-  return C.make(() => ({ oneOf: jsonSchemas.map(jsonSchema => jsonSchema()) }))
-}
-
 let refCounter = 0
 
 /**
@@ -195,6 +186,15 @@ export function lazy<A>(f: () => JsonSchema<A>): JsonSchema<A> {
     }
     return { $ref }
   })
+}
+
+/**
+ * @since 3.0.0
+ */
+export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+  jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }
+): JsonSchema<A[number]> {
+  return C.make(() => ({ oneOf: jsonSchemas.map(jsonSchema => jsonSchema()) }))
 }
 
 // -------------------------------------------------------------------------------------
@@ -220,7 +220,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const jsonSchema: S.Schemable<URI> & S.WithLazy<URI> & S.WithUnion<URI> = {
+export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,
