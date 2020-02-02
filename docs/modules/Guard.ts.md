@@ -113,7 +113,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const guard: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
+export const guard: S.Schemable<URI> & S.WithLazy<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -174,6 +174,8 @@ export const number: Guard<number> = ...
 Added in v3.0.0
 
 # parse
+
+Returns `true` if the input is parseable
 
 **Signature**
 

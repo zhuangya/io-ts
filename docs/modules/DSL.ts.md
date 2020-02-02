@@ -26,9 +26,9 @@ Added in v3.0.0
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [number](#number)
-- [parse](#parse)
 - [partial](#partial)
 - [record](#record)
+- [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
 - [tuple](#tuple)
@@ -60,7 +60,7 @@ export type Model =
   | { readonly _tag: 'boolean' }
   | { readonly _tag: 'UnknownArray' }
   | { readonly _tag: 'UnknownRecord' }
-  | { readonly _tag: 'parse'; readonly model: Model; readonly parser: (a: any) => E.Either<string, unknown> }
+  | { readonly _tag: 'refinement'; readonly model: Model; readonly parser: (a: any) => E.Either<string, unknown> }
   | { readonly _tag: 'type'; readonly models: Record<string, Model> }
   | { readonly _tag: 'partial'; readonly models: Record<string, Model> }
   | { readonly _tag: 'record'; readonly model: Model }
@@ -140,7 +140,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const dsl: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
+export const dsl: S.Schemable<URI> & S.WithLazy<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -198,16 +198,6 @@ export const number: DSL<number> = ...
 
 Added in v3.0.0
 
-# parse
-
-**Signature**
-
-```ts
-export function parse<A, B>(dsl: DSL<A>, parser: (a: A) => E.Either<string, B>): DSL<B> { ... }
-```
-
-Added in v3.0.0
-
 # partial
 
 **Signature**
@@ -224,6 +214,16 @@ Added in v3.0.0
 
 ```ts
 export function record<A>(dsl: DSL<A>): DSL<Record<string, A>> { ... }
+```
+
+Added in v3.0.0
+
+# refinement
+
+**Signature**
+
+```ts
+export function refinement<A, B extends A>(dsl: DSL<A>, parser: (a: A) => E.Either<string, B>): DSL<B> { ... }
 ```
 
 Added in v3.0.0

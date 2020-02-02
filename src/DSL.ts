@@ -23,7 +23,7 @@ export type Model =
   | { readonly _tag: 'boolean' }
   | { readonly _tag: 'UnknownArray' }
   | { readonly _tag: 'UnknownRecord' }
-  | { readonly _tag: 'parse'; readonly model: Model; readonly parser: (a: any) => E.Either<string, unknown> }
+  | { readonly _tag: 'refinement'; readonly model: Model; readonly parser: (a: any) => E.Either<string, unknown> }
   | { readonly _tag: 'type'; readonly models: Record<string, Model> }
   | { readonly _tag: 'partial'; readonly models: Record<string, Model> }
   | { readonly _tag: 'record'; readonly model: Model }
@@ -94,8 +94,8 @@ export const UnknownRecord: DSL<Record<string, unknown>> = C.make(() => ({ _tag:
 /**
  * @since 3.0.0
  */
-export function parse<A, B>(dsl: DSL<A>, parser: (a: A) => E.Either<string, B>): DSL<B> {
-  return C.make(() => ({ _tag: 'parse', model: dsl(), parser }))
+export function refinement<A, B extends A>(dsl: DSL<A>, parser: (a: A) => E.Either<string, B>): DSL<B> {
+  return C.make(() => ({ _tag: 'refinement', model: dsl(), parser }))
 }
 
 /**
@@ -206,7 +206,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const dsl: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
+export const dsl: S.Schemable<URI> & S.WithLazy<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,
@@ -223,6 +223,6 @@ export const dsl: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.With
   intersection,
   sum,
   lazy,
-  parse,
+  refinement: refinement as S.WithRefinement<URI>['refinement'],
   union
 }

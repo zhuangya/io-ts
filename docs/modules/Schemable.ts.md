@@ -14,7 +14,7 @@ Added in v3.0.0
 
 - [Schemable (interface)](#schemable-interface)
 - [WithLazy (interface)](#withlazy-interface)
-- [WithParse (interface)](#withparse-interface)
+- [WithRefinement (interface)](#withrefinement-interface)
 - [WithUnion (interface)](#withunion-interface)
 - [Literal (type alias)](#literal-type-alias)
 
@@ -71,13 +71,13 @@ export interface WithLazy<F extends URIS> {
 
 Added in v3.0.0
 
-# WithParse (interface)
+# WithRefinement (interface)
 
 **Signature**
 
 ```ts
-export interface WithParse<F extends URIS> {
-  readonly parse: <A, B>(schema: Kind<F, A>, parser: (a: A) => Either<string, B>) => Kind<F, B>
+export interface WithRefinement<F extends URIS> {
+  readonly refinement: <A, B extends A>(schema: Kind<F, A>, parser: (a: A) => Either<string, B>) => Kind<F, B>
 }
 ```
 

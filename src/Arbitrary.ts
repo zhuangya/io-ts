@@ -189,7 +189,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const arbitrary: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
+export const arbitrary: S.Schemable<URI> & S.WithLazy<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,
@@ -206,6 +206,6 @@ export const arbitrary: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & 
   intersection,
   sum,
   lazy,
-  parse,
+  refinement: parse,
   union
 }

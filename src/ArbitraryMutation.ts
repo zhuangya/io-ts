@@ -92,10 +92,7 @@ export const UnknownRecord: ArbitraryMutation<Record<string, unknown>> = make(A.
  */
 export function parse<A, B>(mutation: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> {
   return make(
-    mutation.arb
-      .map(parser)
-      .filter(isLeft)
-      .map((e: any) => e.left),
+    mutation.arb.filter(a => isLeft(parser(a))),
     A.parse(mutation.arb, parser)
   )
 }
@@ -264,7 +261,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const arbitraryMutation: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
+export const arbitraryMutation: S.Schemable<URI> & S.WithLazy<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,
@@ -281,6 +278,6 @@ export const arbitraryMutation: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse
   intersection,
   sum,
   lazy,
-  parse,
+  refinement: parse,
   union
 }

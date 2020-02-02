@@ -7,7 +7,7 @@ import * as G from '../src/Guard'
 import * as J from '../src/JsonSchema'
 import { URIS, Kind } from 'fp-ts/lib/HKT'
 import * as S from '../src/Schemable'
-import { isRight, right, left, isLeft, Either } from 'fp-ts/lib/Either'
+import { isRight, right, left, isLeft } from 'fp-ts/lib/Either'
 import * as Ajv from 'ajv'
 
 const ajv = new Ajv()
@@ -52,7 +52,7 @@ function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
 }
 
 interface SchemaWithParse<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithParse<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S> & S.WithRefinement<S>): Kind<S, A>
 }
 
 function makeWithParse<A>(f: SchemaWithParse<A>): SchemaWithParse<A> {
@@ -69,7 +69,7 @@ function assertWithParse<A>(schema: SchemaWithParse<A>): void {
 }
 
 interface SchemaWithLazy<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithLazy<S> & S.WithParse<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S> & S.WithLazy<S> & S.WithRefinement<S>): Kind<S, A>
 }
 
 function makeWithLazy<A>(f: SchemaWithLazy<A>): SchemaWithLazy<A> {
@@ -159,7 +159,7 @@ describe('Arbitrary', () => {
   })
 
   it('parse', () => {
-    assertWithParse(makeWithParse(S => S.parse(S.number, n => (n > 0 ? right(n) : left('Positive')))))
+    assertWithParse(makeWithParse(S => S.refinement(S.number, n => (n > 0 ? right(n) : left('Positive')))))
   })
 
   it('union', () => {
@@ -172,25 +172,12 @@ describe('Arbitrary', () => {
       b: undefined | A
     }
 
-    interface NonEmptyABrand {
-      readonly NonEmptyA: unique symbol
-    }
-
-    type NonEmptyA = A & NonEmptyABrand
-
-    function parser(a: A): Either<string, NonEmptyA> {
-      return a.a.length > 0 ? right(a as any) : left('NonEmptyA')
-    }
-
-    const schema: SchemaWithLazy<NonEmptyA> = makeWithLazy(S =>
+    const schema: SchemaWithLazy<A> = makeWithLazy(S =>
       S.lazy(() =>
-        S.parse(
-          S.type({
-            a: S.string,
-            b: S.literalsOr([undefined], schema(S))
-          }),
-          parser
-        )
+        S.type({
+          a: S.string,
+          b: S.literalsOr([undefined], schema(S))
+        })
       )
     )
     assertWithLazy(schema)

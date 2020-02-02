@@ -407,7 +407,7 @@ export const decoder: Applicative1<URI> &
   Alternative1<URI> &
   S.Schemable<URI> &
   S.WithLazy<URI> &
-  S.WithParse<URI> &
+  S.WithRefinement<URI> &
   S.WithUnion<URI> = {
   URI,
   map: (fa, f) => ({
@@ -438,7 +438,7 @@ export const decoder: Applicative1<URI> &
   intersection,
   sum,
   lazy,
-  parse,
+  refinement: parse,
   union
 }
 

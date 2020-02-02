@@ -6,7 +6,7 @@
  *
  * FAQ
  * - is it possible to provide a custom message?
- *   - `parse`
+ *   - `refinement`
  *   - `withMessage` (already existing codecs)
  * - how to change a field? (for example snake case to camel case)
  *   - `map`
@@ -33,10 +33,12 @@
  *   - Eq
  * - S.Schemable<URI> & S.WithLazy<URI> & S.WithUnion<URI>
  *   - JsonSchema
- * - S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI>
+ * - S.Schemable<URI> & S.WithLazy<URI> & S.WithRefinement<URI> & S.WithUnion<URI>
  *   - Arbitrary
+ *   - ArbitraryMutation
  *   - Decoder
  *   - Guard
+ *   - DSL
  *
  * @since 3.0.0
  */

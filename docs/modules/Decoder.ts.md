@@ -177,7 +177,7 @@ export const decoder: Applicative1<URI> &
   Alternative1<URI> &
   S.Schemable<URI> &
   S.WithLazy<URI> &
-  S.WithParse<URI> &
+  S.WithRefinement<URI> &
   S.WithUnion<URI> = ...
 ```
 

@@ -172,10 +172,10 @@ describe('DSL', () => {
     })
   })
 
-  it('parse', () => {
+  it('refinement', () => {
     const parser = (s: string): E.Either<string, string> => (s.length > 0 ? E.right(s) : E.left('empty string'))
-    const schema = DSL.parse(DSL.string, parser)
-    assertDSL(schema, { _tag: 'parse', model: { _tag: 'string' }, parser })
+    const schema = DSL.refinement(DSL.string, parser)
+    assertDSL(schema, { _tag: 'refinement', model: { _tag: 'string' }, parser })
   })
 
   it('union', () => {

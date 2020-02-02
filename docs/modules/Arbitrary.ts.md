@@ -91,7 +91,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const arbitrary: S.Schemable<URI> & S.WithLazy<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
+export const arbitrary: S.Schemable<URI> & S.WithLazy<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
