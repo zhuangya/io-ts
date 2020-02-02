@@ -18,7 +18,7 @@ interface Schema<A> {
 }
 
 function make<A>(f: Schema<A>): Schema<A> {
-  return f
+  return S.memoize(f)
 }
 
 function assert<A>(schema: Schema<A>): void {
@@ -27,21 +27,9 @@ function assert<A>(schema: Schema<A>): void {
   const decoder = schema(D.decoder)
   const eq = schema(E.eq)
   const guard = schema(G.guard)
-  const jsonSchema = ajv.compile(schema(J.jsonSchema)())
-  fc.assert(
-    fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(decoder.decode(a)) && Boolean(jsonSchema(a)))
-  )
+  const validate = ajv.compile(schema(J.jsonSchema)())
+  fc.assert(fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(decoder.decode(a)) && Boolean(validate(a))))
   fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
-}
-
-function assertWithLazy<A>(schema: Schema<A>): void {
-  const arb = schema(Arb.arbitrary)
-  const mutation = schema(ArbMut.arbitraryMutation)
-  const codec = schema(C.codec)
-  const eq = schema(E.eq)
-  const guard = schema(G.guard)
-  fc.assert(fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(codec.decode(a))))
-  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(codec.decode(m))))
 }
 
 interface SchemaWithUnion<A> {
@@ -49,7 +37,7 @@ interface SchemaWithUnion<A> {
 }
 
 function makeWithUnion<A>(f: SchemaWithUnion<A>): SchemaWithUnion<A> {
-  return f
+  return S.memoize(f)
 }
 
 function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
@@ -57,8 +45,8 @@ function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
   const mutation = schema(ArbMut.arbitraryMutation)
   const decoder = schema(D.decoder)
   const guard = schema(G.guard)
-  const jsonSchema = ajv.compile(schema(J.jsonSchema)())
-  fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a)) && Boolean(jsonSchema(a))))
+  const validate = ajv.compile(schema(J.jsonSchema)())
+  fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a)) && Boolean(validate(a))))
   fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
 }
 
@@ -67,7 +55,7 @@ interface SchemaWithRefinement<A> {
 }
 
 function makeWithRefinement<A>(f: SchemaWithRefinement<A>): SchemaWithRefinement<A> {
-  return f
+  return S.memoize(f)
 }
 
 function assertWithRefinement<A>(schema: SchemaWithRefinement<A>): void {
@@ -162,18 +150,18 @@ describe('Arbitrary', () => {
 
   it('lazy', () => {
     interface A {
-      a: string
-      b: undefined | A
+      a: number
+      b: null | A
     }
 
     const schema: Schema<A> = make(S =>
       S.lazy(() =>
         S.type({
-          a: S.string,
-          b: S.literalsOr([undefined], schema(S))
+          a: S.number,
+          b: S.literalsOr([null], schema(S))
         })
       )
     )
-    assertWithLazy(schema)
+    assert(schema)
   })
 })

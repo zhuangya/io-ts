@@ -7,7 +7,7 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as R from 'fp-ts/lib/Record'
 import * as G from './Guard'
 import * as S from './Schemable'
-import { always, strict, memoize } from './util'
+import { always, strict } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -156,7 +156,7 @@ export function sum<T extends string>(tag: T): <A>(eqs: { [K in keyof A]: Eq<A[K
  * @since 3.0.0
  */
 export function lazy<A>(f: () => Eq<A>): Eq<A> {
-  const get = memoize(f)
+  const get = S.memoize<void, Eq<A>>(f)
   return {
     equals: (x, y) => get().equals(x, y)
   }

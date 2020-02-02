@@ -201,7 +201,7 @@ export function sum<T extends string>(
  * @since 3.0.0
  */
 export function lazy<A>(f: () => Encoder<A>): Encoder<A> {
-  const get = U.memoize(f)
+  const get = S.memoize<void, Encoder<A>>(f)
   return {
     encode: a => get().encode(a)
   }

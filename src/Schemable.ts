@@ -60,3 +60,19 @@ export interface WithUnion<F extends URIS> {
     schemas: { [K in keyof A]: Kind<F, A[K]> }
   ) => Kind<F, A[number]>
 }
+
+/**
+ * @since 3.0.0
+ */
+export function memoize<A, B>(f: (a: A) => B): (a: A) => B {
+  let cache = new Map()
+  return a => {
+    // console.log('cache.has(a)', cache.has(a))
+    if (!cache.has(a)) {
+      const b = f(a)
+      cache.set(a, b)
+      return b
+    }
+    return cache.get(a)
+  }
+}

@@ -5,7 +5,6 @@ import * as fc from 'fast-check'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as S from './Schemable'
 import { Either, isRight } from 'fp-ts/lib/Either'
-import { memoize } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -153,7 +152,7 @@ export function sum<T extends string>(
  * @since 3.0.0
  */
 export function lazy<A>(f: () => Arbitrary<A>): Arbitrary<A> {
-  const get = memoize(f)
+  const get = S.memoize<void, Arbitrary<A>>(f)
   return fc.constant(null).chain(() => get())
 }
 

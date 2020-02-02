@@ -1,5 +1,15 @@
 import * as assert from 'assert'
 import * as S from '../src/Static'
+import { Schemable, memoize } from '../src/Schemable'
+import { URIS, Kind } from 'fp-ts/lib/HKT'
+
+interface Schema<A> {
+  <S extends URIS>(S: Schemable<S>): Kind<S, A>
+}
+
+function make<A>(f: Schema<A>): Schema<A> {
+  return memoize(f)
+}
 
 describe('Static', () => {
   it('string', () => {
@@ -73,17 +83,19 @@ describe('Static', () => {
 
   it('lazy', () => {
     interface A {
-      a: string
-      b: undefined | A
+      a: number
+      b: null | A
     }
 
-    const schema: S.Static<A> = S.lazy(() =>
-      S.type({
-        a: S.string,
-        b: S.literalsOr([undefined], schema)
-      })
+    const schema: Schema<A> = make(S =>
+      S.lazy(() =>
+        S.type({
+          a: S.number,
+          b: S.literalsOr([null], schema(S))
+        })
+      )
     )
-    assert.strictEqual(schema(), '{ a: string; b: ((undefined) | $Ref1); }')
+    assert.strictEqual(schema(S.s)(), '{ a: number; b: ((null) | $Ref1); }')
   })
 
   it('union', () => {

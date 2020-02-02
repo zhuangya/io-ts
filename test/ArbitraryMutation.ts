@@ -12,7 +12,7 @@ interface Schema<A> {
 }
 
 function make<A>(f: Schema<A>): Schema<A> {
-  return f
+  return S.memoize(f)
 }
 
 function assertWithLazy<A>(schema: Schema<A>): void {

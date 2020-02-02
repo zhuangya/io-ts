@@ -3,7 +3,7 @@ import * as S from '../../src/Schemable'
 import { left, right } from 'fp-ts/lib/Either'
 
 interface Schema<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithLazy<S> & S.WithParse<S> & S.WithUnion<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S> & S.WithRefinement<S> & S.WithUnion<S>): Kind<S, A>
 }
 
 function make<A>(f: Schema<A>): Schema<A> {
@@ -119,15 +119,10 @@ const B: Schema<B> = make(S =>
 )
 
 //
-// parse
+// refinement
 //
 // $ExpectType Schema<number>
-make(S =>
-  S.parse(S.string, s => {
-    const n = parseFloat(s)
-    return isNaN(n) ? left('NumberFromString') : right(n)
-  })
-)
+make(S => S.refinement(S.number, n => (n > 0 ? left('Positive') : right(n))))
 
 //
 // union

@@ -3,7 +3,7 @@
  */
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as S from './Schemable'
-import { hasOwnProperty, memoize } from './util'
+import { hasOwnProperty } from './util'
 import { Either } from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
@@ -233,7 +233,7 @@ export function sum<T extends string>(
  * @since 3.0.0
  */
 export function lazy<A>(f: () => Guard<A>): Guard<A> {
-  const get = memoize(f)
+  const get = S.memoize<void, Guard<A>>(f)
   return {
     is: (u: unknown): u is A => get().is(u)
   }

@@ -2,6 +2,16 @@ import * as assert from 'assert'
 import * as Ajv from 'ajv'
 import * as J from '../src/JsonSchema'
 import * as C from 'fp-ts/lib/Const'
+import { URIS, Kind } from 'fp-ts/lib/HKT'
+import * as S from '../src/Schemable'
+
+interface Schema<A> {
+  <S extends URIS>(S: S.Schemable<S>): Kind<S, A>
+}
+
+function make<A>(f: Schema<A>): Schema<A> {
+  return S.memoize(f)
+}
 
 const ajv = new Ajv()
 
@@ -109,18 +119,41 @@ describe('JsonSchema', () => {
 
   it('lazy', () => {
     interface A {
-      a: string
-      as: Array<A>
+      a: number
+      b: null | A
     }
+
     const schema: J.JsonSchema<A> = J.lazy(() =>
       J.type({
-        a: J.string,
-        as: J.array(schema)
+        a: J.number,
+        b: J.literalsOr([null], schema)
       })
     )
     const validate = ajv.compile(schema())
     assert.strictEqual(validate({}), false)
-    assert.strictEqual(validate({ a: 'a' }), false)
-    assert.strictEqual(validate({ a: 'a', as: [] }), true)
+    assert.strictEqual(validate({ a: 1 }), false)
+    assert.strictEqual(validate({ a: 1, b: null }), true)
+    assert.strictEqual(validate({ a: 1, b: { a: 2, b: null } }), true)
+  })
+
+  it('lazy', () => {
+    interface A {
+      a: number
+      b: null | A
+    }
+
+    const schema: Schema<A> = make(S =>
+      S.lazy(() =>
+        S.type({
+          a: S.number,
+          b: S.literalsOr([null], schema(S))
+        })
+      )
+    )
+    const validate = ajv.compile(schema(J.jsonSchema)())
+    assert.strictEqual(validate({}), false)
+    assert.strictEqual(validate({ a: 1 }), false)
+    assert.strictEqual(validate({ a: 1, b: null }), true)
+    assert.strictEqual(validate({ a: 1, b: { a: 2, b: null } }), true)
   })
 })

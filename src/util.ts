@@ -47,22 +47,6 @@ export const always: Eq<unknown> = {
   equals: () => true
 }
 
-/**
- * @since 3.0.0
- * @internal
- */
-export function memoize<A>(f: () => A): () => A {
-  let cache: A
-  let isEmpty: boolean = true
-  return () => {
-    if (isEmpty) {
-      cache = f()
-      isEmpty = false
-    }
-    return cache
-  }
-}
-
 function typeOf(x: unknown): string {
   return x === null ? 'null' : typeof x
 }

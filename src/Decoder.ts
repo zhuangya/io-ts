@@ -320,7 +320,7 @@ export function intersection(decoders: Array<Decoder<unknown>>): Decoder<unknown
  * @since 3.0.0
  */
 export function lazy<A>(f: () => Decoder<A>): Decoder<A> {
-  const get = U.memoize(f)
+  const get = S.memoize<void, Decoder<A>>(f)
   return {
     decode: u => get().decode(u)
   }

@@ -16,6 +16,7 @@ Added in v3.0.0
 - [WithRefinement (interface)](#withrefinement-interface)
 - [WithUnion (interface)](#withunion-interface)
 - [Literal (type alias)](#literal-type-alias)
+- [memoize](#memoize)
 
 ---
 
@@ -91,6 +92,16 @@ Added in v3.0.0
 
 ```ts
 export type Literal = string | number | boolean | null | undefined
+```
+
+Added in v3.0.0
+
+# memoize
+
+**Signature**
+
+```ts
+export function memoize<A, B>(f: (a: A) => B): (a: A) => B { ... }
 ```
 
 Added in v3.0.0
