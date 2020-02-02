@@ -12,10 +12,6 @@ import * as Ajv from 'ajv'
 
 const ajv = new Ajv()
 
-function run<A>(jsonSchema: J.JsonSchema<A>, u: unknown): boolean {
-  return Boolean(ajv.compile(jsonSchema())(u))
-}
-
 interface Schema<A> {
   <S extends URIS>(S: S.Schemable<S>): Kind<S, A>
 }
@@ -30,9 +26,9 @@ function assert<A>(schema: Schema<A>): void {
   const decoder = schema(D.decoder)
   const eq = schema(E.eq)
   const guard = schema(G.guard)
-  const jasonSchema = ajv.compile(schema(J.jsonSchema)())
+  const jsonSchema = ajv.compile(schema(J.jsonSchema)())
   fc.assert(
-    fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(decoder.decode(a)) && Boolean(jasonSchema(a)))
+    fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(decoder.decode(a)) && Boolean(jsonSchema(a)))
   )
   fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
 }
@@ -50,8 +46,8 @@ function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
   const mutation = schema(ArbMut.arbitraryMutation)
   const decoder = schema(D.decoder)
   const guard = schema(G.guard)
-  const jsonSchema = schema(J.jsonSchema)
-  fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a)) && run(jsonSchema, a)))
+  const jsonSchema = ajv.compile(schema(J.jsonSchema)())
+  fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a)) && Boolean(jsonSchema(a))))
   fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
 }
 

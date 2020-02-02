@@ -108,7 +108,7 @@ const Union = make(S =>
   })
 )
 const DUnion = Union(D.decoder)
-const JUnion = Union(J.jsonSchema)
+const JUnion = Union(J.jsonSchema)()
 
 const good = {
   type: 'ship',
