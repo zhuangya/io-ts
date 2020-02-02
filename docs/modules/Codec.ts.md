@@ -78,11 +78,17 @@ Added in v3.0.0
 - [sum](#sum)
 - [tuple](#tuple)
 - [type](#type)
+- [union](#union)
 - [withExpected](#withexpected)
 
 ---
 
 # Codec (interface)
+
+Laws:
+
+1. `pipe(codec.decode(u), E.fold(() => u, codec.encode) = u` for all `u` in `unknown`
+2. `codec.decode(codec.encode(a)) = E.right(a)` for all `a` in `A`
 
 **Signature**
 
@@ -157,7 +163,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> = ...
+export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -303,6 +309,18 @@ Added in v3.0.0
 
 ```ts
 export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<A> { ... }
+```
+
+Added in v3.0.0
+
+# union
+
+**Signature**
+
+```ts
+export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+  codecs: { [K in keyof A]: Codec<A[K]> }
+): Codec<A[number]> { ... }
 ```
 
 Added in v3.0.0

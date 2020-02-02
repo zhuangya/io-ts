@@ -43,11 +43,16 @@ function makeWithUnion<A>(f: SchemaWithUnion<A>): SchemaWithUnion<A> {
 function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
   const arb = schema(Arb.arbitrary)
   const mutation = schema(ArbMut.arbitraryMutation)
-  const decoder = schema(D.decoder)
+  const codec = schema(C.codec)
   const guard = schema(G.guard)
   const validate = ajv.compile(schema(J.jsonSchema)())
-  fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a)) && Boolean(validate(a))))
-  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
+  fc.assert(
+    fc.property(
+      arb,
+      a => guard.is(a) && isRight(codec.decode(a)) && Boolean(validate(a)) && isRight(codec.decode(codec.encode(a)))
+    )
+  )
+  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(codec.decode(m))))
 }
 
 interface SchemaWithRefinement<A> {

@@ -46,13 +46,18 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as D from './Decoder'
 import * as E from './Encoder'
 import * as S from './Schemable'
-import { Either } from 'fp-ts/lib/Either'
+import { Either, isRight } from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
 // model
 // -------------------------------------------------------------------------------------
 
 /**
+ * Laws:
+ *
+ * 1. `pipe(codec.decode(u), E.fold(() => u, codec.encode) = u` for all `u` in `unknown`
+ * 2. `codec.decode(codec.encode(a)) = E.right(a)` for all `a` in `A`
+ *
  * @since 3.0.0
  */
 export interface Codec<A> extends D.Decoder<A>, E.Encoder<A> {}
@@ -207,6 +212,28 @@ export function lazy<A>(f: () => Codec<A>): Codec<A> {
   return make(D.lazy(f), E.lazy(f))
 }
 
+/**
+ * @since 3.0.0
+ */
+export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+  codecs: { [K in keyof A]: Codec<A[K]> }
+): Codec<A[number]> {
+  return make(D.union(codecs), {
+    encode: a => {
+      for (const codec of codecs) {
+        try {
+          const o = codec.encode(a)
+          if (isRight(codec.decode(o))) {
+            return o
+          }
+        } catch (e) {
+          continue
+        }
+      }
+    }
+  })
+}
+
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
@@ -230,7 +257,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> = {
+export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
   URI,
   imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
   literals,
@@ -248,5 +275,6 @@ export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> =
   intersection,
   sum,
   lazy,
-  refinement: refinement as S.WithRefinement<URI>['refinement']
+  refinement: refinement as S.WithRefinement<URI>['refinement'],
+  union
 }

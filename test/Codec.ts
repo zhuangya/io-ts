@@ -441,4 +441,16 @@ describe('Codec', () => {
       })
     })
   })
+
+  describe('union', () => {
+    describe('encode', () => {
+      it('should handle throwing encoders', () => {
+        const Trim = C.make(D.string, {
+          encode: s => s.trim()
+        })
+        const codec = C.union([Trim, C.number])
+        assert.strictEqual(codec.encode(1), 1)
+      })
+    })
+  })
 })
