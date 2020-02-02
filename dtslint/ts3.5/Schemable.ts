@@ -16,14 +16,13 @@ function make<A>(f: Schema<A>): Schema<A> {
 make(S => S.literals(['a'])) // $ExpectType Schema<"a">
 make(S => S.literals([1])) // $ExpectType Schema<1>
 make(S => S.literals([true])) // $ExpectType Schema<true>
-make(S => S.literals([undefined])) // $ExpectType Schema<undefined>
 make(S => S.literals([null])) // $ExpectType Schema<null>
-make(S => S.literals([null, undefined])) // $ExpectType Schema<null | undefined>
+make(S => S.literals([null, 1])) // $ExpectType Schema<1 | null>
 
 //
 // literalsOr
 //
-make(S => S.literalsOr([undefined], S.type({ a: S.string }))) // $ExpectType Schema<{ a: string; } | undefined>
+make(S => S.literalsOr([null], S.type({ a: S.string }))) // $ExpectType Schema<{ a: string; } | null>
 
 //
 // string

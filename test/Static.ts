@@ -38,8 +38,8 @@ describe('Static', () => {
   })
 
   it('literalsOr', () => {
-    const schema = S.literalsOr([undefined], S.type({ a: S.string, b: S.number }))
-    assert.strictEqual(schema(), '((undefined) | { a: string; b: number; })')
+    const schema = S.literalsOr([null], S.type({ a: S.string, b: S.number }))
+    assert.strictEqual(schema(), '((null) | { a: string; b: number; })')
   })
 
   it('type', () => {

@@ -12,10 +12,10 @@ describe('DSL', () => {
   })
 
   it('literalsOr', () => {
-    const schema = DSL.literalsOr([undefined], DSL.type({ a: DSL.string, b: DSL.number }))
+    const schema = DSL.literalsOr([null], DSL.type({ a: DSL.string, b: DSL.number }))
     assertDSL(schema, {
       _tag: 'literalsOr',
-      values: [undefined],
+      values: [null],
       model: {
         _tag: 'type',
         models: {

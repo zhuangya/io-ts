@@ -28,7 +28,7 @@ describe('ArbitraryMutation', () => {
   it('lazy', () => {
     interface A {
       a: string
-      b: undefined | A
+      b: null | A
     }
 
     const schema: Schema<A> = make(S =>
@@ -36,7 +36,7 @@ describe('ArbitraryMutation', () => {
         S.refinement(
           S.type({
             a: S.string,
-            b: S.literalsOr([undefined], schema(S))
+            b: S.literalsOr([null], schema(S))
           }),
           a => (a.a.length > 0 ? right(a) : left('empty string'))
         )

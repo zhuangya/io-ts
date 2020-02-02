@@ -12,11 +12,11 @@ describe('Eq', () => {
   })
 
   it('literalsOr', () => {
-    const eq = E.literalsOr([undefined], E.string)
+    const eq = E.literalsOr([null], E.string)
     assert.deepStrictEqual(eq.equals('a', 'a'), true)
-    assert.deepStrictEqual(eq.equals(undefined, undefined), true)
+    assert.deepStrictEqual(eq.equals(null, null), true)
     assert.deepStrictEqual(eq.equals('a', 'b'), false)
-    assert.deepStrictEqual(eq.equals('a', undefined), false)
+    assert.deepStrictEqual(eq.equals('a', null), false)
   })
 
   it('UnknownArray', () => {

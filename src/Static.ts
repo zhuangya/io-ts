@@ -5,7 +5,7 @@ import * as C from 'fp-ts/lib/Const'
 import * as S from './Schemable'
 import { IO } from 'fp-ts/lib/IO'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import { showLiteral, runSequence } from './util'
+import { runSequence } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -29,7 +29,7 @@ export type Static<A> = C.Const<IO<Model>, A>
  * @since 3.0.0
  */
 export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Static<A> {
-  return C.make(() => `(${values.map(showLiteral).join(' | ')})`)
+  return C.make(() => `(${values.map(v => JSON.stringify(v)).join(' | ')})`)
 }
 
 /**

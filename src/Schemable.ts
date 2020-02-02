@@ -8,7 +8,7 @@ import { Either } from 'fp-ts/lib/Either'
 /**
  * @since 3.0.0
  */
-export type Literal = string | number | boolean | null | undefined
+export type Literal = string | number | boolean | null
 
 /**
  * @since 3.0.0
@@ -67,7 +67,6 @@ export interface WithUnion<F extends URIS> {
 export function memoize<A, B>(f: (a: A) => B): (a: A) => B {
   let cache = new Map()
   return a => {
-    // console.log('cache.has(a)', cache.has(a))
     if (!cache.has(a)) {
       const b = f(a)
       cache.set(a, b)

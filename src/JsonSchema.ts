@@ -30,7 +30,7 @@ export type JsonSchema<A> = C.Const<IO<Model>, A>
  * @since 3.0.0
  */
 export function literals<A extends S.Literal>(values: NonEmptyArray<A>): JsonSchema<A> {
-  return C.make(() => ({ enum: values as any }))
+  return C.make(() => ({ enum: values }))
 }
 
 /**

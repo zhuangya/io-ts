@@ -91,7 +91,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export type Literal = string | number | boolean | null | undefined
+export type Literal = string | number | boolean | null
 ```
 
 Added in v3.0.0

@@ -96,8 +96,8 @@ describe('Codec', () => {
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.literals(['a', undefined])
-        assert.deepStrictEqual(codec.decode('b'), left(DE.leaf('"a" | undefined', 'b')))
+        const codec = C.literals(['a', null])
+        assert.deepStrictEqual(codec.decode('b'), left(DE.leaf('"a" | null', 'b')))
       })
     })
   })
@@ -105,30 +105,30 @@ describe('Codec', () => {
   describe('literalsOr', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.literalsOr([null, undefined], NumberFromString)
+        const codec = C.literalsOr(['a', null], NumberFromString)
+        assert.deepStrictEqual(codec.decode('a'), right('a'))
         assert.deepStrictEqual(codec.decode(null), right(null))
-        assert.deepStrictEqual(codec.decode(undefined), right(undefined))
         assert.deepStrictEqual(codec.decode('2'), right(2))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.literalsOr([null, undefined], NumberFromString)
+        const codec = C.literalsOr(['a', null], NumberFromString)
         assert.deepStrictEqual(
           codec.decode(2),
-          left(DE.or('union', 2, [DE.leaf('null | undefined', 2), DE.leaf('string', 2)]))
+          left(DE.or('union', 2, [DE.leaf('"a" | null', 2), DE.leaf('string', 2)]))
         )
         assert.deepStrictEqual(
-          codec.decode('a'),
-          left(DE.or('union', 'a', [DE.leaf('null | undefined', 'a'), DE.leaf('NumberFromString', 'a')]))
+          codec.decode('b'),
+          left(DE.or('union', 'b', [DE.leaf('"a" | null', 'b'), DE.leaf('NumberFromString', 'b')]))
         )
       })
     })
 
     describe('encode', () => {
       it('should encode a value', () => {
-        const codec = C.literalsOr([null, undefined], NumberFromString)
+        const codec = C.literalsOr(['a', null], NumberFromString)
+        assert.deepStrictEqual(codec.encode('a'), 'a')
         assert.deepStrictEqual(codec.encode(null), null)
-        assert.deepStrictEqual(codec.encode(undefined), undefined)
         assert.deepStrictEqual(codec.encode(2), '2')
       })
     })

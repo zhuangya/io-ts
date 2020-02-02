@@ -45,7 +45,7 @@ export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
  * @since 3.0.0
  */
 export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Decoder<A> {
-  return fromGuard(G.literals(values), values.map(U.showLiteral).join(' | '))
+  return fromGuard(G.literals(values), values.map(v => JSON.stringify(v)).join(' | '))
 }
 
 /**

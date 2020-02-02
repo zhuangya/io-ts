@@ -3,7 +3,6 @@
  */
 import { Eq } from 'fp-ts/lib/Eq'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import { Literal } from './Schemable'
 import { Semigroup } from 'fp-ts/lib/Semigroup'
 import { IO } from 'fp-ts/lib/IO'
 
@@ -21,14 +20,6 @@ export function isNonEmpty<A>(as: Array<A>): as is NonEmptyArray<A> {
  */
 export function hasOwnProperty<O extends object>(o: O, k: string): k is keyof O & string {
   return Object.prototype.hasOwnProperty.call(o, k)
-}
-
-/**
- * @since 3.0.0
- * @internal
- */
-export function showLiteral<A extends Literal>(a: A): string {
-  return a === undefined ? 'undefined' : JSON.stringify(a)
 }
 
 /**
