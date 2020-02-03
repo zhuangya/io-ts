@@ -215,7 +215,7 @@ export function lazy<A>(f: () => Codec<A>): Codec<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+export function union<A extends [unknown, ...Array<unknown>]>(
   codecs: { [K in keyof A]: Codec<A[K]> }
 ): Codec<A[number]> {
   return make(D.union(codecs), {

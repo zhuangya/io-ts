@@ -159,7 +159,7 @@ export function lazy<A>(f: () => Arbitrary<A>): Arbitrary<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+export function union<A extends [unknown, ...Array<unknown>]>(
   arbs: { [K in keyof A]: Arbitrary<A[K]> }
 ): Arbitrary<A[number]> {
   return fc.oneof(...arbs)

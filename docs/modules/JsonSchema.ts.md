@@ -261,7 +261,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+export function union<A extends [unknown, ...Array<unknown>]>(
   jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }
 ): JsonSchema<A[number]> { ... }
 ```

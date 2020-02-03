@@ -357,7 +357,7 @@ export function sum<T extends string>(
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+export function union<A extends [unknown, ...Array<unknown>]>(
   decoders: { [K in keyof A]: Decoder<A[K]> }
 ): Decoder<A[number]> {
   return {

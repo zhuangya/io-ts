@@ -78,7 +78,7 @@ Added in v3.0.0
 
 ```ts
 export interface WithUnion<F extends URIS> {
-  readonly union: <A extends [unknown, unknown, ...Array<unknown>]>(
+  readonly union: <A extends [unknown, ...Array<unknown>]>(
     schemas: { [K in keyof A]: Kind<F, A[K]> }
   ) => Kind<F, A[number]>
 }

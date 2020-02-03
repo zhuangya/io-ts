@@ -166,7 +166,7 @@ export function lazy<A>(f: () => Static<A>): Static<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+export function union<A extends [unknown, ...Array<unknown>]>(
   types: { [K in keyof A]: Static<A[K]> }
 ): Static<A[number]> {
   return C.make(() => `(${types.map(type => type()).join(' | ')})`)

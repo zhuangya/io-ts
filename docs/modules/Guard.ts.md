@@ -256,7 +256,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+export function union<A extends [unknown, ...Array<unknown>]>(
   guards: { [K in keyof A]: Guard<A[K]> }
 ): Guard<A[number]> { ... }
 ```

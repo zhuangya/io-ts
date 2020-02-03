@@ -68,7 +68,7 @@ export type Model =
     }
   | {
       readonly _tag: 'intersection'
-      readonly models: [Model, Model, ...Array<Model>]
+      readonly models: NonEmptyArray<Model>
       readonly id: string | undefined
     }
   | {
@@ -79,7 +79,7 @@ export type Model =
     }
   | {
       readonly _tag: 'union'
-      readonly models: [Model, Model, ...Array<Model>]
+      readonly models: NonEmptyArray<Model>
       readonly id: string | undefined
     }
   | {
@@ -218,7 +218,7 @@ export function sum<T extends string>(
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+export function union<A extends [unknown, ...Array<unknown>]>(
   dsls: { [K in keyof A]: DSL<A[K]> },
   id?: string
 ): DSL<A[number]> {

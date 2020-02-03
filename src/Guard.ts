@@ -199,7 +199,7 @@ export function intersection<A>(guards: Array<Guard<A>>): Guard<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+export function union<A extends [unknown, ...Array<unknown>]>(
   guards: { [K in keyof A]: Guard<A[K]> }
 ): Guard<A[number]> {
   return {

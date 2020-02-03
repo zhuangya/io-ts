@@ -105,7 +105,7 @@ export type Model =
     }
   | {
       readonly _tag: 'intersection'
-      readonly models: [Model, Model, ...Array<Model>]
+      readonly models: NonEmptyArray<Model>
       readonly id: string | undefined
     }
   | {
@@ -116,7 +116,7 @@ export type Model =
     }
   | {
       readonly _tag: 'union'
-      readonly models: [Model, Model, ...Array<Model>]
+      readonly models: NonEmptyArray<Model>
       readonly id: string | undefined
     }
   | {
@@ -329,7 +329,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+export function union<A extends [unknown, ...Array<unknown>]>(
   dsls: { [K in keyof A]: DSL<A[K]> },
   id?: string
 ): DSL<A[number]> { ... }

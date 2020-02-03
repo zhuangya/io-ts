@@ -305,7 +305,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+export function union<A extends [unknown, ...Array<unknown>]>(
   mutations: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ): ArbitraryMutation<A[number]> { ... }
 ```

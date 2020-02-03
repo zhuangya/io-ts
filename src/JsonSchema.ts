@@ -191,7 +191,7 @@ export function lazy<A>(f: () => JsonSchema<A>): JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+export function union<A extends [unknown, ...Array<unknown>]>(
   jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }
 ): JsonSchema<A[number]> {
   return C.make(() => ({ oneOf: jsonSchemas.map(jsonSchema => jsonSchema()) }))

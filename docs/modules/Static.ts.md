@@ -254,7 +254,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends [unknown, unknown, ...Array<unknown>]>(
+export function union<A extends [unknown, ...Array<unknown>]>(
   types: { [K in keyof A]: Static<A[K]> }
 ): Static<A[number]> { ... }
 ```
