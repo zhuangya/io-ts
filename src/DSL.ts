@@ -1,11 +1,8 @@
 /**
  * @since 3.0.0
  */
-import * as C from 'fp-ts/lib/Const'
-import { IO } from 'fp-ts/lib/IO'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as S from './Schemable'
-import { runSequence } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -14,17 +11,15 @@ import { runSequence } from './util'
 /**
  * @since 3.0.0
  */
-export type Model =
+export type Expression =
   | {
       readonly _tag: 'literals'
       readonly values: NonEmptyArray<S.Literal>
-      readonly id: string | undefined
     }
   | {
       readonly _tag: 'literalsOr'
       readonly values: NonEmptyArray<S.Literal>
-      readonly model: Model
-      readonly id: string | undefined
+      readonly model: Expression
     }
   | {
       readonly _tag: 'string'
@@ -43,49 +38,40 @@ export type Model =
     }
   | {
       readonly _tag: 'type'
-      readonly models: Record<string, Model>
-      readonly id: string | undefined
+      readonly models: Record<string, Expression>
     }
   | {
       readonly _tag: 'partial'
-      readonly models: Record<string, Model>
-      readonly id: string | undefined
+      readonly models: Record<string, Expression>
     }
   | {
       readonly _tag: 'record'
-      readonly model: Model
-      readonly id: string | undefined
+      readonly model: Expression
     }
   | {
       readonly _tag: 'array'
-      readonly model: Model
-      readonly id: string | undefined
+      readonly model: Expression
     }
   | {
       readonly _tag: 'tuple'
-      readonly models: NonEmptyArray<Model>
-      readonly id: string | undefined
+      readonly models: NonEmptyArray<Expression>
     }
   | {
       readonly _tag: 'intersection'
-      readonly models: NonEmptyArray<Model>
-      readonly id: string | undefined
+      readonly models: NonEmptyArray<Expression>
     }
   | {
       readonly _tag: 'sum'
       readonly tag: string
-      readonly models: Record<string, Model>
-      readonly id: string | undefined
+      readonly models: Record<string, Expression>
     }
   | {
       readonly _tag: 'union'
-      readonly models: NonEmptyArray<Model>
-      readonly id: string | undefined
+      readonly models: NonEmptyArray<Expression>
     }
   | {
       readonly _tag: 'lazy'
-      readonly model: Model
-      readonly id: string
+      readonly model: Expression
     }
   | {
       readonly _tag: '$ref'
@@ -95,7 +81,10 @@ export type Model =
 /**
  * @since 3.0.0
  */
-export type DSL<A> = C.Const<IO<Model>, A>
+export interface Declaration {
+  readonly id: string
+  readonly model: Expression
+}
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -104,15 +93,22 @@ export type DSL<A> = C.Const<IO<Model>, A>
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: string): DSL<A> {
-  return C.make(() => ({ _tag: 'literals', values, id }))
+export function $ref(id: string): Expression {
+  return { _tag: '$ref', id }
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, dsl: DSL<B>, id?: string): DSL<A | B> {
-  return C.make(() => ({ _tag: 'literalsOr', values, model: dsl(), id }))
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Expression {
+  return { _tag: 'literals', values }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function literalsOr<A extends S.Literal>(values: NonEmptyArray<A>, model: Expression): Expression {
+  return { _tag: 'literalsOr', values, model }
 }
 
 // -------------------------------------------------------------------------------------
@@ -122,163 +118,97 @@ export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, dsl
 /**
  * @since 3.0.0
  */
-export const string: DSL<string> = C.make(() => ({ _tag: 'string' }))
+export const string: Expression = { _tag: 'string' }
 
 /**
  * @since 3.0.0
  */
-export const number: DSL<number> = C.make(() => ({ _tag: 'number' }))
+export const number: Expression = { _tag: 'number' }
 
 /**
  * @since 3.0.0
  */
-export const boolean: DSL<boolean> = C.make(() => ({ _tag: 'boolean' }))
+export const boolean: Expression = { _tag: 'boolean' }
 
 /**
  * @since 3.0.0
  */
-export const UnknownArray: DSL<Array<unknown>> = C.make(() => ({ _tag: 'UnknownArray' }))
+export const UnknownArray: Expression = { _tag: 'UnknownArray' }
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: DSL<Record<string, unknown>> = C.make(() => ({ _tag: 'UnknownRecord' }))
-
-// -------------------------------------------------------------------------------------
-// combinators
-// -------------------------------------------------------------------------------------
+export const UnknownRecord: Expression = { _tag: 'UnknownRecord' }
 
 /**
  * @since 3.0.0
  */
-export function type<A>(dsls: { [K in keyof A]: DSL<A[K]> }, id?: string): DSL<A> {
-  return C.make(() => ({ _tag: 'type', models: runSequence(dsls), id }))
+export function type(models: Record<string, Expression>): Expression {
+  return { _tag: 'type', models }
 }
 
 /**
  * @since 3.0.0
  */
-export function partial<A>(dsls: { [K in keyof A]: DSL<A[K]> }, id?: string): DSL<Partial<A>> {
-  return C.make(() => ({ _tag: 'partial', models: runSequence(dsls), id }))
+export function partial(models: Record<string, Expression>): Expression {
+  return { _tag: 'partial', models }
 }
 
 /**
  * @since 3.0.0
  */
-export function record<A>(dsl: DSL<A>, id?: string): DSL<Record<string, A>> {
-  return C.make(() => ({ _tag: 'record', model: dsl(), id }))
+export function record(model: Expression): Expression {
+  return { _tag: 'record', model }
 }
 
 /**
  * @since 3.0.0
  */
-export function array<A>(dsl: DSL<A>, id?: string): DSL<Array<A>> {
-  return C.make(() => ({ _tag: 'array', model: dsl(), id }))
+export function array(model: Expression): Expression {
+  return { _tag: 'array', model }
 }
 
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>, DSL<E>], id?: string): DSL<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>], id?: string): DSL<[A, B, C, D]>
-export function tuple<A, B, C>(dsls: [DSL<A>, DSL<B>, DSL<C>], id?: string): DSL<[A, B, C]>
-export function tuple<A, B>(dsls: [DSL<A>, DSL<B>], id?: string): DSL<[A, B]>
-export function tuple<A>(dsls: [DSL<A>], id?: string): DSL<[A]>
-export function tuple(dsls: NonEmptyArray<DSL<unknown>>, id?: string): DSL<NonEmptyArray<unknown>> {
-  return C.make(() => ({ _tag: 'tuple', models: [dsls[0](), ...dsls.slice(1).map(dsl => dsl())], id }))
+export function tuple(models: NonEmptyArray<Expression>): Expression {
+  return { _tag: 'tuple', models }
 }
 
 /**
  * @since 3.0.0
  */
-export function intersection<A, B, C, D, E>(
-  dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>, DSL<E>],
-  id?: string
-): DSL<A & B & C & D & E>
-export function intersection<A, B, C, D>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>], id?: string): DSL<A & B & C & D>
-export function intersection<A, B, C>(dsls: [DSL<A>, DSL<B>, DSL<C>], id?: string): DSL<A & B & C>
-export function intersection<A, B>(dsls: [DSL<A>, DSL<B>], id?: string): DSL<A & B>
-export function intersection(dsls: NonEmptyArray<DSL<unknown>>, id?: string): DSL<unknown> {
-  return C.make(() => ({
+export function intersection(models: NonEmptyArray<Expression>): Expression {
+  return {
     _tag: 'intersection',
-    models: [dsls[0](), dsls[1](), ...dsls.slice(2).map(dsl => dsl())],
-    id
-  }))
-}
-
-/**
- * @since 3.0.0
- */
-export function sum<T extends string>(
-  tag: T
-): <A>(dsls: { [K in keyof A]: DSL<A[K] & Record<T, K>> }, id?: string) => DSL<A[keyof A]> {
-  return (dsls, id) => C.make(() => ({ _tag: 'sum', tag, models: runSequence(dsls), id }))
-}
-
-/**
- * @since 3.0.0
- */
-export function union<A extends [unknown, ...Array<unknown>]>(
-  dsls: { [K in keyof A]: DSL<A[K]> },
-  id?: string
-): DSL<A[number]> {
-  return C.make(() => ({ _tag: 'union', models: [dsls[0](), dsls[1](), ...dsls.slice(2).map(dsl => dsl())], id }))
-}
-
-let refCounter = 0
-
-/**
- * @since 3.0.0
- */
-export function lazy<A>(f: () => DSL<A>, id?: string): DSL<A> {
-  return C.make(() => {
-    if (!id) {
-      id = `$Ref${++refCounter}`
-      return { _tag: 'lazy', model: f()(), id }
-    }
-    return { _tag: '$ref', id }
-  })
-}
-
-// -------------------------------------------------------------------------------------
-// instances
-// -------------------------------------------------------------------------------------
-
-/**
- * @since 3.0.0
- */
-export const URI = 'DSL'
-
-/**
- * @since 3.0.0
- */
-export type URI = typeof URI
-
-declare module 'fp-ts/lib/HKT' {
-  interface URItoKind<A> {
-    readonly DSL: DSL<A>
+    models
   }
 }
 
 /**
  * @since 3.0.0
  */
-export const dsl: S.Schemable<URI> & S.WithUnion<URI> = {
-  URI,
-  literals,
-  literalsOr,
-  string,
-  number,
-  boolean,
-  UnknownArray,
-  UnknownRecord,
-  type,
-  partial,
-  record,
-  array,
-  tuple,
-  intersection,
-  sum,
-  lazy,
-  union
+export function sum(tag: string, models: Record<string, Expression>): Expression {
+  return { _tag: 'sum', tag, models }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function union(models: NonEmptyArray<Expression>): Expression {
+  return { _tag: 'union', models }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function lazy(model: Expression): Expression {
+  return { _tag: 'lazy', model }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function declaration(id: string, model: Expression): Declaration {
+  return { id, model }
 }
