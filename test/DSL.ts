@@ -1,6 +1,5 @@
 import * as assert from 'assert'
 import * as DSL from '../src/DSL'
-import * as E from 'fp-ts/lib/Either'
 
 function assertDSL<A>(dsl: DSL.DSL<A>, model: DSL.Model): void {
   assert.deepStrictEqual(dsl(), model)
@@ -8,7 +7,7 @@ function assertDSL<A>(dsl: DSL.DSL<A>, model: DSL.Model): void {
 
 describe('DSL', () => {
   it('literals', () => {
-    assertDSL(DSL.literals(['a', 1]), { _tag: 'literals', values: ['a', 1] })
+    assertDSL(DSL.literals(['a', 1]), { _tag: 'literals', values: ['a', 1], id: undefined })
   })
 
   it('literalsOr', () => {
@@ -21,8 +20,10 @@ describe('DSL', () => {
         models: {
           a: { _tag: 'string' },
           b: { _tag: 'number' }
-        }
-      }
+        },
+        id: undefined
+      },
+      id: undefined
     })
   })
 
@@ -53,7 +54,8 @@ describe('DSL', () => {
       models: {
         a: { _tag: 'string' },
         b: { _tag: 'number' }
-      }
+      },
+      id: undefined
     })
   })
 
@@ -64,23 +66,24 @@ describe('DSL', () => {
       models: {
         a: { _tag: 'string' },
         b: { _tag: 'number' }
-      }
+      },
+      id: undefined
     })
   })
 
   it('record', () => {
     const schema = DSL.record(DSL.number)
-    assertDSL(schema, { _tag: 'record', model: { _tag: 'number' } })
+    assertDSL(schema, { _tag: 'record', model: { _tag: 'number' }, id: undefined })
   })
 
   it('array', () => {
     const schema = DSL.array(DSL.number)
-    assertDSL(schema, { _tag: 'array', model: { _tag: 'number' } })
+    assertDSL(schema, { _tag: 'array', model: { _tag: 'number' }, id: undefined })
   })
 
   it('tuple', () => {
     const schema = DSL.tuple([DSL.string, DSL.number])
-    assertDSL(schema, { _tag: 'tuple', models: [{ _tag: 'string' }, { _tag: 'number' }] })
+    assertDSL(schema, { _tag: 'tuple', models: [{ _tag: 'string' }, { _tag: 'number' }], id: undefined })
   })
 
   it('intersection', () => {
@@ -96,21 +99,25 @@ describe('DSL', () => {
           _tag: 'type',
           models: {
             a: { _tag: 'string' }
-          }
+          },
+          id: undefined
         },
         {
           _tag: 'type',
           models: {
             b: { _tag: 'number' }
-          }
+          },
+          id: undefined
         },
         {
           _tag: 'type',
           models: {
             c: { _tag: 'boolean' }
-          }
+          },
+          id: undefined
         }
-      ]
+      ],
+      id: undefined
     })
   })
 
@@ -127,18 +134,21 @@ describe('DSL', () => {
         A: {
           _tag: 'type',
           models: {
-            _tag: { _tag: 'literals', values: ['A'] },
+            _tag: { _tag: 'literals', values: ['A'], id: undefined },
             a: { _tag: 'string' }
-          }
+          },
+          id: undefined
         },
         B: {
           _tag: 'type',
           models: {
-            _tag: { _tag: 'literals', values: ['B'] },
+            _tag: { _tag: 'literals', values: ['B'], id: undefined },
             b: { _tag: 'number' }
-          }
+          },
+          id: undefined
         }
-      }
+      },
+      id: undefined
     })
   })
 
@@ -159,8 +169,9 @@ describe('DSL', () => {
         _tag: 'type',
         models: {
           a: { _tag: 'string' },
-          as: { _tag: 'array', model: { _tag: '$ref', id: '$Ref1' } }
-        }
+          as: { _tag: 'array', model: { _tag: '$ref', id: '$Ref1' }, id: undefined }
+        },
+        id: undefined
       },
       id: '$Ref1'
     })
@@ -168,18 +179,17 @@ describe('DSL', () => {
       _tag: 'type',
       models: {
         a: { _tag: '$ref', id: '$Ref1' }
-      }
+      },
+      id: undefined
     })
-  })
-
-  it('refinement', () => {
-    const parser = (s: string): E.Either<string, string> => (s.length > 0 ? E.right(s) : E.left('empty string'))
-    const schema = DSL.refinement(DSL.string, parser)
-    assertDSL(schema, { _tag: 'refinement', model: { _tag: 'string' }, parser })
   })
 
   it('union', () => {
     const schema = DSL.union([DSL.string, DSL.number, DSL.boolean])
-    assertDSL(schema, { _tag: 'union', models: [{ _tag: 'string' }, { _tag: 'number' }, { _tag: 'boolean' }] })
+    assertDSL(schema, {
+      _tag: 'union',
+      models: [{ _tag: 'string' }, { _tag: 'number' }, { _tag: 'boolean' }],
+      id: undefined
+    })
   })
 })

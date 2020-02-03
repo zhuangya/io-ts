@@ -28,7 +28,6 @@ Added in v3.0.0
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
-- [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
 - [tuple](#tuple)
@@ -53,24 +52,82 @@ Added in v3.0.0
 
 ```ts
 export type Model =
-  | { readonly _tag: 'literals'; readonly values: NonEmptyArray<S.Literal> }
-  | { readonly _tag: 'literalsOr'; readonly values: NonEmptyArray<S.Literal>; readonly model: Model }
-  | { readonly _tag: 'string' }
-  | { readonly _tag: 'number' }
-  | { readonly _tag: 'boolean' }
-  | { readonly _tag: 'UnknownArray' }
-  | { readonly _tag: 'UnknownRecord' }
-  | { readonly _tag: 'refinement'; readonly model: Model; readonly parser: (a: any) => E.Either<string, unknown> }
-  | { readonly _tag: 'type'; readonly models: Record<string, Model> }
-  | { readonly _tag: 'partial'; readonly models: Record<string, Model> }
-  | { readonly _tag: 'record'; readonly model: Model }
-  | { readonly _tag: 'array'; readonly model: Model }
-  | { readonly _tag: 'tuple'; readonly models: NonEmptyArray<Model> }
-  | { readonly _tag: 'intersection'; readonly models: [Model, Model, ...Array<Model>] }
-  | { readonly _tag: 'sum'; readonly tag: string; readonly models: Record<string, Model> }
-  | { readonly _tag: 'union'; readonly models: [Model, Model, ...Array<Model>] }
-  | { readonly _tag: 'lazy'; readonly model: Model; readonly id: string }
-  | { readonly _tag: '$ref'; readonly id: string }
+  | {
+      readonly _tag: 'literals'
+      readonly values: NonEmptyArray<S.Literal>
+      readonly id: string | undefined
+    }
+  | {
+      readonly _tag: 'literalsOr'
+      readonly values: NonEmptyArray<S.Literal>
+      readonly model: Model
+      readonly id: string | undefined
+    }
+  | {
+      readonly _tag: 'string'
+    }
+  | {
+      readonly _tag: 'number'
+    }
+  | {
+      readonly _tag: 'boolean'
+    }
+  | {
+      readonly _tag: 'UnknownArray'
+    }
+  | {
+      readonly _tag: 'UnknownRecord'
+    }
+  | {
+      readonly _tag: 'type'
+      readonly models: Record<string, Model>
+      readonly id: string | undefined
+    }
+  | {
+      readonly _tag: 'partial'
+      readonly models: Record<string, Model>
+      readonly id: string | undefined
+    }
+  | {
+      readonly _tag: 'record'
+      readonly model: Model
+      readonly id: string | undefined
+    }
+  | {
+      readonly _tag: 'array'
+      readonly model: Model
+      readonly id: string | undefined
+    }
+  | {
+      readonly _tag: 'tuple'
+      readonly models: NonEmptyArray<Model>
+      readonly id: string | undefined
+    }
+  | {
+      readonly _tag: 'intersection'
+      readonly models: [Model, Model, ...Array<Model>]
+      readonly id: string | undefined
+    }
+  | {
+      readonly _tag: 'sum'
+      readonly tag: string
+      readonly models: Record<string, Model>
+      readonly id: string | undefined
+    }
+  | {
+      readonly _tag: 'union'
+      readonly models: [Model, Model, ...Array<Model>]
+      readonly id: string | undefined
+    }
+  | {
+      readonly _tag: 'lazy'
+      readonly model: Model
+      readonly id: string
+    }
+  | {
+      readonly _tag: '$ref'
+      readonly id: string
+    }
 ```
 
 Added in v3.0.0
@@ -120,7 +177,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(dsl: DSL<A>): DSL<Array<A>> { ... }
+export function array<A>(dsl: DSL<A>, id?: string): DSL<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -140,7 +197,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const dsl: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = ...
+export const dsl: S.Schemable<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -150,10 +207,13 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B, C, D, E>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>, DSL<E>]): DSL<A & B & C & D & E>
-export function intersection<A, B, C, D>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>]): DSL<A & B & C & D>
-export function intersection<A, B, C>(dsls: [DSL<A>, DSL<B>, DSL<C>]): DSL<A & B & C>
-export function intersection<A, B>(dsls: [DSL<A>, DSL<B>]): DSL<A & B> { ... }
+export function intersection<A, B, C, D, E>(
+  dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>, DSL<E>],
+  id?: string
+): DSL<A & B & C & D & E>
+export function intersection<A, B, C, D>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>], id?: string): DSL<A & B & C & D>
+export function intersection<A, B, C>(dsls: [DSL<A>, DSL<B>, DSL<C>], id?: string): DSL<A & B & C>
+export function intersection<A, B>(dsls: [DSL<A>, DSL<B>], id?: string): DSL<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -163,7 +223,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(f: () => DSL<A>): DSL<A> { ... }
+export function lazy<A>(f: () => DSL<A>, id?: string): DSL<A> { ... }
 ```
 
 Added in v3.0.0
@@ -173,7 +233,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): DSL<A> { ... }
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: string): DSL<A> { ... }
 ```
 
 Added in v3.0.0
@@ -183,7 +243,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, dsl: DSL<B>): DSL<A | B> { ... }
+export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, dsl: DSL<B>, id?: string): DSL<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -203,7 +263,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(dsls: { [K in keyof A]: DSL<A[K]> }): DSL<Partial<A>> { ... }
+export function partial<A>(dsls: { [K in keyof A]: DSL<A[K]> }, id?: string): DSL<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -213,17 +273,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(dsl: DSL<A>): DSL<Record<string, A>> { ... }
-```
-
-Added in v3.0.0
-
-# refinement
-
-**Signature**
-
-```ts
-export function refinement<A, B extends A>(dsl: DSL<A>, parser: (a: A) => E.Either<string, B>): DSL<B> { ... }
+export function record<A>(dsl: DSL<A>, id?: string): DSL<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -245,7 +295,7 @@ Added in v3.0.0
 ```ts
 export function sum<T extends string>(
   tag: T
-): <A>(dsls: { [K in keyof A]: DSL<A[K] & Record<T, K>> }) => DSL<A[keyof A]> { ... }
+): <A>(dsls: { [K in keyof A]: DSL<A[K] & Record<T, K>> }, id?: string) => DSL<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0
@@ -255,11 +305,11 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>, DSL<E>]): DSL<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>]): DSL<[A, B, C, D]>
-export function tuple<A, B, C>(dsls: [DSL<A>, DSL<B>, DSL<C>]): DSL<[A, B, C]>
-export function tuple<A, B>(dsls: [DSL<A>, DSL<B>]): DSL<[A, B]>
-export function tuple<A>(dsls: [DSL<A>]): DSL<[A]> { ... }
+export function tuple<A, B, C, D, E>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>, DSL<E>], id?: string): DSL<[A, B, C, D, E]>
+export function tuple<A, B, C, D>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>], id?: string): DSL<[A, B, C, D]>
+export function tuple<A, B, C>(dsls: [DSL<A>, DSL<B>, DSL<C>], id?: string): DSL<[A, B, C]>
+export function tuple<A, B>(dsls: [DSL<A>, DSL<B>], id?: string): DSL<[A, B]>
+export function tuple<A>(dsls: [DSL<A>], id?: string): DSL<[A]> { ... }
 ```
 
 Added in v3.0.0
@@ -269,7 +319,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(dsls: { [K in keyof A]: DSL<A[K]> }): DSL<A> { ... }
+export function type<A>(dsls: { [K in keyof A]: DSL<A[K]> }, id?: string): DSL<A> { ... }
 ```
 
 Added in v3.0.0
@@ -280,7 +330,8 @@ Added in v3.0.0
 
 ```ts
 export function union<A extends [unknown, unknown, ...Array<unknown>]>(
-  dsls: { [K in keyof A]: DSL<A[K]> }
+  dsls: { [K in keyof A]: DSL<A[K]> },
+  id?: string
 ): DSL<A[number]> { ... }
 ```
 
