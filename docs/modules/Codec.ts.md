@@ -38,18 +38,19 @@ Open questions:
 Schemas:
 
 - S.Schemable<URI> & S.WithRefinement<URI>
-  - Codec
   - Encoder
   - Eq
 - S.Schemable<URI> & S.WithUnion<URI>
   - JsonSchema
   - Static
 - S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI>
+  - Codec
+  - Compat
+- S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI>
   - Arbitrary
   - ArbitraryMutation
   - Decoder
   - Guard
-  - DSL
 
 Added in v3.0.0
 
@@ -163,7 +164,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = ...
+export const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI> & WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -174,13 +175,9 @@ Added in v3.0.0
 
 ```ts
 export function intersection<A, B, C, D, E>(
-  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
-  name?: string
+  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>]
 ): Codec<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>],
-  name?: string
-): Codec<A & B & C & D>
+export function intersection<A, B, C, D>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>]): Codec<A & B & C & D>
 export function intersection<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>]): Codec<A & B & C>
 export function intersection<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<A & B> { ... }
 ```
@@ -202,7 +199,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Codec<A> { ... }
+export function literals<A extends Literal>(values: NonEmptyArray<A>): Codec<A> { ... }
 ```
 
 Added in v3.0.0
@@ -212,7 +209,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> { ... }
 ```
 
 Added in v3.0.0

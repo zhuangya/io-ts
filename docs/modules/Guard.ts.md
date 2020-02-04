@@ -1,6 +1,6 @@
 ---
 title: Guard.ts
-nav_order: 9
+nav_order: 10
 parent: Modules
 ---
 
@@ -28,6 +28,7 @@ Added in v3.0.0
 - [parse](#parse)
 - [partial](#partial)
 - [record](#record)
+- [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
 - [tuple](#tuple)
@@ -113,7 +114,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const guard: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = ...
+export const guard: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -201,6 +202,16 @@ Added in v3.0.0
 
 ```ts
 export function record<A>(guard: Guard<A>): Guard<Record<string, A>> { ... }
+```
+
+Added in v3.0.0
+
+# refinement
+
+**Signature**
+
+```ts
+export const refinement: S.WithRefinement<URI>['refinement'] = ...
 ```
 
 Added in v3.0.0

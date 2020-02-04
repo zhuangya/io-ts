@@ -1,6 +1,6 @@
 ---
 title: Decoder.ts
-nav_order: 5
+nav_order: 6
 parent: Modules
 ---
 
@@ -37,6 +37,7 @@ Added in v3.0.0
 - [parse](#parse)
 - [partial](#partial)
 - [record](#record)
+- [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
 - [tuple](#tuple)
@@ -173,11 +174,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const decoder: Applicative1<URI> &
-  Alternative1<URI> &
-  S.Schemable<URI> &
-  S.WithRefinement<URI> &
-  S.WithUnion<URI> = ...
+export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -305,6 +302,16 @@ Added in v3.0.0
 
 ```ts
 export function record<A>(decoder: Decoder<A>): Decoder<Record<string, A>> { ... }
+```
+
+Added in v3.0.0
+
+# refinement
+
+**Signature**
+
+```ts
+export const refinement: S.WithRefinement<URI>['refinement'] = ...
 ```
 
 Added in v3.0.0

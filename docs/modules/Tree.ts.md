@@ -1,6 +1,6 @@
 ---
 title: Tree.ts
-nav_order: 17
+nav_order: 18
 parent: Modules
 ---
 
@@ -12,9 +12,20 @@ Added in v3.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [mapLeft](#mapleft)
 - [toTree](#totree)
 
 ---
+
+# mapLeft
+
+**Signature**
+
+```ts
+export const mapLeft: <A>(e: E.Either<DecodeError, A>) => E.Either<string, A> = ...
+```
+
+Added in v3.0.0
 
 # toTree
 

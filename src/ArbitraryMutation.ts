@@ -90,6 +90,11 @@ export const UnknownRecord: ArbitraryMutation<Record<string, unknown>> = make(A.
 /**
  * @since 3.0.0
  */
+export const refinement: S.WithRefinement<URI>['refinement'] = parse
+
+/**
+ * @since 3.0.0
+ */
 export function parse<A, B>(mutation: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> {
   return make(
     mutation.arb.filter(a => isLeft(parser(a))),
@@ -261,7 +266,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const arbitraryMutation: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
+export const arbitraryMutation: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,
@@ -278,6 +283,7 @@ export const arbitraryMutation: S.Schemable<URI> & S.WithRefinement<URI> & S.Wit
   intersection,
   sum,
   lazy,
-  refinement: parse,
+  refinement,
+  parse,
   union
 }

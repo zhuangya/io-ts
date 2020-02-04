@@ -1,6 +1,6 @@
 ---
 title: Schemable.ts
-nav_order: 14
+nav_order: 15
 parent: Modules
 ---
 
@@ -13,6 +13,7 @@ Added in v3.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Schemable (interface)](#schemable-interface)
+- [WithParse (interface)](#withparse-interface)
 - [WithRefinement (interface)](#withrefinement-interface)
 - [WithUnion (interface)](#withunion-interface)
 - [Literal (type alias)](#literal-type-alias)
@@ -55,6 +56,18 @@ export interface Schemable<F extends URIS> {
     tag: T
   ) => <A>(schemas: { [K in keyof A]: Kind<F, A[K] & Record<T, K>> }) => Kind<F, A[keyof A]>
   readonly lazy: <A>(f: () => Kind<F, A>) => Kind<F, A>
+}
+```
+
+Added in v3.0.0
+
+# WithParse (interface)
+
+**Signature**
+
+```ts
+export interface WithParse<F extends URIS> extends WithRefinement<F> {
+  readonly parse: <A, B>(schema: Kind<F, A>, parser: (a: A) => Either<string, B>) => Kind<F, B>
 }
 ```
 

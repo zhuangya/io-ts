@@ -1,8 +1,7 @@
 import * as fc from 'fast-check'
 import * as Arb from '../src/Arbitrary'
 import * as ArbMut from '../src/ArbitraryMutation'
-import * as D from '../src/Decoder'
-import * as C from '../src/Codec'
+import * as C from '../src/Compat'
 import * as E from '../src/Eq'
 import * as G from '../src/Guard'
 import * as J from '../src/JsonSchema'
@@ -24,12 +23,12 @@ function make<A>(f: Schema<A>): Schema<A> {
 function assert<A>(schema: Schema<A>): void {
   const arb = schema(Arb.arbitrary)
   const mutation = schema(ArbMut.arbitraryMutation)
-  const decoder = schema(D.decoder)
+  const compat = schema(C.compat)
   const eq = schema(E.eq)
   const guard = schema(G.guard)
   const validate = ajv.compile(schema(J.jsonSchema)())
-  fc.assert(fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(decoder.decode(a)) && Boolean(validate(a))))
-  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
+  fc.assert(fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(compat.decode(a)) && Boolean(validate(a))))
+  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(compat.decode(m))))
 }
 
 interface SchemaWithUnion<A> {
@@ -43,16 +42,15 @@ function makeWithUnion<A>(f: SchemaWithUnion<A>): SchemaWithUnion<A> {
 function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
   const arb = schema(Arb.arbitrary)
   const mutation = schema(ArbMut.arbitraryMutation)
-  const codec = schema(C.codec)
-  const guard = schema(G.guard)
+  const compat = schema(C.compat)
   const validate = ajv.compile(schema(J.jsonSchema)())
   fc.assert(
     fc.property(
       arb,
-      a => guard.is(a) && isRight(codec.decode(a)) && Boolean(validate(a)) && isRight(codec.decode(codec.encode(a)))
+      a => compat.is(a) && isRight(compat.decode(a)) && Boolean(validate(a)) && isRight(compat.decode(compat.encode(a)))
     )
   )
-  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(codec.decode(m))))
+  fc.assert(fc.property(mutation, m => !compat.is(m) && isLeft(compat.decode(m))))
 }
 
 interface SchemaWithRefinement<A> {
@@ -66,10 +64,9 @@ function makeWithRefinement<A>(f: SchemaWithRefinement<A>): SchemaWithRefinement
 function assertWithRefinement<A>(schema: SchemaWithRefinement<A>): void {
   const arb = schema(Arb.arbitrary)
   const mutation = schema(ArbMut.arbitraryMutation)
-  const codec = schema(C.codec)
-  const guard = schema(G.guard)
-  fc.assert(fc.property(arb, a => guard.is(a) && isRight(codec.decode(a))))
-  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(codec.decode(m))))
+  const compat = schema(C.compat)
+  fc.assert(fc.property(arb, a => compat.is(a) && isRight(compat.decode(a))))
+  fc.assert(fc.property(mutation, m => !compat.is(m) && isLeft(compat.decode(m))))
 }
 
 describe('Arbitrary', () => {

@@ -114,6 +114,11 @@ export function withExpected<A>(decoder: Decoder<A>, expected: string): Decoder<
 /**
  * @since 3.0.0
  */
+export const refinement: S.WithRefinement<URI>['refinement'] = parse
+
+/**
+ * @since 3.0.0
+ */
 export function parse<A, B>(decoder: Decoder<A>, parser: (a: A) => E.Either<string, B>): Decoder<B> {
   return {
     decode: u => {
@@ -403,11 +408,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const decoder: Applicative1<URI> &
-  Alternative1<URI> &
-  S.Schemable<URI> &
-  S.WithRefinement<URI> &
-  S.WithUnion<URI> = {
+export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
   map: (fa, f) => ({
     decode: u => E.either.map(fa.decode(u), f)
@@ -437,7 +438,8 @@ export const decoder: Applicative1<URI> &
   intersection,
   sum,
   lazy,
-  refinement: parse,
+  refinement,
+  parse,
   union
 }
 

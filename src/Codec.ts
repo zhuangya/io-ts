@@ -26,27 +26,28 @@
  *
  * Schemas:
  * - S.Schemable<URI> & S.WithRefinement<URI>
- *   - Codec
  *   - Encoder
  *   - Eq
  * - S.Schemable<URI> & S.WithUnion<URI>
  *   - JsonSchema
  *   - Static
  * - S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI>
+ *   - Codec
+ *   - Compat
+ * - S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI>
  *   - Arbitrary
  *   - ArbitraryMutation
  *   - Decoder
  *   - Guard
- *   - DSL
  *
  * @since 3.0.0
  */
+import { Either, isRight } from 'fp-ts/lib/Either'
 import { Invariant1 } from 'fp-ts/lib/Invariant'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as D from './Decoder'
 import * as E from './Encoder'
-import * as S from './Schemable'
-import { Either, isRight } from 'fp-ts/lib/Either'
+import { Literal, Schemable, WithRefinement, WithUnion } from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -79,14 +80,14 @@ export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> 
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Codec<A> {
+export function literals<A extends Literal>(values: NonEmptyArray<A>): Codec<A> {
   return make(D.literals(values), E.literals(values))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> {
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> {
   return make(D.literalsOr(values, codec), E.literalsOr(values, codec))
 }
 
@@ -181,13 +182,9 @@ export function tuple(codecs: any): Codec<any> {
  * @since 3.0.0
  */
 export function intersection<A, B, C, D, E>(
-  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
-  name?: string
+  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>]
 ): Codec<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>],
-  name?: string
-): Codec<A & B & C & D>
+export function intersection<A, B, C, D>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>]): Codec<A & B & C & D>
 export function intersection<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>]): Codec<A & B & C>
 export function intersection<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<A & B>
 export function intersection<A>(codecs: any): Codec<A> {
@@ -257,7 +254,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
+export const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI> & WithUnion<URI> = {
   URI,
   imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
   literals,
@@ -275,6 +272,6 @@ export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> &
   intersection,
   sum,
   lazy,
-  refinement: refinement as S.WithRefinement<URI>['refinement'],
+  refinement: refinement as WithRefinement<URI>['refinement'],
   union
 }

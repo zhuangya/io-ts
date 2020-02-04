@@ -69,6 +69,11 @@ export const UnknownRecord: Arbitrary<Record<string, unknown>> = fc.dictionary(s
 /**
  * @since 3.0.0
  */
+export const refinement: S.WithRefinement<URI>['refinement'] = parse
+
+/**
+ * @since 3.0.0
+ */
 export function parse<A, B>(arb: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> {
   return arb
     .map(parser)
@@ -188,7 +193,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const arbitrary: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
+export const arbitrary: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,
@@ -205,6 +210,7 @@ export const arbitrary: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<U
   intersection,
   sum,
   lazy,
-  refinement: parse,
+  refinement,
+  parse,
   union
 }
