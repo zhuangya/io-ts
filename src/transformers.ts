@@ -3,7 +3,6 @@
  */
 import * as ts from 'typescript'
 import * as DSL from './DSL'
-import * as G from './Guard'
 import * as S from './Schemable'
 import * as O from 'fp-ts/lib/Option'
 
@@ -11,16 +10,34 @@ const schemable = ts.createIdentifier('S')
 
 const make = ts.createIdentifier('make')
 
-function toLiteralTypeNode(values: Array<S.Literal>): Array<ts.TypeNode> {
-  return values.map(value => {
-    if (G.number.is(value)) {
-      return ts.createLiteralTypeNode(ts.createNumericLiteral(String(value)))
-    } else if (G.string.is(value)) {
-      return ts.createLiteralTypeNode(ts.createStringLiteral(value))
+function fold<R>(
+  onString: (s: string) => R,
+  onNumber: (n: number) => R,
+  onBoolean: (b: boolean) => R,
+  onNull: () => R
+): (literal: S.Literal) => R {
+  return literal => {
+    if (typeof literal === 'string') {
+      return onString(literal)
+    } else if (typeof literal === 'number') {
+      return onNumber(literal)
+    } else if (typeof literal === 'boolean') {
+      return onBoolean(literal)
     } else {
-      return ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword)
+      return onNull()
     }
-  })
+  }
+}
+
+function toLiteralTypeNode(values: Array<S.Literal>): Array<ts.TypeNode> {
+  return values.map(
+    fold<ts.TypeNode>(
+      s => ts.createLiteralTypeNode(ts.createStringLiteral(s)),
+      n => ts.createLiteralTypeNode(ts.createNumericLiteral(String(n))),
+      b => ts.createLiteralTypeNode(ts.createLiteral(b)),
+      () => ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword)
+    )
+  )
 }
 
 /**
@@ -80,15 +97,14 @@ export function toTypeNode(model: DSL.Expression): ts.TypeNode {
 
 function toLiteralExpression(values: Array<S.Literal>): ts.Expression {
   return ts.createArrayLiteral(
-    values.map(value => {
-      if (G.number.is(value)) {
-        return ts.createNumericLiteral(String(value))
-      } else if (G.string.is(value)) {
-        return ts.createStringLiteral(value)
-      } else {
-        return ts.createNull()
-      }
-    })
+    values.map(
+      fold<ts.Expression>(
+        s => ts.createStringLiteral(s),
+        n => ts.createNumericLiteral(String(n)),
+        b => ts.createLiteral(b),
+        () => ts.createNull()
+      )
+    )
   )
 }
 

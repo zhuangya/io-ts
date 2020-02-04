@@ -79,7 +79,7 @@ describe('transformers', () => {
     })
 
     it('literals', () => {
-      assertTypeNode(DSL.literals([1, 'a', null]), '1 | "a" | null')
+      assertTypeNode(DSL.literals([1, 'a', null, true]), '1 | "a" | null | true')
     })
 
     it('literalsOr', () => {
@@ -163,7 +163,7 @@ describe('transformers', () => {
     })
 
     it('literals', () => {
-      assertExpression(DSL.literals([1, 'a', null]), 'S.literals([1, "a", null])')
+      assertExpression(DSL.literals([1, 'a', null, true]), 'S.literals([1, "a", null, true])')
     })
 
     it('literalsOr', () => {
