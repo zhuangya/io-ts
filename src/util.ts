@@ -1,7 +1,7 @@
 /**
  * @since 3.0.0
  */
-import { Eq } from 'fp-ts/lib/Eq'
+import { Eq, strictEqual } from 'fp-ts/lib/Eq'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { Semigroup } from 'fp-ts/lib/Semigroup'
 import { IO } from 'fp-ts/lib/IO'
@@ -26,16 +26,8 @@ export function hasOwnProperty<O extends object>(o: O, k: string): k is keyof O 
  * @since 3.0.0
  * @internal
  */
-export const strict: Eq<unknown> = {
-  equals: (x, y) => x === y
-}
-
-/**
- * @since 3.0.0
- * @internal
- */
-export const always: Eq<unknown> = {
-  equals: () => true
+export const eqStrict: Eq<unknown> = {
+  equals: strictEqual
 }
 
 function typeOf(x: unknown): string {

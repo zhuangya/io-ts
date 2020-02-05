@@ -26,6 +26,14 @@ describe('Eq', () => {
     assert.deepStrictEqual(eq.equals(['a'], ['a', 'b']), false)
   })
 
+  it('UnknownRecord', () => {
+    const eq = E.UnknownRecord
+    assert.deepStrictEqual(eq.equals({}, {}), true)
+    assert.deepStrictEqual(eq.equals({ a: 1 }, { a: 1 }), true)
+    assert.deepStrictEqual(eq.equals({ a: 1 }, { a: 1, b: true }), false)
+    assert.deepStrictEqual(eq.equals({ a: 1, b: true }, { a: 1 }), false)
+  })
+
   it('partial', () => {
     const eq = E.partial({ a: E.number })
     assert.deepStrictEqual(eq.equals({ a: 1 }, { a: 1 }), true)

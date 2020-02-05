@@ -7,7 +7,7 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as R from 'fp-ts/lib/Record'
 import * as G from './Guard'
 import * as S from './Schemable'
-import { always, strict } from './util'
+import { eqStrict, hasOwnProperty } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -23,7 +23,7 @@ import { Either } from 'fp-ts/lib/Either'
  * @since 3.0.0
  */
 export function literals<A extends S.Literal>(_as: NonEmptyArray<A>): Eq<A> {
-  return strict
+  return eqStrict
 }
 
 /**
@@ -58,12 +58,24 @@ export const boolean: Eq<boolean> = E.eqBoolean
 /**
  * @since 3.0.0
  */
-export const UnknownArray: Eq<Array<unknown>> = A.getEq(always)
+export const UnknownArray: Eq<Array<unknown>> = E.fromEquals((x, y) => x.length === y.length)
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: Eq<Record<string, unknown>> = R.getEq(always)
+export const UnknownRecord: Eq<Record<string, unknown>> = E.fromEquals((x, y) => {
+  for (const k in x) {
+    if (!hasOwnProperty(y, k)) {
+      return false
+    }
+  }
+  for (const k in y) {
+    if (!hasOwnProperty(x, k)) {
+      return false
+    }
+  }
+  return true
+})
 
 // -------------------------------------------------------------------------------------
 // combinators
