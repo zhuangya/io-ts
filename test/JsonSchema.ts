@@ -16,12 +16,6 @@ function make<A>(f: Schema<A>): Schema<A> {
 const ajv = new Ajv()
 
 describe('JsonSchema', () => {
-  it('string', () => {
-    const validate = ajv.compile(J.string())
-    assert.strictEqual(validate('a'), true)
-    assert.strictEqual(validate(1), false)
-  })
-
   it('literals', () => {
     const validate = ajv.compile(J.literals(['a'])())
     assert.strictEqual(validate('a'), true)
@@ -33,6 +27,32 @@ describe('JsonSchema', () => {
     const validate = ajv.compile(schema)
     assert.strictEqual(validate(null), true)
     assert.strictEqual(validate({ a: 'a', b: 1 }), true)
+  })
+
+  it('string', () => {
+    const validate = ajv.compile(J.string())
+    assert.strictEqual(validate('a'), true)
+    assert.strictEqual(validate(1), false)
+  })
+
+  it('boolean', () => {
+    const validate = ajv.compile(J.boolean())
+    assert.strictEqual(validate(true), true)
+    assert.strictEqual(validate(1), false)
+  })
+
+  it('UnknownArray', () => {
+    const validate = ajv.compile(J.UnknownArray())
+    assert.strictEqual(validate([]), true)
+    assert.strictEqual(validate([1, 2, 3]), true)
+    assert.strictEqual(validate(1), false)
+  })
+
+  it('UnknownRecord', () => {
+    const validate = ajv.compile(J.UnknownRecord())
+    assert.strictEqual(validate({}), true)
+    assert.strictEqual(validate({ a: 'a', b: 1 }), true)
+    assert.strictEqual(validate(1), false)
   })
 
   it('type', () => {

@@ -78,7 +78,7 @@ Added in v3.0.0
 - [sum](#sum)
 - [tuple](#tuple)
 - [type](#type)
-- [withExpected](#withexpected)
+- [withMessage](#withmessage)
 
 ---
 
@@ -142,7 +142,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(codec: Codec<A>): Codec<Array<A>> { ... }
+export function array<A>(codec: Codec<A>, id?: string): Codec<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -173,11 +173,15 @@ Added in v3.0.0
 
 ```ts
 export function intersection<A, B, C, D, E>(
-  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>]
+  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
+  id?: string
 ): Codec<A & B & C & D & E>
-export function intersection<A, B, C, D>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>]): Codec<A & B & C & D>
-export function intersection<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>]): Codec<A & B & C>
-export function intersection<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<A & B> { ... }
+export function intersection<A, B, C, D>(
+  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>],
+  id?: string
+): Codec<A & B & C & D>
+export function intersection<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>], id?: string): Codec<A & B & C>
+export function intersection<A, B>(codecs: [Codec<A>, Codec<B>], id?: string): Codec<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -197,7 +201,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: NonEmptyArray<A>): Codec<A> { ... }
+export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Codec<A> { ... }
 ```
 
 Added in v3.0.0
@@ -207,7 +211,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, codec: Codec<B>, id?: string): Codec<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -237,7 +241,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<Partial<A>> { ... }
+export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -247,7 +251,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codec: Codec<A>): Codec<Record<string, A>> { ... }
+export function record<A>(codec: Codec<A>, id?: string): Codec<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -257,7 +261,11 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(codec: Codec<A>, parser: (a: A) => Either<string, B>): Codec<B> { ... }
+export function refinement<A, B extends A>(
+  codec: Codec<A>,
+  parser: (a: A) => Either<string, B>,
+  id?: string
+): Codec<B> { ... }
 ```
 
 Added in v3.0.0
@@ -279,7 +287,7 @@ Added in v3.0.0
 ```ts
 export function sum<T extends string>(
   tag: T
-): <A>(codecs: { [K in keyof A]: Codec<A[K] & Record<T, K>> }) => Codec<A[keyof A]> { ... }
+): <A>(codecs: { [K in keyof A]: Codec<A[K] & Record<T, K>> }, id?: string) => Codec<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0
@@ -289,11 +297,14 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>]): Codec<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>]): Codec<[A, B, C, D]>
-export function tuple<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>]): Codec<[A, B, C]>
-export function tuple<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<[A, B]>
-export function tuple<A>(codecs: [Codec<A>]): Codec<[A]> { ... }
+export function tuple<A, B, C, D, E>(
+  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
+  id?: string
+): Codec<[A, B, C, D, E]>
+export function tuple<A, B, C, D>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>], id?: string): Codec<[A, B, C, D]>
+export function tuple<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>], id?: string): Codec<[A, B, C]>
+export function tuple<A, B>(codecs: [Codec<A>, Codec<B>], id?: string): Codec<[A, B]>
+export function tuple<A>(codecs: [Codec<A>], id?: string): Codec<[A]> { ... }
 ```
 
 Added in v3.0.0
@@ -303,17 +314,17 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<A> { ... }
+export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> { ... }
 ```
 
 Added in v3.0.0
 
-# withExpected
+# withMessage
 
 **Signature**
 
 ```ts
-export function withExpected<A>(codec: Codec<A>, expected: string): Codec<A> { ... }
+export function withMessage<A>(codec: Codec<A>, message: (e: DE.DecodeError) => string): Codec<A> { ... }
 ```
 
 Added in v3.0.0

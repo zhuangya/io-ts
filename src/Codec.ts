@@ -44,6 +44,7 @@
 import { Either } from 'fp-ts/lib/Either'
 import { Invariant1 } from 'fp-ts/lib/Invariant'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import * as DE from './DecodeError'
 import * as D from './Decoder'
 import * as E from './Encoder'
 import { Literal, Schemable, WithRefinement } from './Schemable'
@@ -79,15 +80,15 @@ export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> 
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: NonEmptyArray<A>): Codec<A> {
-  return make(D.literals(values), E.literals(values))
+export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Codec<A> {
+  return make(D.literals(values, id), E.literals(values))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, codec: Codec<B>): Codec<A | B> {
-  return make(D.literalsOr(values, codec), E.literalsOr(values, codec))
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, codec: Codec<B>, id?: string): Codec<A | B> {
+  return make(D.literalsOr(values, codec, id), E.literalsOr(values, codec))
 }
 
 // -------------------------------------------------------------------------------------
@@ -126,68 +127,79 @@ export const UnknownRecord: Codec<Record<string, unknown>> = make(D.UnknownRecor
 /**
  * @since 3.0.0
  */
-export function withExpected<A>(codec: Codec<A>, expected: string): Codec<A> {
-  return make(D.withExpected(codec, expected), codec)
+export function withMessage<A>(codec: Codec<A>, message: (e: DE.DecodeError) => string): Codec<A> {
+  return make(D.withMessage(codec, message), codec)
 }
 
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(codec: Codec<A>, parser: (a: A) => Either<string, B>): Codec<B> {
-  return make(D.parse(codec, parser), codec)
+export function refinement<A, B extends A>(
+  codec: Codec<A>,
+  parser: (a: A) => Either<string, B>,
+  id?: string
+): Codec<B> {
+  return make(D.parse(codec, parser, id), codec)
 }
 
 /**
  * @since 3.0.0
  */
-export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<A> {
-  return make(D.type(codecs), E.type(codecs))
+export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> {
+  return make(D.type(codecs, id), E.type(codecs))
 }
 
 /**
  * @since 3.0.0
  */
-export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<Partial<A>> {
-  return make(D.partial(codecs), E.partial(codecs))
+export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> {
+  return make(D.partial(codecs, id), E.partial(codecs))
 }
 
 /**
  * @since 3.0.0
  */
-export function record<A>(codec: Codec<A>): Codec<Record<string, A>> {
-  return make(D.record(codec), E.record(codec))
+export function record<A>(codec: Codec<A>, id?: string): Codec<Record<string, A>> {
+  return make(D.record(codec, id), E.record(codec))
 }
 
 /**
  * @since 3.0.0
  */
-export function array<A>(codec: Codec<A>): Codec<Array<A>> {
-  return make(D.array(codec), E.array(codec))
+export function array<A>(codec: Codec<A>, id?: string): Codec<Array<A>> {
+  return make(D.array(codec, id), E.array(codec))
 }
 
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>]): Codec<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>]): Codec<[A, B, C, D]>
-export function tuple<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>]): Codec<[A, B, C]>
-export function tuple<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<[A, B]>
-export function tuple<A>(codecs: [Codec<A>]): Codec<[A]>
-export function tuple(codecs: any): Codec<any> {
-  return make(D.tuple(codecs), E.tuple(codecs))
+export function tuple<A, B, C, D, E>(
+  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
+  id?: string
+): Codec<[A, B, C, D, E]>
+export function tuple<A, B, C, D>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>], id?: string): Codec<[A, B, C, D]>
+export function tuple<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>], id?: string): Codec<[A, B, C]>
+export function tuple<A, B>(codecs: [Codec<A>, Codec<B>], id?: string): Codec<[A, B]>
+export function tuple<A>(codecs: [Codec<A>], id?: string): Codec<[A]>
+export function tuple(codecs: any, id?: string): Codec<any> {
+  return make(D.tuple(codecs, id), E.tuple(codecs))
 }
 
 /**
  * @since 3.0.0
  */
 export function intersection<A, B, C, D, E>(
-  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>]
+  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
+  id?: string
 ): Codec<A & B & C & D & E>
-export function intersection<A, B, C, D>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>]): Codec<A & B & C & D>
-export function intersection<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>]): Codec<A & B & C>
-export function intersection<A, B>(codecs: [Codec<A>, Codec<B>]): Codec<A & B>
-export function intersection<A>(codecs: any): Codec<A> {
-  return make(D.intersection<A, A>(codecs), E.intersection(codecs))
+export function intersection<A, B, C, D>(
+  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>],
+  id?: string
+): Codec<A & B & C & D>
+export function intersection<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>], id?: string): Codec<A & B & C>
+export function intersection<A, B>(codecs: [Codec<A>, Codec<B>], id?: string): Codec<A & B>
+export function intersection<A>(codecs: any, id?: string): Codec<A> {
+  return make(D.intersection<A, A>(codecs, id), E.intersection(codecs))
 }
 
 /**
@@ -195,10 +207,10 @@ export function intersection<A>(codecs: any): Codec<A> {
  */
 export function sum<T extends string>(
   tag: T
-): <A>(codecs: { [K in keyof A]: Codec<A[K] & Record<T, K>> }) => Codec<A[keyof A]> {
+): <A>(codecs: { [K in keyof A]: Codec<A[K] & Record<T, K>> }, id?: string) => Codec<A[keyof A]> {
   const Dsum = D.sum(tag)
   const Esum = E.sum(tag)
-  return codecs => make(Dsum(codecs), Esum(codecs))
+  return (codecs, id) => make(Dsum(codecs, id), Esum(codecs))
 }
 
 /**

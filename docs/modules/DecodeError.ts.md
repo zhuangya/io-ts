@@ -33,9 +33,10 @@ Added in v3.0.0
 ```ts
 export interface And {
   readonly _tag: 'And'
-  readonly expected: string
   readonly actual: unknown
   readonly errors: NonEmptyArray<DecodeError>
+  readonly id: string | undefined
+  readonly message: string | undefined
 }
 ```
 
@@ -48,9 +49,10 @@ Added in v3.0.0
 ```ts
 export interface Indexed {
   readonly _tag: 'Indexed'
-  readonly expected: string
   readonly actual: unknown
   readonly errors: NonEmptyArray<[number, DecodeError]>
+  readonly id: string | undefined
+  readonly message: string | undefined
 }
 ```
 
@@ -63,9 +65,10 @@ Added in v3.0.0
 ```ts
 export interface Labeled {
   readonly _tag: 'Labeled'
-  readonly expected: string
   readonly actual: unknown
   readonly errors: NonEmptyArray<[string, DecodeError]>
+  readonly id: string | undefined
+  readonly message: string | undefined
 }
 ```
 
@@ -78,8 +81,9 @@ Added in v3.0.0
 ```ts
 export interface Leaf {
   readonly _tag: 'Leaf'
-  readonly expected: string
   readonly actual: unknown
+  readonly id: string | undefined
+  readonly message: string | undefined
 }
 ```
 
@@ -92,9 +96,10 @@ Added in v3.0.0
 ```ts
 export interface Or {
   readonly _tag: 'Or'
-  readonly expected: string
   readonly actual: unknown
   readonly errors: NonEmptyArray<DecodeError>
+  readonly id: string | undefined
+  readonly message: string | undefined
 }
 ```
 
@@ -115,7 +120,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function and(expected: string, actual: unknown, errors: NonEmptyArray<DecodeError>): DecodeError { ... }
+export function and(actual: unknown, errors: NonEmptyArray<DecodeError>, id?: string, message?: string): DecodeError { ... }
 ```
 
 Added in v3.0.0
@@ -125,7 +130,12 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function indexed(expected: string, actual: unknown, errors: NonEmptyArray<[number, DecodeError]>): DecodeError { ... }
+export function indexed(
+  actual: unknown,
+  errors: NonEmptyArray<[number, DecodeError]>,
+  id?: string,
+  message?: string
+): DecodeError { ... }
 ```
 
 Added in v3.0.0
@@ -135,7 +145,12 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function labeled(expected: string, actual: unknown, errors: NonEmptyArray<[string, DecodeError]>): DecodeError { ... }
+export function labeled(
+  actual: unknown,
+  errors: NonEmptyArray<[string, DecodeError]>,
+  id?: string,
+  message?: string
+): DecodeError { ... }
 ```
 
 Added in v3.0.0
@@ -145,7 +160,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function leaf(expected: string, actual: unknown): DecodeError { ... }
+export function leaf(actual: unknown, id?: string, message?: string): DecodeError { ... }
 ```
 
 Added in v3.0.0
@@ -155,7 +170,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function or(expected: string, actual: unknown, errors: NonEmptyArray<DecodeError>): DecodeError { ... }
+export function or(actual: unknown, errors: NonEmptyArray<DecodeError>, id?: string, message?: string): DecodeError { ... }
 ```
 
 Added in v3.0.0

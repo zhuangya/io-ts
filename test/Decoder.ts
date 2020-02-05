@@ -47,7 +47,7 @@ describe('Decoder', () => {
 
     it('zero', () => {
       const decoder = D.decoder.zero()
-      assert.deepStrictEqual(decoder.decode(null), E.left(DE.leaf('never', null)))
+      assert.deepStrictEqual(decoder.decode(null), E.left(DE.leaf(null, 'never')))
     })
   })
 
@@ -71,6 +71,13 @@ describe('Decoder', () => {
     )
   })
 
+  describe('literals', () => {
+    it('should reject an invalid input with the passed id', () => {
+      const decoder = D.literals([1], 'myid')
+      assert.deepStrictEqual(decoder.decode(null), E.left(DE.leaf(null, 'myid')))
+    })
+  })
+
   describe('union', () => {
     it('should decode a valid input', () => {
       const decoder = D.union([D.string, D.number])
@@ -82,7 +89,7 @@ describe('Decoder', () => {
       const decoder = D.union([D.string, D.number])
       assert.deepStrictEqual(
         decoder.decode(true),
-        E.left(DE.or('union', true, [DE.leaf('string', true), DE.leaf('number', true)]))
+        E.left(DE.or(true, [DE.leaf(true, 'string'), DE.leaf(true, 'number')]))
       )
     })
   })

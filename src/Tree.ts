@@ -6,11 +6,17 @@ import { flow } from 'fp-ts/lib/function'
 import { drawTree, make, Tree } from 'fp-ts/lib/Tree'
 import { DecodeError } from './DecodeError'
 
+function value(e: DecodeError): string {
+  if (e.message) {
+    return e.message
+  }
+  return `Cannot decode ${JSON.stringify(e.actual)}` + (e.id ? `, expected ${e.id}` : '')
+}
+
 /**
  * @since 3.0.0
  */
 export function toTree(e: DecodeError): Tree<string> {
-  const value = (e: DecodeError): string => `Cannot decode ${JSON.stringify(e.actual)}, expected ${e.expected}`
   switch (e._tag) {
     case 'Leaf':
       return make(value(e))

@@ -1,5 +1,6 @@
 import * as assert from 'assert'
 import * as G from '../src/Guard'
+import { right, left } from 'fp-ts/lib/Either'
 
 describe('Guard', () => {
   describe('literals', () => {
@@ -30,6 +31,19 @@ describe('Guard', () => {
     it('should rejects invalid inputs', () => {
       const guard = G.literalsOr(['a', 'b'], G.boolean)
       assert.strictEqual(guard.is('c'), false)
+    })
+  })
+
+  describe('refinement', () => {
+    it('should accepts valid inputs', () => {
+      const guard = G.refinement(G.string, s => (s.length > 0 ? right(s) : left('please entere a non empty string')))
+      assert.strictEqual(guard.is('a'), true)
+    })
+
+    it('should rejects invalid inputs', () => {
+      const guard = G.refinement(G.string, s => (s.length > 0 ? right(s) : left('please entere a non empty string')))
+      assert.strictEqual(guard.is(undefined), false)
+      assert.strictEqual(guard.is(''), false)
     })
   })
 
