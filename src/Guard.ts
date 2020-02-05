@@ -91,14 +91,7 @@ export const UnknownRecord: Guard<Record<string, unknown>> = {
 /**
  * @since 3.0.0
  */
-export const refinement: S.WithRefinement<URI>['refinement'] = parse
-
-/**
- * Returns `true` if the input is parseable
- *
- * @since 3.0.0
- */
-export function parse<A, B>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> {
+export function refinement<A, B extends A>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> {
   return {
     is: (u: unknown): u is B => guard.is(u) && isRight(parser(u))
   }
@@ -267,7 +260,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const guard: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
+export const guard: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
   URI,
   literals,
   literalsOr,
@@ -284,7 +277,6 @@ export const guard: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   intersection,
   sum,
   lazy,
-  refinement,
-  parse,
+  refinement: refinement as S.WithRefinement<URI>['refinement'],
   union
 }

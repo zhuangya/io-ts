@@ -33,11 +33,11 @@
  *   - JsonSchema
  * - S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI>
  *   - Compat
+ *   - Guard
  * - S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI>
  *   - Arbitrary
  *   - ArbitraryMutation
  *   - Decoder
- *   - Guard
  *
  * @since 3.0.0
  */

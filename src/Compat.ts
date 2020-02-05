@@ -127,7 +127,7 @@ export function refinement<A, B extends A>(
   name: string
 ): Compat<B> {
   const codec = C.refinement(compat, parser)
-  return make(name, G.parse(compat, parser).is, codec.decode, codec.encode)
+  return make(name, G.refinement(compat, parser).is, codec.decode, codec.encode)
 }
 
 const getStructName = (compats: Record<string, Compat<any>>): string =>

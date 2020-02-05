@@ -45,11 +45,11 @@ Schemas:
   - JsonSchema
 - S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI>
   - Compat
+  - Guard
 - S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI>
   - Arbitrary
   - ArbitraryMutation
   - Decoder
-  - Guard
 
 Added in v3.0.0
 

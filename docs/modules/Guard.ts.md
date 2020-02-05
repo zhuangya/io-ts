@@ -25,7 +25,6 @@ Added in v3.0.0
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [number](#number)
-- [parse](#parse)
 - [partial](#partial)
 - [record](#record)
 - [refinement](#refinement)
@@ -114,7 +113,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const guard: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
+export const guard: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -174,18 +173,6 @@ export const number: Guard<number> = ...
 
 Added in v3.0.0
 
-# parse
-
-Returns `true` if the input is parseable
-
-**Signature**
-
-```ts
-export function parse<A, B>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> { ... }
-```
-
-Added in v3.0.0
-
 # partial
 
 **Signature**
@@ -211,7 +198,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const refinement: S.WithRefinement<URI>['refinement'] = ...
+export function refinement<A, B extends A>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> { ... }
 ```
 
 Added in v3.0.0
