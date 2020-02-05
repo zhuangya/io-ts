@@ -4,7 +4,7 @@
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as S from './Schemable'
 import { hasOwnProperty } from './util'
-import { Either } from 'fp-ts/lib/Either'
+import { Either, isRight } from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -100,7 +100,7 @@ export const refinement: S.WithRefinement<URI>['refinement'] = parse
  */
 export function parse<A, B>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> {
   return {
-    is: (u: unknown): u is B => guard.is(u) && parser(u)._tag === 'Right'
+    is: (u: unknown): u is B => guard.is(u) && isRight(parser(u))
   }
 }
 

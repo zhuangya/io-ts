@@ -31,10 +31,10 @@
  * - S.Schemable<URI> & S.WithUnion<URI>
  *   - JsonSchema
  *   - Static
- * - S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI>
+ * - S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI>
  *   - Codec
  *   - Compat
- * - S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI>
+ * - S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI>
  *   - Arbitrary
  *   - ArbitraryMutation
  *   - Decoder
