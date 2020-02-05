@@ -38,15 +38,15 @@ Open questions:
 Schemas:
 
 - S.Schemable<URI> & S.WithRefinement<URI>
+  - Codec
   - Encoder
   - Eq
 - S.Schemable<URI> & S.WithUnion<URI>
   - JsonSchema
   - Static
-- S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI>
-  - Codec
+- S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI>
   - Compat
-- S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI>
+- S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI>
   - Arbitrary
   - ArbitraryMutation
   - Decoder
@@ -79,7 +79,6 @@ Added in v3.0.0
 - [sum](#sum)
 - [tuple](#tuple)
 - [type](#type)
-- [union](#union)
 - [withExpected](#withexpected)
 
 ---
@@ -164,7 +163,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI> & WithUnion<URI> = ...
+export const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI> = ...
 ```
 
 Added in v3.0.0
@@ -306,18 +305,6 @@ Added in v3.0.0
 
 ```ts
 export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }): Codec<A> { ... }
-```
-
-Added in v3.0.0
-
-# union
-
-**Signature**
-
-```ts
-export function union<A extends [unknown, ...Array<unknown>]>(
-  codecs: { [K in keyof A]: Codec<A[K]> }
-): Codec<A[number]> { ... }
 ```
 
 Added in v3.0.0

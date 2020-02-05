@@ -4,7 +4,6 @@ import * as C from '../src/Codec'
 import * as D from '../src/Decoder'
 import * as E from '../src/Encoder'
 import * as DE from '../src/DecodeError'
-import { pipe } from 'fp-ts/lib/pipeable'
 
 const NumberFromString: C.Codec<number> = C.make(
   D.parse(D.string, s => {
@@ -439,30 +438,6 @@ describe('Codec', () => {
         const codec = sum({ A, B })
         assert.deepStrictEqual(codec.encode({ _tag: 'A', a: 'a' }), { _tag: 'A', a: 'a' })
         assert.deepStrictEqual(codec.encode({ _tag: 'B', b: 1 }), { _tag: 'B', b: '1' })
-      })
-    })
-  })
-
-  describe('union', () => {
-    describe('encode', () => {
-      it('should encode a value', () => {
-        const codec = C.union([C.string, C.number])
-        assert.strictEqual(codec.encode('a'), 'a')
-        assert.strictEqual(codec.encode(1), 1)
-      })
-
-      it('should handle throwing encoders', () => {
-        const TrimmedString = C.make(
-          pipe(
-            D.string,
-            D.map(s => s.trim())
-          ),
-          {
-            encode: s => s.trim()
-          }
-        )
-        const codec = C.union([TrimmedString, C.number])
-        assert.strictEqual(codec.encode(1), 1)
       })
     })
   })

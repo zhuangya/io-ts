@@ -26,13 +26,13 @@
  *
  * Schemas:
  * - S.Schemable<URI> & S.WithRefinement<URI>
+ *   - Codec
  *   - Encoder
  *   - Eq
  * - S.Schemable<URI> & S.WithUnion<URI>
  *   - JsonSchema
  *   - Static
  * - S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI>
- *   - Codec
  *   - Compat
  * - S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI>
  *   - Arbitrary
@@ -42,12 +42,12 @@
  *
  * @since 3.0.0
  */
-import { Either, isRight } from 'fp-ts/lib/Either'
+import { Either } from 'fp-ts/lib/Either'
 import { Invariant1 } from 'fp-ts/lib/Invariant'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as D from './Decoder'
 import * as E from './Encoder'
-import { Literal, Schemable, WithRefinement, WithUnion } from './Schemable'
+import { Literal, Schemable, WithRefinement } from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -209,28 +209,6 @@ export function lazy<A>(f: () => Codec<A>): Codec<A> {
   return make(D.lazy(f), E.lazy(f))
 }
 
-/**
- * @since 3.0.0
- */
-export function union<A extends [unknown, ...Array<unknown>]>(
-  codecs: { [K in keyof A]: Codec<A[K]> }
-): Codec<A[number]> {
-  return make(D.union(codecs), {
-    encode: a => {
-      for (const codec of codecs) {
-        try {
-          const o = codec.encode(a)
-          if (isRight(codec.decode(o))) {
-            return o
-          }
-        } catch (e) {
-          continue
-        }
-      }
-    }
-  })
-}
-
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
@@ -254,7 +232,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI> & WithUnion<URI> = {
+export const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI> = {
   URI,
   imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
   literals,
@@ -272,6 +250,5 @@ export const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI> & Wit
   intersection,
   sum,
   lazy,
-  refinement: refinement as WithRefinement<URI>['refinement'],
-  union
+  refinement: refinement as WithRefinement<URI>['refinement']
 }
