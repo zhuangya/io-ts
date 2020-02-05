@@ -43,7 +43,6 @@ Schemas:
   - Eq
 - S.Schemable<URI> & S.WithUnion<URI>
   - JsonSchema
-  - Static
 - S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI>
   - Compat
 - S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI>
