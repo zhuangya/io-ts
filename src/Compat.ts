@@ -9,9 +9,9 @@
  */
 import { Either } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import * as C from './Codec'
-import * as G from './Guard'
-import * as D from './Decoder'
+import { Codec, codec } from './Codec'
+import { Guard, guard } from './Guard'
+import { decoder } from './Decoder'
 import { Literal, Schemable, WithRefinement, WithUnion } from './Schemable'
 
 // -------------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ import { Literal, Schemable, WithRefinement, WithUnion } from './Schemable'
  *
  * @since 3.0.0
  */
-export interface Compat<A> extends C.Codec<A>, G.Guard<A> {}
+export interface Compat<A> extends Codec<A>, Guard<A> {}
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -32,7 +32,7 @@ export interface Compat<A> extends C.Codec<A>, G.Guard<A> {}
 /**
  * @since 3.0.0
  */
-export function make<A>(codec: C.Codec<A>, guard: G.Guard<A>): Compat<A> {
+export function make<A>(codec: Codec<A>, guard: Guard<A>): Compat<A> {
   return {
     is: guard.is,
     decode: codec.decode,
@@ -44,7 +44,7 @@ export function make<A>(codec: C.Codec<A>, guard: G.Guard<A>): Compat<A> {
  * @since 3.0.0
  */
 export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Compat<A> {
-  return make(C.literals(values, id), G.literals(values))
+  return make(codec.literals(values, id), guard.literals(values, id))
 }
 
 /**
@@ -55,7 +55,7 @@ export function literalsOr<A extends Literal, B>(
   compat: Compat<B>,
   id?: string
 ): Compat<A | B> {
-  return make(C.literalsOr(values, compat, id), G.literalsOr(values, compat))
+  return make(codec.literalsOr(values, compat, id), guard.literalsOr(values, compat, id))
 }
 
 // -------------------------------------------------------------------------------------
@@ -65,27 +65,27 @@ export function literalsOr<A extends Literal, B>(
 /**
  * @since 3.0.0
  */
-export const string: Compat<string> = make(C.string, G.string)
+export const string: Compat<string> = make(codec.string, guard.string)
 
 /**
  * @since 3.0.0
  */
-export const number: Compat<number> = make(C.number, G.number)
+export const number: Compat<number> = make(codec.number, guard.number)
 
 /**
  * @since 3.0.0
  */
-export const boolean: Compat<boolean> = make(C.boolean, G.boolean)
+export const boolean: Compat<boolean> = make(codec.boolean, guard.boolean)
 
 /**
  * @since 3.0.0
  */
-export const UnknownArray: Compat<Array<unknown>> = make(C.UnknownArray, G.UnknownArray)
+export const UnknownArray: Compat<Array<unknown>> = make(codec.UnknownArray, guard.UnknownArray)
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: Compat<Record<string, unknown>> = make(C.UnknownRecord, G.UnknownRecord)
+export const UnknownRecord: Compat<Record<string, unknown>> = make(codec.UnknownRecord, guard.UnknownRecord)
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -99,35 +99,35 @@ export function refinement<A, B extends A>(
   parser: (a: A) => Either<string, B>,
   id?: string
 ): Compat<B> {
-  return make(C.refinement(compat, parser, id), G.guard.refinement(compat, parser))
+  return make(codec.refinement(compat, parser, id), guard.refinement(compat, parser, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function type<A>(compats: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> {
-  return make(C.type(compats, id), G.type(compats))
+  return make(codec.type(compats, id), guard.type(compats, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function partial<A>(compats: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> {
-  return make(C.partial(compats, id), G.partial(compats))
+  return make(codec.partial(compats, id), guard.partial(compats, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function record<A>(compat: Compat<A>, id?: string): Compat<Record<string, A>> {
-  return make(C.record(compat, id), G.record(compat))
+  return make(codec.record(compat, id), guard.record(compat, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function array<A>(compat: Compat<A>, id?: string): Compat<Array<A>> {
-  return make(C.array(compat, id), G.array(compat))
+  return make(codec.array(compat, id), guard.array(compat, id))
 }
 
 /**
@@ -145,7 +145,7 @@ export function tuple<A, B, C>(compats: [Compat<A>, Compat<B>, Compat<C>], id?: 
 export function tuple<A, B>(compats: [Compat<A>, Compat<B>], id?: string): Compat<[A, B]>
 export function tuple<A>(compats: [Compat<A>], id?: string): Compat<[A]>
 export function tuple(compats: any, id?: string): Compat<any> {
-  return make(C.tuple(compats, id), G.tuple(compats))
+  return make(codec.tuple(compats, id), guard.tuple(compats, id))
 }
 
 /**
@@ -162,7 +162,7 @@ export function intersection<A, B, C, D>(
 export function intersection<A, B, C>(compats: [Compat<A>, Compat<B>, Compat<C>], id?: string): Compat<A & B & C>
 export function intersection<A, B>(compats: [Compat<A>, Compat<B>], id?: string): Compat<A & B>
 export function intersection<A>(compats: any, id?: string): Compat<A> {
-  return make(C.intersection<A, A>(compats, id), G.intersection<A, A>(compats))
+  return make(codec.intersection<A, A>(compats, id), guard.intersection<A, A>(compats, id))
 }
 
 /**
@@ -172,7 +172,9 @@ export function union<A extends [unknown, ...Array<unknown>]>(
   compats: { [K in keyof A]: Compat<A[K]> },
   id?: string
 ): Compat<A[number]> {
-  const codec = C.make(D.union(compats, id), {
+  return {
+    is: guard.union(compats, id).is,
+    decode: decoder.union(compats, id).decode,
     encode: a => {
       for (const compat of compats) {
         if (compat.is(a)) {
@@ -180,8 +182,7 @@ export function union<A extends [unknown, ...Array<unknown>]>(
         }
       }
     }
-  })
-  return make(codec, G.union(compats))
+  }
 }
 
 /**
@@ -190,18 +191,16 @@ export function union<A extends [unknown, ...Array<unknown>]>(
 export function sum<T extends string>(
   tag: T
 ): <A>(compats: { [K in keyof A]: Compat<A[K] & Record<T, K>> }, id?: string) => Compat<A[keyof A]> {
-  const Csum = C.sum(tag)
-  const Gsum = G.sum(tag)
-  return (compats, id) => {
-    return make(Csum(compats, id), Gsum(compats))
-  }
+  const sumC = codec.sum(tag)
+  const sumG = guard.sum(tag)
+  return (compats, id) => make(sumC(compats, id), sumG(compats, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function lazy<A>(id: string, f: () => Compat<A>): Compat<A> {
-  return make(C.lazy(id, f), G.lazy(f))
+  return make(codec.lazy(id, f), guard.lazy(id, f))
 }
 
 // -------------------------------------------------------------------------------------

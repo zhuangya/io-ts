@@ -52,7 +52,7 @@ Laws: same as `Codec`
 **Signature**
 
 ```ts
-export interface Compat<A> extends C.Codec<A>, G.Guard<A> {}
+export interface Compat<A> extends Codec<A>, Guard<A> {}
 ```
 
 Added in v3.0.0
@@ -185,7 +185,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(codec: C.Codec<A>, guard: G.Guard<A>): Compat<A> { ... }
+export function make<A>(codec: Codec<A>, guard: Guard<A>): Compat<A> { ... }
 ```
 
 Added in v3.0.0

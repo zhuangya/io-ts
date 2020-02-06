@@ -92,7 +92,7 @@ Laws:
 **Signature**
 
 ```ts
-export interface Codec<A> extends D.Decoder<A>, E.Encoder<A> {}
+export interface Codec<A> extends Decoder<A>, Encoder<A> {}
 ```
 
 Added in v3.0.0
@@ -221,7 +221,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> { ... }
+export function make<A>(decoder: Decoder<A>, encoder: Encoder<A>): Codec<A> { ... }
 ```
 
 Added in v3.0.0

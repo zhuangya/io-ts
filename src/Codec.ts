@@ -45,8 +45,8 @@ import { Either } from 'fp-ts/lib/Either'
 import { Invariant1 } from 'fp-ts/lib/Invariant'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as DE from './DecodeError'
-import * as D from './Decoder'
-import * as E from './Encoder'
+import { Decoder, decoder, withMessage as withMessageD } from './Decoder'
+import { Encoder, encoder } from './Encoder'
 import { Literal, Schemable, WithRefinement } from './Schemable'
 
 // -------------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ import { Literal, Schemable, WithRefinement } from './Schemable'
  *
  * @since 3.0.0
  */
-export interface Codec<A> extends D.Decoder<A>, E.Encoder<A> {}
+export interface Codec<A> extends Decoder<A>, Encoder<A> {}
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -70,7 +70,7 @@ export interface Codec<A> extends D.Decoder<A>, E.Encoder<A> {}
 /**
  * @since 3.0.0
  */
-export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> {
+export function make<A>(decoder: Decoder<A>, encoder: Encoder<A>): Codec<A> {
   return {
     decode: decoder.decode,
     encode: encoder.encode
@@ -81,14 +81,14 @@ export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> 
  * @since 3.0.0
  */
 export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Codec<A> {
-  return make(D.literals(values, id), E.literals(values))
+  return make(decoder.literals(values, id), encoder.literals(values, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, codec: Codec<B>, id?: string): Codec<A | B> {
-  return make(D.literalsOr(values, codec, id), E.literalsOr(values, codec))
+  return make(decoder.literalsOr(values, codec, id), encoder.literalsOr(values, codec, id))
 }
 
 // -------------------------------------------------------------------------------------
@@ -98,27 +98,27 @@ export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, codec
 /**
  * @since 3.0.0
  */
-export const string: Codec<string> = make(D.string, E.string)
+export const string: Codec<string> = make(decoder.string, encoder.string)
 
 /**
  * @since 3.0.0
  */
-export const number: Codec<number> = make(D.number, E.number)
+export const number: Codec<number> = make(decoder.number, encoder.number)
 
 /**
  * @since 3.0.0
  */
-export const boolean: Codec<boolean> = make(D.boolean, E.boolean)
+export const boolean: Codec<boolean> = make(decoder.boolean, encoder.boolean)
 
 /**
  * @since 3.0.0
  */
-export const UnknownArray: Codec<Array<unknown>> = make(D.UnknownArray, E.UnknownArray)
+export const UnknownArray: Codec<Array<unknown>> = make(decoder.UnknownArray, encoder.UnknownArray)
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: Codec<Record<string, unknown>> = make(D.UnknownRecord, E.UnknownRecord)
+export const UnknownRecord: Codec<Record<string, unknown>> = make(decoder.UnknownRecord, encoder.UnknownRecord)
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -128,7 +128,7 @@ export const UnknownRecord: Codec<Record<string, unknown>> = make(D.UnknownRecor
  * @since 3.0.0
  */
 export function withMessage<A>(codec: Codec<A>, message: (e: DE.DecodeError) => string): Codec<A> {
-  return make(D.withMessage(codec, message), codec)
+  return make(withMessageD(codec, message), codec)
 }
 
 /**
@@ -139,35 +139,35 @@ export function refinement<A, B extends A>(
   parser: (a: A) => Either<string, B>,
   id?: string
 ): Codec<B> {
-  return make(D.parse(codec, parser, id), E.encoder.refinement(codec, parser))
+  return make(decoder.refinement(codec, parser, id), encoder.refinement(codec, parser, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> {
-  return make(D.type(codecs, id), E.type(codecs))
+  return make(decoder.type(codecs, id), encoder.type(codecs, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> {
-  return make(D.partial(codecs, id), E.partial(codecs))
+  return make(decoder.partial(codecs, id), encoder.partial(codecs, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function record<A>(codec: Codec<A>, id?: string): Codec<Record<string, A>> {
-  return make(D.record(codec, id), E.record(codec))
+  return make(decoder.record(codec, id), encoder.record(codec, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function array<A>(codec: Codec<A>, id?: string): Codec<Array<A>> {
-  return make(D.array(codec, id), E.array(codec))
+  return make(decoder.array(codec, id), encoder.array(codec, id))
 }
 
 /**
@@ -182,7 +182,7 @@ export function tuple<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>], id?: stri
 export function tuple<A, B>(codecs: [Codec<A>, Codec<B>], id?: string): Codec<[A, B]>
 export function tuple<A>(codecs: [Codec<A>], id?: string): Codec<[A]>
 export function tuple(codecs: any, id?: string): Codec<any> {
-  return make(D.tuple(codecs, id), E.tuple(codecs))
+  return make(decoder.tuple(codecs, id), encoder.tuple(codecs, id))
 }
 
 /**
@@ -199,7 +199,7 @@ export function intersection<A, B, C, D>(
 export function intersection<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>], id?: string): Codec<A & B & C>
 export function intersection<A, B>(codecs: [Codec<A>, Codec<B>], id?: string): Codec<A & B>
 export function intersection<A>(codecs: any, id?: string): Codec<A> {
-  return make(D.intersection<A, A>(codecs, id), E.intersection(codecs))
+  return make(decoder.intersection<A, A>(codecs, id), encoder.intersection(codecs, id))
 }
 
 /**
@@ -208,16 +208,16 @@ export function intersection<A>(codecs: any, id?: string): Codec<A> {
 export function sum<T extends string>(
   tag: T
 ): <A>(codecs: { [K in keyof A]: Codec<A[K] & Record<T, K>> }, id?: string) => Codec<A[keyof A]> {
-  const Dsum = D.sum(tag)
-  const Esum = E.sum(tag)
-  return (codecs, id) => make(Dsum(codecs, id), Esum(codecs))
+  const sumD = decoder.sum(tag)
+  const sumE = encoder.sum(tag)
+  return (codecs, id) => make(sumD(codecs, id), sumE(codecs, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function lazy<A>(id: string, f: () => Codec<A>): Codec<A> {
-  return make(D.decoder.lazy(id, f), E.encoder.lazy(id, f))
+  return make(decoder.lazy(id, f), encoder.lazy(id, f))
 }
 
 // -------------------------------------------------------------------------------------
@@ -245,7 +245,7 @@ declare module 'fp-ts/lib/HKT' {
  */
 export const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI> = {
   URI,
-  imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
+  imap: (fa, f, g) => make(decoder.map(fa, f), encoder.contramap(fa, g)),
   literals,
   literalsOr,
   string,
