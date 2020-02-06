@@ -193,6 +193,6 @@ export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = {
   tuple,
   intersection,
   sum,
-  lazy,
+  lazy: (_, f) => lazy(f),
   refinement: refinement as S.WithRefinement<E.URI>['refinement']
 }

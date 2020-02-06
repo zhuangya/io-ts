@@ -276,7 +276,7 @@ export const guard: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> 
   tuple,
   intersection,
   sum,
-  lazy,
+  lazy: (_, f) => lazy(f),
   refinement: refinement as S.WithRefinement<URI>['refinement'],
   union
 }

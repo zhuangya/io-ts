@@ -204,7 +204,7 @@ export const arbitrary: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> =
   tuple,
   intersection,
   sum,
-  lazy,
+  lazy: (_, f) => lazy(f),
   refinement: parse,
   parse,
   union

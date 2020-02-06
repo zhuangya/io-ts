@@ -191,7 +191,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(f: () => Codec<A>): Codec<A> { ... }
+export function lazy<A>(id: string, f: () => Codec<A>): Codec<A> { ... }
 ```
 
 Added in v3.0.0

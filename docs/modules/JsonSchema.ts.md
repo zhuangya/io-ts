@@ -148,7 +148,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(f: () => JsonSchema<A>): JsonSchema<A> { ... }
+export function lazy<A>(id: string, f: () => JsonSchema<A>): JsonSchema<A> { ... }
 ```
 
 Added in v3.0.0

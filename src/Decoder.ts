@@ -329,11 +329,14 @@ export function intersection(decoders: Array<Decoder<unknown>>, id?: string): De
 /**
  * @since 3.0.0
  */
-export function lazy<A>(f: () => Decoder<A>): Decoder<A> {
+export function lazy<A>(id: string, f: () => Decoder<A>): Decoder<A> {
   const get = S.memoize<void, Decoder<A>>(f)
-  return {
-    decode: u => get().decode(u)
-  }
+  return mapLeft(
+    {
+      decode: u => get().decode(u)
+    },
+    e => ({ ...e, id })
+  )
 }
 
 /**

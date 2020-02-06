@@ -102,7 +102,7 @@ interface B {
   as: Array<A>
 }
 const A: Schema<A> = make(S =>
-  S.lazy(() =>
+  S.lazy('A', () =>
     S.type({
       a: S.string,
       bs: S.array(B(S))
@@ -110,7 +110,7 @@ const A: Schema<A> = make(S =>
   )
 )
 const B: Schema<B> = make(S =>
-  S.lazy(() =>
+  S.lazy('B', () =>
     S.type({
       b: S.number,
       as: S.array(A(S))

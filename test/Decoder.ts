@@ -3,16 +3,6 @@ import * as E from 'fp-ts/lib/Either'
 import * as DE from '../src/DecodeError'
 import * as D from '../src/Decoder'
 import { pipe } from 'fp-ts/lib/pipeable'
-import * as S from '../src/Schemable'
-import { URIS, Kind } from 'fp-ts/lib/HKT'
-
-interface Schema<A> {
-  <S extends URIS>(S: S.Schemable<S>): Kind<S, A>
-}
-
-function make<A>(f: Schema<A>): Schema<A> {
-  return S.memoize(f)
-}
 
 describe('Decoder', () => {
   describe('decoder', () => {
@@ -49,26 +39,6 @@ describe('Decoder', () => {
       const decoder = D.decoder.zero()
       assert.deepStrictEqual(decoder.decode(null), E.left(DE.leaf(null, 'never')))
     })
-  })
-
-  it('lazy', () => {
-    interface A {
-      a: number
-      b: null | A
-    }
-
-    const schema: Schema<A> = make(S =>
-      S.lazy(() =>
-        S.type({
-          a: S.number,
-          b: S.literalsOr([null], schema(S))
-        })
-      )
-    )
-    assert.deepStrictEqual(
-      schema(D.decoder).decode({ a: 1, b: { a: 2, b: null } }),
-      E.right({ a: 1, b: { a: 2, b: null } })
-    )
   })
 
   describe('literals', () => {

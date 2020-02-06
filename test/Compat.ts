@@ -22,12 +22,12 @@ describe('Compat', () => {
       CT.NumberFromString.encode
     )
 
-    interface Rec {
+    interface A {
       a: number
-      b: Array<Rec>
+      b: Array<A>
     }
 
-    const compat: C.Compat<Rec> = C.lazy(() =>
+    const compat: C.Compat<A> = C.lazy('A', () =>
       C.type({
         a: NumberFromString,
         b: C.array(compat)
@@ -41,14 +41,18 @@ describe('Compat', () => {
       })
 
       it('should reject an invalid input', () => {
-        assert.deepStrictEqual(compat.decode(null), left(DE.leaf(null, 'Record<string, unknown>')))
+        assert.deepStrictEqual(compat.decode(null), left(DE.leaf(null, 'A')))
         assert.deepStrictEqual(
           compat.decode({}),
           left(
-            DE.labeled({}, [
-              ['a', DE.leaf(undefined, 'string')],
-              ['b', DE.leaf(undefined, 'Array<unknown>')]
-            ])
+            DE.labeled(
+              {},
+              [
+                ['a', DE.leaf(undefined, 'string')],
+                ['b', DE.leaf(undefined, 'Array<unknown>')]
+              ],
+              'A'
+            )
           )
         )
       })

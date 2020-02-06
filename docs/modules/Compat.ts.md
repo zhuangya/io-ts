@@ -151,7 +151,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(f: () => Compat<A>): Compat<A> { ... }
+export function lazy<A>(id: string, f: () => Compat<A>): Compat<A> { ... }
 ```
 
 Added in v3.0.0

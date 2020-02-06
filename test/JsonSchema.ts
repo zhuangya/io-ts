@@ -143,7 +143,7 @@ describe('JsonSchema', () => {
       b: null | A
     }
 
-    const schema: J.JsonSchema<A> = J.lazy(() =>
+    const schema: J.JsonSchema<A> = J.lazy('A', () =>
       J.type({
         a: J.number,
         b: J.literalsOr([null], schema)
@@ -163,7 +163,7 @@ describe('JsonSchema', () => {
     }
 
     const schema: Schema<A> = make(S =>
-      S.lazy(() =>
+      S.lazy('A', () =>
         S.type({
           a: S.number,
           b: S.literalsOr([null], schema(S))

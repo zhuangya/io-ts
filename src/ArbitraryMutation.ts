@@ -277,7 +277,7 @@ export const arbitraryMutation: S.Schemable<URI> & S.WithParse<URI> & S.WithUnio
   tuple,
   intersection,
   sum,
-  lazy,
+  lazy: (_, f) => lazy(f),
   refinement: parse,
   parse,
   union

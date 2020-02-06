@@ -216,8 +216,8 @@ export function sum<T extends string>(
 /**
  * @since 3.0.0
  */
-export function lazy<A>(f: () => Codec<A>): Codec<A> {
-  return make(D.lazy(f), E.lazy(f))
+export function lazy<A>(id: string, f: () => Codec<A>): Codec<A> {
+  return make(D.lazy(id, f), E.lazy(f))
 }
 
 // -------------------------------------------------------------------------------------

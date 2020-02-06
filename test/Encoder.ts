@@ -8,6 +8,11 @@ describe('Encoder', () => {
       const encoder = E.encoder.contramap(E.encoder.number, (s: string) => s.length)
       assert.deepStrictEqual(encoder.encode('aaa'), 3)
     })
+
+    it('lazy', () => {
+      const encoder = E.encoder.lazy('id', () => E.string)
+      assert.deepStrictEqual(encoder.encode('a'), 'a')
+    })
   })
 
   it('literals', () => {

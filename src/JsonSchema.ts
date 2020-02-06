@@ -165,16 +165,13 @@ export function sum<T extends string>(
   return (jsonSchemas: any) => C.make(() => ({ oneOf: Object.keys(jsonSchemas).map(k => jsonSchemas[k]()) }))
 }
 
-let refCounter = 0
-
 /**
  * @since 3.0.0
  */
-export function lazy<A>(f: () => JsonSchema<A>): JsonSchema<A> {
+export function lazy<A>(id: string, f: () => JsonSchema<A>): JsonSchema<A> {
   let $ref: string
   return C.make(() => {
     if (!$ref) {
-      const id = `$Ref${++refCounter}`
       $ref = `#/definitions/${id}`
       return {
         $id: $ref,

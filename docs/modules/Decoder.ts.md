@@ -212,7 +212,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(f: () => Decoder<A>): Decoder<A> { ... }
+export function lazy<A>(id: string, f: () => Decoder<A>): Decoder<A> { ... }
 ```
 
 Added in v3.0.0

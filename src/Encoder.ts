@@ -249,7 +249,7 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithRefinement<
   tuple,
   intersection,
   sum,
-  lazy,
+  lazy: (_, f) => lazy(f),
   refinement: refinement as S.WithRefinement<URI>['refinement']
 }
 

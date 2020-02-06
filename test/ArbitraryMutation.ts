@@ -32,7 +32,7 @@ describe('ArbitraryMutation', () => {
     }
 
     const schema: Schema<A> = make(S =>
-      S.lazy(() =>
+      S.lazy('A', () =>
         S.refinement(
           S.type({
             a: S.string,

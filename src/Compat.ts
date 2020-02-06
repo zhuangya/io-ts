@@ -214,8 +214,8 @@ export function sum<T extends string>(
 /**
  * @since 3.0.0
  */
-export function lazy<A>(f: () => Compat<A>): Compat<A> {
-  const codec = C.lazy(f)
+export function lazy<A>(id: string, f: () => Compat<A>): Compat<A> {
+  const codec = C.lazy(id, f)
   return make(G.lazy(f).is, codec.decode, codec.encode)
 }
 

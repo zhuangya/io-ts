@@ -157,7 +157,7 @@ describe('Arbitrary', () => {
     }
 
     const schema: Schema<A> = make(S =>
-      S.lazy(() =>
+      S.lazy('A', () =>
         S.type({
           a: S.number,
           b: S.literalsOr([null], schema(S))
