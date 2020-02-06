@@ -139,7 +139,7 @@ export function refinement<A, B extends A>(
   parser: (a: A) => Either<string, B>,
   id?: string
 ): Codec<B> {
-  return make(D.parse(codec, parser, id), codec)
+  return make(D.parse(codec, parser, id), E.encoder.refinement(codec, parser))
 }
 
 /**
@@ -217,7 +217,7 @@ export function sum<T extends string>(
  * @since 3.0.0
  */
 export function lazy<A>(id: string, f: () => Codec<A>): Codec<A> {
-  return make(D.lazy(id, f), E.lazy(f))
+  return make(D.decoder.lazy(id, f), E.encoder.lazy(id, f))
 }
 
 // -------------------------------------------------------------------------------------

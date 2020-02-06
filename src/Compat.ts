@@ -56,7 +56,8 @@ export function literalsOr<A extends Literal, B>(
   compat: Compat<B>,
   id?: string
 ): Compat<A | B> {
-  return union([literals(values), compat], id)
+  const codec = C.literalsOr(values, compat, id)
+  return make(G.literalsOr(values, compat).is, codec.decode, codec.encode)
 }
 
 // -------------------------------------------------------------------------------------
@@ -109,7 +110,7 @@ export function refinement<A, B extends A>(
   id?: string
 ): Compat<B> {
   const codec = C.refinement(compat, parser, id)
-  return make(G.refinement(compat, parser).is, codec.decode, codec.encode)
+  return make(G.guard.refinement(compat, parser).is, codec.decode, codec.encode)
 }
 
 /**

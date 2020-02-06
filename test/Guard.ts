@@ -162,12 +162,12 @@ describe('Guard', () => {
   })
 
   describe('lazy', () => {
-    interface Rec {
+    interface A {
       a: number
-      b: Array<Rec>
+      b: Array<A>
     }
 
-    const guard: G.Guard<Rec> = G.lazy(() =>
+    const guard: G.Guard<A> = G.guard.lazy('A', () =>
       G.type({
         a: G.number,
         b: G.array(guard)

@@ -58,12 +58,12 @@ describe('Eq', () => {
   })
 
   it('lazy', () => {
-    interface Rec {
+    interface A {
       a: number
-      b: Array<Rec>
+      b: Array<A>
     }
 
-    const eq: Eq<Rec> = E.lazy(() =>
+    const eq: Eq<A> = E.eq.lazy('A', () =>
       E.type({
         a: E.number,
         b: E.array(eq)

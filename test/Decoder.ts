@@ -4,6 +4,15 @@ import * as DE from '../src/DecodeError'
 import * as D from '../src/Decoder'
 import { pipe } from 'fp-ts/lib/pipeable'
 
+export const NumberFromString: D.Decoder<number> = D.parse(
+  D.string,
+  s => {
+    const n = parseFloat(s)
+    return isNaN(n) ? E.left('not a number') : E.right(n)
+  },
+  'NumberFromString'
+)
+
 describe('Decoder', () => {
   describe('decoder', () => {
     it('map', () => {

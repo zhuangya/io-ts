@@ -11,7 +11,6 @@ import { pipeable } from 'fp-ts/lib/pipeable'
 import * as G from './Guard'
 import * as S from './Schemable'
 import * as U from './util'
-import { Either } from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -84,13 +83,6 @@ export const UnknownRecord: Encoder<Record<string, unknown>> = id
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
-
-/**
- * @since 3.0.0
- */
-export function refinement<A, B extends A>(encoder: Encoder<A>, _parser: (a: A) => Either<string, B>): Encoder<B> {
-  return encoder
-}
 
 /**
  * @since 3.0.0
@@ -250,7 +242,7 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithRefinement<
   intersection,
   sum,
   lazy: (_, f) => lazy(f),
-  refinement: refinement as S.WithRefinement<URI>['refinement']
+  refinement: encoder => encoder
 }
 
 const { contramap } = pipeable(encoder)

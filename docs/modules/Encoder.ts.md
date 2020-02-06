@@ -33,7 +33,6 @@ Added in v3.0.0
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
-- [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
 - [tuple](#tuple)
@@ -216,16 +215,6 @@ Added in v3.0.0
 
 ```ts
 export function record<A>(encoder: Encoder<A>): Encoder<Record<string, A>> { ... }
-```
-
-Added in v3.0.0
-
-# refinement
-
-**Signature**
-
-```ts
-export function refinement<A, B extends A>(encoder: Encoder<A>, _parser: (a: A) => Either<string, B>): Encoder<B> { ... }
 ```
 
 Added in v3.0.0
