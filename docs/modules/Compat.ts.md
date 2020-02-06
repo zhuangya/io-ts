@@ -52,9 +52,7 @@ Laws: same as `Codec`
 **Signature**
 
 ```ts
-export interface Compat<A> extends C.Codec<A>, G.Guard<A> {
-  readonly name: string
-}
+export interface Compat<A> extends C.Codec<A>, G.Guard<A> {}
 ```
 
 Added in v3.0.0
@@ -104,7 +102,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(compat: Compat<A>, name: string = `Array<${compat.name}>`): Compat<Array<A>> { ... }
+export function array<A>(compat: Compat<A>, id?: string): Compat<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -136,14 +134,14 @@ Added in v3.0.0
 ```ts
 export function intersection<A, B, C, D, E>(
   compats: [Compat<A>, Compat<B>, Compat<C>, Compat<D>, Compat<E>],
-  name?: string
+  id?: string
 ): Compat<A & B & C & D & E>
 export function intersection<A, B, C, D>(
   compats: [Compat<A>, Compat<B>, Compat<C>, Compat<D>],
-  name?: string
+  id?: string
 ): Compat<A & B & C & D>
-export function intersection<A, B, C>(compats: [Compat<A>, Compat<B>, Compat<C>], name?: string): Compat<A & B & C>
-export function intersection<A, B>(compats: [Compat<A>, Compat<B>], name?: string): Compat<A & B> { ... }
+export function intersection<A, B, C>(compats: [Compat<A>, Compat<B>, Compat<C>], id?: string): Compat<A & B & C>
+export function intersection<A, B>(compats: [Compat<A>, Compat<B>], id?: string): Compat<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -163,10 +161,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(
-  values: NonEmptyArray<A>,
-  name: string = values.map(value => JSON.stringify(value)).join(' | ')
-): Compat<A> { ... }
+export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Compat<A> { ... }
 ```
 
 Added in v3.0.0
@@ -179,7 +174,7 @@ Added in v3.0.0
 export function literalsOr<A extends Literal, B>(
   values: NonEmptyArray<A>,
   compat: Compat<B>,
-  name?: string
+  id?: string
 ): Compat<A | B> { ... }
 ```
 
@@ -190,12 +185,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(
-  name: string,
-  is: G.Guard<A>['is'],
-  decode: C.Codec<A>['decode'],
-  encode: C.Codec<A>['encode']
-): Compat<A> { ... }
+export function make<A>(is: G.Guard<A>['is'], decode: C.Codec<A>['decode'], encode: C.Codec<A>['encode']): Compat<A> { ... }
 ```
 
 Added in v3.0.0
@@ -215,10 +205,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(
-  compats: { [K in keyof A]: Compat<A[K]> },
-  name: string = `Partial<${getStructName(compats)}>`
-): Compat<Partial<A>> { ... }
+export function partial<A>(compats: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -228,10 +215,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(
-  compat: Compat<A>,
-  name: string = `Record<string, ${compat.name}>`
-): Compat<Record<string, A>> { ... }
+export function record<A>(compat: Compat<A>, id?: string): Compat<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -244,7 +228,7 @@ Added in v3.0.0
 export function refinement<A, B extends A>(
   compat: Compat<A>,
   parser: (a: A) => Either<string, B>,
-  name: string
+  id?: string
 ): Compat<B> { ... }
 ```
 
@@ -267,7 +251,7 @@ Added in v3.0.0
 ```ts
 export function sum<T extends string>(
   tag: T
-): <A>(compats: { [K in keyof A]: Compat<A[K] & Record<T, K>> }, name?: string) => Compat<A[keyof A]> { ... }
+): <A>(compats: { [K in keyof A]: Compat<A[K] & Record<T, K>> }, id?: string) => Compat<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0
@@ -279,15 +263,15 @@ Added in v3.0.0
 ```ts
 export function tuple<A, B, C, D, E>(
   compats: [Compat<A>, Compat<B>, Compat<C>, Compat<D>, Compat<E>],
-  name?: string
+  id?: string
 ): Compat<[A, B, C, D, E]>
 export function tuple<A, B, C, D>(
   compats: [Compat<A>, Compat<B>, Compat<C>, Compat<D>],
-  name?: string
+  id?: string
 ): Compat<[A, B, C, D]>
-export function tuple<A, B, C>(compats: [Compat<A>, Compat<B>, Compat<C>], name?: string): Compat<[A, B, C]>
-export function tuple<A, B>(compats: [Compat<A>, Compat<B>], name?: string): Compat<[A, B]>
-export function tuple<A>(compats: [Compat<A>], name?: string): Compat<[A]> { ... }
+export function tuple<A, B, C>(compats: [Compat<A>, Compat<B>, Compat<C>], id?: string): Compat<[A, B, C]>
+export function tuple<A, B>(compats: [Compat<A>, Compat<B>], id?: string): Compat<[A, B]>
+export function tuple<A>(compats: [Compat<A>], id?: string): Compat<[A]> { ... }
 ```
 
 Added in v3.0.0
@@ -297,7 +281,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(compats: { [K in keyof A]: Compat<A[K]> }, name: string = getStructName(compats)): Compat<A> { ... }
+export function type<A>(compats: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> { ... }
 ```
 
 Added in v3.0.0
@@ -309,7 +293,7 @@ Added in v3.0.0
 ```ts
 export function union<A extends [unknown, ...Array<unknown>]>(
   compats: { [K in keyof A]: Compat<A[K]> },
-  name: string = getTupleName(compats, ' | ')
+  id?: string
 ): Compat<A[number]> { ... }
 ```
 
