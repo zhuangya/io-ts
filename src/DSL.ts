@@ -5,21 +5,23 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
-// model
+// dsl
 // -------------------------------------------------------------------------------------
 
 /**
  * @since 3.0.0
  */
-export type Expression =
+export type DSL =
   | {
       readonly _tag: 'literals'
       readonly values: NonEmptyArray<S.Literal>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'literalsOr'
       readonly values: NonEmptyArray<S.Literal>
-      readonly model: Expression
+      readonly dsl: DSL
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'string'
@@ -38,40 +40,49 @@ export type Expression =
     }
   | {
       readonly _tag: 'type'
-      readonly models: Record<string, Expression>
+      readonly dsls: Record<string, DSL>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'partial'
-      readonly models: Record<string, Expression>
+      readonly dsls: Record<string, DSL>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'record'
-      readonly model: Expression
+      readonly dsl: DSL
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'array'
-      readonly model: Expression
+      readonly dsl: DSL
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'tuple'
-      readonly models: NonEmptyArray<Expression>
+      readonly dsls: NonEmptyArray<DSL>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'intersection'
-      readonly models: NonEmptyArray<Expression>
+      readonly dsls: NonEmptyArray<DSL>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'sum'
       readonly tag: string
-      readonly models: Record<string, Expression>
+      readonly dsls: Record<string, DSL>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'union'
-      readonly models: NonEmptyArray<Expression>
+      readonly dsls: NonEmptyArray<DSL>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'lazy'
-      readonly model: Expression
+      readonly id: string
+      readonly dsl: DSL
     }
   | {
       readonly _tag: '$ref'
@@ -83,7 +94,7 @@ export type Expression =
  */
 export interface Declaration {
   readonly id: string
-  readonly model: Expression
+  readonly dsl: DSL
 }
 
 // -------------------------------------------------------------------------------------
@@ -93,22 +104,22 @@ export interface Declaration {
 /**
  * @since 3.0.0
  */
-export function $ref(id: string): Expression {
+export function $ref(id: string): DSL {
   return { _tag: '$ref', id }
 }
 
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Expression {
-  return { _tag: 'literals', values }
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: string): DSL {
+  return { _tag: 'literals', values, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal>(values: NonEmptyArray<A>, model: Expression): Expression {
-  return { _tag: 'literalsOr', values, model }
+export function literalsOr<A extends S.Literal>(values: NonEmptyArray<A>, dsl: DSL, id?: string): DSL {
+  return { _tag: 'literalsOr', values, dsl, id }
 }
 
 // -------------------------------------------------------------------------------------
@@ -118,97 +129,98 @@ export function literalsOr<A extends S.Literal>(values: NonEmptyArray<A>, model:
 /**
  * @since 3.0.0
  */
-export const string: Expression = { _tag: 'string' }
+export const string: DSL = { _tag: 'string' }
 
 /**
  * @since 3.0.0
  */
-export const number: Expression = { _tag: 'number' }
+export const number: DSL = { _tag: 'number' }
 
 /**
  * @since 3.0.0
  */
-export const boolean: Expression = { _tag: 'boolean' }
+export const boolean: DSL = { _tag: 'boolean' }
 
 /**
  * @since 3.0.0
  */
-export const UnknownArray: Expression = { _tag: 'UnknownArray' }
+export const UnknownArray: DSL = { _tag: 'UnknownArray' }
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: Expression = { _tag: 'UnknownRecord' }
+export const UnknownRecord: DSL = { _tag: 'UnknownRecord' }
 
 /**
  * @since 3.0.0
  */
-export function type(models: Record<string, Expression>): Expression {
-  return { _tag: 'type', models }
+export function type(dsls: Record<string, DSL>, id?: string): DSL {
+  return { _tag: 'type', dsls, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function partial(models: Record<string, Expression>): Expression {
-  return { _tag: 'partial', models }
+export function partial(dsls: Record<string, DSL>, id?: string): DSL {
+  return { _tag: 'partial', dsls, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function record(model: Expression): Expression {
-  return { _tag: 'record', model }
+export function record(dsl: DSL, id?: string): DSL {
+  return { _tag: 'record', dsl, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function array(model: Expression): Expression {
-  return { _tag: 'array', model }
+export function array(dsl: DSL, id?: string): DSL {
+  return { _tag: 'array', dsl, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function tuple(models: NonEmptyArray<Expression>): Expression {
-  return { _tag: 'tuple', models }
+export function tuple(dsls: NonEmptyArray<DSL>, id?: string): DSL {
+  return { _tag: 'tuple', dsls, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function intersection(models: NonEmptyArray<Expression>): Expression {
+export function intersection(dsls: NonEmptyArray<DSL>, id?: string): DSL {
   return {
     _tag: 'intersection',
-    models
+    dsls,
+    id
   }
 }
 
 /**
  * @since 3.0.0
  */
-export function sum(tag: string, models: Record<string, Expression>): Expression {
-  return { _tag: 'sum', tag, models }
+export function sum(tag: string, dsls: Record<string, DSL>, id?: string): DSL {
+  return { _tag: 'sum', tag, dsls, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function union(models: NonEmptyArray<Expression>): Expression {
-  return { _tag: 'union', models }
+export function union(dsls: NonEmptyArray<DSL>, id?: string): DSL {
+  return { _tag: 'union', dsls, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function lazy(model: Expression): Expression {
-  return { _tag: 'lazy', model }
+export function lazy(id: string, dsl: DSL): DSL {
+  return { _tag: 'lazy', id, dsl }
 }
 
 /**
  * @since 3.0.0
  */
-export function declaration(id: string, model: Expression): Declaration {
-  return { id, model }
+export function declaration(id: string, dsl: DSL): Declaration {
+  return { id, dsl }
 }

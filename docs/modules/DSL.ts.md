@@ -13,7 +13,7 @@ Added in v3.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Declaration (interface)](#declaration-interface)
-- [Expression (type alias)](#expression-type-alias)
+- [DSL (type alias)](#dsl-type-alias)
 - [\$ref](#ref)
 - [UnknownArray](#unknownarray)
 - [UnknownRecord](#unknownrecord)
@@ -42,26 +42,28 @@ Added in v3.0.0
 ```ts
 export interface Declaration {
   readonly id: string
-  readonly model: Expression
+  readonly dsl: DSL
 }
 ```
 
 Added in v3.0.0
 
-# Expression (type alias)
+# DSL (type alias)
 
 **Signature**
 
 ```ts
-export type Expression =
+export type DSL =
   | {
       readonly _tag: 'literals'
       readonly values: NonEmptyArray<S.Literal>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'literalsOr'
       readonly values: NonEmptyArray<S.Literal>
-      readonly model: Expression
+      readonly dsl: DSL
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'string'
@@ -80,40 +82,49 @@ export type Expression =
     }
   | {
       readonly _tag: 'type'
-      readonly models: Record<string, Expression>
+      readonly dsls: Record<string, DSL>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'partial'
-      readonly models: Record<string, Expression>
+      readonly dsls: Record<string, DSL>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'record'
-      readonly model: Expression
+      readonly dsl: DSL
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'array'
-      readonly model: Expression
+      readonly dsl: DSL
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'tuple'
-      readonly models: NonEmptyArray<Expression>
+      readonly dsls: NonEmptyArray<DSL>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'intersection'
-      readonly models: NonEmptyArray<Expression>
+      readonly dsls: NonEmptyArray<DSL>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'sum'
       readonly tag: string
-      readonly models: Record<string, Expression>
+      readonly dsls: Record<string, DSL>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'union'
-      readonly models: NonEmptyArray<Expression>
+      readonly dsls: NonEmptyArray<DSL>
+      readonly id: string | undefined
     }
   | {
       readonly _tag: 'lazy'
-      readonly model: Expression
+      readonly id: string
+      readonly dsl: DSL
     }
   | {
       readonly _tag: '$ref'
@@ -128,7 +139,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function $ref(id: string): Expression { ... }
+export function $ref(id: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -138,7 +149,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownArray: Expression = ...
+export const UnknownArray: DSL = ...
 ```
 
 Added in v3.0.0
@@ -148,7 +159,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownRecord: Expression = ...
+export const UnknownRecord: DSL = ...
 ```
 
 Added in v3.0.0
@@ -158,7 +169,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array(model: Expression): Expression { ... }
+export function array(dsl: DSL, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -168,7 +179,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const boolean: Expression = ...
+export const boolean: DSL = ...
 ```
 
 Added in v3.0.0
@@ -178,7 +189,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function declaration(id: string, model: Expression): Declaration { ... }
+export function declaration(id: string, dsl: DSL): Declaration { ... }
 ```
 
 Added in v3.0.0
@@ -188,7 +199,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection(models: NonEmptyArray<Expression>): Expression { ... }
+export function intersection(dsls: NonEmptyArray<DSL>, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -198,7 +209,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy(model: Expression): Expression { ... }
+export function lazy(id: string, dsl: DSL): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -208,7 +219,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Expression { ... }
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -218,7 +229,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal>(values: NonEmptyArray<A>, model: Expression): Expression { ... }
+export function literalsOr<A extends S.Literal>(values: NonEmptyArray<A>, dsl: DSL, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -228,7 +239,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const number: Expression = ...
+export const number: DSL = ...
 ```
 
 Added in v3.0.0
@@ -238,7 +249,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial(models: Record<string, Expression>): Expression { ... }
+export function partial(dsls: Record<string, DSL>, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -248,7 +259,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record(model: Expression): Expression { ... }
+export function record(dsl: DSL, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -258,7 +269,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const string: Expression = ...
+export const string: DSL = ...
 ```
 
 Added in v3.0.0
@@ -268,7 +279,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function sum(tag: string, models: Record<string, Expression>): Expression { ... }
+export function sum(tag: string, dsls: Record<string, DSL>, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -278,7 +289,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple(models: NonEmptyArray<Expression>): Expression { ... }
+export function tuple(dsls: NonEmptyArray<DSL>, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -288,7 +299,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type(models: Record<string, Expression>): Expression { ... }
+export function type(dsls: Record<string, DSL>, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -298,7 +309,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union(models: NonEmptyArray<Expression>): Expression { ... }
+export function union(dsls: NonEmptyArray<DSL>, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0

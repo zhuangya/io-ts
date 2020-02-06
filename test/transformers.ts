@@ -4,11 +4,11 @@ import * as T from '../src/transformers'
 import * as O from 'fp-ts/lib/Option'
 import { pipe } from 'fp-ts/lib/pipeable'
 
-function assertTypeNode(model: DSL.Expression, expected: string): void {
+function assertTypeNode(model: DSL.DSL, expected: string): void {
   assert.strictEqual(T.print(T.toTypeNode(model)), expected)
 }
 
-function assertExpression(model: DSL.Expression, expected: string): void {
+function assertExpression(model: DSL.DSL, expected: string): void {
   assert.strictEqual(T.print(T.toExpression(model)), expected)
 }
 
@@ -89,6 +89,7 @@ describe('transformers', () => {
     it('lazy', () => {
       assertTypeNode(
         DSL.lazy(
+          'A',
           DSL.type({
             a: DSL.number,
             b: DSL.literalsOr([null], DSL.$ref('A'))
@@ -173,6 +174,7 @@ describe('transformers', () => {
     it('lazy', () => {
       assertExpression(
         DSL.lazy(
+          'A',
           DSL.type({
             a: DSL.number,
             b: DSL.literalsOr([null], DSL.$ref('A'))
@@ -206,6 +208,7 @@ describe('transformers', () => {
         DSL.declaration(
           'A',
           DSL.lazy(
+            'A',
             DSL.type({
               a: DSL.number,
               b: DSL.literalsOr([null], DSL.$ref('A'))

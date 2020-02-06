@@ -34,7 +34,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function toExpression(model: DSL.Expression): ts.Expression { ... }
+export function toExpression(model: DSL.DSL): ts.Expression { ... }
 ```
 
 Added in v3.0.0
@@ -44,7 +44,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function toTypeNode(model: DSL.Expression): ts.TypeNode { ... }
+export function toTypeNode(model: DSL.DSL): ts.TypeNode { ... }
 ```
 
 Added in v3.0.0
