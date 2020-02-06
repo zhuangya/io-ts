@@ -185,7 +185,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(is: G.Guard<A>['is'], decode: C.Codec<A>['decode'], encode: C.Codec<A>['encode']): Compat<A> { ... }
+export function make<A>(codec: C.Codec<A>, guard: G.Guard<A>): Compat<A> { ... }
 ```
 
 Added in v3.0.0

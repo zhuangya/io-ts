@@ -1,37 +1,26 @@
 import * as assert from 'assert'
 import * as E from '../src/Encoder'
 import * as C from '../src/Compat'
-import * as D from '../src/Decoder'
 import * as G from '../src/Guard'
 import * as CT from './Codec'
 import { right, left } from 'fp-ts/lib/Either'
 import * as DE from '../src/DecodeError'
 
-export const NumberFromString: C.Compat<number> = C.make(
-  G.number.is,
-  CT.NumberFromString.decode,
-  CT.NumberFromString.encode
-)
+export const NumberFromString: C.Compat<number> = C.make(CT.NumberFromString, G.number)
 
 interface PositiveBrand {
   readonly Positive: unique symbol
 }
 type Positive = number & PositiveBrand
-const Positive: C.Compat<Positive> = C.make(
-  G.refinement(G.number, n => (n > 0 ? right(n as Positive) : left('Positive'))).is,
-  D.parse(C.number, n => (n > 0 ? right(n as Positive) : left('Positive'))).decode,
-  E.id.encode
-)
+const positiveParser = (n: number) => (n > 0 ? right(n as Positive) : left('Positive'))
+const Positive: C.Compat<Positive> = C.refinement(C.number, positiveParser)
 
 interface IntBrand {
   readonly Int: unique symbol
 }
 type Int = number & IntBrand
-const Int: C.Compat<Int> = C.make(
-  G.refinement(G.number, n => (Number.isInteger(n) ? right(n as Int) : left('Int'))).is,
-  D.parse(C.number, n => (Number.isInteger(n) ? right(n as Int) : left('Int'))).decode,
-  E.id.encode
-)
+const intParser = (n: number) => (Number.isInteger(n) ? right(n as Int) : left('Int'))
+const Int: C.Compat<Int> = C.refinement(C.number, intParser)
 
 describe('Codec', () => {
   describe('string', () => {
