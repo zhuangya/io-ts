@@ -90,11 +90,6 @@ export const UnknownRecord: ArbitraryMutation<Record<string, unknown>> = make(A.
 /**
  * @since 3.0.0
  */
-export const refinement: S.WithRefinement<URI>['refinement'] = parse
-
-/**
- * @since 3.0.0
- */
 export function parse<A, B>(mutation: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> {
   return make(
     mutation.arb.filter(a => isLeft(parser(a))),
@@ -283,7 +278,7 @@ export const arbitraryMutation: S.Schemable<URI> & S.WithParse<URI> & S.WithUnio
   intersection,
   sum,
   lazy,
-  refinement,
+  refinement: parse,
   parse,
   union
 }

@@ -69,11 +69,6 @@ export const UnknownRecord: Arbitrary<Record<string, unknown>> = fc.dictionary(s
 /**
  * @since 3.0.0
  */
-export const refinement: S.WithRefinement<URI>['refinement'] = parse
-
-/**
- * @since 3.0.0
- */
 export function parse<A, B>(arb: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> {
   return arb
     .map(parser)
@@ -210,7 +205,7 @@ export const arbitrary: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> =
   intersection,
   sum,
   lazy,
-  refinement,
+  refinement: parse,
   parse,
   union
 }

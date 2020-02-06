@@ -37,7 +37,6 @@ Added in v3.0.0
 - [parse](#parse)
 - [partial](#partial)
 - [record](#record)
-- [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
 - [tuple](#tuple)
@@ -308,16 +307,6 @@ Added in v3.0.0
 
 ```ts
 export function record<A>(decoder: Decoder<A>, id?: string): Decoder<Record<string, A>> { ... }
-```
-
-Added in v3.0.0
-
-# refinement
-
-**Signature**
-
-```ts
-export const refinement: S.WithRefinement<URI>['refinement'] = ...
 ```
 
 Added in v3.0.0

@@ -118,11 +118,6 @@ export function withMessage<A>(decoder: Decoder<A>, message: (e: DE.DecodeError)
 /**
  * @since 3.0.0
  */
-export const refinement: S.WithRefinement<URI>['refinement'] = parse
-
-/**
- * @since 3.0.0
- */
 export function parse<A, B>(decoder: Decoder<A>, parser: (a: A) => E.Either<string, B>, id?: string): Decoder<B> {
   return {
     decode: u => {
@@ -449,7 +444,7 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
   intersection,
   sum,
   lazy,
-  refinement,
+  refinement: parse,
   parse,
   union
 }
