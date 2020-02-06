@@ -21,7 +21,6 @@ Added in v3.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Compat (interface)](#compat-interface)
-- [TypeOf (type alias)](#typeof-type-alias)
 - [URI (type alias)](#uri-type-alias)
 - [URI](#uri)
 - [UnknownArray](#unknownarray)
@@ -56,16 +55,6 @@ Laws: same as `Codec`
 export interface Compat<A> extends C.Codec<A>, G.Guard<A> {
   readonly name: string
 }
-```
-
-Added in v3.0.0
-
-# TypeOf (type alias)
-
-**Signature**
-
-```ts
-export type TypeOf<C> = C extends Compat<infer A> ? A : never
 ```
 
 Added in v3.0.0

@@ -101,7 +101,7 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.literals(['a', null])
-        assert.deepStrictEqual(codec.decode('b'), left(DE.leaf('b', undefined, '"a" | null')))
+        assert.deepStrictEqual(codec.decode('b'), left(DE.leaf('b')))
       })
     })
   })
@@ -117,13 +117,10 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.literalsOr(['a', null], NumberFromString)
-        assert.deepStrictEqual(
-          codec.decode(2),
-          left(DE.or(2, [DE.leaf(2, undefined, '"a" | null'), DE.leaf(2, 'string')]))
-        )
+        assert.deepStrictEqual(codec.decode(2), left(DE.or(2, [DE.leaf(2), DE.leaf(2, 'string')])))
         assert.deepStrictEqual(
           codec.decode('b'),
-          left(DE.or('b', [DE.leaf('b', undefined, '"a" | null'), DE.leaf('b', 'NumberFromString', 'not a number')]))
+          left(DE.or('b', [DE.leaf('b'), DE.leaf('b', 'NumberFromString', 'not a number')]))
         )
       })
     })

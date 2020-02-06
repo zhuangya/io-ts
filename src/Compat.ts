@@ -27,11 +27,6 @@ export interface Compat<A> extends C.Codec<A>, G.Guard<A> {
   readonly name: string
 }
 
-/**
- * @since 3.0.0
- */
-export type TypeOf<C> = C extends Compat<infer A> ? A : never
-
 // -------------------------------------------------------------------------------------
 // constructors
 // -------------------------------------------------------------------------------------
