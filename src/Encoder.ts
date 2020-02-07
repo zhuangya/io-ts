@@ -87,12 +87,12 @@ export const UnknownRecord: Encoder<Record<string, unknown>> = id
 /**
  * @since 3.0.0
  */
-export function type<A>(encoders: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> {
+export function type<A>(fields: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> {
   return {
     encode: a => {
       const o: Record<string, unknown> = {}
-      for (const k in encoders) {
-        o[k] = encoders[k].encode(a[k])
+      for (const k in fields) {
+        o[k] = fields[k].encode(a[k])
       }
       return o
     }
@@ -102,16 +102,16 @@ export function type<A>(encoders: { [K in keyof A]: Encoder<A[K]> }): Encoder<A>
 /**
  * @since 3.0.0
  */
-export function partial<A>(encoders: { [K in keyof A]: Encoder<A[K]> }): Encoder<Partial<A>> {
+export function partial<A>(fields: { [K in keyof A]: Encoder<A[K]> }): Encoder<Partial<A>> {
   return {
     encode: a => {
       const o: Record<string, unknown> = {}
-      for (const k in encoders) {
+      for (const k in fields) {
         const v: A[Extract<keyof A, string>] | undefined = a[k]
         // don't add missing fields
         if (U.hasOwnProperty(a, k)) {
           // don't strip undefined fields
-          o[k] = v === undefined ? v : encoders[k].encode(v)
+          o[k] = v === undefined ? v : fields[k].encode(v)
         }
       }
       return o
@@ -122,12 +122,12 @@ export function partial<A>(encoders: { [K in keyof A]: Encoder<A[K]> }): Encoder
 /**
  * @since 3.0.0
  */
-export function record<A>(encoder: Encoder<A>): Encoder<Record<string, A>> {
+export function record<A>(codomain: Encoder<A>): Encoder<Record<string, A>> {
   return {
     encode: r => {
       const o: Record<string, unknown> = {}
       for (const k in r) {
-        o[k] = encoder.encode(r[k])
+        o[k] = codomain.encode(r[k])
       }
       return o
     }
@@ -137,9 +137,9 @@ export function record<A>(encoder: Encoder<A>): Encoder<Record<string, A>> {
 /**
  * @since 3.0.0
  */
-export function array<A>(encoder: Encoder<A>): Encoder<Array<A>> {
+export function array<A>(items: Encoder<A>): Encoder<Array<A>> {
   return {
-    encode: as => as.map(encoder.encode)
+    encode: as => as.map(items.encode)
   }
 }
 
@@ -147,15 +147,15 @@ export function array<A>(encoder: Encoder<A>): Encoder<Array<A>> {
  * @since 3.0.0
  */
 export function tuple<A, B, C, D, E>(
-  encoders: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>, Encoder<E>]
+  items: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>, Encoder<E>]
 ): Encoder<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(encoders: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>]): Encoder<[A, B, C, D]>
-export function tuple<A, B, C>(encoders: [Encoder<A>, Encoder<B>, Encoder<C>]): Encoder<[A, B, C]>
-export function tuple<A, B>(encoders: [Encoder<A>, Encoder<B>]): Encoder<[A, B]>
-export function tuple<A>(encoders: [Encoder<A>]): Encoder<[A]>
-export function tuple(encoders: Array<Encoder<unknown>>): Encoder<Array<unknown>> {
+export function tuple<A, B, C, D>(items: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>]): Encoder<[A, B, C, D]>
+export function tuple<A, B, C>(items: [Encoder<A>, Encoder<B>, Encoder<C>]): Encoder<[A, B, C]>
+export function tuple<A, B>(items: [Encoder<A>, Encoder<B>]): Encoder<[A, B]>
+export function tuple<A>(items: [Encoder<A>]): Encoder<[A]>
+export function tuple(items: Array<Encoder<unknown>>): Encoder<Array<unknown>> {
   return {
-    encode: as => encoders.map((encoder, i) => encoder.encode(as[i]))
+    encode: as => items.map((encoder, i) => encoder.encode(as[i]))
   }
 }
 

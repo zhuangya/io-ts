@@ -153,7 +153,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(decoder: Decoder<A>, id?: string): Decoder<Array<A>> { ... }
+export function array<A>(items: Decoder<A>, id?: string): Decoder<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -296,7 +296,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<Partial<A>> { ... }
+export function partial<A>(fields: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -306,7 +306,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(decoder: Decoder<A>, id?: string): Decoder<Record<string, A>> { ... }
+export function record<A>(codomain: Decoder<A>, id?: string): Decoder<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -339,16 +339,16 @@ Added in v3.0.0
 
 ```ts
 export function tuple<A, B, C, D, E>(
-  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>],
+  items: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>],
   id?: string
 ): Decoder<[A, B, C, D, E]>
 export function tuple<A, B, C, D>(
-  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>],
+  items: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>],
   id?: string
 ): Decoder<[A, B, C, D]>
-export function tuple<A, B, C>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>], id?: string): Decoder<[A, B, C]>
-export function tuple<A, B>(decoders: [Decoder<A>, Decoder<B>], id?: string): Decoder<[A, B]>
-export function tuple<A>(decoders: [Decoder<A>], id?: string): Decoder<[A]> { ... }
+export function tuple<A, B, C>(items: [Decoder<A>, Decoder<B>, Decoder<C>], id?: string): Decoder<[A, B, C]>
+export function tuple<A, B>(items: [Decoder<A>, Decoder<B>], id?: string): Decoder<[A, B]>
+export function tuple<A>(items: [Decoder<A>], id?: string): Decoder<[A]> { ... }
 ```
 
 Added in v3.0.0
@@ -358,7 +358,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<A> { ... }
+export function type<A>(fields: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<A> { ... }
 ```
 
 Added in v3.0.0

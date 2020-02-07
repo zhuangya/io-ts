@@ -137,7 +137,7 @@ export function parse<A, B>(decoder: Decoder<A>, parser: (a: A) => E.Either<stri
 /**
  * @since 3.0.0
  */
-export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<A> {
+export function type<A>(fields: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<A> {
   return {
     decode: u => {
       const e = UnknownRecord.decode(u)
@@ -147,8 +147,8 @@ export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, id?: string
         const r = e.right
         let a: A = {} as any
         const es: Array<[string, DE.DecodeError]> = []
-        for (const k in decoders) {
-          const e = decoders[k].decode(r[k])
+        for (const k in fields) {
+          const e = fields[k].decode(r[k])
           if (E.isLeft(e)) {
             es.push([k, e.left])
           } else {
@@ -164,7 +164,7 @@ export function type<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, id?: string
 /**
  * @since 3.0.0
  */
-export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<Partial<A>> {
+export function partial<A>(fields: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<Partial<A>> {
   return {
     decode: u => {
       const e = UnknownRecord.decode(u)
@@ -174,7 +174,7 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, id?: str
         const r = e.right
         let a: Partial<A> = {}
         const es: Array<[string, DE.DecodeError]> = []
-        for (const k in decoders) {
+        for (const k in fields) {
           // don't add missing fields
           if (U.hasOwnProperty(r, k)) {
             const rk = r[k]
@@ -182,7 +182,7 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, id?: str
             if (rk === undefined) {
               a[k] = undefined
             } else {
-              const e = decoders[k].decode(rk)
+              const e = fields[k].decode(rk)
               if (E.isLeft(e)) {
                 es.push([k, e.left])
               } else {
@@ -200,7 +200,7 @@ export function partial<A>(decoders: { [K in keyof A]: Decoder<A[K]> }, id?: str
 /**
  * @since 3.0.0
  */
-export function record<A>(decoder: Decoder<A>, id?: string): Decoder<Record<string, A>> {
+export function record<A>(codomain: Decoder<A>, id?: string): Decoder<Record<string, A>> {
   return {
     decode: u => {
       const e = UnknownRecord.decode(u)
@@ -211,7 +211,7 @@ export function record<A>(decoder: Decoder<A>, id?: string): Decoder<Record<stri
         let a: Record<string, A> = {}
         const es: Array<[string, DE.DecodeError]> = []
         for (const k in r) {
-          const e = decoder.decode(r[k])
+          const e = codomain.decode(r[k])
           if (E.isLeft(e)) {
             es.push([k, e.left])
           } else {
@@ -227,7 +227,7 @@ export function record<A>(decoder: Decoder<A>, id?: string): Decoder<Record<stri
 /**
  * @since 3.0.0
  */
-export function array<A>(decoder: Decoder<A>, id?: string): Decoder<Array<A>> {
+export function array<A>(items: Decoder<A>, id?: string): Decoder<Array<A>> {
   return {
     decode: u => {
       const e = UnknownArray.decode(u)
@@ -239,7 +239,7 @@ export function array<A>(decoder: Decoder<A>, id?: string): Decoder<Array<A>> {
         const a: Array<A> = new Array(len)
         const es: Array<[number, DE.DecodeError]> = []
         for (let i = 0; i < len; i++) {
-          const e = decoder.decode(us[i])
+          const e = items.decode(us[i])
           if (E.isLeft(e)) {
             es.push([i, e.left])
           } else {
@@ -256,17 +256,17 @@ export function array<A>(decoder: Decoder<A>, id?: string): Decoder<Array<A>> {
  * @since 3.0.0
  */
 export function tuple<A, B, C, D, E>(
-  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>],
+  items: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>],
   id?: string
 ): Decoder<[A, B, C, D, E]>
 export function tuple<A, B, C, D>(
-  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>],
+  items: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>],
   id?: string
 ): Decoder<[A, B, C, D]>
-export function tuple<A, B, C>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>], id?: string): Decoder<[A, B, C]>
-export function tuple<A, B>(decoders: [Decoder<A>, Decoder<B>], id?: string): Decoder<[A, B]>
-export function tuple<A>(decoders: [Decoder<A>], id?: string): Decoder<[A]>
-export function tuple(decoders: Array<Decoder<unknown>>, id?: string): Decoder<Array<unknown>> {
+export function tuple<A, B, C>(items: [Decoder<A>, Decoder<B>, Decoder<C>], id?: string): Decoder<[A, B, C]>
+export function tuple<A, B>(items: [Decoder<A>, Decoder<B>], id?: string): Decoder<[A, B]>
+export function tuple<A>(items: [Decoder<A>], id?: string): Decoder<[A]>
+export function tuple(items: Array<Decoder<unknown>>, id?: string): Decoder<Array<unknown>> {
   return {
     decode: u => {
       const e = UnknownArray.decode(u)
@@ -274,11 +274,11 @@ export function tuple(decoders: Array<Decoder<unknown>>, id?: string): Decoder<A
         return e
       } else {
         const us = e.right
-        const len = decoders.length
+        const len = items.length
         const a: Array<unknown> = new Array(len)
         const es: Array<[number, DE.DecodeError]> = []
         for (let i = 0; i < len; i++) {
-          const e = decoders[i].decode(us[i])
+          const e = items[i].decode(us[i])
           if (E.isLeft(e)) {
             es.push([i, e.left])
           } else {

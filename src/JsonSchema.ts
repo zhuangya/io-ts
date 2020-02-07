@@ -81,41 +81,41 @@ export const UnknownRecord: JsonSchema<Record<string, unknown>> = C.make(() => (
 /**
  * @since 3.0.0
  */
-export function type<A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<A> {
+export function type<A>(fields: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<A> {
   return C.make(() => ({
     type: 'object',
-    properties: runSequence(jsonSchemas),
-    required: Object.keys(jsonSchemas)
+    properties: runSequence(fields),
+    required: Object.keys(fields)
   }))
 }
 
 /**
  * @since 3.0.0
  */
-export function partial<A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<Partial<A>> {
+export function partial<A>(fields: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<Partial<A>> {
   return C.make(() => ({
     type: 'object',
-    properties: runSequence(jsonSchemas)
+    properties: runSequence(fields)
   }))
 }
 
 /**
  * @since 3.0.0
  */
-export function record<A>(jsonSchema: JsonSchema<A>): JsonSchema<Record<string, A>> {
+export function record<A>(codomain: JsonSchema<A>): JsonSchema<Record<string, A>> {
   return C.make(() => ({
     type: 'object',
-    additionalProperties: jsonSchema()
+    additionalProperties: codomain()
   }))
 }
 
 /**
  * @since 3.0.0
  */
-export function array<A>(jsonSchema: JsonSchema<A>): JsonSchema<Array<A>> {
+export function array<A>(items: JsonSchema<A>): JsonSchema<Array<A>> {
   return C.make(() => ({
     type: 'array',
-    items: jsonSchema()
+    items: items()
   }))
 }
 
@@ -123,19 +123,19 @@ export function array<A>(jsonSchema: JsonSchema<A>): JsonSchema<Array<A>> {
  * @since 3.0.0
  */
 export function tuple<A, B, C, D, E>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
+  items: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
 ): JsonSchema<[A, B, C, D, E]>
 export function tuple<A, B, C, D>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
+  items: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
 ): JsonSchema<[A, B, C, D]>
-export function tuple<A, B, C>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]): JsonSchema<[A, B, C]>
-export function tuple<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<[A, B]>
-export function tuple<A>(jsonSchemas: [JsonSchema<A>]): JsonSchema<[A]>
-export function tuple(jsonSchemas: Array<JsonSchema<any>>): JsonSchema<Array<any>> {
-  const len = jsonSchemas.length
+export function tuple<A, B, C>(items: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]): JsonSchema<[A, B, C]>
+export function tuple<A, B>(items: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<[A, B]>
+export function tuple<A>(items: [JsonSchema<A>]): JsonSchema<[A]>
+export function tuple(items: Array<JsonSchema<any>>): JsonSchema<Array<any>> {
+  const len = items.length
   return C.make(() => ({
     type: 'array',
-    items: jsonSchemas.map(jsonSchema => jsonSchema()),
+    items: items.map(jsonSchema => jsonSchema()),
     minItems: len,
     maxItems: len
   }))

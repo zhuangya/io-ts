@@ -100,14 +100,14 @@ export function refinement<A, B extends A>(guard: Guard<A>, parser: (a: A) => Ei
 /**
  * @since 3.0.0
  */
-export function type<A>(guards: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
+export function type<A>(fields: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
   return {
     is: (u: unknown): u is A => {
       if (!UnknownRecord.is(u)) {
         return false
       }
-      for (const k in guards) {
-        if (!guards[k].is(u[k])) {
+      for (const k in fields) {
+        if (!fields[k].is(u[k])) {
           return false
         }
       }
@@ -119,15 +119,15 @@ export function type<A>(guards: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
 /**
  * @since 3.0.0
  */
-export function partial<A>(guards: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>> {
+export function partial<A>(fields: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>> {
   return {
     is: (u: unknown): u is Partial<A> => {
       if (!UnknownRecord.is(u)) {
         return false
       }
-      for (const k in guards) {
+      for (const k in fields) {
         const v = u[k]
-        if (v !== undefined && !guards[k].is(v)) {
+        if (v !== undefined && !fields[k].is(v)) {
           return false
         }
       }
@@ -139,14 +139,14 @@ export function partial<A>(guards: { [K in keyof A]: Guard<A[K]> }): Guard<Parti
 /**
  * @since 3.0.0
  */
-export function record<A>(guard: Guard<A>): Guard<Record<string, A>> {
+export function record<A>(codomain: Guard<A>): Guard<Record<string, A>> {
   return {
     is: (u: unknown): u is Record<string, A> => {
       if (!UnknownRecord.is(u)) {
         return false
       }
       for (const k in u) {
-        if (!guard.is(u[k])) {
+        if (!codomain.is(u[k])) {
           return false
         }
       }
@@ -158,24 +158,24 @@ export function record<A>(guard: Guard<A>): Guard<Record<string, A>> {
 /**
  * @since 3.0.0
  */
-export function array<A>(guard: Guard<A>): Guard<Array<A>> {
+export function array<A>(items: Guard<A>): Guard<Array<A>> {
   return {
-    is: (u: unknown): u is Array<A> => UnknownArray.is(u) && u.every(guard.is)
+    is: (u: unknown): u is Array<A> => UnknownArray.is(u) && u.every(items.is)
   }
 }
 
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(guards: [Guard<A>, Guard<B>, Guard<C>, Guard<D>, Guard<E>]): Guard<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(guards: [Guard<A>, Guard<B>, Guard<C>, Guard<D>]): Guard<[A, B, C, D]>
-export function tuple<A, B, C>(guards: [Guard<A>, Guard<B>, Guard<C>]): Guard<[A, B, C]>
-export function tuple<A, B>(guards: [Guard<A>, Guard<B>]): Guard<[A, B]>
-export function tuple<A>(guards: [Guard<A>]): Guard<[A]>
-export function tuple(guards: Array<Guard<unknown>>): Guard<Array<unknown>> {
+export function tuple<A, B, C, D, E>(items: [Guard<A>, Guard<B>, Guard<C>, Guard<D>, Guard<E>]): Guard<[A, B, C, D, E]>
+export function tuple<A, B, C, D>(items: [Guard<A>, Guard<B>, Guard<C>, Guard<D>]): Guard<[A, B, C, D]>
+export function tuple<A, B, C>(items: [Guard<A>, Guard<B>, Guard<C>]): Guard<[A, B, C]>
+export function tuple<A, B>(items: [Guard<A>, Guard<B>]): Guard<[A, B]>
+export function tuple<A>(items: [Guard<A>]): Guard<[A]>
+export function tuple(items: Array<Guard<unknown>>): Guard<Array<unknown>> {
   return {
     is: (u: unknown): u is Array<unknown> =>
-      UnknownArray.is(u) && u.length === guards.length && guards.every((guard, i) => guard.is(u[i]))
+      UnknownArray.is(u) && u.length === items.length && items.every((guard, i) => guard.is(u[i]))
   }
 }
 

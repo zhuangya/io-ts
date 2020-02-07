@@ -40,27 +40,27 @@ export type DSL =
     }
   | {
       readonly _tag: 'type'
-      readonly dsls: Record<string, DSL>
+      readonly fields: Record<string, DSL>
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'partial'
-      readonly dsls: Record<string, DSL>
+      readonly fields: Record<string, DSL>
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'record'
-      readonly dsl: DSL
+      readonly codomain: DSL
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'array'
-      readonly dsl: DSL
+      readonly items: DSL
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'tuple'
-      readonly dsls: NonEmptyArray<DSL>
+      readonly items: NonEmptyArray<DSL>
       readonly id: string | undefined
     }
   | {
@@ -154,36 +154,36 @@ export const UnknownRecord: DSL = { _tag: 'UnknownRecord' }
 /**
  * @since 3.0.0
  */
-export function type(dsls: Record<string, DSL>, id?: string): DSL {
-  return { _tag: 'type', dsls, id }
+export function type(fields: Record<string, DSL>, id?: string): DSL {
+  return { _tag: 'type', fields, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function partial(dsls: Record<string, DSL>, id?: string): DSL {
-  return { _tag: 'partial', dsls, id }
+export function partial(fields: Record<string, DSL>, id?: string): DSL {
+  return { _tag: 'partial', fields, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function record(dsl: DSL, id?: string): DSL {
-  return { _tag: 'record', dsl, id }
+export function record(codomain: DSL, id?: string): DSL {
+  return { _tag: 'record', codomain, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function array(dsl: DSL, id?: string): DSL {
-  return { _tag: 'array', dsl, id }
+export function array(items: DSL, id?: string): DSL {
+  return { _tag: 'array', items, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function tuple(dsls: NonEmptyArray<DSL>, id?: string): DSL {
-  return { _tag: 'tuple', dsls, id }
+export function tuple(items: NonEmptyArray<DSL>, id?: string): DSL {
+  return { _tag: 'tuple', items, id }
 }
 
 /**

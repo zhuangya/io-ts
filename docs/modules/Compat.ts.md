@@ -102,7 +102,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(compat: Compat<A>, id?: string): Compat<Array<A>> { ... }
+export function array<A>(items: Compat<A>, id?: string): Compat<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -205,7 +205,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(compats: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> { ... }
+export function partial<A>(fields: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -215,7 +215,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(compat: Compat<A>, id?: string): Compat<Record<string, A>> { ... }
+export function record<A>(codomain: Compat<A>, id?: string): Compat<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -262,16 +262,16 @@ Added in v3.0.0
 
 ```ts
 export function tuple<A, B, C, D, E>(
-  compats: [Compat<A>, Compat<B>, Compat<C>, Compat<D>, Compat<E>],
+  items: [Compat<A>, Compat<B>, Compat<C>, Compat<D>, Compat<E>],
   id?: string
 ): Compat<[A, B, C, D, E]>
 export function tuple<A, B, C, D>(
-  compats: [Compat<A>, Compat<B>, Compat<C>, Compat<D>],
+  compitemsats: [Compat<A>, Compat<B>, Compat<C>, Compat<D>],
   id?: string
 ): Compat<[A, B, C, D]>
-export function tuple<A, B, C>(compats: [Compat<A>, Compat<B>, Compat<C>], id?: string): Compat<[A, B, C]>
+export function tuple<A, B, C>(items: [Compat<A>, Compat<B>, Compat<C>], id?: string): Compat<[A, B, C]>
 export function tuple<A, B>(compats: [Compat<A>, Compat<B>], id?: string): Compat<[A, B]>
-export function tuple<A>(compats: [Compat<A>], id?: string): Compat<[A]> { ... }
+export function tuple<A>(items: [Compat<A>], id?: string): Compat<[A]> { ... }
 ```
 
 Added in v3.0.0
@@ -281,7 +281,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(compats: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> { ... }
+export function type<A>(fields: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> { ... }
 ```
 
 Added in v3.0.0

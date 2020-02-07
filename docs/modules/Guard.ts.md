@@ -93,7 +93,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(guard: Guard<A>): Guard<Array<A>> { ... }
+export function array<A>(items: Guard<A>): Guard<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -178,7 +178,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(guards: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>> { ... }
+export function partial<A>(fields: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -188,7 +188,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(guard: Guard<A>): Guard<Record<string, A>> { ... }
+export function record<A>(codomain: Guard<A>): Guard<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -230,11 +230,11 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(guards: [Guard<A>, Guard<B>, Guard<C>, Guard<D>, Guard<E>]): Guard<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(guards: [Guard<A>, Guard<B>, Guard<C>, Guard<D>]): Guard<[A, B, C, D]>
-export function tuple<A, B, C>(guards: [Guard<A>, Guard<B>, Guard<C>]): Guard<[A, B, C]>
-export function tuple<A, B>(guards: [Guard<A>, Guard<B>]): Guard<[A, B]>
-export function tuple<A>(guards: [Guard<A>]): Guard<[A]> { ... }
+export function tuple<A, B, C, D, E>(items: [Guard<A>, Guard<B>, Guard<C>, Guard<D>, Guard<E>]): Guard<[A, B, C, D, E]>
+export function tuple<A, B, C, D>(items: [Guard<A>, Guard<B>, Guard<C>, Guard<D>]): Guard<[A, B, C, D]>
+export function tuple<A, B, C>(items: [Guard<A>, Guard<B>, Guard<C>]): Guard<[A, B, C]>
+export function tuple<A, B>(items: [Guard<A>, Guard<B>]): Guard<[A, B]>
+export function tuple<A>(items: [Guard<A>]): Guard<[A]> { ... }
 ```
 
 Added in v3.0.0
@@ -244,7 +244,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(guards: { [K in keyof A]: Guard<A[K]> }): Guard<A> { ... }
+export function type<A>(fields: { [K in keyof A]: Guard<A[K]> }): Guard<A> { ... }
 ```
 
 Added in v3.0.0

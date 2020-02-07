@@ -107,7 +107,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(am: ArbitraryMutation<A>): ArbitraryMutation<Array<A>> { ... }
+export function array<A>(items: ArbitraryMutation<A>): ArbitraryMutation<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -209,7 +209,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(ams: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<Partial<A>> { ... }
+export function partial<A>(fields: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -219,7 +219,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(am: ArbitraryMutation<A>): ArbitraryMutation<Record<string, A>> { ... }
+export function record<A>(codomain: ArbitraryMutation<A>): ArbitraryMutation<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -254,16 +254,16 @@ Added in v3.0.0
 
 ```ts
 export function tuple<A, B, C, D, E>(
-  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>, ArbitraryMutation<E>]
+  items: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>, ArbitraryMutation<E>]
 ): ArbitraryMutation<[A, B, C, D, E]>
 export function tuple<A, B, C, D>(
-  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
+  items: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
 ): ArbitraryMutation<[A, B, C, D]>
 export function tuple<A, B, C>(
-  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
+  items: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
 ): ArbitraryMutation<[A, B, C]>
-export function tuple<A, B>(ams: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<[A, B]>
-export function tuple<A>(ams: [ArbitraryMutation<A>]): ArbitraryMutation<[A]> { ... }
+export function tuple<A, B>(items: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<[A, B]>
+export function tuple<A>(items: [ArbitraryMutation<A>]): ArbitraryMutation<[A]> { ... }
 ```
 
 Added in v3.0.0
@@ -273,7 +273,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(ams: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<A> { ... }
+export function type<A>(fields: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<A> { ... }
 ```
 
 Added in v3.0.0

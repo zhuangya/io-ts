@@ -114,7 +114,7 @@ export function partial<A>(eqs: { [K in keyof A]: Eq<A[K]> }): Eq<Partial<A>> {
 /**
  * @since 3.0.0
  */
-export const record: <A>(eq: Eq<A>) => Eq<Record<string, A>> = R.getEq
+export const record: <A>(codomain: Eq<A>) => Eq<Record<string, A>> = R.getEq
 
 /**
  * @since 3.0.0

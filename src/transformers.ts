@@ -43,8 +43,8 @@ function toLiteralTypeNode(values: Array<S.Literal>): Array<ts.TypeNode> {
 /**
  * @since 3.0.0
  */
-export function toTypeNode(model: DSL.DSL): ts.TypeNode {
-  switch (model._tag) {
+export function toTypeNode(dsl: DSL.DSL): ts.TypeNode {
+  switch (dsl._tag) {
     case 'string':
       return ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword)
     case 'number':
@@ -59,39 +59,39 @@ export function toTypeNode(model: DSL.DSL): ts.TypeNode {
         ts.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword)
       ])
     case 'array':
-      return ts.createTypeReferenceNode('Array', [toTypeNode(model.dsl)])
+      return ts.createTypeReferenceNode('Array', [toTypeNode(dsl.items)])
     case 'record':
       return ts.createTypeReferenceNode('Record', [
         ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
-        toTypeNode(model.dsl)
+        toTypeNode(dsl.codomain)
       ])
     case 'union':
-      return ts.createUnionTypeNode(model.dsls.map(model => toTypeNode(model)))
+      return ts.createUnionTypeNode(dsl.dsls.map(dsl => toTypeNode(dsl)))
     case 'intersection':
-      return ts.createIntersectionTypeNode(model.dsls.map(model => toTypeNode(model)))
+      return ts.createIntersectionTypeNode(dsl.dsls.map(dsl => toTypeNode(dsl)))
     case 'tuple':
-      return ts.createTupleTypeNode(model.dsls.map(model => toTypeNode(model)))
+      return ts.createTupleTypeNode(dsl.items.map(dsl => toTypeNode(dsl)))
     case 'type':
     case 'partial':
       const typeLiteralNode = ts.createTypeLiteralNode(
-        Object.keys(model.dsls).map(k =>
-          ts.createPropertySignature(undefined, k, undefined, toTypeNode(model.dsls[k]), undefined)
+        Object.keys(dsl.fields).map(k =>
+          ts.createPropertySignature(undefined, k, undefined, toTypeNode(dsl.fields[k]), undefined)
         )
       )
-      if (model._tag === 'partial') {
+      if (dsl._tag === 'partial') {
         return ts.createTypeReferenceNode('Partial', [typeLiteralNode])
       }
       return typeLiteralNode
     case '$ref':
-      return ts.createTypeReferenceNode(model.id, undefined)
+      return ts.createTypeReferenceNode(dsl.id, undefined)
     case 'literals':
-      return ts.createUnionTypeNode(toLiteralTypeNode(model.values))
+      return ts.createUnionTypeNode(toLiteralTypeNode(dsl.values))
     case 'literalsOr':
-      return ts.createUnionTypeNode([...toLiteralTypeNode(model.values), toTypeNode(model.dsl)])
+      return ts.createUnionTypeNode([...toLiteralTypeNode(dsl.values), toTypeNode(dsl.dsl)])
     case 'lazy':
-      return toTypeNode(model.dsl)
+      return toTypeNode(dsl.dsl)
     case 'sum':
-      return ts.createUnionTypeNode(Object.keys(model.dsls).map(k => toTypeNode(model.dsls[k])))
+      return ts.createUnionTypeNode(Object.keys(dsl.dsls).map(k => toTypeNode(dsl.dsls[k])))
   }
 }
 
@@ -111,52 +111,54 @@ function toLiteralExpression(values: Array<S.Literal>): ts.Expression {
 /**
  * @since 3.0.0
  */
-export function toExpression(model: DSL.DSL): ts.Expression {
-  switch (model._tag) {
+export function toExpression(dsl: DSL.DSL): ts.Expression {
+  switch (dsl._tag) {
     case 'string':
     case 'number':
     case 'boolean':
     case 'UnknownArray':
     case 'UnknownRecord':
-      return ts.createPropertyAccess(schemable, model._tag)
+      return ts.createPropertyAccess(schemable, dsl._tag)
     case '$ref':
-      return ts.createCall(ts.createIdentifier(model.id), undefined, [schemable])
-    case 'array':
+      return ts.createCall(ts.createIdentifier(dsl.id), undefined, [schemable])
     case 'record':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [toExpression(model.dsl)])
+      return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [toExpression(dsl.codomain)])
+    case 'array':
+      return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [toExpression(dsl.items)])
     case 'union':
     case 'intersection':
+      return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [
+        ts.createArrayLiteral(dsl.dsls.map(dsl => toExpression(dsl)))
+      ])
     case 'tuple':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [
-        ts.createArrayLiteral(model.dsls.map(model => toExpression(model)))
+      return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [
+        ts.createArrayLiteral(dsl.items.map(item => toExpression(item)))
       ])
     case 'type':
     case 'partial':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [
+      return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [
         ts.createObjectLiteral(
-          Object.keys(model.dsls).map(k => ts.createPropertyAssignment(k, toExpression(model.dsls[k])))
+          Object.keys(dsl.fields).map(k => ts.createPropertyAssignment(k, toExpression(dsl.fields[k])))
         )
       ])
     case 'literals':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [
-        toLiteralExpression(model.values)
-      ])
+      return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [toLiteralExpression(dsl.values)])
     case 'literalsOr':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [
-        toLiteralExpression(model.values),
-        toExpression(model.dsl)
+      return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [
+        toLiteralExpression(dsl.values),
+        toExpression(dsl.dsl)
       ])
     case 'lazy':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [
-        ts.createArrowFunction(undefined, undefined, [], undefined, undefined, toExpression(model.dsl))
+      return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [
+        ts.createArrowFunction(undefined, undefined, [], undefined, undefined, toExpression(dsl.dsl))
       ])
     case 'sum':
       return ts.createCall(
-        ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [ts.createStringLiteral(model.tag)]),
+        ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [ts.createStringLiteral(dsl.tag)]),
         undefined,
         [
           ts.createObjectLiteral(
-            Object.keys(model.dsls).map(k => ts.createPropertyAssignment(k, toExpression(model.dsls[k])))
+            Object.keys(dsl.dsls).map(k => ts.createPropertyAssignment(k, toExpression(dsl.dsls[k])))
           )
         ]
       )

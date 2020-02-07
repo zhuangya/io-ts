@@ -97,7 +97,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(encoder: Encoder<A>): Encoder<Array<A>> { ... }
+export function array<A>(items: Encoder<A>): Encoder<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -204,7 +204,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(encoders: { [K in keyof A]: Encoder<A[K]> }): Encoder<Partial<A>> { ... }
+export function partial<A>(fields: { [K in keyof A]: Encoder<A[K]> }): Encoder<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -214,7 +214,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(encoder: Encoder<A>): Encoder<Record<string, A>> { ... }
+export function record<A>(codomain: Encoder<A>): Encoder<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -247,12 +247,12 @@ Added in v3.0.0
 
 ```ts
 export function tuple<A, B, C, D, E>(
-  encoders: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>, Encoder<E>]
+  items: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>, Encoder<E>]
 ): Encoder<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(encoders: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>]): Encoder<[A, B, C, D]>
-export function tuple<A, B, C>(encoders: [Encoder<A>, Encoder<B>, Encoder<C>]): Encoder<[A, B, C]>
-export function tuple<A, B>(encoders: [Encoder<A>, Encoder<B>]): Encoder<[A, B]>
-export function tuple<A>(encoders: [Encoder<A>]): Encoder<[A]> { ... }
+export function tuple<A, B, C, D>(items: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>]): Encoder<[A, B, C, D]>
+export function tuple<A, B, C>(items: [Encoder<A>, Encoder<B>, Encoder<C>]): Encoder<[A, B, C]>
+export function tuple<A, B>(items: [Encoder<A>, Encoder<B>]): Encoder<[A, B]>
+export function tuple<A>(items: [Encoder<A>]): Encoder<[A]> { ... }
 ```
 
 Added in v3.0.0
@@ -262,7 +262,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(encoders: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> { ... }
+export function type<A>(fields: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> { ... }
 ```
 
 Added in v3.0.0

@@ -150,7 +150,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const record: <A>(eq: Eq<A>) => Eq<Record<string, A>> = ...
+export const record: <A>(codomain: Eq<A>) => Eq<Record<string, A>> = ...
 ```
 
 Added in v3.0.0

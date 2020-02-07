@@ -82,27 +82,27 @@ export type DSL =
     }
   | {
       readonly _tag: 'type'
-      readonly dsls: Record<string, DSL>
+      readonly fields: Record<string, DSL>
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'partial'
-      readonly dsls: Record<string, DSL>
+      readonly fields: Record<string, DSL>
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'record'
-      readonly dsl: DSL
+      readonly codomain: DSL
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'array'
-      readonly dsl: DSL
+      readonly items: DSL
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'tuple'
-      readonly dsls: NonEmptyArray<DSL>
+      readonly items: NonEmptyArray<DSL>
       readonly id: string | undefined
     }
   | {
@@ -169,7 +169,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array(dsl: DSL, id?: string): DSL { ... }
+export function array(items: DSL, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -249,7 +249,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial(dsls: Record<string, DSL>, id?: string): DSL { ... }
+export function partial(fields: Record<string, DSL>, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -259,7 +259,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record(dsl: DSL, id?: string): DSL { ... }
+export function record(codomain: DSL, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -289,7 +289,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple(dsls: NonEmptyArray<DSL>, id?: string): DSL { ... }
+export function tuple(items: NonEmptyArray<DSL>, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -299,7 +299,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type(dsls: Record<string, DSL>, id?: string): DSL { ... }
+export function type(fields: Record<string, DSL>, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0

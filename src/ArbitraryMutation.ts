@@ -107,16 +107,16 @@ export function parse<A, B>(am: ArbitraryMutation<A>, parser: (a: A) => Either<s
 /**
  * @since 3.0.0
  */
-export function type<A>(ams: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<A> {
-  const keys = Object.keys(ams)
+export function type<A>(fields: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<A> {
+  const keys = Object.keys(fields)
   if (keys.length === 0) {
     return make(fc.constant([]), fc.constant({} as A))
   }
   const mutations: Record<string, fc.Arbitrary<unknown>> = {}
   const arbitraries: { [K in keyof A]: fc.Arbitrary<A[K]> } = {} as any
-  for (const k in ams) {
-    mutations[k] = ams[k].mutation
-    arbitraries[k] = ams[k].arbitrary
+  for (const k in fields) {
+    mutations[k] = fields[k].mutation
+    arbitraries[k] = fields[k].arbitrary
   }
   const key: fc.Arbitrary<string> = fc.oneof(...keys.map(key => fc.constant(key)))
   const arbitrary = A.type(arbitraries)
@@ -133,16 +133,16 @@ function nonEmpty(o: object): boolean {
 /**
  * @since 3.0.0
  */
-export function partial<A>(ams: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<Partial<A>> {
-  const keys = Object.keys(ams)
+export function partial<A>(fields: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<Partial<A>> {
+  const keys = Object.keys(fields)
   if (keys.length === 0) {
     return make(fc.constant([]), fc.constant({} as A))
   }
   const mutations: Record<string, fc.Arbitrary<unknown>> = {}
   const arbitraries: { [K in keyof A]: fc.Arbitrary<A[K]> } = {} as any
-  for (const k in ams) {
-    mutations[k] = ams[k].mutation
-    arbitraries[k] = ams[k].arbitrary
+  for (const k in fields) {
+    mutations[k] = fields[k].mutation
+    arbitraries[k] = fields[k].arbitrary
   }
   const key: fc.Arbitrary<string> = fc.oneof(...keys.map(key => fc.constant(key)))
   const arbitrary = A.partial(arbitraries)
@@ -155,35 +155,35 @@ export function partial<A>(ams: { [K in keyof A]: ArbitraryMutation<A[K]> }): Ar
 /**
  * @since 3.0.0
  */
-export function record<A>(am: ArbitraryMutation<A>): ArbitraryMutation<Record<string, A>> {
-  return make(A.record(am.mutation).filter(nonEmpty), A.record(am.arbitrary))
+export function record<A>(codomain: ArbitraryMutation<A>): ArbitraryMutation<Record<string, A>> {
+  return make(A.record(codomain.mutation).filter(nonEmpty), A.record(codomain.arbitrary))
 }
 
 /**
  * @since 3.0.0
  */
-export function array<A>(am: ArbitraryMutation<A>): ArbitraryMutation<Array<A>> {
-  return make(A.array(am.mutation).filter(isNonEmpty), A.array(am.arbitrary))
+export function array<A>(items: ArbitraryMutation<A>): ArbitraryMutation<Array<A>> {
+  return make(A.array(items.mutation).filter(isNonEmpty), A.array(items.arbitrary))
 }
 
 /**
  * @since 3.0.0
  */
 export function tuple<A, B, C, D, E>(
-  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>, ArbitraryMutation<E>]
+  items: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>, ArbitraryMutation<E>]
 ): ArbitraryMutation<[A, B, C, D, E]>
 export function tuple<A, B, C, D>(
-  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
+  items: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
 ): ArbitraryMutation<[A, B, C, D]>
 export function tuple<A, B, C>(
-  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
+  items: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
 ): ArbitraryMutation<[A, B, C]>
-export function tuple<A, B>(ams: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<[A, B]>
-export function tuple<A>(ams: [ArbitraryMutation<A>]): ArbitraryMutation<[A]>
-export function tuple(ams: Array<ArbitraryMutation<unknown>>): ArbitraryMutation<unknown> {
-  const mutations = ams.map(am => am.mutation)
-  const arbitraries = ams.map(am => am.arbitrary)
-  const index: fc.Arbitrary<number> = fc.oneof(...ams.map((_, i) => fc.constant(i)))
+export function tuple<A, B>(items: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<[A, B]>
+export function tuple<A>(items: [ArbitraryMutation<A>]): ArbitraryMutation<[A]>
+export function tuple(items: Array<ArbitraryMutation<unknown>>): ArbitraryMutation<unknown> {
+  const mutations = items.map(am => am.mutation)
+  const arbitraries = items.map(am => am.arbitrary)
+  const index: fc.Arbitrary<number> = fc.oneof(...items.map((_, i) => fc.constant(i)))
   const arbitrary = A.tuple(arbitraries as any)
   return make(
     arbitrary.chain(a => index.chain(index => mutations[index].map(m => unsafeUpdateAt(index, m, a)))),

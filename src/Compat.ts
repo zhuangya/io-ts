@@ -105,47 +105,47 @@ export function refinement<A, B extends A>(
 /**
  * @since 3.0.0
  */
-export function type<A>(compats: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> {
-  return make(codec.type(compats, id), guard.type(compats, id))
+export function type<A>(fields: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> {
+  return make(codec.type(fields, id), guard.type(fields, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function partial<A>(compats: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> {
-  return make(codec.partial(compats, id), guard.partial(compats, id))
+export function partial<A>(fields: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> {
+  return make(codec.partial(fields, id), guard.partial(fields, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function record<A>(compat: Compat<A>, id?: string): Compat<Record<string, A>> {
-  return make(codec.record(compat, id), guard.record(compat, id))
+export function record<A>(codomain: Compat<A>, id?: string): Compat<Record<string, A>> {
+  return make(codec.record(codomain, id), guard.record(codomain, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function array<A>(compat: Compat<A>, id?: string): Compat<Array<A>> {
-  return make(codec.array(compat, id), guard.array(compat, id))
+export function array<A>(items: Compat<A>, id?: string): Compat<Array<A>> {
+  return make(codec.array(items, id), guard.array(items, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function tuple<A, B, C, D, E>(
-  compats: [Compat<A>, Compat<B>, Compat<C>, Compat<D>, Compat<E>],
+  items: [Compat<A>, Compat<B>, Compat<C>, Compat<D>, Compat<E>],
   id?: string
 ): Compat<[A, B, C, D, E]>
 export function tuple<A, B, C, D>(
-  compats: [Compat<A>, Compat<B>, Compat<C>, Compat<D>],
+  compitemsats: [Compat<A>, Compat<B>, Compat<C>, Compat<D>],
   id?: string
 ): Compat<[A, B, C, D]>
-export function tuple<A, B, C>(compats: [Compat<A>, Compat<B>, Compat<C>], id?: string): Compat<[A, B, C]>
+export function tuple<A, B, C>(items: [Compat<A>, Compat<B>, Compat<C>], id?: string): Compat<[A, B, C]>
 export function tuple<A, B>(compats: [Compat<A>, Compat<B>], id?: string): Compat<[A, B]>
-export function tuple<A>(compats: [Compat<A>], id?: string): Compat<[A]>
-export function tuple(compats: any, id?: string): Compat<any> {
-  return make(codec.tuple(compats, id), guard.tuple(compats, id))
+export function tuple<A>(items: [Compat<A>], id?: string): Compat<[A]>
+export function tuple(items: any, id?: string): Compat<any> {
+  return make(codec.tuple(items, id), guard.tuple(items, id))
 }
 
 /**

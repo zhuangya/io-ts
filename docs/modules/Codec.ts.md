@@ -142,7 +142,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(codec: Codec<A>, id?: string): Codec<Array<A>> { ... }
+export function array<A>(items: Codec<A>, id?: string): Codec<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -241,7 +241,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> { ... }
+export function partial<A>(fields: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -251,7 +251,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codec: Codec<A>, id?: string): Codec<Record<string, A>> { ... }
+export function record<A>(codomain: Codec<A>, id?: string): Codec<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -298,13 +298,13 @@ Added in v3.0.0
 
 ```ts
 export function tuple<A, B, C, D, E>(
-  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
+  items: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
   id?: string
 ): Codec<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>], id?: string): Codec<[A, B, C, D]>
-export function tuple<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>], id?: string): Codec<[A, B, C]>
-export function tuple<A, B>(codecs: [Codec<A>, Codec<B>], id?: string): Codec<[A, B]>
-export function tuple<A>(codecs: [Codec<A>], id?: string): Codec<[A]> { ... }
+export function tuple<A, B, C, D>(items: [Codec<A>, Codec<B>, Codec<C>, Codec<D>], id?: string): Codec<[A, B, C, D]>
+export function tuple<A, B, C>(items: [Codec<A>, Codec<B>, Codec<C>], id?: string): Codec<[A, B, C]>
+export function tuple<A, B>(items: [Codec<A>, Codec<B>], id?: string): Codec<[A, B]>
+export function tuple<A>(items: [Codec<A>], id?: string): Codec<[A]> { ... }
 ```
 
 Added in v3.0.0
@@ -314,7 +314,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> { ... }
+export function type<A>(fields: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> { ... }
 ```
 
 Added in v3.0.0

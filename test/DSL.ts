@@ -17,7 +17,7 @@ describe('DSL', () => {
       values: [null],
       dsl: {
         _tag: 'type',
-        dsls: {
+        fields: {
           a: { _tag: 'string' },
           b: { _tag: 'number' }
         },
@@ -51,7 +51,7 @@ describe('DSL', () => {
     const expression = DSL.type({ a: DSL.string, b: DSL.number })
     assert.deepStrictEqual(expression, {
       _tag: 'type',
-      dsls: {
+      fields: {
         a: { _tag: 'string' },
         b: { _tag: 'number' }
       },
@@ -63,7 +63,7 @@ describe('DSL', () => {
     const expression = DSL.partial({ a: DSL.string, b: DSL.number })
     assert.deepStrictEqual(expression, {
       _tag: 'partial',
-      dsls: {
+      fields: {
         a: { _tag: 'string' },
         b: { _tag: 'number' }
       },
@@ -73,17 +73,21 @@ describe('DSL', () => {
 
   it('record', () => {
     const expression = DSL.record(DSL.number)
-    assert.deepStrictEqual(expression, { _tag: 'record', dsl: { _tag: 'number' }, id: undefined })
+    assert.deepStrictEqual(expression, { _tag: 'record', codomain: { _tag: 'number' }, id: undefined })
   })
 
   it('array', () => {
     const expression = DSL.array(DSL.number)
-    assert.deepStrictEqual(expression, { _tag: 'array', dsl: { _tag: 'number' }, id: undefined })
+    assert.deepStrictEqual(expression, { _tag: 'array', items: { _tag: 'number' }, id: undefined })
   })
 
   it('tuple', () => {
     const expression = DSL.tuple([DSL.string, DSL.number])
-    assert.deepStrictEqual(expression, { _tag: 'tuple', dsls: [{ _tag: 'string' }, { _tag: 'number' }], id: undefined })
+    assert.deepStrictEqual(expression, {
+      _tag: 'tuple',
+      items: [{ _tag: 'string' }, { _tag: 'number' }],
+      id: undefined
+    })
   })
 
   it('intersection', () => {
@@ -97,21 +101,21 @@ describe('DSL', () => {
       dsls: [
         {
           _tag: 'type',
-          dsls: {
+          fields: {
             a: { _tag: 'string' }
           },
           id: undefined
         },
         {
           _tag: 'type',
-          dsls: {
+          fields: {
             b: { _tag: 'number' }
           },
           id: undefined
         },
         {
           _tag: 'type',
-          dsls: {
+          fields: {
             c: { _tag: 'boolean' }
           },
           id: undefined
@@ -132,7 +136,7 @@ describe('DSL', () => {
       dsls: {
         A: {
           _tag: 'type',
-          dsls: {
+          fields: {
             _tag: { _tag: 'literals', values: ['A'], id: undefined },
             a: { _tag: 'string' }
           },
@@ -140,7 +144,7 @@ describe('DSL', () => {
         },
         B: {
           _tag: 'type',
-          dsls: {
+          fields: {
             _tag: { _tag: 'literals', values: ['B'], id: undefined },
             b: { _tag: 'number' }
           },
@@ -173,7 +177,7 @@ describe('DSL', () => {
         _tag: 'lazy',
         dsl: {
           _tag: 'type',
-          dsls: {
+          fields: {
             a: { _tag: 'number' },
             b: { _tag: 'literalsOr', values: [null], dsl: { _tag: '$ref', id: 'A' }, id: undefined }
           },

@@ -26,19 +26,19 @@ export interface Schemable<F extends URIS> {
   readonly boolean: Kind<F, boolean>
   readonly UnknownArray: Kind<F, Array<unknown>>
   readonly UnknownRecord: Kind<F, Record<string, unknown>>
-  readonly type: <A>(schemas: { [K in keyof A]: Kind<F, A[K]> }, id?: string) => Kind<F, A>
-  readonly partial: <A>(schemas: { [K in keyof A]: Kind<F, A[K]> }, id?: string) => Kind<F, Partial<A>>
-  readonly record: <A>(schema: Kind<F, A>, id?: string) => Kind<F, Record<string, A>>
-  readonly array: <A>(schema: Kind<F, A>, id?: string) => Kind<F, Array<A>>
+  readonly type: <A>(fields: { [K in keyof A]: Kind<F, A[K]> }, id?: string) => Kind<F, A>
+  readonly partial: <A>(fields: { [K in keyof A]: Kind<F, A[K]> }, id?: string) => Kind<F, Partial<A>>
+  readonly record: <A>(codomain: Kind<F, A>, id?: string) => Kind<F, Record<string, A>>
+  readonly array: <A>(items: Kind<F, A>, id?: string) => Kind<F, Array<A>>
   readonly tuple: {
-    <A, B, C, D, E>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>, Kind<F, E>], id?: string): Kind<
+    <A, B, C, D, E>(items: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>, Kind<F, E>], id?: string): Kind<
       F,
       [A, B, C, D, E]
     >
-    <A, B, C, D>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>], id?: string): Kind<F, [A, B, C, D]>
-    <A, B, C>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>], id?: string): Kind<F, [A, B, C]>
-    <A, B>(schemas: [Kind<F, A>, Kind<F, B>], id?: string): Kind<F, [A, B]>
-    <A>(schemas: [Kind<F, A>], id?: string): Kind<F, [A]>
+    <A, B, C, D>(items: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>], id?: string): Kind<F, [A, B, C, D]>
+    <A, B, C>(items: [Kind<F, A>, Kind<F, B>, Kind<F, C>], id?: string): Kind<F, [A, B, C]>
+    <A, B>(items: [Kind<F, A>, Kind<F, B>], id?: string): Kind<F, [A, B]>
+    <A>(items: [Kind<F, A>], id?: string): Kind<F, [A]>
   }
   readonly intersection: {
     <A, B, C, D, E>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>, Kind<F, E>], id?: string): Kind<

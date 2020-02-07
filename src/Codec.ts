@@ -145,44 +145,44 @@ export function refinement<A, B extends A>(
 /**
  * @since 3.0.0
  */
-export function type<A>(codecs: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> {
-  return make(decoder.type(codecs, id), encoder.type(codecs, id))
+export function type<A>(fields: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> {
+  return make(decoder.type(fields, id), encoder.type(fields, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function partial<A>(codecs: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> {
-  return make(decoder.partial(codecs, id), encoder.partial(codecs, id))
+export function partial<A>(fields: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> {
+  return make(decoder.partial(fields, id), encoder.partial(fields, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function record<A>(codec: Codec<A>, id?: string): Codec<Record<string, A>> {
-  return make(decoder.record(codec, id), encoder.record(codec, id))
+export function record<A>(codomain: Codec<A>, id?: string): Codec<Record<string, A>> {
+  return make(decoder.record(codomain, id), encoder.record(codomain, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function array<A>(codec: Codec<A>, id?: string): Codec<Array<A>> {
-  return make(decoder.array(codec, id), encoder.array(codec, id))
+export function array<A>(items: Codec<A>, id?: string): Codec<Array<A>> {
+  return make(decoder.array(items, id), encoder.array(items, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function tuple<A, B, C, D, E>(
-  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
+  items: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
   id?: string
 ): Codec<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>], id?: string): Codec<[A, B, C, D]>
-export function tuple<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>], id?: string): Codec<[A, B, C]>
-export function tuple<A, B>(codecs: [Codec<A>, Codec<B>], id?: string): Codec<[A, B]>
-export function tuple<A>(codecs: [Codec<A>], id?: string): Codec<[A]>
-export function tuple(codecs: any, id?: string): Codec<any> {
-  return make(decoder.tuple(codecs, id), encoder.tuple(codecs, id))
+export function tuple<A, B, C, D>(items: [Codec<A>, Codec<B>, Codec<C>, Codec<D>], id?: string): Codec<[A, B, C, D]>
+export function tuple<A, B, C>(items: [Codec<A>, Codec<B>, Codec<C>], id?: string): Codec<[A, B, C]>
+export function tuple<A, B>(items: [Codec<A>, Codec<B>], id?: string): Codec<[A, B]>
+export function tuple<A>(items: [Codec<A>], id?: string): Codec<[A]>
+export function tuple(items: any, id?: string): Codec<any> {
+  return make(decoder.tuple(items, id), encoder.tuple(items, id))
 }
 
 /**

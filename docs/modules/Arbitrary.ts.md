@@ -101,7 +101,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(arb: Arbitrary<A>): Arbitrary<Array<A>> { ... }
+export function array<A>(items: Arbitrary<A>): Arbitrary<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -190,7 +190,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(arbs: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<Partial<A>> { ... }
+export function partial<A>(fields: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -200,7 +200,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(arb: Arbitrary<A>): Arbitrary<Record<string, A>> { ... }
+export function record<A>(codomain: Arbitrary<A>): Arbitrary<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -233,14 +233,14 @@ Added in v3.0.0
 
 ```ts
 export function tuple<A, B, C, D, E>(
-  arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>, Arbitrary<D>, Arbitrary<E>]
+  items: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>, Arbitrary<D>, Arbitrary<E>]
 ): Arbitrary<[A, B, C, D, E]>
 export function tuple<A, B, C, D>(
-  arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>, Arbitrary<D>]
+  items: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>, Arbitrary<D>]
 ): Arbitrary<[A, B, C, D]>
-export function tuple<A, B, C>(arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>]): Arbitrary<[A, B, C]>
-export function tuple<A, B>(arbs: [Arbitrary<A>, Arbitrary<B>]): Arbitrary<[A, B]>
-export function tuple<A>(arbs: [Arbitrary<A>]): Arbitrary<[A]> { ... }
+export function tuple<A, B, C>(items: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>]): Arbitrary<[A, B, C]>
+export function tuple<A, B>(items: [Arbitrary<A>, Arbitrary<B>]): Arbitrary<[A, B]>
+export function tuple<A>(items: [Arbitrary<A>]): Arbitrary<[A]> { ... }
 ```
 
 Added in v3.0.0
@@ -250,7 +250,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(arbs: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<A> { ... }
+export function type<A>(fields: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<A> { ... }
 ```
 
 Added in v3.0.0
