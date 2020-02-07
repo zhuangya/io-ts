@@ -87,12 +87,12 @@ export const UnknownRecord: Encoder<Record<string, unknown>> = id
 /**
  * @since 3.0.0
  */
-export function type<A>(fields: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> {
+export function type<A>(properties: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> {
   return {
     encode: a => {
       const o: Record<string, unknown> = {}
-      for (const k in fields) {
-        o[k] = fields[k].encode(a[k])
+      for (const k in properties) {
+        o[k] = properties[k].encode(a[k])
       }
       return o
     }
@@ -102,16 +102,16 @@ export function type<A>(fields: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> {
 /**
  * @since 3.0.0
  */
-export function partial<A>(fields: { [K in keyof A]: Encoder<A[K]> }): Encoder<Partial<A>> {
+export function partial<A>(properties: { [K in keyof A]: Encoder<A[K]> }): Encoder<Partial<A>> {
   return {
     encode: a => {
       const o: Record<string, unknown> = {}
-      for (const k in fields) {
+      for (const k in properties) {
         const v: A[Extract<keyof A, string>] | undefined = a[k]
-        // don't add missing fields
+        // don't add missing properties
         if (U.hasOwnProperty(a, k)) {
-          // don't strip undefined fields
-          o[k] = v === undefined ? v : fields[k].encode(v)
+          // don't strip undefined properties
+          o[k] = v === undefined ? v : properties[k].encode(v)
         }
       }
       return o

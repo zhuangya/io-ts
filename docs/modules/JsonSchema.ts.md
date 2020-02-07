@@ -191,7 +191,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(fields: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<Partial<A>> { ... }
+export function partial<A>(properties: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -251,7 +251,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(fields: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<A> { ... }
+export function type<A>(properties: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<A> { ... }
 ```
 
 Added in v3.0.0

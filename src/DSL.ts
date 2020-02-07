@@ -40,12 +40,12 @@ export type DSL =
     }
   | {
       readonly _tag: 'type'
-      readonly fields: Record<string, DSL>
+      readonly properties: Record<string, DSL>
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'partial'
-      readonly fields: Record<string, DSL>
+      readonly properties: Record<string, DSL>
       readonly id: string | undefined
     }
   | {
@@ -154,15 +154,15 @@ export const UnknownRecord: DSL = { _tag: 'UnknownRecord' }
 /**
  * @since 3.0.0
  */
-export function type(fields: Record<string, DSL>, id?: string): DSL {
-  return { _tag: 'type', fields, id }
+export function type(properties: Record<string, DSL>, id?: string): DSL {
+  return { _tag: 'type', properties, id }
 }
 
 /**
  * @since 3.0.0
  */
-export function partial(fields: Record<string, DSL>, id?: string): DSL {
-  return { _tag: 'partial', fields, id }
+export function partial(properties: Record<string, DSL>, id?: string): DSL {
+  return { _tag: 'partial', properties, id }
 }
 
 /**

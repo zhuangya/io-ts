@@ -107,16 +107,16 @@ export function parse<A, B>(am: ArbitraryMutation<A>, parser: (a: A) => Either<s
 /**
  * @since 3.0.0
  */
-export function type<A>(fields: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<A> {
-  const keys = Object.keys(fields)
+export function type<A>(properties: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<A> {
+  const keys = Object.keys(properties)
   if (keys.length === 0) {
     return make(fc.constant([]), fc.constant({} as A))
   }
   const mutations: Record<string, fc.Arbitrary<unknown>> = {}
   const arbitraries: { [K in keyof A]: fc.Arbitrary<A[K]> } = {} as any
-  for (const k in fields) {
-    mutations[k] = fields[k].mutation
-    arbitraries[k] = fields[k].arbitrary
+  for (const k in properties) {
+    mutations[k] = properties[k].mutation
+    arbitraries[k] = properties[k].arbitrary
   }
   const key: fc.Arbitrary<string> = fc.oneof(...keys.map(key => fc.constant(key)))
   const arbitrary = A.type(arbitraries)
@@ -133,16 +133,16 @@ function nonEmpty(o: object): boolean {
 /**
  * @since 3.0.0
  */
-export function partial<A>(fields: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<Partial<A>> {
-  const keys = Object.keys(fields)
+export function partial<A>(properties: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<Partial<A>> {
+  const keys = Object.keys(properties)
   if (keys.length === 0) {
     return make(fc.constant([]), fc.constant({} as A))
   }
   const mutations: Record<string, fc.Arbitrary<unknown>> = {}
   const arbitraries: { [K in keyof A]: fc.Arbitrary<A[K]> } = {} as any
-  for (const k in fields) {
-    mutations[k] = fields[k].mutation
-    arbitraries[k] = fields[k].arbitrary
+  for (const k in properties) {
+    mutations[k] = properties[k].mutation
+    arbitraries[k] = properties[k].arbitrary
   }
   const key: fc.Arbitrary<string> = fc.oneof(...keys.map(key => fc.constant(key)))
   const arbitrary = A.partial(arbitraries)

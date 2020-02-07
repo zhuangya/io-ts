@@ -296,7 +296,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(fields: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<Partial<A>> { ... }
+export function partial<A>(properties: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -358,7 +358,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(fields: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<A> { ... }
+export function type<A>(properties: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<A> { ... }
 ```
 
 Added in v3.0.0

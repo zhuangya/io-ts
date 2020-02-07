@@ -137,7 +137,7 @@ export function parse<A, B>(decoder: Decoder<A>, parser: (a: A) => E.Either<stri
 /**
  * @since 3.0.0
  */
-export function type<A>(fields: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<A> {
+export function type<A>(properties: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<A> {
   return {
     decode: u => {
       const e = UnknownRecord.decode(u)
@@ -147,8 +147,8 @@ export function type<A>(fields: { [K in keyof A]: Decoder<A[K]> }, id?: string):
         const r = e.right
         let a: A = {} as any
         const es: Array<[string, DE.DecodeError]> = []
-        for (const k in fields) {
-          const e = fields[k].decode(r[k])
+        for (const k in properties) {
+          const e = properties[k].decode(r[k])
           if (E.isLeft(e)) {
             es.push([k, e.left])
           } else {
@@ -164,7 +164,7 @@ export function type<A>(fields: { [K in keyof A]: Decoder<A[K]> }, id?: string):
 /**
  * @since 3.0.0
  */
-export function partial<A>(fields: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<Partial<A>> {
+export function partial<A>(properties: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<Partial<A>> {
   return {
     decode: u => {
       const e = UnknownRecord.decode(u)
@@ -174,15 +174,15 @@ export function partial<A>(fields: { [K in keyof A]: Decoder<A[K]> }, id?: strin
         const r = e.right
         let a: Partial<A> = {}
         const es: Array<[string, DE.DecodeError]> = []
-        for (const k in fields) {
-          // don't add missing fields
+        for (const k in properties) {
+          // don't add missing properties
           if (U.hasOwnProperty(r, k)) {
             const rk = r[k]
-            // don't strip undefined fields
+            // don't strip undefined properties
             if (rk === undefined) {
               a[k] = undefined
             } else {
-              const e = fields[k].decode(rk)
+              const e = properties[k].decode(rk)
               if (E.isLeft(e)) {
                 es.push([k, e.left])
               } else {

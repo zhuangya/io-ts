@@ -17,7 +17,7 @@
  * Open questions:
  * - is it possible to define a Semigroup for DecodeError?
  * - is it possible to handle `enum`s?
- * - is it possible to define a Decoder which fails on additional fields?
+ * - is it possible to define a Decoder which fails on additional properties?
  * - is it possible to get only the first error?
  * - readonly?
  * - does it support recursion in schemas?
@@ -145,15 +145,15 @@ export function refinement<A, B extends A>(
 /**
  * @since 3.0.0
  */
-export function type<A>(fields: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> {
-  return make(decoder.type(fields, id), encoder.type(fields, id))
+export function type<A>(properties: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> {
+  return make(decoder.type(properties, id), encoder.type(properties, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function partial<A>(fields: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> {
-  return make(decoder.partial(fields, id), encoder.partial(fields, id))
+export function partial<A>(properties: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> {
+  return make(decoder.partial(properties, id), encoder.partial(properties, id))
 }
 
 /**

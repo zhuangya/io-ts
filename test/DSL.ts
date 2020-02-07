@@ -17,7 +17,7 @@ describe('DSL', () => {
       values: [null],
       dsl: {
         _tag: 'type',
-        fields: {
+        properties: {
           a: { _tag: 'string' },
           b: { _tag: 'number' }
         },
@@ -51,7 +51,7 @@ describe('DSL', () => {
     const expression = DSL.type({ a: DSL.string, b: DSL.number })
     assert.deepStrictEqual(expression, {
       _tag: 'type',
-      fields: {
+      properties: {
         a: { _tag: 'string' },
         b: { _tag: 'number' }
       },
@@ -63,7 +63,7 @@ describe('DSL', () => {
     const expression = DSL.partial({ a: DSL.string, b: DSL.number })
     assert.deepStrictEqual(expression, {
       _tag: 'partial',
-      fields: {
+      properties: {
         a: { _tag: 'string' },
         b: { _tag: 'number' }
       },
@@ -101,21 +101,21 @@ describe('DSL', () => {
       dsls: [
         {
           _tag: 'type',
-          fields: {
+          properties: {
             a: { _tag: 'string' }
           },
           id: undefined
         },
         {
           _tag: 'type',
-          fields: {
+          properties: {
             b: { _tag: 'number' }
           },
           id: undefined
         },
         {
           _tag: 'type',
-          fields: {
+          properties: {
             c: { _tag: 'boolean' }
           },
           id: undefined
@@ -136,7 +136,7 @@ describe('DSL', () => {
       dsls: {
         A: {
           _tag: 'type',
-          fields: {
+          properties: {
             _tag: { _tag: 'literals', values: ['A'], id: undefined },
             a: { _tag: 'string' }
           },
@@ -144,7 +144,7 @@ describe('DSL', () => {
         },
         B: {
           _tag: 'type',
-          fields: {
+          properties: {
             _tag: { _tag: 'literals', values: ['B'], id: undefined },
             b: { _tag: 'number' }
           },
@@ -177,7 +177,7 @@ describe('DSL', () => {
         _tag: 'lazy',
         dsl: {
           _tag: 'type',
-          fields: {
+          properties: {
             a: { _tag: 'number' },
             b: { _tag: 'literalsOr', values: [null], dsl: { _tag: '$ref', id: 'A' }, id: undefined }
           },

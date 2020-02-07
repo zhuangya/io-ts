@@ -74,8 +74,8 @@ export function toTypeNode(dsl: DSL.DSL): ts.TypeNode {
     case 'type':
     case 'partial':
       const typeLiteralNode = ts.createTypeLiteralNode(
-        Object.keys(dsl.fields).map(k =>
-          ts.createPropertySignature(undefined, k, undefined, toTypeNode(dsl.fields[k]), undefined)
+        Object.keys(dsl.properties).map(k =>
+          ts.createPropertySignature(undefined, k, undefined, toTypeNode(dsl.properties[k]), undefined)
         )
       )
       if (dsl._tag === 'partial') {
@@ -138,7 +138,7 @@ export function toExpression(dsl: DSL.DSL): ts.Expression {
     case 'partial':
       return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [
         ts.createObjectLiteral(
-          Object.keys(dsl.fields).map(k => ts.createPropertyAssignment(k, toExpression(dsl.fields[k])))
+          Object.keys(dsl.properties).map(k => ts.createPropertyAssignment(k, toExpression(dsl.properties[k])))
         )
       ])
     case 'literals':

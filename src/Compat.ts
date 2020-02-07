@@ -105,15 +105,15 @@ export function refinement<A, B extends A>(
 /**
  * @since 3.0.0
  */
-export function type<A>(fields: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> {
-  return make(codec.type(fields, id), guard.type(fields, id))
+export function type<A>(properties: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> {
+  return make(codec.type(properties, id), guard.type(properties, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function partial<A>(fields: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> {
-  return make(codec.partial(fields, id), guard.partial(fields, id))
+export function partial<A>(properties: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> {
+  return make(codec.partial(properties, id), guard.partial(properties, id))
 }
 
 /**

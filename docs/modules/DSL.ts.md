@@ -82,12 +82,12 @@ export type DSL =
     }
   | {
       readonly _tag: 'type'
-      readonly fields: Record<string, DSL>
+      readonly properties: Record<string, DSL>
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'partial'
-      readonly fields: Record<string, DSL>
+      readonly properties: Record<string, DSL>
       readonly id: string | undefined
     }
   | {
@@ -249,7 +249,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial(fields: Record<string, DSL>, id?: string): DSL { ... }
+export function partial(properties: Record<string, DSL>, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0
@@ -299,7 +299,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type(fields: Record<string, DSL>, id?: string): DSL { ... }
+export function type(properties: Record<string, DSL>, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0

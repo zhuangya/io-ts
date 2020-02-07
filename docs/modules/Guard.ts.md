@@ -178,7 +178,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(fields: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>> { ... }
+export function partial<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -244,7 +244,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(fields: { [K in keyof A]: Guard<A[K]> }): Guard<A> { ... }
+export function type<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<A> { ... }
 ```
 
 Added in v3.0.0

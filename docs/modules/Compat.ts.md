@@ -205,7 +205,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(fields: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> { ... }
+export function partial<A>(properties: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -281,7 +281,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(fields: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> { ... }
+export function type<A>(properties: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> { ... }
 ```
 
 Added in v3.0.0

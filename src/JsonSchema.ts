@@ -81,21 +81,21 @@ export const UnknownRecord: JsonSchema<Record<string, unknown>> = C.make(() => (
 /**
  * @since 3.0.0
  */
-export function type<A>(fields: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<A> {
+export function type<A>(properties: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<A> {
   return C.make(() => ({
     type: 'object',
-    properties: runSequence(fields),
-    required: Object.keys(fields)
+    properties: runSequence(properties),
+    required: Object.keys(properties)
   }))
 }
 
 /**
  * @since 3.0.0
  */
-export function partial<A>(fields: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<Partial<A>> {
+export function partial<A>(properties: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<Partial<A>> {
   return C.make(() => ({
     type: 'object',
-    properties: runSequence(fields)
+    properties: runSequence(properties)
   }))
 }
 

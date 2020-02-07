@@ -28,7 +28,7 @@ Open questions:
 
 - is it possible to define a Semigroup for DecodeError?
 - is it possible to handle `enum`s?
-- is it possible to define a Decoder which fails on additional fields?
+- is it possible to define a Decoder which fails on additional properties?
 - is it possible to get only the first error?
 - readonly?
 - does it support recursion in schemas?
@@ -241,7 +241,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(fields: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> { ... }
+export function partial<A>(properties: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -314,7 +314,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(fields: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> { ... }
+export function type<A>(properties: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> { ... }
 ```
 
 Added in v3.0.0

@@ -85,15 +85,15 @@ export function parse<A, B>(arb: Arbitrary<A>, parser: (a: A) => Either<string, 
 /**
  * @since 3.0.0
  */
-export function type<A>(fields: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<A> {
-  return fc.record(fields)
+export function type<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<A> {
+  return fc.record(properties)
 }
 
 /**
  * @since 3.0.0
  */
-export function partial<A>(fields: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<Partial<A>> {
-  return fc.record(fields, { withDeletedKeys: true })
+export function partial<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<Partial<A>> {
+  return fc.record(properties, { withDeletedKeys: true })
 }
 
 /**

@@ -100,14 +100,14 @@ export function refinement<A, B extends A>(guard: Guard<A>, parser: (a: A) => Ei
 /**
  * @since 3.0.0
  */
-export function type<A>(fields: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
+export function type<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
   return {
     is: (u: unknown): u is A => {
       if (!UnknownRecord.is(u)) {
         return false
       }
-      for (const k in fields) {
-        if (!fields[k].is(u[k])) {
+      for (const k in properties) {
+        if (!properties[k].is(u[k])) {
           return false
         }
       }
@@ -119,15 +119,15 @@ export function type<A>(fields: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
 /**
  * @since 3.0.0
  */
-export function partial<A>(fields: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>> {
+export function partial<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>> {
   return {
     is: (u: unknown): u is Partial<A> => {
       if (!UnknownRecord.is(u)) {
         return false
       }
-      for (const k in fields) {
+      for (const k in properties) {
         const v = u[k]
-        if (v !== undefined && !fields[k].is(v)) {
+        if (v !== undefined && !properties[k].is(v)) {
           return false
         }
       }

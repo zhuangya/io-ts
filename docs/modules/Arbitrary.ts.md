@@ -190,7 +190,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(fields: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<Partial<A>> { ... }
+export function partial<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -250,7 +250,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(fields: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<A> { ... }
+export function type<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<A> { ... }
 ```
 
 Added in v3.0.0
