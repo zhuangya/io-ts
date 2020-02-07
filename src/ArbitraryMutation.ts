@@ -2,9 +2,9 @@
  * @since 3.0.0
  */
 import * as fc from 'fast-check'
-import * as C from 'fp-ts/lib/Const'
 import { Either, isLeft } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import { isNonEmpty, unsafeUpdateAt } from 'fp-ts/lib/Array'
 import * as A from './Arbitrary'
 import * as S from './Schemable'
 import * as G from './Guard'
@@ -17,14 +17,12 @@ import { not } from 'fp-ts/lib/function'
 /**
  * @since 3.0.0
  */
-export interface Model<A> extends fc.Arbitrary<unknown> {
-  arb: fc.Arbitrary<A>
+export interface ArbitraryMutation<A> {
+  /** the mutation */
+  mutation: fc.Arbitrary<unknown>
+  /** the corresponding valid arbitrary */
+  arbitrary: fc.Arbitrary<A>
 }
-
-/**
- * @since 3.0.0
- */
-export type ArbitraryMutation<A> = C.Const<Model<A>, A>
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -33,15 +31,17 @@ export type ArbitraryMutation<A> = C.Const<Model<A>, A>
 /**
  * @since 3.0.0
  */
-export function make<A>(mutation: fc.Arbitrary<unknown>, arb: fc.Arbitrary<A>): ArbitraryMutation<A> {
-  return C.make(Object.assign(mutation, { arb }))
+export function make<A>(mutation: fc.Arbitrary<unknown>, arbitrary: fc.Arbitrary<A>): ArbitraryMutation<A> {
+  return { mutation, arbitrary }
 }
+
+const literalsArbitrary: A.Arbitrary<S.Literal> = A.union([A.string, A.number, A.boolean, fc.constant(null)])
 
 /**
  * @since 3.0.0
  */
 export function literals<A extends S.Literal>(values: NonEmptyArray<A>): ArbitraryMutation<A> {
-  return make(fc.string().filter(not(G.literals(values).is)), A.literals(values))
+  return make(literalsArbitrary.filter(not(G.literals(values).is)), A.literals(values))
 }
 
 /**
@@ -49,9 +49,9 @@ export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Arbitra
  */
 export function literalsOr<A extends S.Literal, B>(
   values: NonEmptyArray<A>,
-  mutation: ArbitraryMutation<B>
+  am: ArbitraryMutation<B>
 ): ArbitraryMutation<A | B> {
-  return make(fc.oneof(literals(values), mutation), A.literalsOr(values, mutation.arb))
+  return make(A.union([literals(values).mutation, am.mutation]), A.literalsOr(values, am.arbitrary))
 }
 
 // -------------------------------------------------------------------------------------
@@ -71,7 +71,14 @@ export const number: ArbitraryMutation<number> = make(fc.oneof<string | boolean>
 /**
  * @since 3.0.0
  */
-export const boolean: ArbitraryMutation<boolean> = make(fc.oneof<string | number>(A.string, A.number), A.boolean)
+export const boolean: ArbitraryMutation<boolean> = make(
+  fc.oneof<string | number>(
+    A.string,
+    A.number,
+    fc.oneof(fc.constant('true'), fc.constant('false'), fc.constant('0'), fc.constant('1'))
+  ),
+  A.boolean
+)
 
 /**
  * @since 3.0.0
@@ -90,112 +97,117 @@ export const UnknownRecord: ArbitraryMutation<Record<string, unknown>> = make(A.
 /**
  * @since 3.0.0
  */
-export function parse<A, B>(mutation: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> {
+export function parse<A, B>(am: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> {
   return make(
-    mutation.arb.filter(a => isLeft(parser(a))),
-    A.parse(mutation.arb, parser)
+    am.arbitrary.filter(a => isLeft(parser(a))),
+    A.parse(am.arbitrary, parser)
   )
 }
 
 /**
  * @since 3.0.0
  */
-export function type<A>(mutations: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<A> {
-  const muts: Record<string, fc.Arbitrary<unknown>> = {}
-  const arbs: { [K in keyof A]: fc.Arbitrary<A[K]> } = {} as any
-  for (const k in mutations) {
-    muts[k] = mutations[k]
-    arbs[k] = mutations[k].arb
+export function type<A>(ams: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<A> {
+  const keys = Object.keys(ams)
+  if (keys.length === 0) {
+    return make(fc.constant([]), fc.constant({} as A))
   }
-  return make(
-    fc.record(muts, { withDeletedKeys: true }).filter(pru => Object.keys(pru).length > 0),
-    A.type(arbs)
-  )
-}
-
-/**
- * @since 3.0.0
- */
-export function partial<A>(mutations: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<Partial<A>> {
-  const muts: Record<string, fc.Arbitrary<unknown>> = {}
-  const arbs: { [K in keyof A]: fc.Arbitrary<A[K]> } = {} as any
-  for (const k in mutations) {
-    muts[k] = mutations[k]
-    arbs[k] = mutations[k].arb
+  const mutations: Record<string, fc.Arbitrary<unknown>> = {}
+  const arbitraries: { [K in keyof A]: fc.Arbitrary<A[K]> } = {} as any
+  for (const k in ams) {
+    mutations[k] = ams[k].mutation
+    arbitraries[k] = ams[k].arbitrary
   }
+  const key: fc.Arbitrary<string> = fc.oneof(...keys.map(key => fc.constant(key)))
+  const arbitrary = A.type(arbitraries)
   return make(
-    A.partial(muts).filter(pru => Object.keys(pru).length > 0),
-    A.partial(arbs)
+    arbitrary.chain(a => key.chain(key => mutations[key].map(m => ({ ...a, [key]: m })))),
+    arbitrary
+  )
+}
+
+function nonEmpty(o: object): boolean {
+  return Object.keys(o).length > 0
+}
+
+/**
+ * @since 3.0.0
+ */
+export function partial<A>(ams: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<Partial<A>> {
+  const keys = Object.keys(ams)
+  if (keys.length === 0) {
+    return make(fc.constant([]), fc.constant({} as A))
+  }
+  const mutations: Record<string, fc.Arbitrary<unknown>> = {}
+  const arbitraries: { [K in keyof A]: fc.Arbitrary<A[K]> } = {} as any
+  for (const k in ams) {
+    mutations[k] = ams[k].mutation
+    arbitraries[k] = ams[k].arbitrary
+  }
+  const key: fc.Arbitrary<string> = fc.oneof(...keys.map(key => fc.constant(key)))
+  const arbitrary = A.partial(arbitraries)
+  return make(
+    arbitrary.filter(nonEmpty).chain(a => key.chain(key => mutations[key].map(m => ({ ...a, [key]: m })))),
+    arbitrary
   )
 }
 
 /**
  * @since 3.0.0
  */
-export function record<A>(mutation: ArbitraryMutation<A>): ArbitraryMutation<Record<string, A>> {
-  return make(
-    A.record(mutation).filter(ru => Object.keys(ru).length > 0),
-    A.record(mutation.arb)
-  )
+export function record<A>(am: ArbitraryMutation<A>): ArbitraryMutation<Record<string, A>> {
+  return make(A.record(am.mutation).filter(nonEmpty), A.record(am.arbitrary))
 }
 
 /**
  * @since 3.0.0
  */
-export function array<A>(mutation: ArbitraryMutation<A>): ArbitraryMutation<Array<A>> {
-  return make(
-    A.array(mutation).filter(us => us.length > 0),
-    A.array(mutation.arb)
-  )
+export function array<A>(am: ArbitraryMutation<A>): ArbitraryMutation<Array<A>> {
+  return make(A.array(am.mutation).filter(isNonEmpty), A.array(am.arbitrary))
 }
 
 /**
  * @since 3.0.0
  */
 export function tuple<A, B, C, D, E>(
-  mutations: [
-    ArbitraryMutation<A>,
-    ArbitraryMutation<B>,
-    ArbitraryMutation<C>,
-    ArbitraryMutation<D>,
-    ArbitraryMutation<E>
-  ]
+  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>, ArbitraryMutation<E>]
 ): ArbitraryMutation<[A, B, C, D, E]>
 export function tuple<A, B, C, D>(
-  mutations: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
+  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
 ): ArbitraryMutation<[A, B, C, D]>
 export function tuple<A, B, C>(
-  mutations: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
+  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
 ): ArbitraryMutation<[A, B, C]>
-export function tuple<A, B>(mutations: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<[A, B]>
-export function tuple<A>(mutations: [ArbitraryMutation<A>]): ArbitraryMutation<[A]>
-export function tuple(mutations: Array<ArbitraryMutation<any>>): ArbitraryMutation<any> {
-  return make(A.tuple(mutations as any), A.tuple(mutations.map(m => m.arb) as any))
+export function tuple<A, B>(ams: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<[A, B]>
+export function tuple<A>(ams: [ArbitraryMutation<A>]): ArbitraryMutation<[A]>
+export function tuple(ams: Array<ArbitraryMutation<unknown>>): ArbitraryMutation<unknown> {
+  const mutations = ams.map(am => am.mutation)
+  const arbitraries = ams.map(am => am.arbitrary)
+  const index: fc.Arbitrary<number> = fc.oneof(...ams.map((_, i) => fc.constant(i)))
+  const arbitrary = A.tuple(arbitraries as any)
+  return make(
+    arbitrary.chain(a => index.chain(index => mutations[index].map(m => unsafeUpdateAt(index, m, a)))),
+    arbitrary
+  )
 }
 
 /**
  * @since 3.0.0
  */
 export function intersection<A, B, C, D, E>(
-  mutations: [
-    ArbitraryMutation<A>,
-    ArbitraryMutation<B>,
-    ArbitraryMutation<C>,
-    ArbitraryMutation<D>,
-    ArbitraryMutation<E>
-  ],
-  name?: string
+  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>, ArbitraryMutation<E>]
 ): ArbitraryMutation<A & B & C & D & E>
 export function intersection<A, B, C, D>(
-  mutations: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>],
-  name?: string
+  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
 ): ArbitraryMutation<A & B & C & D>
 export function intersection<A, B, C>(
-  mutations: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
+  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
 ): ArbitraryMutation<A & B & C>
-export function intersection<A, B>(mutations: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<A & B>
-export function intersection(mutations: Array<ArbitraryMutation<any>>): ArbitraryMutation<any> {
-  return make(A.intersection(mutations as any), A.intersection(mutations.map(m => m.arb) as any))
+export function intersection<A, B>(ams: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<A & B>
+export function intersection(ams: Array<ArbitraryMutation<any>>): ArbitraryMutation<any> {
+  const mutations = ams.map(am => am.mutation)
+  const arbitraries = ams.map(am => am.arbitrary)
+  return make(A.intersection(mutations as any), A.intersection(arbitraries as any))
 }
 
 /**
@@ -204,18 +216,17 @@ export function intersection(mutations: Array<ArbitraryMutation<any>>): Arbitrar
 export function sum<T extends string>(
   tag: T
 ): <A>(
-  mutations: { [K in keyof A]: ArbitraryMutation<A[K]> }
+  ams: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ) => ArbitraryMutation<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
   const f = A.sum(tag)
-  return <A>(mutations: { [K in keyof A]: ArbitraryMutation<A[K]> }) => {
-    const muts: Record<string, fc.Arbitrary<unknown>> = {}
-    const arbs: { [K in keyof A]: fc.Arbitrary<A[K]> } = {} as any
-    for (const k in mutations) {
-      muts[k] = mutations[k].map(a => Object.assign(a, { [tag]: k }))
-      arbs[k] = mutations[k].arb
+  return <A>(ams: { [K in keyof A]: ArbitraryMutation<A[K]> }) => {
+    const mutations: Record<string, fc.Arbitrary<unknown>> = {}
+    const arbitraries: { [K in keyof A]: fc.Arbitrary<A[K]> } = {} as any
+    for (const k in ams) {
+      mutations[k] = ams[k].mutation
+      arbitraries[k] = ams[k].arbitrary
     }
-
-    return make(f(muts), f(arbs))
+    return make(f(mutations), f(arbitraries))
   }
 }
 
@@ -224,8 +235,8 @@ export function sum<T extends string>(
  */
 export function lazy<A>(f: () => ArbitraryMutation<A>): ArbitraryMutation<A> {
   return make(
-    A.lazy(f),
-    A.lazy(() => f().arb)
+    A.lazy(() => f().mutation),
+    A.lazy(() => f().arbitrary)
   )
 }
 
@@ -233,9 +244,11 @@ export function lazy<A>(f: () => ArbitraryMutation<A>): ArbitraryMutation<A> {
  * @since 3.0.0
  */
 export function union<A extends [unknown, ...Array<unknown>]>(
-  mutations: { [K in keyof A]: ArbitraryMutation<A[K]> }
+  ams: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ): ArbitraryMutation<A[number]> {
-  return make(A.union(mutations as any), A.union(mutations.map(m => m.arb) as any))
+  const mutations = ams.map(am => am.mutation)
+  const arbitraries = ams.map(am => am.arbitrary)
+  return make(A.union(mutations as any), A.union(arbitraries as any))
 }
 
 // -------------------------------------------------------------------------------------

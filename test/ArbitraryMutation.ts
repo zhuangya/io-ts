@@ -17,14 +17,30 @@ function make<A>(f: Schema<A>): Schema<A> {
 
 function assertWithLazy<A>(schema: Schema<A>): void {
   const arb = schema(Arb.arbitrary)
-  const mutation = schema(ArbMut.arbitraryMutation)
+  const am = schema(ArbMut.arbitraryMutation)
   const decoder = schema(D.decoder)
   const guard = schema(G.guard)
   fc.assert(fc.property(arb, a => guard.is(a) && isRight(decoder.decode(a))))
-  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
+  fc.assert(fc.property(am.mutation, m => !guard.is(m) && isLeft(decoder.decode(m))))
 }
 
 describe('ArbitraryMutation', () => {
+  describe('type', () => {
+    it('should support empty types', () => {
+      const schema = make(S => S.type({}))
+      const am = schema(ArbMut.arbitraryMutation)
+      fc.assert(fc.property(am.mutation, a => Array.isArray(a) && a.length === 0))
+    })
+  })
+
+  describe('partial', () => {
+    it('should support empty types', () => {
+      const schema = make(S => S.partial({}))
+      const am = schema(ArbMut.arbitraryMutation)
+      fc.assert(fc.property(am.mutation, a => Array.isArray(a) && a.length === 0))
+    })
+  })
+
   it('lazy', () => {
     interface A {
       a: string

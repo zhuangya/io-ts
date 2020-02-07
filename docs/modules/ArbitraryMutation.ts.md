@@ -12,8 +12,7 @@ Added in v3.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [Model (interface)](#model-interface)
-- [ArbitraryMutation (type alias)](#arbitrarymutation-type-alias)
+- [ArbitraryMutation (interface)](#arbitrarymutation-interface)
 - [URI (type alias)](#uri-type-alias)
 - [URI](#uri)
 - [UnknownArray](#unknownarray)
@@ -38,24 +37,17 @@ Added in v3.0.0
 
 ---
 
-# Model (interface)
+# ArbitraryMutation (interface)
 
 **Signature**
 
 ```ts
-export interface Model<A> extends fc.Arbitrary<unknown> {
-  arb: fc.Arbitrary<A>
+export interface ArbitraryMutation<A> {
+  /** the mutation */
+  mutation: fc.Arbitrary<unknown>
+  /** the corresponding valid arbitrary */
+  arbitrary: fc.Arbitrary<A>
 }
-```
-
-Added in v3.0.0
-
-# ArbitraryMutation (type alias)
-
-**Signature**
-
-```ts
-export type ArbitraryMutation<A> = C.Const<Model<A>, A>
 ```
 
 Added in v3.0.0
@@ -115,7 +107,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(mutation: ArbitraryMutation<A>): ArbitraryMutation<Array<A>> { ... }
+export function array<A>(am: ArbitraryMutation<A>): ArbitraryMutation<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -136,23 +128,15 @@ Added in v3.0.0
 
 ```ts
 export function intersection<A, B, C, D, E>(
-  mutations: [
-    ArbitraryMutation<A>,
-    ArbitraryMutation<B>,
-    ArbitraryMutation<C>,
-    ArbitraryMutation<D>,
-    ArbitraryMutation<E>
-  ],
-  name?: string
+  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>, ArbitraryMutation<E>]
 ): ArbitraryMutation<A & B & C & D & E>
 export function intersection<A, B, C, D>(
-  mutations: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>],
-  name?: string
+  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
 ): ArbitraryMutation<A & B & C & D>
 export function intersection<A, B, C>(
-  mutations: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
+  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
 ): ArbitraryMutation<A & B & C>
-export function intersection<A, B>(mutations: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<A & B> { ... }
+export function intersection<A, B>(ams: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -184,7 +168,7 @@ Added in v3.0.0
 ```ts
 export function literalsOr<A extends S.Literal, B>(
   values: NonEmptyArray<A>,
-  mutation: ArbitraryMutation<B>
+  am: ArbitraryMutation<B>
 ): ArbitraryMutation<A | B> { ... }
 ```
 
@@ -195,7 +179,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(mutation: fc.Arbitrary<unknown>, arb: fc.Arbitrary<A>): ArbitraryMutation<A> { ... }
+export function make<A>(mutation: fc.Arbitrary<unknown>, arbitrary: fc.Arbitrary<A>): ArbitraryMutation<A> { ... }
 ```
 
 Added in v3.0.0
@@ -215,7 +199,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function parse<A, B>(mutation: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> { ... }
+export function parse<A, B>(am: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> { ... }
 ```
 
 Added in v3.0.0
@@ -225,7 +209,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(mutations: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<Partial<A>> { ... }
+export function partial<A>(ams: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -235,7 +219,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(mutation: ArbitraryMutation<A>): ArbitraryMutation<Record<string, A>> { ... }
+export function record<A>(am: ArbitraryMutation<A>): ArbitraryMutation<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -258,7 +242,7 @@ Added in v3.0.0
 export function sum<T extends string>(
   tag: T
 ): <A>(
-  mutations: { [K in keyof A]: ArbitraryMutation<A[K]> }
+  ams: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ) => ArbitraryMutation<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> { ... }
 ```
 
@@ -270,22 +254,16 @@ Added in v3.0.0
 
 ```ts
 export function tuple<A, B, C, D, E>(
-  mutations: [
-    ArbitraryMutation<A>,
-    ArbitraryMutation<B>,
-    ArbitraryMutation<C>,
-    ArbitraryMutation<D>,
-    ArbitraryMutation<E>
-  ]
+  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>, ArbitraryMutation<E>]
 ): ArbitraryMutation<[A, B, C, D, E]>
 export function tuple<A, B, C, D>(
-  mutations: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
+  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
 ): ArbitraryMutation<[A, B, C, D]>
 export function tuple<A, B, C>(
-  mutations: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
+  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
 ): ArbitraryMutation<[A, B, C]>
-export function tuple<A, B>(mutations: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<[A, B]>
-export function tuple<A>(mutations: [ArbitraryMutation<A>]): ArbitraryMutation<[A]> { ... }
+export function tuple<A, B>(ams: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<[A, B]>
+export function tuple<A>(ams: [ArbitraryMutation<A>]): ArbitraryMutation<[A]> { ... }
 ```
 
 Added in v3.0.0
@@ -295,7 +273,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(mutations: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<A> { ... }
+export function type<A>(ams: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<A> { ... }
 ```
 
 Added in v3.0.0
@@ -306,7 +284,7 @@ Added in v3.0.0
 
 ```ts
 export function union<A extends [unknown, ...Array<unknown>]>(
-  mutations: { [K in keyof A]: ArbitraryMutation<A[K]> }
+  ams: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ): ArbitraryMutation<A[number]> { ... }
 ```
 

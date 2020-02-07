@@ -22,13 +22,13 @@ function make<A>(f: Schema<A>): Schema<A> {
 
 function assert<A>(schema: Schema<A>): void {
   const arb = schema(Arb.arbitrary)
-  const mutation = schema(ArbMut.arbitraryMutation)
+  const am = schema(ArbMut.arbitraryMutation)
   const compat = schema(C.compat)
   const eq = schema(E.eq)
   const guard = schema(G.guard)
   const validate = ajv.compile(schema(J.jsonSchema)())
   fc.assert(fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(compat.decode(a)) && Boolean(validate(a))))
-  fc.assert(fc.property(mutation, m => !guard.is(m) && isLeft(compat.decode(m))))
+  fc.assert(fc.property(am.mutation, m => !guard.is(m) && isLeft(compat.decode(m))))
 }
 
 interface SchemaWithUnion<A> {
@@ -41,7 +41,7 @@ function makeWithUnion<A>(f: SchemaWithUnion<A>): SchemaWithUnion<A> {
 
 function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
   const arb = schema(Arb.arbitrary)
-  const mutation = schema(ArbMut.arbitraryMutation)
+  const am = schema(ArbMut.arbitraryMutation)
   const compat = schema(C.compat)
   const validate = ajv.compile(schema(J.jsonSchema)())
   fc.assert(
@@ -50,7 +50,7 @@ function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
       a => compat.is(a) && isRight(compat.decode(a)) && Boolean(validate(a)) && isRight(compat.decode(compat.encode(a)))
     )
   )
-  fc.assert(fc.property(mutation, m => !compat.is(m) && isLeft(compat.decode(m))))
+  fc.assert(fc.property(am.mutation, m => !compat.is(m) && isLeft(compat.decode(m))))
 }
 
 interface SchemaWithRefinement<A> {
@@ -63,10 +63,10 @@ function makeWithRefinement<A>(f: SchemaWithRefinement<A>): SchemaWithRefinement
 
 function assertWithRefinement<A>(schema: SchemaWithRefinement<A>): void {
   const arb = schema(Arb.arbitrary)
-  const mutation = schema(ArbMut.arbitraryMutation)
+  const am = schema(ArbMut.arbitraryMutation)
   const compat = schema(C.compat)
   fc.assert(fc.property(arb, a => compat.is(a) && isRight(compat.decode(a))))
-  fc.assert(fc.property(mutation, m => !compat.is(m) && isLeft(compat.decode(m))))
+  fc.assert(fc.property(am.mutation, m => !compat.is(m) && isLeft(compat.decode(m))))
 }
 
 describe('Arbitrary', () => {

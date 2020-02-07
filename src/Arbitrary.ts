@@ -40,12 +40,18 @@ export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, arb
 /**
  * @since 3.0.0
  */
-export const string: Arbitrary<string> = fc.string()
+export const string: Arbitrary<string> = fc.oneof(
+  fc.string(),
+  fc.asciiString(),
+  fc.fullUnicodeString(),
+  fc.hexaString(),
+  fc.lorem()
+)
 
 /**
  * @since 3.0.0
  */
-export const number: Arbitrary<number> = fc.float()
+export const number: Arbitrary<number> = fc.oneof(fc.float(), fc.double(), fc.integer())
 
 /**
  * @since 3.0.0
@@ -116,7 +122,7 @@ export function tuple<A, B, C, D>(
 export function tuple<A, B, C>(arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>]): Arbitrary<[A, B, C]>
 export function tuple<A, B>(arbs: [Arbitrary<A>, Arbitrary<B>]): Arbitrary<[A, B]>
 export function tuple<A>(arbs: [Arbitrary<A>]): Arbitrary<[A]>
-export function tuple(arbs: Array<Arbitrary<any>>): Arbitrary<any> {
+export function tuple(arbs: Array<Arbitrary<unknown>>): Arbitrary<unknown> {
   return fc.genericTuple(arbs)
 }
 
@@ -141,10 +147,10 @@ export function intersection(arbs: Array<Arbitrary<any>>): Arbitrary<any> {
  * @since 3.0.0
  */
 export function sum<T extends string>(
-  tag: T
+  _tag: T
 ): <A>(arbs: { [K in keyof A]: Arbitrary<A[K]> }) => Arbitrary<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
   return (arbs: any) => {
-    return fc.oneof(...Object.keys(arbs).map(k => arbs[k].map((a: any) => ({ ...a, [tag]: k }))))
+    return fc.oneof(...Object.keys(arbs).map(k => arbs[k]))
   }
 }
 
