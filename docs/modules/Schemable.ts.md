@@ -28,6 +28,7 @@ Added in v3.0.0
 ```ts
 export interface Schemable<F extends URIS> {
   readonly URI: F
+  readonly literal: <A extends Literal>(value: A, id?: string) => Kind<F, A>
   readonly literals: <A extends Literal>(values: NonEmptyArray<A>, id?: string) => Kind<F, A>
   readonly literalsOr: <A extends Literal, B>(
     values: NonEmptyArray<A>,

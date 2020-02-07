@@ -22,6 +22,13 @@ export interface Arbitrary<A> extends fc.Arbitrary<A> {}
 /**
  * @since 3.0.0
  */
+export function literal<A extends S.Literal>(value: A): Arbitrary<A> {
+  return fc.constant(value)
+}
+
+/**
+ * @since 3.0.0
+ */
 export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Arbitrary<A> {
   return fc.oneof(...values.map(a => fc.constant(a)))
 }
@@ -196,6 +203,7 @@ declare module 'fp-ts/lib/HKT' {
  */
 export const arbitrary: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
+  literal,
   literals,
   literalsOr,
   string,

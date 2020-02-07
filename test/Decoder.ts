@@ -41,6 +41,13 @@ describe('Decoder', () => {
     })
   })
 
+  describe('literal', () => {
+    it('should reject an invalid input with the passed id', () => {
+      const decoder = D.literal(1, 'myid')
+      assert.deepStrictEqual(decoder.decode(null), E.left(DE.leaf(null, 'myid', 'Cannot decode null, expected myid')))
+    })
+  })
+
   describe('literals', () => {
     it('should reject an invalid input with the passed id', () => {
       const decoder = D.literals([1], 'myid')

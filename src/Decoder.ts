@@ -44,6 +44,14 @@ export function fromGuard<A>(guard: G.Guard<A>, id?: string, message?: (u: unkno
 /**
  * @since 3.0.0
  */
+export function literal<A extends S.Literal>(value: A, id?: string): Decoder<A> {
+  const expected = id ? id : JSON.stringify(value)
+  return fromGuard(G.literal(value), id, u => `Cannot decode ${JSON.stringify(u)}, expected ${expected}`)
+}
+
+/**
+ * @since 3.0.0
+ */
 export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: string): Decoder<A> {
   const expected = id ? id : values.map(value => JSON.stringify(value)).join(' | ')
   return fromGuard(G.literals(values), id, u => `Cannot decode ${JSON.stringify(u)}, expected ${expected}`)
@@ -433,6 +441,7 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
     decode: u => E.either.alt(fx.decode(u), () => fy().decode(u))
   }),
   zero: () => never,
+  literal,
   literals,
   literalsOr,
   string,

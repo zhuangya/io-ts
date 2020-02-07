@@ -23,6 +23,7 @@ Added in v3.0.0
 - [intersection](#intersection)
 - [jsonSchema](#jsonschema)
 - [lazy](#lazy)
+- [literal](#literal)
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [number](#number)
@@ -149,6 +150,16 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(id: string, f: () => JsonSchema<A>): JsonSchema<A> { ... }
+```
+
+Added in v3.0.0
+
+# literal
+
+**Signature**
+
+```ts
+export function literal<A extends S.Literal>(value: A): JsonSchema<A> { ... }
 ```
 
 Added in v3.0.0

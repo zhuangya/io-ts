@@ -43,6 +43,13 @@ export function make<A>(codec: Codec<A>, guard: Guard<A>): Compat<A> {
 /**
  * @since 3.0.0
  */
+export function literal<A extends Literal>(value: A, id?: string): Compat<A> {
+  return make(codec.literal(value, id), guard.literal(value, id))
+}
+
+/**
+ * @since 3.0.0
+ */
 export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Compat<A> {
   return make(codec.literals(values, id), guard.literals(values, id))
 }
@@ -228,6 +235,7 @@ declare module 'fp-ts/lib/HKT' {
  */
 export const compat: Schemable<URI> & WithRefinement<URI> & WithUnion<URI> = {
   URI,
+  literal,
   literals,
   literalsOr,
   string,

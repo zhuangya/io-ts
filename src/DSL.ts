@@ -13,6 +13,11 @@ import * as S from './Schemable'
  */
 export type DSL =
   | {
+      readonly _tag: 'literal'
+      readonly value: S.Literal
+      readonly id: string | undefined
+    }
+  | {
       readonly _tag: 'literals'
       readonly values: NonEmptyArray<S.Literal>
       readonly id: string | undefined
@@ -106,6 +111,13 @@ export interface Declaration {
  */
 export function $ref(id: string): DSL {
   return { _tag: '$ref', id }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function literal<A extends S.Literal>(value: A, id?: string): DSL {
+  return { _tag: 'literal', value, id }
 }
 
 /**

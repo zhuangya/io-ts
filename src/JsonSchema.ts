@@ -29,6 +29,13 @@ export type JsonSchema<A> = C.Const<IO<Model>, A>
 /**
  * @since 3.0.0
  */
+export function literal<A extends S.Literal>(value: A): JsonSchema<A> {
+  return literals([value])
+}
+
+/**
+ * @since 3.0.0
+ */
 export function literals<A extends S.Literal>(values: NonEmptyArray<A>): JsonSchema<A> {
   return C.make(() => ({ enum: values }))
 }
@@ -219,6 +226,7 @@ declare module 'fp-ts/lib/HKT' {
  */
 export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
+  literal,
   literals,
   literalsOr,
   string,

@@ -84,6 +84,8 @@ export function toTypeNode(dsl: DSL.DSL): ts.TypeNode {
       return typeLiteralNode
     case '$ref':
       return ts.createTypeReferenceNode(dsl.id, undefined)
+    case 'literal':
+      return ts.createUnionTypeNode(toLiteralTypeNode([dsl.value]))
     case 'literals':
       return ts.createUnionTypeNode(toLiteralTypeNode(dsl.values))
     case 'literalsOr':
@@ -95,17 +97,15 @@ export function toTypeNode(dsl: DSL.DSL): ts.TypeNode {
   }
 }
 
-function toLiteralExpression(values: Array<S.Literal>): ts.Expression {
-  return ts.createArrayLiteral(
-    values.map(
-      fold<ts.Expression>(
-        s => ts.createStringLiteral(s),
-        n => ts.createNumericLiteral(String(n)),
-        b => ts.createLiteral(b),
-        () => ts.createNull()
-      )
-    )
-  )
+const toLiteralExpression = fold<ts.Expression>(
+  s => ts.createStringLiteral(s),
+  n => ts.createNumericLiteral(String(n)),
+  b => ts.createLiteral(b),
+  () => ts.createNull()
+)
+
+function toLiteralExpressions(values: Array<S.Literal>): ts.Expression {
+  return ts.createArrayLiteral(values.map(toLiteralExpression))
 }
 
 /**
@@ -141,11 +141,13 @@ export function toExpression(dsl: DSL.DSL): ts.Expression {
           Object.keys(dsl.properties).map(k => ts.createPropertyAssignment(k, toExpression(dsl.properties[k])))
         )
       ])
+    case 'literal':
+      return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [toLiteralExpression(dsl.value)])
     case 'literals':
-      return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [toLiteralExpression(dsl.values)])
+      return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [toLiteralExpressions(dsl.values)])
     case 'literalsOr':
       return ts.createCall(ts.createPropertyAccess(schemable, dsl._tag), undefined, [
-        toLiteralExpression(dsl.values),
+        toLiteralExpressions(dsl.values),
         toExpression(dsl.dsl)
       ])
     case 'lazy':

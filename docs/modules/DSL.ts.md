@@ -22,6 +22,7 @@ Added in v3.0.0
 - [declaration](#declaration)
 - [intersection](#intersection)
 - [lazy](#lazy)
+- [literal](#literal)
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [number](#number)
@@ -54,6 +55,11 @@ Added in v3.0.0
 
 ```ts
 export type DSL =
+  | {
+      readonly _tag: 'literal'
+      readonly value: S.Literal
+      readonly id: string | undefined
+    }
   | {
       readonly _tag: 'literals'
       readonly values: NonEmptyArray<S.Literal>
@@ -210,6 +216,16 @@ Added in v3.0.0
 
 ```ts
 export function lazy(id: string, dsl: DSL): DSL { ... }
+```
+
+Added in v3.0.0
+
+# literal
+
+**Signature**
+
+```ts
+export function literal<A extends S.Literal>(value: A, id?: string): DSL { ... }
 ```
 
 Added in v3.0.0

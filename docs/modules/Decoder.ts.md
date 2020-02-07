@@ -28,6 +28,7 @@ Added in v3.0.0
 - [fromGuard](#fromguard)
 - [intersection](#intersection)
 - [lazy](#lazy)
+- [literal](#literal)
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [map](#map)
@@ -213,6 +214,16 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(id: string, f: () => Decoder<A>): Decoder<A> { ... }
+```
+
+Added in v3.0.0
+
+# literal
+
+**Signature**
+
+```ts
+export function literal<A extends S.Literal>(value: A, id?: string): Decoder<A> { ... }
 ```
 
 Added in v3.0.0

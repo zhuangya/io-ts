@@ -102,8 +102,8 @@ describe('transformers', () => {
     it('sum', () => {
       assertTypeNode(
         DSL.sum('_tag', {
-          A: DSL.type({ _tag: DSL.literals(['A']), a: DSL.string }),
-          B: DSL.type({ _tag: DSL.literals(['B']), b: DSL.number })
+          A: DSL.type({ _tag: DSL.literal('A'), a: DSL.string }),
+          B: DSL.type({ _tag: DSL.literal('B'), b: DSL.number })
         }),
         '{\n    _tag: "A";\n    a: string;\n} | {\n    _tag: "B";\n    b: number;\n}'
       )
@@ -187,10 +187,10 @@ describe('transformers', () => {
     it('sum', () => {
       assertExpression(
         DSL.sum('_tag', {
-          A: DSL.type({ _tag: DSL.literals(['A']), a: DSL.string }),
-          B: DSL.type({ _tag: DSL.literals(['B']), b: DSL.number })
+          A: DSL.type({ _tag: DSL.literal('A'), a: DSL.string }),
+          B: DSL.type({ _tag: DSL.literal('B'), b: DSL.number })
         }),
-        'S.sum("_tag")({ A: S.type({ _tag: S.literals(["A"]), a: S.string }), B: S.type({ _tag: S.literals(["B"]), b: S.number }) })'
+        'S.sum("_tag")({ A: S.type({ _tag: S.literal("A"), a: S.string }), B: S.type({ _tag: S.literal("B"), b: S.number }) })'
       )
     })
   })

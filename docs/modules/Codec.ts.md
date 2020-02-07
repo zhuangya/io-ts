@@ -67,6 +67,7 @@ Added in v3.0.0
 - [codec](#codec)
 - [intersection](#intersection)
 - [lazy](#lazy)
+- [literal](#literal)
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [make](#make)
@@ -192,6 +193,16 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(id: string, f: () => Codec<A>): Codec<A> { ... }
+```
+
+Added in v3.0.0
+
+# literal
+
+**Signature**
+
+```ts
+export function literal<A extends Literal>(value: A, id?: string): Codec<A> { ... }
 ```
 
 Added in v3.0.0

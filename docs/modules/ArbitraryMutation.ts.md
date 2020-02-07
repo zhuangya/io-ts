@@ -22,6 +22,7 @@ Added in v3.0.0
 - [boolean](#boolean)
 - [intersection](#intersection)
 - [lazy](#lazy)
+- [literal](#literal)
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [make](#make)
@@ -147,6 +148,16 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(f: () => ArbitraryMutation<A>): ArbitraryMutation<A> { ... }
+```
+
+Added in v3.0.0
+
+# literal
+
+**Signature**
+
+```ts
+export function literal<A extends S.Literal>(value: A): ArbitraryMutation<A> { ... }
 ```
 
 Added in v3.0.0

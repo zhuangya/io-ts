@@ -24,14 +24,18 @@ export interface Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Guard<A> {
-  const head = values[0]
-  const is =
-    values.length === 1
-      ? (u: unknown): u is A => u === head
-      : (u: unknown): u is A => values.findIndex(a => a === u) !== -1
+export function literal<A extends S.Literal>(value: A): Guard<A> {
   return {
-    is
+    is: (u: unknown): u is A => u === value
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Guard<A> {
+  return {
+    is: (u: unknown): u is A => values.findIndex(a => a === u) !== -1
   }
 }
 
@@ -262,6 +266,7 @@ declare module 'fp-ts/lib/HKT' {
  */
 export const guard: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = {
   URI,
+  literal,
   literals,
   literalsOr,
   string,

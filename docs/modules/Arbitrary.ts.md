@@ -22,6 +22,7 @@ Added in v3.0.0
 - [boolean](#boolean)
 - [intersection](#intersection)
 - [lazy](#lazy)
+- [literal](#literal)
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [number](#number)
@@ -141,6 +142,16 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(f: () => Arbitrary<A>): Arbitrary<A> { ... }
+```
+
+Added in v3.0.0
+
+# literal
+
+**Signature**
+
+```ts
+export function literal<A extends S.Literal>(value: A): Arbitrary<A> { ... }
 ```
 
 Added in v3.0.0

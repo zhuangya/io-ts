@@ -5,7 +5,7 @@ import { right, left } from 'fp-ts/lib/Either'
 
 describe('Eq', () => {
   it('literals', () => {
-    const eq = E.literals(['a', null])
+    const eq = E.eq.literals(['a', null])
     assert.deepStrictEqual(eq.equals('a', 'a'), true)
     assert.deepStrictEqual(eq.equals(null, null), true)
     assert.deepStrictEqual(eq.equals('a', null), false)
@@ -78,8 +78,8 @@ describe('Eq', () => {
   it('sum', () => {
     const sum = E.sum('_tag')
     const eq = sum({
-      A: E.type({ _tag: E.literals(['A']), a: E.string }),
-      B: E.type({ _tag: E.literals(['B']), b: E.number })
+      A: E.type({ _tag: E.eq.literal('A'), a: E.string }),
+      B: E.type({ _tag: E.eq.literal('B'), b: E.number })
     })
     assert.strictEqual(eq.equals({ _tag: 'A', a: 'a' }, { _tag: 'A', a: 'a' }), true)
     assert.strictEqual(eq.equals({ _tag: 'B', b: 1 }, { _tag: 'B', b: 1 }), true)

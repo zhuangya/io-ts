@@ -15,6 +15,7 @@ export type Literal = string | number | boolean | null
  */
 export interface Schemable<F extends URIS> {
   readonly URI: F
+  readonly literal: <A extends Literal>(value: A, id?: string) => Kind<F, A>
   readonly literals: <A extends Literal>(values: NonEmptyArray<A>, id?: string) => Kind<F, A>
   readonly literalsOr: <A extends Literal, B>(
     values: NonEmptyArray<A>,

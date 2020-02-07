@@ -22,13 +22,6 @@ import { Either } from 'fp-ts/lib/Either'
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(_as: NonEmptyArray<A>): Eq<A> {
-  return eqStrict
-}
-
-/**
- * @since 3.0.0
- */
 export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, eq: Eq<B>): Eq<A | B> {
   const literals = G.literals(as)
   return {
@@ -179,7 +172,8 @@ export function lazy<A>(f: () => Eq<A>): Eq<A> {
  */
 export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = {
   ...E.eq,
-  literals,
+  literal: () => eqStrict,
+  literals: () => eqStrict,
   literalsOr,
   string,
   number,

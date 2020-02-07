@@ -30,13 +30,6 @@ export interface Encoder<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(_as: NonEmptyArray<A>): Encoder<A> {
-  return id
-}
-
-/**
- * @since 3.0.0
- */
 export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, encoder: Encoder<B>): Encoder<A | B> {
   const literals = G.literals(as)
   return {
@@ -227,7 +220,8 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithRefinement<
   contramap: (fa, f) => ({
     encode: b => fa.encode(f(b))
   }),
-  literals,
+  literal: () => id,
+  literals: () => id,
   literalsOr,
   string,
   number,

@@ -22,6 +22,7 @@ Added in v3.0.0
 - [guard](#guard)
 - [intersection](#intersection)
 - [lazy](#lazy)
+- [literal](#literal)
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [number](#number)
@@ -139,6 +140,16 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(f: () => Guard<A>): Guard<A> { ... }
+```
+
+Added in v3.0.0
+
+# literal
+
+**Signature**
+
+```ts
+export function literal<A extends S.Literal>(value: A): Guard<A> { ... }
 ```
 
 Added in v3.0.0

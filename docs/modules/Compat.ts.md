@@ -30,6 +30,7 @@ Added in v3.0.0
 - [compat](#compat)
 - [intersection](#intersection)
 - [lazy](#lazy)
+- [literal](#literal)
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [make](#make)
@@ -152,6 +153,16 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(id: string, f: () => Compat<A>): Compat<A> { ... }
+```
+
+Added in v3.0.0
+
+# literal
+
+**Signature**
+
+```ts
+export function literal<A extends Literal>(value: A, id?: string): Compat<A> { ... }
 ```
 
 Added in v3.0.0

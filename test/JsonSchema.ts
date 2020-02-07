@@ -121,8 +121,8 @@ describe('JsonSchema', () => {
   it('sum', () => {
     const sum = J.sum('_tag')
 
-    const A = J.type({ _tag: J.literals(['A']), a: J.string })
-    const B = J.type({ _tag: J.literals(['B']), b: J.number })
+    const A = J.type({ _tag: J.literal('A'), a: J.string })
+    const B = J.type({ _tag: J.literal('B'), b: J.number })
     const validate = ajv.compile(sum({ A, B })())
     assert.strictEqual(validate({ _tag: 'A', a: 'a' }), true)
     assert.strictEqual(validate({ _tag: 'B', b: 1 }), true)

@@ -35,6 +35,13 @@ export function make<A>(mutation: fc.Arbitrary<unknown>, arbitrary: fc.Arbitrary
   return { mutation, arbitrary }
 }
 
+/**
+ * @since 3.0.0
+ */
+export function literal<A extends S.Literal>(value: A): ArbitraryMutation<A> {
+  return literals([value])
+}
+
 const literalsArbitrary: A.Arbitrary<S.Literal> = A.union([A.string, A.number, A.boolean, fc.constant(null)])
 
 /**
@@ -276,6 +283,7 @@ declare module 'fp-ts/lib/HKT' {
  */
 export const arbitraryMutation: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
   URI,
+  literal,
   literals,
   literalsOr,
   string,

@@ -80,6 +80,13 @@ export function make<A>(decoder: Decoder<A>, encoder: Encoder<A>): Codec<A> {
 /**
  * @since 3.0.0
  */
+export function literal<A extends Literal>(value: A, id?: string): Codec<A> {
+  return make(decoder.literal(value, id), encoder.literal(value, id))
+}
+
+/**
+ * @since 3.0.0
+ */
 export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Codec<A> {
   return make(decoder.literals(values, id), encoder.literals(values, id))
 }
@@ -246,6 +253,7 @@ declare module 'fp-ts/lib/HKT' {
 export const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI> = {
   URI,
   imap: (fa, f, g) => make(decoder.map(fa, f), encoder.contramap(fa, g)),
+  literal,
   literals,
   literalsOr,
   string,
