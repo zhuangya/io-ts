@@ -4,15 +4,6 @@ import * as DE from '../src/DecodeError'
 import * as D from '../src/Decoder'
 import { pipe } from 'fp-ts/lib/pipeable'
 
-export const NumberFromString: D.Decoder<number> = D.parse(
-  D.string,
-  s => {
-    const n = parseFloat(s)
-    return isNaN(n) ? E.left('not a number') : E.right(n)
-  },
-  'NumberFromString'
-)
-
 describe('Decoder', () => {
   describe('decoder', () => {
     it('map', () => {
@@ -53,7 +44,7 @@ describe('Decoder', () => {
   describe('literals', () => {
     it('should reject an invalid input with the passed id', () => {
       const decoder = D.literals([1], 'myid')
-      assert.deepStrictEqual(decoder.decode(null), E.left(DE.leaf(null, 'myid')))
+      assert.deepStrictEqual(decoder.decode(null), E.left(DE.leaf(null, 'myid', 'Cannot decode null, expected myid')))
     })
   })
 

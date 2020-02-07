@@ -183,7 +183,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function fromGuard<A>(guard: G.Guard<A>, id?: string): Decoder<A> { ... }
+export function fromGuard<A>(guard: G.Guard<A>, id?: string, message?: (u: unknown) => string): Decoder<A> { ... }
 ```
 
 Added in v3.0.0

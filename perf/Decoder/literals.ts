@@ -2,12 +2,12 @@ import * as Benchmark from 'benchmark'
 import { literals } from '../../src/Decoder'
 
 /*
-one (good) x 733,532,358 ops/sec ±0.38% (89 runs sampled)
-one (bad) x 724,720,855 ops/sec ±0.47% (84 runs sampled)
-strings (good) x 99,177,385 ops/sec ±0.64% (91 runs sampled)
-strings (bad) x 93,355,376 ops/sec ±0.56% (85 runs sampled)
-mixed (good) x 41,301,997 ops/sec ±0.45% (90 runs sampled)
-mixed (bad) x 33,521,174 ops/sec ±1.09% (90 runs sampled)
+one (good) x 734,729,573 ops/sec ±0.37% (91 runs sampled)
+one (bad) x 3,020,283 ops/sec ±1.84% (87 runs sampled)
+strings (good) x 96,093,413 ops/sec ±1.26% (82 runs sampled)
+strings (bad) x 2,975,751 ops/sec ±1.37% (89 runs sampled)
+mixed (good) x 42,544,474 ops/sec ±0.99% (89 runs sampled)
+mixed (bad) x 2,697,733 ops/sec ±1.96% (83 runs sampled)
 */
 
 const suite = new Benchmark.Suite()

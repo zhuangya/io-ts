@@ -35,9 +35,9 @@ export type TypeOf<D> = D extends Decoder<infer A> ? A : never
 /**
  * @since 3.0.0
  */
-export function fromGuard<A>(guard: G.Guard<A>, id?: string): Decoder<A> {
+export function fromGuard<A>(guard: G.Guard<A>, id?: string, message?: (u: unknown) => string): Decoder<A> {
   return {
-    decode: E.fromPredicate(guard.is, u => DE.leaf(u, id))
+    decode: E.fromPredicate(guard.is, u => DE.leaf(u, id, message ? message(u) : undefined))
   }
 }
 
@@ -45,7 +45,8 @@ export function fromGuard<A>(guard: G.Guard<A>, id?: string): Decoder<A> {
  * @since 3.0.0
  */
 export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: string): Decoder<A> {
-  return fromGuard(G.literals(values), id)
+  const expected = id ? id : values.map(value => JSON.stringify(value)).join(' | ')
+  return fromGuard(G.literals(values), id, u => `Cannot decode ${JSON.stringify(u)}, expected ${expected}`)
 }
 
 /**

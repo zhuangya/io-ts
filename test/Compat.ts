@@ -2,11 +2,25 @@ import * as assert from 'assert'
 import * as E from '../src/Encoder'
 import * as C from '../src/Compat'
 import * as G from '../src/Guard'
-import * as CT from './Codec'
+import * as Co from '../src/Codec'
+import * as D from '../src/Decoder'
 import { right, left } from 'fp-ts/lib/Either'
 import * as DE from '../src/DecodeError'
 
-export const NumberFromString: C.Compat<number> = C.make(CT.NumberFromString, G.number)
+const NumberFromString: C.Compat<number> = C.make(
+  Co.make(
+    D.parse(
+      D.string,
+      s => {
+        const n = parseFloat(s)
+        return isNaN(n) ? left('not a number') : right(n)
+      },
+      'NumberFromString'
+    ),
+    { encode: String }
+  ),
+  G.number
+)
 
 interface PositiveBrand {
   readonly Positive: unique symbol
@@ -22,7 +36,7 @@ type Int = number & IntBrand
 const intParser = (n: number) => (Number.isInteger(n) ? right(n as Int) : left('Int'))
 const Int: C.Compat<Int> = C.refinement(C.number, intParser)
 
-describe('Codec', () => {
+describe('Compat', () => {
   describe('string', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
@@ -76,7 +90,10 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.literals(['a', null])
-        assert.deepStrictEqual(codec.decode('b'), left(DE.leaf('b')))
+        assert.deepStrictEqual(
+          codec.decode('b'),
+          left(DE.leaf('b', undefined, 'Cannot decode "b", expected "a" | null'))
+        )
       })
     })
 
@@ -100,10 +117,18 @@ describe('Codec', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.literalsOr(['a', null], NumberFromString)
-        assert.deepStrictEqual(codec.decode(2), left(DE.or(2, [DE.leaf(2), DE.leaf(2, 'string')])))
+        assert.deepStrictEqual(
+          codec.decode(2),
+          left(DE.or(2, [DE.leaf(2, undefined, 'Cannot decode 2, expected "a" | null'), DE.leaf(2, 'string')]))
+        )
         assert.deepStrictEqual(
           codec.decode('b'),
-          left(DE.or('b', [DE.leaf('b'), DE.leaf('b', 'NumberFromString', 'not a number')]))
+          left(
+            DE.or('b', [
+              DE.leaf('b', undefined, 'Cannot decode "b", expected "a" | null'),
+              DE.leaf('b', 'NumberFromString', 'not a number')
+            ])
+          )
         )
       })
     })

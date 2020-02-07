@@ -4,9 +4,6 @@ import * as C from '../src/Codec'
 import * as D from '../src/Decoder'
 import * as E from '../src/Encoder'
 import * as DE from '../src/DecodeError'
-import * as DT from './Decoder'
-
-export const NumberFromString: C.Codec<number> = C.make(DT.NumberFromString, { encode: String })
 
 interface PositiveBrand {
   readonly Positive: unique symbol
