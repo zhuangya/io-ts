@@ -12,6 +12,11 @@ function make<A>(f: Schema<A>): Schema<A> {
 }
 
 //
+// literal
+//
+make(S => S.literal('a')) // $ExpectType Schema<"a">
+
+//
 // literals
 //
 make(S => S.literals(['a'])) // $ExpectType Schema<"a">
