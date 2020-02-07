@@ -37,16 +37,16 @@ Open questions:
 
 Schemas:
 
-- S.Schemable<URI> & S.WithRefinement<URI>
+- Schemable<URI> & WithRefinement<URI>
   - Codec
   - Encoder
   - Eq
-- S.Schemable<URI> & S.WithUnion<URI>
+- TypeScriptable<URI>
   - JsonSchema
-- S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI>
+- TypeScriptable<URI> & S.WithRefinement<URI>
   - Compat
   - Guard
-- S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI>
+- TypeScriptable<URI> & S.WithParse<URI>
   - Arbitrary
   - ArbitraryMutation
   - Decoder

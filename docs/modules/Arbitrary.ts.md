@@ -92,7 +92,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const arbitrary: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = ...
+export const arbitrary: S.TypeScriptable<URI> & S.WithParse<URI> = ...
 ```
 
 Added in v3.0.0

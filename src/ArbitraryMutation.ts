@@ -281,7 +281,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const arbitraryMutation: S.Schemable<URI> & S.WithParse<URI> & S.WithUnion<URI> = {
+export const arbitraryMutation: S.TypeScriptable<URI> & S.WithParse<URI> = {
   URI,
   literal,
   literals,

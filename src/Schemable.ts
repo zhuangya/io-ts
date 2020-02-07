@@ -59,6 +59,16 @@ export interface Schemable<F extends URIS> {
 /**
  * @since 3.0.0
  */
+export interface TypeScriptable<F extends URIS> extends Schemable<F> {
+  readonly union: <A extends [unknown, ...Array<unknown>]>(
+    schemas: { [K in keyof A]: Kind<F, A[K]> },
+    id?: string
+  ) => Kind<F, A[number]>
+}
+
+/**
+ * @since 3.0.0
+ */
 export interface WithRefinement<F extends URIS> {
   readonly refinement: <A, B extends A>(
     schema: Kind<F, A>,
@@ -72,16 +82,6 @@ export interface WithRefinement<F extends URIS> {
  */
 export interface WithParse<F extends URIS> extends WithRefinement<F> {
   readonly parse: <A, B>(schema: Kind<F, A>, parser: (a: A) => Either<string, B>, id?: string) => Kind<F, B>
-}
-
-/**
- * @since 3.0.0
- */
-export interface WithUnion<F extends URIS> {
-  readonly union: <A extends [unknown, ...Array<unknown>]>(
-    schemas: { [K in keyof A]: Kind<F, A[K]> },
-    id?: string
-  ) => Kind<F, A[number]>
 }
 
 /**

@@ -12,7 +12,7 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { Codec, codec } from './Codec'
 import { Guard, guard } from './Guard'
 import { decoder } from './Decoder'
-import { Literal, Schemable, WithRefinement, WithUnion } from './Schemable'
+import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -43,21 +43,21 @@ export function make<A>(codec: Codec<A>, guard: Guard<A>): Compat<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal>(value: A, id?: string): Compat<A> {
+export function literal<A extends S.Literal>(value: A, id?: string): Compat<A> {
   return make(codec.literal(value, id), guard.literal(value, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Compat<A> {
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: string): Compat<A> {
   return make(codec.literals(values, id), guard.literals(values, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(
+export function literalsOr<A extends S.Literal, B>(
   values: NonEmptyArray<A>,
   compat: Compat<B>,
   id?: string
@@ -233,7 +233,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const compat: Schemable<URI> & WithRefinement<URI> & WithUnion<URI> = {
+export const compat: S.TypeScriptable<URI> & S.WithRefinement<URI> = {
   URI,
   literal,
   literals,
@@ -251,6 +251,6 @@ export const compat: Schemable<URI> & WithRefinement<URI> & WithUnion<URI> = {
   intersection,
   sum,
   lazy,
-  refinement: refinement as WithRefinement<URI>['refinement'],
+  refinement: refinement as S.WithRefinement<URI>['refinement'],
   union
 }

@@ -123,7 +123,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const compat: Schemable<URI> & WithRefinement<URI> & WithUnion<URI> = ...
+export const compat: S.TypeScriptable<URI> & S.WithRefinement<URI> = ...
 ```
 
 Added in v3.0.0
@@ -162,7 +162,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends Literal>(value: A, id?: string): Compat<A> { ... }
+export function literal<A extends S.Literal>(value: A, id?: string): Compat<A> { ... }
 ```
 
 Added in v3.0.0
@@ -172,7 +172,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Compat<A> { ... }
+export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: string): Compat<A> { ... }
 ```
 
 Added in v3.0.0
@@ -182,7 +182,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(
+export function literalsOr<A extends S.Literal, B>(
   values: NonEmptyArray<A>,
   compat: Compat<B>,
   id?: string

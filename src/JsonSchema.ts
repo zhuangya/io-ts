@@ -224,7 +224,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = {
+export const jsonSchema: S.TypeScriptable<URI> = {
   URI,
   literal,
   literals,

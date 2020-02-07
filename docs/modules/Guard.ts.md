@@ -114,7 +114,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const guard: S.Schemable<URI> & S.WithRefinement<URI> & S.WithUnion<URI> = ...
+export const guard: S.TypeScriptable<URI> & S.WithRefinement<URI> = ...
 ```
 
 Added in v3.0.0
