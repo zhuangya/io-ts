@@ -296,12 +296,12 @@ export function tuple(items: Array<DSL<unknown>>, id?: string): DSL<Array<unknow
  * @since 3.0.0
  */
 export function intersection<A, B, C, D, E>(
-  DSLs: [DSL<A>, DSL<B>, DSL<C>, DSL<D>, DSL<E>],
+  dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>, DSL<E>],
   id?: string
 ): DSL<A & B & C & D & E>
-export function intersection<A, B, C, D>(DSLs: [DSL<A>, DSL<B>, DSL<C>, DSL<D>], id?: string): DSL<A & B & C & D>
-export function intersection<A, B, C>(DSLs: [DSL<A>, DSL<B>, DSL<C>], id?: string): DSL<A & B & C>
-export function intersection<A, B>(DSLs: [DSL<A>, DSL<B>], id?: string): DSL<A & B>
+export function intersection<A, B, C, D>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>], id?: string): DSL<A & B & C & D>
+export function intersection<A, B, C>(dsls: [DSL<A>, DSL<B>, DSL<C>], id?: string): DSL<A & B & C>
+export function intersection<A, B>(dsls: [DSL<A>, DSL<B>], id?: string): DSL<A & B>
 export function intersection(dsls: Array<DSL<unknown>>, id?: string): DSL<unknown> {
   return {
     dsl: () =>

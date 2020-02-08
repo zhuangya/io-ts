@@ -1,26 +1,22 @@
 /**
  * Breaking changes:
- * - remove all optional `name` arguments (use `withName` instead)
  * - remove `brand` combinator
  * - rename `recursive` to `lazy`
  *
  * FAQ
  * - is it possible to provide a custom message?
- *   - `refinement`
  *   - `withMessage` (already existing codecs)
+ *   - `refinement`
+ *   - `parse`
  * - how to change a field? (for example snake case to camel case)
  *   - `map`
- *
- * Open problems:
- * - is it possible to optimize unions (sum types)?
  *
  * Open questions:
  * - is it possible to define a Semigroup for DecodeError?
  * - is it possible to handle `enum`s?
  * - is it possible to define a Decoder which fails on additional properties?
  * - is it possible to get only the first error?
- * - readonly?
- * - does it support recursion in schemas?
+ * - readonly support?
  * - Is there a way to generate newtypes?
  * - Is there a way to generate branded types + smart constructors based on a user provided predicate?
  *
@@ -32,6 +28,8 @@
  * - Schemable<URI> & WithUnion<URI>
  *   - JsonSchema
  *   - DSL
+ *   - Expression
+ *   - TypeNode
  * - Schemable<URI> & WithUnion<URI> & WithRefinement<URI>
  *   - Compat
  *   - Guard

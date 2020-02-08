@@ -3,11 +3,11 @@ import * as DSL from '../src/DSL'
 import * as T from '../src/transformers'
 
 function assertTypeNode<A>(dsl: DSL.DSL<A>, expected: string): void {
-  assert.strictEqual(T.printNode(T.toTypeNode(dsl.dsl())), expected)
+  assert.strictEqual(T.printNode(T.toTypeNode(dsl.dsl()).typeNode()), expected)
 }
 
 function assertExpression<A>(dsl: DSL.DSL<A>, expected: string): void {
-  assert.strictEqual(T.printNode(T.toExpression(dsl.dsl())), expected)
+  assert.strictEqual(T.printNode(T.toExpression(dsl.dsl()).expression()), expected)
 }
 
 function assertDeclaration<A>(declaration: DSL.Declaration<A>, expected: string): void {

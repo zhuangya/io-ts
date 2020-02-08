@@ -3,10 +3,12 @@
  */
 import * as C from 'fp-ts/lib/Const'
 import * as O from 'fp-ts/lib/Option'
+import { pipe } from 'fp-ts/lib/pipeable'
+import * as R from 'fp-ts/lib/Record'
 import * as ts from 'typescript'
 import * as DSL from './DSL'
-import * as S from './Schemable'
-import { pipe } from 'fp-ts/lib/pipeable'
+import * as T from './TypeNode'
+import * as E from './Expression'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -37,163 +39,102 @@ const schemable = ts.createIdentifier('S')
 
 const make = ts.createIdentifier('make')
 
-function fold<R>(
-  onString: (s: string) => R,
-  onNumber: (n: number) => R,
-  onBoolean: (b: boolean) => R,
-  onNull: () => R
-): (literal: S.Literal) => R {
-  return literal => {
-    if (typeof literal === 'string') {
-      return onString(literal)
-    } else if (typeof literal === 'number') {
-      return onNumber(literal)
-    } else if (typeof literal === 'boolean') {
-      return onBoolean(literal)
-    } else {
-      return onNull()
-    }
-  }
-}
-
-function toLiteralTypeNode(values: Array<S.Literal>): Array<ts.TypeNode> {
-  return values.map(
-    fold<ts.TypeNode>(
-      s => ts.createLiteralTypeNode(ts.createStringLiteral(s)),
-      n => ts.createLiteralTypeNode(ts.createNumericLiteral(String(n))),
-      b => ts.createLiteralTypeNode(ts.createLiteral(b)),
-      () => ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword)
-    )
-  )
-}
-
 /**
  * @since 3.0.0
  */
-export function toTypeNode(model: DSL.Model): ts.TypeNode {
+export function toTypeNode(model: DSL.Model): T.TypeNode<unknown> {
   switch (model._tag) {
     case 'string':
-      return ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword)
+      return T.string
     case 'number':
-      return ts.createKeywordTypeNode(ts.SyntaxKind.NumberKeyword)
+      return T.number
     case 'boolean':
-      return ts.createKeywordTypeNode(ts.SyntaxKind.BooleanKeyword)
+      return T.boolean
     case 'UnknownArray':
-      return ts.createTypeReferenceNode('Array', [ts.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword)])
+      return T.UnknownArray
     case 'UnknownRecord':
-      return ts.createTypeReferenceNode('Record', [
-        ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
-        ts.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword)
-      ])
+      return T.UnknownRecord
     case 'array':
-      return ts.createTypeReferenceNode('Array', [toTypeNode(model.items)])
+      return T.array(toTypeNode(model.items))
     case 'record':
-      return ts.createTypeReferenceNode('Record', [
-        ts.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
-        toTypeNode(model.codomain)
-      ])
+      return T.record(toTypeNode(model.codomain))
     case 'union':
-      return ts.createUnionTypeNode(model.models.map(model => toTypeNode(model)))
+      return T.union(model.models.map(model => toTypeNode(model)) as any)
     case 'intersection':
-      return ts.createIntersectionTypeNode(model.models.map(model => toTypeNode(model)))
+      return T.intersection(model.models.map(model => toTypeNode(model)) as any)
     case 'tuple':
-      return ts.createTupleTypeNode(model.items.map(item => toTypeNode(item)))
+      return T.tuple(model.items.map(item => toTypeNode(item)) as any)
     case 'type':
-    case 'partial':
-      const typeLiteralNode = ts.createTypeLiteralNode(
-        Object.keys(model.properties).map(k =>
-          ts.createPropertySignature(undefined, k, undefined, toTypeNode(model.properties[k]), undefined)
-        )
+      return T.type(
+        R.record.map<DSL.Model, T.TypeNode<unknown>>(model.properties, model => toTypeNode(model))
       )
-      if (model._tag === 'partial') {
-        return ts.createTypeReferenceNode('Partial', [typeLiteralNode])
-      }
-      return typeLiteralNode
+    case 'partial':
+      return T.partial(
+        R.record.map<DSL.Model, T.TypeNode<unknown>>(model.properties, model => toTypeNode(model))
+      )
     case '$ref':
-      return ts.createTypeReferenceNode(model.id, undefined)
+      return T.$ref(model.id)
     case 'literal':
-      return ts.createUnionTypeNode(toLiteralTypeNode([model.value]))
+      return T.literal(model.value)
     case 'literals':
-      return ts.createUnionTypeNode(toLiteralTypeNode(model.values))
+      return T.literals(model.values)
     case 'literalsOr':
-      return ts.createUnionTypeNode([...toLiteralTypeNode(model.values), toTypeNode(model.model)])
+      return T.literalsOr(model.values, toTypeNode(model.model))
     case 'lazy':
-      return toTypeNode(model.model)
+      return T.lazy(model.id, () => toTypeNode(model.model))
     case 'sum':
-      return ts.createUnionTypeNode(Object.keys(model.models).map(k => toTypeNode(model.models[k])))
+      return T.sum(model.tag)(
+        R.record.map<DSL.Model, T.TypeNode<unknown>>(model.models, model => toTypeNode(model)) as any
+      )
   }
-}
-
-const toLiteralExpression = fold<ts.Expression>(
-  s => ts.createStringLiteral(s),
-  n => ts.createNumericLiteral(String(n)),
-  b => ts.createLiteral(b),
-  () => ts.createNull()
-)
-
-function toLiteralExpressions(values: Array<S.Literal>): ts.Expression {
-  return ts.createArrayLiteral(values.map(toLiteralExpression))
 }
 
 /**
  * @since 3.0.0
  */
-export function toExpression(model: DSL.Model): ts.Expression {
+export function toExpression(model: DSL.Model): E.Expression<unknown> {
   switch (model._tag) {
     case 'string':
+      return E.string
     case 'number':
+      return E.number
     case 'boolean':
+      return E.boolean
     case 'UnknownArray':
+      return E.UnknownArray
     case 'UnknownRecord':
-      return ts.createPropertyAccess(schemable, model._tag)
-    case '$ref':
-      return ts.createCall(ts.createIdentifier(model.id), undefined, [schemable])
-    case 'record':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [toExpression(model.codomain)])
+      return E.UnknownRecord
     case 'array':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [toExpression(model.items)])
+      return E.array(toExpression(model.items))
+    case 'record':
+      return E.record(toExpression(model.codomain))
     case 'union':
+      return E.union(model.models.map(model => toExpression(model)) as any)
     case 'intersection':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [
-        ts.createArrayLiteral(model.models.map(dsl => toExpression(dsl)))
-      ])
+      return E.intersection(model.models.map(model => toExpression(model)) as any)
     case 'tuple':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [
-        ts.createArrayLiteral(model.items.map(item => toExpression(item)))
-      ])
+      return E.tuple(model.items.map(item => toExpression(item)) as any)
     case 'type':
+      return E.type(
+        R.record.map<DSL.Model, E.Expression<unknown>>(model.properties, model => toExpression(model))
+      )
     case 'partial':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [
-        ts.createObjectLiteral(
-          Object.keys(model.properties).map(k => ts.createPropertyAssignment(k, toExpression(model.properties[k])))
-        )
-      ])
+      return E.partial(
+        R.record.map<DSL.Model, E.Expression<unknown>>(model.properties, model => toExpression(model))
+      )
+    case '$ref':
+      return E.$ref(model.id)
     case 'literal':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [
-        toLiteralExpression(model.value)
-      ])
+      return E.literal(model.value)
     case 'literals':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [
-        toLiteralExpressions(model.values)
-      ])
+      return E.literals(model.values)
     case 'literalsOr':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [
-        toLiteralExpressions(model.values),
-        toExpression(model.model)
-      ])
+      return E.literalsOr(model.values, toExpression(model.model))
     case 'lazy':
-      return ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [
-        ts.createArrowFunction(undefined, undefined, [], undefined, undefined, toExpression(model.model))
-      ])
+      return E.lazy(model.id, () => toExpression(model.model))
     case 'sum':
-      return ts.createCall(
-        ts.createCall(ts.createPropertyAccess(schemable, model._tag), undefined, [ts.createStringLiteral(model.tag)]),
-        undefined,
-        [
-          ts.createObjectLiteral(
-            Object.keys(model.models).map(k => ts.createPropertyAssignment(k, toExpression(model.models[k])))
-          )
-        ]
+      return E.sum(model.tag)(
+        R.record.map<DSL.Model, E.Expression<unknown>>(model.models, model => toExpression(model)) as any
       )
   }
 }
@@ -211,7 +152,7 @@ export function toDeclaration<A>(declaration: DSL.Declaration<A>): Declaration<A
 
   const typeNode =
     model._tag === 'lazy'
-      ? O.some(ts.createTypeAliasDeclaration(undefined, undefined, id, undefined, toTypeNode(model.model)))
+      ? O.some(ts.createTypeAliasDeclaration(undefined, undefined, id, undefined, toTypeNode(model.model).typeNode()))
       : O.none
 
   const statement = ts.createVariableStatement(
@@ -228,7 +169,7 @@ export function toDeclaration<A>(declaration: DSL.Declaration<A>): Declaration<A
               [ts.createParameter(undefined, undefined, undefined, schemable)],
               undefined,
               undefined,
-              toExpression(model)
+              toExpression(model).expression()
             )
           ])
         )

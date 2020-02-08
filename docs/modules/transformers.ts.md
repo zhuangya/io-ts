@@ -1,6 +1,6 @@
 ---
 title: transformers.ts
-nav_order: 16
+nav_order: 17
 parent: Modules
 ---
 
@@ -94,7 +94,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function toExpression(model: DSL.Model): ts.Expression { ... }
+export function toExpression(model: DSL.Model): E.Expression<unknown> { ... }
 ```
 
 Added in v3.0.0
@@ -104,7 +104,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function toTypeNode(model: DSL.Model): ts.TypeNode { ... }
+export function toTypeNode(model: DSL.Model): T.TypeNode<unknown> { ... }
 ```
 
 Added in v3.0.0
