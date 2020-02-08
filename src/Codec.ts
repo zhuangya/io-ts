@@ -31,6 +31,7 @@
  *   - Eq
  * - Schemable<URI> & WithUnion<URI>
  *   - JsonSchema
+ *   - DSL
  * - Schemable<URI> & WithUnion<URI> & WithRefinement<URI>
  *   - Compat
  *   - Guard

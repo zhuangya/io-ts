@@ -46,10 +46,7 @@ export function literalsOr<A extends S.Literal, B>(
   jsonSchema: JsonSchema<B>
 ): JsonSchema<A | B> {
   return {
-    compile: () =>
-      C.make({
-        anyOf: [{ enum: values }, jsonSchema.compile()]
-      })
+    compile: () => C.make({ anyOf: [{ enum: values }, jsonSchema.compile()] })
   }
 }
 

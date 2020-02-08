@@ -1,27 +1,17 @@
 import * as assert from 'assert'
 import * as DSL from '../src/DSL'
 import * as T from '../src/transformers'
-import * as O from 'fp-ts/lib/Option'
-import { pipe } from 'fp-ts/lib/pipeable'
 
-function assertTypeNode(model: DSL.DSL, expected: string): void {
-  assert.strictEqual(T.print(T.toTypeNode(model)), expected)
+function assertTypeNode<A>(dsl: DSL.DSL<A>, expected: string): void {
+  assert.strictEqual(T.printNode(T.toTypeNode(dsl.dsl())), expected)
 }
 
-function assertExpression(model: DSL.DSL, expected: string): void {
-  assert.strictEqual(T.print(T.toExpression(model)), expected)
+function assertExpression<A>(dsl: DSL.DSL<A>, expected: string): void {
+  assert.strictEqual(T.printNode(T.toExpression(dsl.dsl())), expected)
 }
 
-function assertVariableStatement(declaration: DSL.Declaration, expected: string): void {
-  const { statement, typeNode } = T.toVariableStatement(declaration)
-  assert.strictEqual(
-    pipe(
-      typeNode,
-      O.map(tad => T.print(tad) + '\n'),
-      O.getOrElse(() => '')
-    ) + T.print(statement),
-    expected
-  )
+function assertDeclaration<A>(declaration: DSL.Declaration<A>, expected: string): void {
+  assert.strictEqual(T.printDeclaration(T.toDeclaration(declaration)), expected)
 }
 
 describe('transformers', () => {
@@ -88,8 +78,7 @@ describe('transformers', () => {
 
     it('lazy', () => {
       assertTypeNode(
-        DSL.lazy(
-          'A',
+        DSL.lazy('A', () =>
           DSL.type({
             a: DSL.number,
             b: DSL.literalsOr([null], DSL.$ref('A'))
@@ -101,7 +90,7 @@ describe('transformers', () => {
 
     it('sum', () => {
       assertTypeNode(
-        DSL.sum('_tag', {
+        DSL.sum('_tag')({
           A: DSL.type({ _tag: DSL.literal('A'), a: DSL.string }),
           B: DSL.type({ _tag: DSL.literal('B'), b: DSL.number })
         }),
@@ -173,8 +162,7 @@ describe('transformers', () => {
 
     it('lazy', () => {
       assertExpression(
-        DSL.lazy(
-          'A',
+        DSL.lazy('A', () =>
           DSL.type({
             a: DSL.number,
             b: DSL.literalsOr([null], DSL.$ref('A'))
@@ -186,7 +174,7 @@ describe('transformers', () => {
 
     it('sum', () => {
       assertExpression(
-        DSL.sum('_tag', {
+        DSL.sum('_tag')({
           A: DSL.type({ _tag: DSL.literal('A'), a: DSL.string }),
           B: DSL.type({ _tag: DSL.literal('B'), b: DSL.number })
         }),
@@ -195,26 +183,24 @@ describe('transformers', () => {
     })
   })
 
-  describe('toVariableStatement', () => {
+  describe('toDeclaration', () => {
     it('type', () => {
-      assertVariableStatement(
-        DSL.declaration('Person', DSL.type({ name: DSL.string, age: DSL.number })),
-        'const Person = make(S => S.type({ name: S.string, age: S.number }));'
-      )
+      const declaration = DSL.declaration('Person', DSL.type({ name: DSL.string, age: DSL.number }))
+      assertDeclaration(declaration, 'const Person = make(S => S.type({ name: S.string, age: S.number }));')
     })
 
     it('lazy', () => {
-      assertVariableStatement(
-        DSL.declaration(
-          'A',
-          DSL.lazy(
-            'A',
-            DSL.type({
-              a: DSL.number,
-              b: DSL.literalsOr([null], DSL.$ref('A'))
-            })
-          )
-        ),
+      const declaration = DSL.declaration(
+        'A',
+        DSL.lazy('A', () =>
+          DSL.type({
+            a: DSL.number,
+            b: DSL.literalsOr([null], DSL.$ref('A'))
+          })
+        )
+      )
+      assertDeclaration(
+        declaration,
         'type A = {\n    a: number;\n    b: null | A;\n};\nconst A: Schema<A> = make(S => S.lazy(() => S.type({ a: S.number, b: S.literalsOr([null], A(S)) })));'
       )
     })

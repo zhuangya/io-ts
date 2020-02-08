@@ -12,19 +12,79 @@ Added in v3.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [print](#print)
+- [Model (interface)](#model-interface)
+- [Model (interface)](#model-interface-1)
+- [Declaration (type alias)](#declaration-type-alias)
+- [printDeclaration](#printdeclaration)
+- [printNode](#printnode)
+- [toDeclaration](#todeclaration)
 - [toExpression](#toexpression)
 - [toTypeNode](#totypenode)
-- [toVariableStatement](#tovariablestatement)
 
 ---
 
-# print
+# Model (interface)
 
 **Signature**
 
 ```ts
-export function print(node: ts.Node): string { ... }
+export interface Model {
+  readonly statement: ts.VariableStatement
+  readonly typeNode: O.Option<ts.TypeAliasDeclaration>
+}
+```
+
+Added in v3.0.0
+
+# Model (interface)
+
+**Signature**
+
+```ts
+export interface Model {
+  readonly statement: ts.VariableStatement
+  readonly typeNode: O.Option<ts.TypeAliasDeclaration>
+}
+```
+
+Added in v3.0.0
+
+# Declaration (type alias)
+
+**Signature**
+
+```ts
+export type Declaration<A> = C.Const<Model, A>
+```
+
+Added in v3.0.0
+
+# printDeclaration
+
+**Signature**
+
+```ts
+export function printDeclaration<A>(declaration: Declaration<A>): string { ... }
+```
+
+Added in v3.0.0
+
+# printNode
+
+**Signature**
+
+```ts
+export function printNode(node: ts.Node): string { ... }
+```
+
+Added in v3.0.0
+
+# toDeclaration
+
+**Signature**
+
+```ts
+export function toDeclaration<A>(declaration: DSL.Declaration<A>): Declaration<A> { ... }
 ```
 
 Added in v3.0.0
@@ -34,7 +94,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function toExpression(dsl: DSL.DSL): ts.Expression { ... }
+export function toExpression(model: DSL.Model): ts.Expression { ... }
 ```
 
 Added in v3.0.0
@@ -44,19 +104,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function toTypeNode(dsl: DSL.DSL): ts.TypeNode { ... }
-```
-
-Added in v3.0.0
-
-# toVariableStatement
-
-**Signature**
-
-```ts
-export function toVariableStatement(
-  declaration: DSL.Declaration
-): { statement: ts.VariableStatement; typeNode: O.Option<ts.TypeAliasDeclaration> } { ... }
+export function toTypeNode(model: DSL.Model): ts.TypeNode { ... }
 ```
 
 Added in v3.0.0

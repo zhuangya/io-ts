@@ -2,20 +2,17 @@ import * as assert from 'assert'
 import * as DSL from '../src/DSL'
 
 describe('DSL', () => {
-  it('$ref', () => {
-    assert.deepStrictEqual(DSL.$ref('Person'), { _tag: '$ref', id: 'Person' })
-  })
-
   it('literals', () => {
-    assert.deepStrictEqual(DSL.literals(['a', 1]), { _tag: 'literals', values: ['a', 1], id: undefined })
+    const dsl = DSL.literals(['a', 1])
+    assert.deepStrictEqual(dsl.dsl(), { _tag: 'literals', values: ['a', 1], id: undefined })
   })
 
   it('literalsOr', () => {
-    const expression = DSL.literalsOr([null], DSL.type({ a: DSL.string, b: DSL.number }))
-    assert.deepStrictEqual(expression, {
+    const dsl = DSL.literalsOr([null], DSL.type({ a: DSL.string, b: DSL.number }))
+    assert.deepStrictEqual(dsl.dsl(), {
       _tag: 'literalsOr',
       values: [null],
-      dsl: {
+      model: {
         _tag: 'type',
         properties: {
           a: { _tag: 'string' },
@@ -28,28 +25,28 @@ describe('DSL', () => {
   })
 
   it('string', () => {
-    assert.deepStrictEqual(DSL.string, { _tag: 'string' })
+    assert.deepStrictEqual(DSL.string.dsl(), { _tag: 'string' })
   })
 
   it('number', () => {
-    assert.deepStrictEqual(DSL.number, { _tag: 'number' })
+    assert.deepStrictEqual(DSL.number.dsl(), { _tag: 'number' })
   })
 
   it('boolean', () => {
-    assert.deepStrictEqual(DSL.boolean, { _tag: 'boolean' })
+    assert.deepStrictEqual(DSL.boolean.dsl(), { _tag: 'boolean' })
   })
 
   it('UnknownArray', () => {
-    assert.deepStrictEqual(DSL.UnknownArray, { _tag: 'UnknownArray' })
+    assert.deepStrictEqual(DSL.UnknownArray.dsl(), { _tag: 'UnknownArray' })
   })
 
   it('UnknownRecord', () => {
-    assert.deepStrictEqual(DSL.UnknownRecord, { _tag: 'UnknownRecord' })
+    assert.deepStrictEqual(DSL.UnknownRecord.dsl(), { _tag: 'UnknownRecord' })
   })
 
   it('type', () => {
-    const expression = DSL.type({ a: DSL.string, b: DSL.number })
-    assert.deepStrictEqual(expression, {
+    const dsl = DSL.type({ a: DSL.string, b: DSL.number })
+    assert.deepStrictEqual(dsl.dsl(), {
       _tag: 'type',
       properties: {
         a: { _tag: 'string' },
@@ -60,8 +57,8 @@ describe('DSL', () => {
   })
 
   it('partial', () => {
-    const expression = DSL.partial({ a: DSL.string, b: DSL.number })
-    assert.deepStrictEqual(expression, {
+    const dsl = DSL.partial({ a: DSL.string, b: DSL.number })
+    assert.deepStrictEqual(dsl.dsl(), {
       _tag: 'partial',
       properties: {
         a: { _tag: 'string' },
@@ -72,18 +69,18 @@ describe('DSL', () => {
   })
 
   it('record', () => {
-    const expression = DSL.record(DSL.number)
-    assert.deepStrictEqual(expression, { _tag: 'record', codomain: { _tag: 'number' }, id: undefined })
+    const dsl = DSL.record(DSL.number)
+    assert.deepStrictEqual(dsl.dsl(), { _tag: 'record', codomain: { _tag: 'number' }, id: undefined })
   })
 
   it('array', () => {
-    const expression = DSL.array(DSL.number)
-    assert.deepStrictEqual(expression, { _tag: 'array', items: { _tag: 'number' }, id: undefined })
+    const dsl = DSL.array(DSL.number)
+    assert.deepStrictEqual(dsl.dsl(), { _tag: 'array', items: { _tag: 'number' }, id: undefined })
   })
 
   it('tuple', () => {
-    const expression = DSL.tuple([DSL.string, DSL.number])
-    assert.deepStrictEqual(expression, {
+    const dsl = DSL.tuple([DSL.string, DSL.number])
+    assert.deepStrictEqual(dsl.dsl(), {
       _tag: 'tuple',
       items: [{ _tag: 'string' }, { _tag: 'number' }],
       id: undefined
@@ -91,14 +88,14 @@ describe('DSL', () => {
   })
 
   it('intersection', () => {
-    const expression = DSL.intersection([
+    const dsl = DSL.intersection([
       DSL.type({ a: DSL.string }),
       DSL.type({ b: DSL.number }),
       DSL.type({ c: DSL.boolean })
     ])
-    assert.deepStrictEqual(expression, {
+    assert.deepStrictEqual(dsl.dsl(), {
       _tag: 'intersection',
-      dsls: [
+      models: [
         {
           _tag: 'type',
           properties: {
@@ -126,14 +123,14 @@ describe('DSL', () => {
   })
 
   it('sum', () => {
-    const expression = DSL.sum('_tag', {
+    const dsl = DSL.sum('_tag')({
       A: DSL.type({ _tag: DSL.literals(['A']), a: DSL.string }),
       B: DSL.type({ _tag: DSL.literals(['B']), b: DSL.number })
     })
-    assert.deepStrictEqual(expression, {
+    assert.deepStrictEqual(dsl.dsl(), {
       _tag: 'sum',
       tag: '_tag',
-      dsls: {
+      models: {
         A: {
           _tag: 'type',
           properties: {
@@ -156,42 +153,62 @@ describe('DSL', () => {
   })
 
   it('union', () => {
-    const expression = DSL.union([DSL.string, DSL.number, DSL.boolean])
-    assert.deepStrictEqual(expression, {
+    const dsl = DSL.union([DSL.string, DSL.number, DSL.boolean])
+    assert.deepStrictEqual(dsl.dsl(), {
       _tag: 'union',
-      dsls: [{ _tag: 'string' }, { _tag: 'number' }, { _tag: 'boolean' }],
+      models: [{ _tag: 'string' }, { _tag: 'number' }, { _tag: 'boolean' }],
       id: undefined
     })
   })
 
-  it('lazy', () => {
-    assert.deepStrictEqual(
-      DSL.lazy(
-        'A',
+  describe('lazy', () => {
+    it('using the $ref constructor', () => {
+      const dsl = DSL.lazy('A', () =>
         DSL.type({
           a: DSL.number,
           b: DSL.literalsOr([null], DSL.$ref('A'))
         })
-      ),
-      {
+      )
+
+      assert.deepStrictEqual(dsl.dsl(), {
         _tag: 'lazy',
-        dsl: {
+        model: {
           _tag: 'type',
           properties: {
             a: { _tag: 'number' },
-            b: { _tag: 'literalsOr', values: [null], dsl: { _tag: '$ref', id: 'A' }, id: undefined }
+            b: { _tag: 'literalsOr', values: [null], model: { _tag: '$ref', id: 'A' }, id: undefined }
           },
           id: undefined
         },
         id: 'A'
-      }
-    )
-  })
+      })
+    })
 
-  it('declaration', () => {
-    assert.deepStrictEqual(DSL.declaration('A', DSL.string), {
-      id: 'A',
-      dsl: { _tag: 'string' }
+    it('using a recursive definition', () => {
+      interface A {
+        a: number
+        b: null | A
+      }
+
+      const dsl: DSL.DSL<A> = DSL.lazy('A', () =>
+        DSL.type({
+          a: DSL.number,
+          b: DSL.literalsOr([null], dsl)
+        })
+      )
+
+      assert.deepStrictEqual(dsl.dsl(), {
+        _tag: 'lazy',
+        model: {
+          _tag: 'type',
+          properties: {
+            a: { _tag: 'number' },
+            b: { _tag: 'literalsOr', values: [null], model: { _tag: '$ref', id: 'A' }, id: undefined }
+          },
+          id: undefined
+        },
+        id: 'A'
+      })
     })
   })
 })
