@@ -9,6 +9,7 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { pipeable } from 'fp-ts/lib/pipeable'
 import * as DE from './DecodeError'
 import * as G from './Guard'
+import { Literal } from './Literal'
 import * as S from './Schemable'
 import * as U from './util'
 
@@ -44,7 +45,7 @@ export function fromGuard<A>(guard: G.Guard<A>, id?: string, message?: (u: unkno
 /**
  * @since 3.0.0
  */
-export function literal<A extends S.Literal>(value: A, id?: string): Decoder<A> {
+export function literal<A extends Literal>(value: A, id?: string): Decoder<A> {
   const expected = id ? id : JSON.stringify(value)
   return fromGuard(G.literal(value), id, u => `Cannot decode ${JSON.stringify(u)}, expected ${expected}`)
 }
@@ -52,7 +53,7 @@ export function literal<A extends S.Literal>(value: A, id?: string): Decoder<A> 
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: string): Decoder<A> {
+export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Decoder<A> {
   const expected = id ? id : values.map(value => JSON.stringify(value)).join(' | ')
   return fromGuard(G.literals(values), id, u => `Cannot decode ${JSON.stringify(u)}, expected ${expected}`)
 }
@@ -60,7 +61,7 @@ export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: str
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(
+export function literalsOr<A extends Literal, B>(
   values: NonEmptyArray<A>,
   decoder: Decoder<B>,
   id?: string

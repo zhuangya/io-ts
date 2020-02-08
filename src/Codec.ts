@@ -46,7 +46,8 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as DE from './DecodeError'
 import { Decoder, decoder, withMessage as withMessageD } from './Decoder'
 import { Encoder, encoder } from './Encoder'
-import { Literal, Schemable, WithRefinement } from './Schemable'
+import { Literal } from './Literal'
+import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -249,7 +250,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI> = {
+export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> = {
   URI,
   imap: (fa, f, g) => make(decoder.map(fa, f), encoder.contramap(fa, g)),
   literal,
@@ -268,5 +269,5 @@ export const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI> = {
   intersection,
   sum,
   lazy,
-  refinement: refinement as WithRefinement<URI>['refinement']
+  refinement: refinement as S.WithRefinement<URI>['refinement']
 }

@@ -2,9 +2,10 @@
  * @since 3.0.0
  */
 import * as C from 'fp-ts/lib/Const'
-import * as R from 'fp-ts/lib/Record'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import * as R from 'fp-ts/lib/Record'
 import { JSONSchema7 } from 'json-schema'
+import { Literal } from './Literal'
 import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
@@ -25,14 +26,14 @@ export interface JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends S.Literal>(value: A): JsonSchema<A> {
+export function literal<A extends Literal>(value: A): JsonSchema<A> {
   return literals([value])
 }
 
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): JsonSchema<A> {
+export function literals<A extends Literal>(values: NonEmptyArray<A>): JsonSchema<A> {
   return {
     compile: () => C.make({ enum: values })
   }
@@ -41,7 +42,7 @@ export function literals<A extends S.Literal>(values: NonEmptyArray<A>): JsonSch
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(
+export function literalsOr<A extends Literal, B>(
   values: NonEmptyArray<A>,
   jsonSchema: JsonSchema<B>
 ): JsonSchema<A | B> {

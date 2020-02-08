@@ -1,6 +1,6 @@
 ---
 title: Schemable.ts
-nav_order: 16
+nav_order: 17
 parent: Modules
 ---
 
@@ -16,7 +16,6 @@ Added in v3.0.0
 - [WithParse (interface)](#withparse-interface)
 - [WithRefinement (interface)](#withrefinement-interface)
 - [WithUnion (interface)](#withunion-interface)
-- [Literal (type alias)](#literal-type-alias)
 - [memoize](#memoize)
 
 ---
@@ -111,16 +110,6 @@ export interface WithUnion<F extends URIS> {
     id?: string
   ) => Kind<F, A[number]>
 }
-```
-
-Added in v3.0.0
-
-# Literal (type alias)
-
-**Signature**
-
-```ts
-export type Literal = string | number | boolean | null
 ```
 
 Added in v3.0.0

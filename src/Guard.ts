@@ -1,10 +1,11 @@
 /**
  * @since 3.0.0
  */
+import { Either, isRight } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import { Literal } from './Literal'
 import * as S from './Schemable'
 import { hasOwnProperty } from './util'
-import { Either, isRight } from 'fp-ts/lib/Either'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -24,7 +25,7 @@ export interface Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends S.Literal>(value: A): Guard<A> {
+export function literal<A extends Literal>(value: A): Guard<A> {
   return {
     is: (u: unknown): u is A => u === value
   }
@@ -33,7 +34,7 @@ export function literal<A extends S.Literal>(value: A): Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Guard<A> {
+export function literals<A extends Literal>(values: NonEmptyArray<A>): Guard<A> {
   return {
     is: (u: unknown): u is A => values.findIndex(a => a === u) !== -1
   }
@@ -42,7 +43,7 @@ export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Guard<A
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, guard: Guard<B>): Guard<A | B> {
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, guard: Guard<B>): Guard<A | B> {
   return union([literals(values), guard])
 }
 

@@ -1,7 +1,4 @@
 /**
- * TODO
- * - optimize encode when all encoders are noop
- *
  * @since 3.0.0
  */
 import { Contravariant1 } from 'fp-ts/lib/Contravariant'
@@ -9,6 +6,7 @@ import { identity } from 'fp-ts/lib/function'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { pipeable } from 'fp-ts/lib/pipeable'
 import * as G from './Guard'
+import { Literal } from './Literal'
 import * as S from './Schemable'
 import * as U from './util'
 
@@ -30,7 +28,7 @@ export interface Encoder<A> {
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, encoder: Encoder<B>): Encoder<A | B> {
+export function literalsOr<A extends Literal, B>(as: NonEmptyArray<A>, encoder: Encoder<B>): Encoder<A | B> {
   const literals = G.literals(as)
   return {
     encode: ab => (literals.is(ab) ? ab : encoder.encode(ab))

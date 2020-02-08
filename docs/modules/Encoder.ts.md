@@ -6,10 +6,6 @@ parent: Modules
 
 # Encoder overview
 
-TODO
-
-- optimize encode when all encoders are noop
-
 Added in v3.0.0
 
 ---
@@ -138,7 +134,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, encoder: Encoder<B>): Encoder<A | B> { ... }
+export function literalsOr<A extends Literal, B>(as: NonEmptyArray<A>, encoder: Encoder<B>): Encoder<A | B> { ... }
 ```
 
 Added in v3.0.0

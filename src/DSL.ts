@@ -4,6 +4,7 @@
 import * as C from 'fp-ts/lib/Const'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as R from 'fp-ts/lib/Record'
+import { Literal } from './Literal'
 import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
@@ -16,17 +17,17 @@ import * as S from './Schemable'
 export type Model =
   | {
       readonly _tag: 'literal'
-      readonly value: S.Literal
+      readonly value: Literal
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'literals'
-      readonly values: NonEmptyArray<S.Literal>
+      readonly values: NonEmptyArray<Literal>
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'literalsOr'
-      readonly values: NonEmptyArray<S.Literal>
+      readonly values: NonEmptyArray<Literal>
       readonly model: Model
       readonly id: string | undefined
     }
@@ -134,7 +135,7 @@ export function $ref(id: string): DSL<unknown> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends S.Literal>(value: A, id?: string): DSL<A> {
+export function literal<A extends Literal>(value: A, id?: string): DSL<A> {
   return {
     dsl: () =>
       C.make({
@@ -148,7 +149,7 @@ export function literal<A extends S.Literal>(value: A, id?: string): DSL<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: string): DSL<A> {
+export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): DSL<A> {
   return {
     dsl: () =>
       C.make({
@@ -162,7 +163,7 @@ export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: str
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, dsl: DSL<B>, id?: string): DSL<A | B> {
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, dsl: DSL<B>, id?: string): DSL<A | B> {
   return {
     dsl: () =>
       C.make({

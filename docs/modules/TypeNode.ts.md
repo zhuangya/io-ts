@@ -1,6 +1,6 @@
 ---
 title: TypeNode.ts
-nav_order: 19
+nav_order: 20
 parent: Modules
 ---
 
@@ -151,7 +151,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends S.Literal>(value: A): TypeNode<A> { ... }
+export function literal<A extends Literal>(value: A): TypeNode<A> { ... }
 ```
 
 Added in v3.0.0
@@ -161,7 +161,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): TypeNode<A> { ... }
+export function literals<A extends Literal>(values: NonEmptyArray<A>): TypeNode<A> { ... }
 ```
 
 Added in v3.0.0
@@ -171,7 +171,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, typeNode: TypeNode<B>): TypeNode<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, typeNode: TypeNode<B>): TypeNode<A | B> { ... }
 ```
 
 Added in v3.0.0

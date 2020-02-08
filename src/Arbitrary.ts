@@ -2,9 +2,10 @@
  * @since 3.0.0
  */
 import * as fc from 'fast-check'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import * as S from './Schemable'
 import { Either, isRight } from 'fp-ts/lib/Either'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import { Literal } from './Literal'
+import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -22,21 +23,21 @@ export interface Arbitrary<A> extends fc.Arbitrary<A> {}
 /**
  * @since 3.0.0
  */
-export function literal<A extends S.Literal>(value: A): Arbitrary<A> {
+export function literal<A extends Literal>(value: A): Arbitrary<A> {
   return fc.constant(value)
 }
 
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Arbitrary<A> {
+export function literals<A extends Literal>(values: NonEmptyArray<A>): Arbitrary<A> {
   return fc.oneof(...values.map(a => fc.constant(a)))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, arb: Arbitrary<B>): Arbitrary<A | B> {
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, arb: Arbitrary<B>): Arbitrary<A | B> {
   return fc.oneof<A | B>(literals(values), arb)
 }
 

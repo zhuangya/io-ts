@@ -157,7 +157,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends S.Literal>(value: A): ArbitraryMutation<A> { ... }
+export function literal<A extends Literal>(value: A): ArbitraryMutation<A> { ... }
 ```
 
 Added in v3.0.0
@@ -167,7 +167,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): ArbitraryMutation<A> { ... }
+export function literals<A extends Literal>(values: NonEmptyArray<A>): ArbitraryMutation<A> { ... }
 ```
 
 Added in v3.0.0
@@ -177,7 +177,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal, B>(
+export function literalsOr<A extends Literal, B>(
   values: NonEmptyArray<A>,
   am: ArbitraryMutation<B>
 ): ArbitraryMutation<A | B> { ... }

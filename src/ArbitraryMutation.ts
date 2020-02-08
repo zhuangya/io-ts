@@ -2,13 +2,14 @@
  * @since 3.0.0
  */
 import * as fc from 'fast-check'
-import { Either, isLeft } from 'fp-ts/lib/Either'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { isNonEmpty, unsafeUpdateAt } from 'fp-ts/lib/Array'
-import * as A from './Arbitrary'
-import * as S from './Schemable'
-import * as G from './Guard'
+import { Either, isLeft } from 'fp-ts/lib/Either'
 import { not } from 'fp-ts/lib/function'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import * as A from './Arbitrary'
+import * as G from './Guard'
+import { Literal } from './Literal'
+import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -38,23 +39,23 @@ export function make<A>(mutation: fc.Arbitrary<unknown>, arbitrary: fc.Arbitrary
 /**
  * @since 3.0.0
  */
-export function literal<A extends S.Literal>(value: A): ArbitraryMutation<A> {
+export function literal<A extends Literal>(value: A): ArbitraryMutation<A> {
   return literals([value])
 }
 
-const literalsArbitrary: A.Arbitrary<S.Literal> = A.union([A.string, A.number, A.boolean, fc.constant(null)])
+const literalsArbitrary: A.Arbitrary<Literal> = A.union([A.string, A.number, A.boolean, fc.constant(null)])
 
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): ArbitraryMutation<A> {
+export function literals<A extends Literal>(values: NonEmptyArray<A>): ArbitraryMutation<A> {
   return make(literalsArbitrary.filter(not(G.literals(values).is)), A.literals(values))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(
+export function literalsOr<A extends Literal, B>(
   values: NonEmptyArray<A>,
   am: ArbitraryMutation<B>
 ): ArbitraryMutation<A | B> {

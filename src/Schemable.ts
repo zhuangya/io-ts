@@ -1,14 +1,10 @@
 /**
  * @since 3.0.0
  */
+import { Either } from 'fp-ts/lib/Either'
 import { Kind, URIS } from 'fp-ts/lib/HKT'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import { Either } from 'fp-ts/lib/Either'
-
-/**
- * @since 3.0.0
- */
-export type Literal = string | number | boolean | null
+import { Literal } from './Literal'
 
 /**
  * @since 3.0.0

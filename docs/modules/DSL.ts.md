@@ -73,17 +73,17 @@ Added in v3.0.0
 export type Model =
   | {
       readonly _tag: 'literal'
-      readonly value: S.Literal
+      readonly value: Literal
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'literals'
-      readonly values: NonEmptyArray<S.Literal>
+      readonly values: NonEmptyArray<Literal>
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'literalsOr'
-      readonly values: NonEmptyArray<S.Literal>
+      readonly values: NonEmptyArray<Literal>
       readonly model: Model
       readonly id: string | undefined
     }
@@ -277,7 +277,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends S.Literal>(value: A, id?: string): DSL<A> { ... }
+export function literal<A extends Literal>(value: A, id?: string): DSL<A> { ... }
 ```
 
 Added in v3.0.0
@@ -287,7 +287,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: string): DSL<A> { ... }
+export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): DSL<A> { ... }
 ```
 
 Added in v3.0.0
@@ -297,7 +297,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, dsl: DSL<B>, id?: string): DSL<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, dsl: DSL<B>, id?: string): DSL<A | B> { ... }
 ```
 
 Added in v3.0.0

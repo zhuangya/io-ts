@@ -2,9 +2,10 @@
  * @since 3.0.0
  */
 import * as C from 'fp-ts/lib/Const'
-import * as ts from 'typescript'
-import * as S from './Schemable'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import * as ts from 'typescript'
+import { Literal, fold } from './Literal'
+import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -30,26 +31,6 @@ export function $ref(id: string): Expression<unknown> {
   }
 }
 
-// TODO move to shared module
-function fold<R>(
-  onString: (s: string) => R,
-  onNumber: (n: number) => R,
-  onBoolean: (b: boolean) => R,
-  onNull: () => R
-): (literal: S.Literal) => R {
-  return literal => {
-    if (typeof literal === 'string') {
-      return onString(literal)
-    } else if (typeof literal === 'number') {
-      return onNumber(literal)
-    } else if (typeof literal === 'boolean') {
-      return onBoolean(literal)
-    } else {
-      return onNull()
-    }
-  }
-}
-
 const toLiteralExpression = fold<ts.Expression>(
   s => ts.createStringLiteral(s),
   n => ts.createNumericLiteral(String(n)),
@@ -57,7 +38,7 @@ const toLiteralExpression = fold<ts.Expression>(
   () => ts.createNull()
 )
 
-function toLiteralExpressions(values: Array<S.Literal>): ts.Expression {
+function toLiteralExpressions(values: Array<Literal>): ts.Expression {
   return ts.createArrayLiteral(values.map(toLiteralExpression))
 }
 
@@ -66,7 +47,7 @@ const schemable = ts.createIdentifier('S')
 /**
  * @since 3.0.0
  */
-export function literal<A extends S.Literal>(value: A): Expression<A> {
+export function literal<A extends Literal>(value: A): Expression<A> {
   return {
     expression: () =>
       C.make(ts.createCall(ts.createPropertyAccess(schemable, 'literal'), undefined, [toLiteralExpression(value)]))
@@ -76,7 +57,7 @@ export function literal<A extends S.Literal>(value: A): Expression<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Expression<A> {
+export function literals<A extends Literal>(values: NonEmptyArray<A>): Expression<A> {
   return {
     expression: () =>
       C.make(ts.createCall(ts.createPropertyAccess(schemable, 'literals'), undefined, [toLiteralExpressions(values)]))
@@ -86,7 +67,7 @@ export function literals<A extends S.Literal>(values: NonEmptyArray<A>): Express
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(
+export function literalsOr<A extends Literal, B>(
   values: NonEmptyArray<A>,
   expression: Expression<B>
 ): Expression<A | B> {

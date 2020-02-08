@@ -10,8 +10,9 @@
 import { Either } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { Codec, codec } from './Codec'
-import { Guard, guard } from './Guard'
 import { decoder } from './Decoder'
+import { Guard, guard } from './Guard'
+import { Literal } from './Literal'
 import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
@@ -43,21 +44,21 @@ export function make<A>(codec: Codec<A>, guard: Guard<A>): Compat<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends S.Literal>(value: A, id?: string): Compat<A> {
+export function literal<A extends Literal>(value: A, id?: string): Compat<A> {
   return make(codec.literal(value, id), guard.literal(value, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>, id?: string): Compat<A> {
+export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Compat<A> {
   return make(codec.literals(values, id), guard.literals(values, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(
+export function literalsOr<A extends Literal, B>(
   values: NonEmptyArray<A>,
   compat: Compat<B>,
   id?: string

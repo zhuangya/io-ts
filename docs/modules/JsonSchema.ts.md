@@ -150,7 +150,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends S.Literal>(value: A): JsonSchema<A> { ... }
+export function literal<A extends Literal>(value: A): JsonSchema<A> { ... }
 ```
 
 Added in v3.0.0
@@ -160,7 +160,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): JsonSchema<A> { ... }
+export function literals<A extends Literal>(values: NonEmptyArray<A>): JsonSchema<A> { ... }
 ```
 
 Added in v3.0.0
@@ -170,7 +170,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends S.Literal, B>(
+export function literalsOr<A extends Literal, B>(
   values: NonEmptyArray<A>,
   jsonSchema: JsonSchema<B>
 ): JsonSchema<A | B> { ... }

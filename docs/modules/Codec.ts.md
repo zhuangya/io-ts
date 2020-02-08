@@ -161,7 +161,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI> = ...
+export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> = ...
 ```
 
 Added in v3.0.0

@@ -2,9 +2,10 @@
  * @since 3.0.0
  */
 import * as C from 'fp-ts/lib/Const'
-import * as ts from 'typescript'
-import * as S from './Schemable'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import * as ts from 'typescript'
+import { Literal, fold } from './Literal'
+import * as S from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -30,27 +31,7 @@ export function $ref(id: string): TypeNode<unknown> {
   }
 }
 
-// TODO move to shared module
-function fold<R>(
-  onString: (s: string) => R,
-  onNumber: (n: number) => R,
-  onBoolean: (b: boolean) => R,
-  onNull: () => R
-): (literal: S.Literal) => R {
-  return literal => {
-    if (typeof literal === 'string') {
-      return onString(literal)
-    } else if (typeof literal === 'number') {
-      return onNumber(literal)
-    } else if (typeof literal === 'boolean') {
-      return onBoolean(literal)
-    } else {
-      return onNull()
-    }
-  }
-}
-
-function toLiteralTypeNode(values: Array<S.Literal>): Array<ts.TypeNode> {
+function toLiteralTypeNode(values: Array<Literal>): Array<ts.TypeNode> {
   return values.map(
     fold<ts.TypeNode>(
       s => ts.createLiteralTypeNode(ts.createStringLiteral(s)),
@@ -64,7 +45,7 @@ function toLiteralTypeNode(values: Array<S.Literal>): Array<ts.TypeNode> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends S.Literal>(value: A): TypeNode<A> {
+export function literal<A extends Literal>(value: A): TypeNode<A> {
   return {
     typeNode: () => C.make(ts.createUnionTypeNode(toLiteralTypeNode([value])))
   }
@@ -73,7 +54,7 @@ export function literal<A extends S.Literal>(value: A): TypeNode<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends S.Literal>(values: NonEmptyArray<A>): TypeNode<A> {
+export function literals<A extends Literal>(values: NonEmptyArray<A>): TypeNode<A> {
   return {
     typeNode: () => C.make(ts.createUnionTypeNode(toLiteralTypeNode(values)))
   }
@@ -82,7 +63,7 @@ export function literals<A extends S.Literal>(values: NonEmptyArray<A>): TypeNod
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends S.Literal, B>(values: NonEmptyArray<A>, typeNode: TypeNode<B>): TypeNode<A | B> {
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, typeNode: TypeNode<B>): TypeNode<A | B> {
   return {
     typeNode: () => C.make(ts.createUnionTypeNode([...toLiteralTypeNode(values), typeNode.typeNode()]))
   }
