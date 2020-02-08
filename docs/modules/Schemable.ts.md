@@ -13,9 +13,9 @@ Added in v3.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Schemable (interface)](#schemable-interface)
-- [TypeScriptable (interface)](#typescriptable-interface)
 - [WithParse (interface)](#withparse-interface)
 - [WithRefinement (interface)](#withrefinement-interface)
+- [WithUnion (interface)](#withunion-interface)
 - [Literal (type alias)](#literal-type-alias)
 - [memoize](#memoize)
 
@@ -72,21 +72,6 @@ export interface Schemable<F extends URIS> {
 
 Added in v3.0.0
 
-# TypeScriptable (interface)
-
-**Signature**
-
-```ts
-export interface TypeScriptable<F extends URIS> extends Schemable<F> {
-  readonly union: <A extends [unknown, ...Array<unknown>]>(
-    schemas: { [K in keyof A]: Kind<F, A[K]> },
-    id?: string
-  ) => Kind<F, A[number]>
-}
-```
-
-Added in v3.0.0
-
 # WithParse (interface)
 
 **Signature**
@@ -110,6 +95,21 @@ export interface WithRefinement<F extends URIS> {
     parser: (a: A) => Either<string, B>,
     id?: string
   ) => Kind<F, B>
+}
+```
+
+Added in v3.0.0
+
+# WithUnion (interface)
+
+**Signature**
+
+```ts
+export interface WithUnion<F extends URIS> {
+  readonly union: <A extends [unknown, ...Array<unknown>]>(
+    schemas: { [K in keyof A]: Kind<F, A[K]> },
+    id?: string
+  ) => Kind<F, A[number]>
 }
 ```
 

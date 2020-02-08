@@ -4,7 +4,7 @@ import { left, right } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 
 interface Schema<A> {
-  <S extends URIS>(S: S.TypeScriptable<S> & S.WithRefinement<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S> & S.WithUnion<S> & S.WithRefinement<S>): Kind<S, A>
 }
 
 function make<A>(f: Schema<A>): Schema<A> {

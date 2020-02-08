@@ -41,12 +41,12 @@ Schemas:
   - Codec
   - Encoder
   - Eq
-- TypeScriptable<URI>
+- Schemable<URI> & WithUnion<URI>
   - JsonSchema
-- TypeScriptable<URI> & S.WithRefinement<URI>
+- Schemable<URI> & WithUnion<URI> & WithRefinement<URI>
   - Compat
   - Guard
-- TypeScriptable<URI> & S.WithParse<URI>
+- Schemable<URI> & WithUnion<URI> & WithParse<URI>
   - Arbitrary
   - ArbitraryMutation
   - Decoder

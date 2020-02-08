@@ -123,7 +123,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const compat: S.TypeScriptable<URI> & S.WithRefinement<URI> = ...
+export const compat: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI> = ...
 ```
 
 Added in v3.0.0

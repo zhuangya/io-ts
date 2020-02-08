@@ -59,7 +59,7 @@ export interface Schemable<F extends URIS> {
 /**
  * @since 3.0.0
  */
-export interface TypeScriptable<F extends URIS> extends Schemable<F> {
+export interface WithUnion<F extends URIS> {
   readonly union: <A extends [unknown, ...Array<unknown>]>(
     schemas: { [K in keyof A]: Kind<F, A[K]> },
     id?: string

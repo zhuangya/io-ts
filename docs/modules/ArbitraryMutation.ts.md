@@ -98,7 +98,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const arbitraryMutation: S.TypeScriptable<URI> & S.WithParse<URI> = ...
+export const arbitraryMutation: S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI> = ...
 ```
 
 Added in v3.0.0

@@ -174,7 +174,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const decoder: Applicative1<URI> & Alternative1<URI> & S.TypeScriptable<URI> & S.WithParse<URI> = ...
+export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI> = ...
 ```
 
 Added in v3.0.0

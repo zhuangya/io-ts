@@ -264,7 +264,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const guard: S.TypeScriptable<URI> & S.WithRefinement<URI> = {
+export const guard: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI> = {
   URI,
   literal,
   literals,
