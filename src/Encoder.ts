@@ -48,31 +48,6 @@ export const id: Encoder<unknown> = {
   encode: identity
 }
 
-/**
- * @since 3.0.0
- */
-export const string: Encoder<string> = id
-
-/**
- * @since 3.0.0
- */
-export const number: Encoder<number> = id
-
-/**
- * @since 3.0.0
- */
-export const boolean: Encoder<boolean> = id
-
-/**
- * @since 3.0.0
- */
-export const UnknownArray: Encoder<Array<unknown>> = id
-
-/**
- * @since 3.0.0
- */
-export const UnknownRecord: Encoder<Record<string, unknown>> = id
-
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
@@ -223,11 +198,11 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithRefinement<
   literal: () => id,
   literals: () => id,
   literalsOr,
-  string,
-  number,
-  boolean,
-  UnknownArray,
-  UnknownRecord,
+  string: id,
+  number: id,
+  boolean: id,
+  UnknownArray: id,
+  UnknownRecord: id,
   type,
   partial,
   record,

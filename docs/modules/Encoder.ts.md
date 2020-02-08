@@ -19,20 +19,15 @@ Added in v3.0.0
 - [Encoder (interface)](#encoder-interface)
 - [URI (type alias)](#uri-type-alias)
 - [URI](#uri)
-- [UnknownArray](#unknownarray)
-- [UnknownRecord](#unknownrecord)
 - [array](#array)
-- [boolean](#boolean)
 - [contramap](#contramap)
 - [encoder](#encoder)
 - [id](#id)
 - [intersection](#intersection)
 - [lazy](#lazy)
 - [literalsOr](#literalsor)
-- [number](#number)
 - [partial](#partial)
 - [record](#record)
-- [string](#string)
 - [sum](#sum)
 - [tuple](#tuple)
 - [type](#type)
@@ -71,42 +66,12 @@ export const URI: "Encoder" = ...
 
 Added in v3.0.0
 
-# UnknownArray
-
-**Signature**
-
-```ts
-export const UnknownArray: Encoder<Array<unknown>> = ...
-```
-
-Added in v3.0.0
-
-# UnknownRecord
-
-**Signature**
-
-```ts
-export const UnknownRecord: Encoder<Record<string, unknown>> = ...
-```
-
-Added in v3.0.0
-
 # array
 
 **Signature**
 
 ```ts
 export function array<A>(items: Encoder<A>): Encoder<Array<A>> { ... }
-```
-
-Added in v3.0.0
-
-# boolean
-
-**Signature**
-
-```ts
-export const boolean: Encoder<boolean> = ...
 ```
 
 Added in v3.0.0
@@ -178,16 +143,6 @@ export function literalsOr<A extends S.Literal, B>(as: NonEmptyArray<A>, encoder
 
 Added in v3.0.0
 
-# number
-
-**Signature**
-
-```ts
-export const number: Encoder<number> = ...
-```
-
-Added in v3.0.0
-
 # partial
 
 **Signature**
@@ -204,16 +159,6 @@ Added in v3.0.0
 
 ```ts
 export function record<A>(codomain: Encoder<A>): Encoder<Record<string, A>> { ... }
-```
-
-Added in v3.0.0
-
-# string
-
-**Signature**
-
-```ts
-export const string: Encoder<string> = ...
 ```
 
 Added in v3.0.0
