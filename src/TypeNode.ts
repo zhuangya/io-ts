@@ -31,15 +31,15 @@ export function $ref(id: string): TypeNode<unknown> {
   }
 }
 
-function toLiteralTypeNode(values: Array<Literal>): Array<ts.TypeNode> {
-  return values.map(
-    fold<ts.TypeNode>(
-      s => ts.createLiteralTypeNode(ts.createStringLiteral(s)),
-      n => ts.createLiteralTypeNode(ts.createNumericLiteral(String(n))),
-      b => ts.createLiteralTypeNode(ts.createLiteral(b)),
-      () => ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword)
-    )
-  )
+const toLiteralTypeNode = fold<ts.TypeNode>(
+  s => ts.createLiteralTypeNode(ts.createStringLiteral(s)),
+  n => ts.createLiteralTypeNode(ts.createNumericLiteral(String(n))),
+  b => ts.createLiteralTypeNode(ts.createLiteral(b)),
+  () => ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword)
+)
+
+function toLiteralsTypeNode(values: Array<Literal>): Array<ts.TypeNode> {
+  return values.map(toLiteralTypeNode)
 }
 
 /**
@@ -47,7 +47,7 @@ function toLiteralTypeNode(values: Array<Literal>): Array<ts.TypeNode> {
  */
 export function literal<A extends Literal>(value: A): TypeNode<A> {
   return {
-    typeNode: () => C.make(ts.createUnionTypeNode(toLiteralTypeNode([value])))
+    typeNode: () => C.make(toLiteralTypeNode(value))
   }
 }
 
@@ -56,7 +56,7 @@ export function literal<A extends Literal>(value: A): TypeNode<A> {
  */
 export function literals<A extends Literal>(values: NonEmptyArray<A>): TypeNode<A> {
   return {
-    typeNode: () => C.make(ts.createUnionTypeNode(toLiteralTypeNode(values)))
+    typeNode: () => C.make(ts.createUnionTypeNode(toLiteralsTypeNode(values)))
   }
 }
 
@@ -65,7 +65,7 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>): TypeNode<
  */
 export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, typeNode: TypeNode<B>): TypeNode<A | B> {
   return {
-    typeNode: () => C.make(ts.createUnionTypeNode([...toLiteralTypeNode(values), typeNode.typeNode()]))
+    typeNode: () => C.make(ts.createUnionTypeNode([...toLiteralsTypeNode(values), typeNode.typeNode()]))
   }
 }
 

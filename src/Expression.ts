@@ -38,7 +38,7 @@ const toLiteralExpression = fold<ts.Expression>(
   () => ts.createNull()
 )
 
-function toLiteralExpressions(values: Array<Literal>): ts.Expression {
+function toLiteralsExpression(values: Array<Literal>): ts.Expression {
   return ts.createArrayLiteral(values.map(toLiteralExpression))
 }
 
@@ -60,7 +60,7 @@ export function literal<A extends Literal>(value: A): Expression<A> {
 export function literals<A extends Literal>(values: NonEmptyArray<A>): Expression<A> {
   return {
     expression: () =>
-      C.make(ts.createCall(ts.createPropertyAccess(schemable, 'literals'), undefined, [toLiteralExpressions(values)]))
+      C.make(ts.createCall(ts.createPropertyAccess(schemable, 'literals'), undefined, [toLiteralsExpression(values)]))
   }
 }
 
@@ -75,7 +75,7 @@ export function literalsOr<A extends Literal, B>(
     expression: () =>
       C.make(
         ts.createCall(ts.createPropertyAccess(schemable, 'literalsOr'), undefined, [
-          toLiteralExpressions(values),
+          toLiteralsExpression(values),
           expression.expression()
         ])
       )
