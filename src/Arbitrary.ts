@@ -6,6 +6,7 @@ import { Either, isRight } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { Literal } from './Literal'
 import * as S from './Schemable'
+import { intersect } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -143,9 +144,7 @@ export function tuple3<A, B, C>(itemA: Arbitrary<A>, itemB: Arbitrary<B>, itemC:
  * @since 3.0.0
  */
 export function intersection<A, B>(arbitraryA: Arbitrary<A>, arbitraryB: Arbitrary<B>): Arbitrary<A & B> {
-  return fc
-    .genericTuple<A | B>([arbitraryA, arbitraryB])
-    .map(as => Object.assign({}, ...as))
+  return fc.tuple(arbitraryA, arbitraryB).map(([a, b]) => intersect(a, b))
 }
 
 /**
