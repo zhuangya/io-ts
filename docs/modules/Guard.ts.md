@@ -124,12 +124,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B, C, D, E>(
-  guards: [Guard<A>, Guard<B>, Guard<C>, Guard<D>, Guard<E>]
-): Guard<A & B & C & D & E>
-export function intersection<A, B, C, D>(guards: [Guard<A>, Guard<B>, Guard<C>, Guard<D>]): Guard<A & B & C & D>
-export function intersection<A, B, C>(guards: [Guard<A>, Guard<B>, Guard<C>]): Guard<A & B & C>
-export function intersection<A, B>(guards: [Guard<A>, Guard<B>]): Guard<A & B> { ... }
+export function intersection<A, B>(guards: readonly [Guard<A>, Guard<B>]): Guard<A & B> { ... }
 ```
 
 Added in v3.0.0

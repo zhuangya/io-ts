@@ -175,15 +175,7 @@ export function tuple(items: Array<JsonSchema<any>>): JsonSchema<Array<any>> {
 /**
  * @since 3.0.0
  */
-export function intersection<A, B, C, D, E>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
-): JsonSchema<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
-): JsonSchema<A & B & C & D>
-export function intersection<A, B, C>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]): JsonSchema<A & B & C>
-export function intersection<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B>
-export function intersection(jsonSchemas: Array<JsonSchema<any>>): JsonSchema<Array<any>> {
+export function intersection<A, B>(jsonSchemas: readonly [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B> {
   return {
     compile: () => C.make({ allOf: jsonSchemas.map(jsonSchema => jsonSchema.compile()) })
   }

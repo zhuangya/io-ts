@@ -113,14 +113,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B, C, D, E>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
-): JsonSchema<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
-): JsonSchema<A & B & C & D>
-export function intersection<A, B, C>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]): JsonSchema<A & B & C>
-export function intersection<A, B>(jsonSchemas: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B> { ... }
+export function intersection<A, B>(jsonSchemas: readonly [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B> { ... }
 ```
 
 Added in v3.0.0

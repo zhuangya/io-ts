@@ -86,10 +86,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B, C, D, E>(eqs: [Eq<A>, Eq<B>, Eq<C>, Eq<D>, Eq<E>]): Eq<A & B & C & D & E>
-export function intersection<A, B, C, D>(eqs: [Eq<A>, Eq<B>, Eq<C>, Eq<D>]): Eq<A & B & C & D>
-export function intersection<A, B, C>(eqs: [Eq<A>, Eq<B>, Eq<C>]): Eq<A & B & C>
-export function intersection<A, B>(eqs: [Eq<A>, Eq<B>]): Eq<A & B> { ... }
+export function intersection<A, B>(eqs: readonly [Eq<A>, Eq<B>]): Eq<A & B> { ... }
 ```
 
 Added in v3.0.0

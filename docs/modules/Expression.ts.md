@@ -134,14 +134,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B, C, D, E>(
-  typeNodes: [Expression<A>, Expression<B>, Expression<C>, Expression<D>, Expression<E>]
-): Expression<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  typeNodes: [Expression<A>, Expression<B>, Expression<C>, Expression<D>]
-): Expression<A & B & C & D>
-export function intersection<A, B, C>(typeNodes: [Expression<A>, Expression<B>, Expression<C>]): Expression<A & B & C>
-export function intersection<A, B>(typeNodes: [Expression<A>, Expression<B>]): Expression<A & B> { ... }
+export function intersection<A, B>(expressions: readonly [Expression<A>, Expression<B>]): Expression<A & B> { ... }
 ```
 
 Added in v3.0.0

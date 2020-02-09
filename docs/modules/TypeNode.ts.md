@@ -124,14 +124,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B, C, D, E>(
-  typeNodes: [TypeNode<A>, TypeNode<B>, TypeNode<C>, TypeNode<D>, TypeNode<E>]
-): TypeNode<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  typeNodes: [TypeNode<A>, TypeNode<B>, TypeNode<C>, TypeNode<D>]
-): TypeNode<A & B & C & D>
-export function intersection<A, B, C>(typeNodes: [TypeNode<A>, TypeNode<B>, TypeNode<C>]): TypeNode<A & B & C>
-export function intersection<A, B>(typeNodes: [TypeNode<A>, TypeNode<B>]): TypeNode<A & B> { ... }
+export function intersection<A, B>(typeNodes: readonly [TypeNode<A>, TypeNode<B>]): TypeNode<A & B> { ... }
 ```
 
 Added in v3.0.0

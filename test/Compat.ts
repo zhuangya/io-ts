@@ -370,6 +370,10 @@ describe('Compat', () => {
           codec.decode({ a: 'a' }),
           left(DE.and({ a: 'a' }, [DE.labeled({ a: 'a' }, [['b', DE.leaf(undefined, 'number')]])]))
         )
+        assert.deepStrictEqual(
+          codec.decode({ b: 1 }),
+          left(DE.and({ b: 1 }, [DE.labeled({ b: 1 }, [['a', DE.leaf(undefined, 'string')]])]))
+        )
       })
     })
 

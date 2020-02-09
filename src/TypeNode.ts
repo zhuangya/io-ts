@@ -191,15 +191,7 @@ export function tuple(items: Array<TypeNode<unknown>>): TypeNode<Array<unknown>>
 /**
  * @since 3.0.0
  */
-export function intersection<A, B, C, D, E>(
-  typeNodes: [TypeNode<A>, TypeNode<B>, TypeNode<C>, TypeNode<D>, TypeNode<E>]
-): TypeNode<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  typeNodes: [TypeNode<A>, TypeNode<B>, TypeNode<C>, TypeNode<D>]
-): TypeNode<A & B & C & D>
-export function intersection<A, B, C>(typeNodes: [TypeNode<A>, TypeNode<B>, TypeNode<C>]): TypeNode<A & B & C>
-export function intersection<A, B>(typeNodes: [TypeNode<A>, TypeNode<B>]): TypeNode<A & B>
-export function intersection(typeNodes: Array<TypeNode<unknown>>): TypeNode<unknown> {
+export function intersection<A, B>(typeNodes: readonly [TypeNode<A>, TypeNode<B>]): TypeNode<A & B> {
   return {
     typeNode: () => C.make(ts.createIntersectionTypeNode(typeNodes.map(typeNode => typeNode.typeNode())))
   }

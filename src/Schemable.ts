@@ -37,15 +37,7 @@ export interface Schemable<S extends URIS> {
     <A, B>(items: [Kind<S, A>, Kind<S, B>], id?: string): Kind<S, [A, B]>
     <A>(items: [Kind<S, A>], id?: string): Kind<S, [A]>
   }
-  readonly intersection: {
-    <A, B, C, D, E>(schemas: [Kind<S, A>, Kind<S, B>, Kind<S, C>, Kind<S, D>, Kind<S, E>], id?: string): Kind<
-      S,
-      A & B & C & D & E
-    >
-    <A, B, C, D>(schemas: [Kind<S, A>, Kind<S, B>, Kind<S, C>, Kind<S, D>], id?: string): Kind<S, A & B & C & D>
-    <A, B, C>(schemas: [Kind<S, A>, Kind<S, B>, Kind<S, C>], id?: string): Kind<S, A & B & C>
-    <A, B>(schemas: [Kind<S, A>, Kind<S, B>], id?: string): Kind<S, A & B>
-  }
+  readonly intersection: <A, B>(schemas: readonly [Kind<S, A>, Kind<S, B>], id?: string) => Kind<S, A & B>
   readonly sum: <T extends string>(
     tag: T
   ) => <A>(schemas: { [K in keyof A]: Kind<S, A[K] & Record<T, K>> }, id?: string) => Kind<S, A[keyof A]>

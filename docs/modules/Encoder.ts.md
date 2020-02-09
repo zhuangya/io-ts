@@ -107,14 +107,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B, C, D, E>(
-  encoders: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>, Encoder<E>]
-): Encoder<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  encoders: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>]
-): Encoder<A & B & C & D>
-export function intersection<A, B, C>(encoders: [Encoder<A>, Encoder<B>, Encoder<C>]): Encoder<A & B & C>
-export function intersection<A, B>(encoders: [Encoder<A>, Encoder<B>]): Encoder<A & B> { ... }
+export function intersection<A, B>(encoders: readonly [Encoder<A>, Encoder<B>]): Encoder<A & B> { ... }
 ```
 
 Added in v3.0.0

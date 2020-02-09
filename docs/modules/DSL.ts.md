@@ -129,7 +129,7 @@ export type Model =
     }
   | {
       readonly _tag: 'intersection'
-      readonly models: NonEmptyArray<Model>
+      readonly models: [Model, Model]
       readonly id: string | undefined
     }
   | {
@@ -251,13 +251,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B, C, D, E>(
-  dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>, DSL<E>],
-  id?: string
-): DSL<A & B & C & D & E>
-export function intersection<A, B, C, D>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>], id?: string): DSL<A & B & C & D>
-export function intersection<A, B, C>(dsls: [DSL<A>, DSL<B>, DSL<C>], id?: string): DSL<A & B & C>
-export function intersection<A, B>(dsls: [DSL<A>, DSL<B>], id?: string): DSL<A & B> { ... }
+export function intersection<A, B>(dsls: readonly [DSL<A>, DSL<B>], id?: string): DSL<A & B> { ... }
 ```
 
 Added in v3.0.0

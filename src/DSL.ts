@@ -73,7 +73,7 @@ export type Model =
     }
   | {
       readonly _tag: 'intersection'
-      readonly models: NonEmptyArray<Model>
+      readonly models: [Model, Model]
       readonly id: string | undefined
     }
   | {
@@ -296,19 +296,12 @@ export function tuple(items: Array<DSL<unknown>>, id?: string): DSL<Array<unknow
 /**
  * @since 3.0.0
  */
-export function intersection<A, B, C, D, E>(
-  dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>, DSL<E>],
-  id?: string
-): DSL<A & B & C & D & E>
-export function intersection<A, B, C, D>(dsls: [DSL<A>, DSL<B>, DSL<C>, DSL<D>], id?: string): DSL<A & B & C & D>
-export function intersection<A, B, C>(dsls: [DSL<A>, DSL<B>, DSL<C>], id?: string): DSL<A & B & C>
-export function intersection<A, B>(dsls: [DSL<A>, DSL<B>], id?: string): DSL<A & B>
-export function intersection(dsls: Array<DSL<unknown>>, id?: string): DSL<unknown> {
+export function intersection<A, B>(dsls: readonly [DSL<A>, DSL<B>], id?: string): DSL<A & B> {
   return {
     dsl: () =>
       C.make({
         _tag: 'intersection',
-        models: dsls.map(dsl => dsl.dsl()) as any,
+        models: [dsls[0].dsl(), dsls[1].dsl()],
         id
       })
   }

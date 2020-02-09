@@ -128,16 +128,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B, C, D, E>(
-  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>, ArbitraryMutation<E>]
-): ArbitraryMutation<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
-): ArbitraryMutation<A & B & C & D>
-export function intersection<A, B, C>(
-  ams: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
-): ArbitraryMutation<A & B & C>
-export function intersection<A, B>(ams: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<A & B> { ... }
+export function intersection<A, B>(
+  ams: readonly [ArbitraryMutation<A>, ArbitraryMutation<B>]
+): ArbitraryMutation<A & B> { ... }
 ```
 
 Added in v3.0.0

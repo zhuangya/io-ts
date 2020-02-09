@@ -187,15 +187,9 @@ export function tuple(items: Array<Guard<unknown>>): Guard<Array<unknown>> {
 /**
  * @since 3.0.0
  */
-export function intersection<A, B, C, D, E>(
-  guards: [Guard<A>, Guard<B>, Guard<C>, Guard<D>, Guard<E>]
-): Guard<A & B & C & D & E>
-export function intersection<A, B, C, D>(guards: [Guard<A>, Guard<B>, Guard<C>, Guard<D>]): Guard<A & B & C & D>
-export function intersection<A, B, C>(guards: [Guard<A>, Guard<B>, Guard<C>]): Guard<A & B & C>
-export function intersection<A, B>(guards: [Guard<A>, Guard<B>]): Guard<A & B>
-export function intersection<A>(guards: Array<Guard<A>>): Guard<A> {
+export function intersection<A, B>(guards: readonly [Guard<A>, Guard<B>]): Guard<A & B> {
   return {
-    is: (u: unknown): u is A => guards.every(guard => guard.is(u))
+    is: (u: unknown): u is A & B => guards.every(guard => guard.is(u))
   }
 }
 

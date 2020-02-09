@@ -195,18 +195,8 @@ export function tuple(items: any, id?: string): Codec<any> {
 /**
  * @since 3.0.0
  */
-export function intersection<A, B, C, D, E>(
-  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
-  id?: string
-): Codec<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  codecs: [Codec<A>, Codec<B>, Codec<C>, Codec<D>],
-  id?: string
-): Codec<A & B & C & D>
-export function intersection<A, B, C>(codecs: [Codec<A>, Codec<B>, Codec<C>], id?: string): Codec<A & B & C>
-export function intersection<A, B>(codecs: [Codec<A>, Codec<B>], id?: string): Codec<A & B>
-export function intersection<A>(codecs: any, id?: string): Codec<A> {
-  return make(decoder.intersection<A, A>(codecs, id), encoder.intersection(codecs, id))
+export function intersection<A, B>(codecs: readonly [Codec<A>, Codec<B>], id?: string): Codec<A & B> {
+  return make(decoder.intersection(codecs, id), encoder.intersection(codecs, id))
 }
 
 /**

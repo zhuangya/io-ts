@@ -137,18 +137,10 @@ export function tuple(items: Array<Arbitrary<unknown>>): Arbitrary<unknown> {
 /**
  * @since 3.0.0
  */
-export function intersection<A, B, C, D, E>(
-  arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>, Arbitrary<D>, Arbitrary<E>],
-  name?: string
-): Arbitrary<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>, Arbitrary<D>],
-  name?: string
-): Arbitrary<A & B & C & D>
-export function intersection<A, B, C>(arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>]): Arbitrary<A & B & C>
-export function intersection<A, B>(arbs: [Arbitrary<A>, Arbitrary<B>]): Arbitrary<A & B>
-export function intersection(arbs: Array<Arbitrary<any>>): Arbitrary<any> {
-  return fc.genericTuple(arbs).map(as => Object.assign({}, ...as))
+export function intersection<A, B>(arbs: readonly [Arbitrary<A>, Arbitrary<B>]): Arbitrary<A & B> {
+  return fc
+    .genericTuple<A | B>([...arbs])
+    .map(as => Object.assign({}, ...as))
 }
 
 /**

@@ -194,16 +194,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B, C, D, E>(
-  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>],
-  id?: string
-): Decoder<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>],
-  id?: string
-): Decoder<A & B & C & D>
-export function intersection<A, B, C>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>], id?: string): Decoder<A & B & C>
-export function intersection<A, B>(decoders: [Decoder<A>, Decoder<B>], id?: string): Decoder<A & B> { ... }
+export function intersection<A, B>(decoders: readonly [Decoder<A>, Decoder<B>], id?: string): Decoder<A & B> { ... }
 ```
 
 Added in v3.0.0

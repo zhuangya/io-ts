@@ -88,11 +88,7 @@ describe('DSL', () => {
   })
 
   it('intersection', () => {
-    const dsl = DSL.intersection([
-      DSL.type({ a: DSL.string }),
-      DSL.type({ b: DSL.number }),
-      DSL.type({ c: DSL.boolean })
-    ])
+    const dsl = DSL.intersection([DSL.type({ a: DSL.string }), DSL.type({ b: DSL.number })])
     assert.deepStrictEqual(dsl.dsl(), {
       _tag: 'intersection',
       models: [
@@ -107,13 +103,6 @@ describe('DSL', () => {
           _tag: 'type',
           properties: {
             b: { _tag: 'number' }
-          },
-          id: undefined
-        },
-        {
-          _tag: 'type',
-          properties: {
-            c: { _tag: 'boolean' }
           },
           id: undefined
         }

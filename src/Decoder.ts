@@ -304,34 +304,22 @@ export function tuple(items: Array<Decoder<unknown>>, id?: string): Decoder<Arra
 /**
  * @since 3.0.0
  */
-export function intersection<A, B, C, D, E>(
-  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>],
-  id?: string
-): Decoder<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  decoders: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>],
-  id?: string
-): Decoder<A & B & C & D>
-export function intersection<A, B, C>(decoders: [Decoder<A>, Decoder<B>, Decoder<C>], id?: string): Decoder<A & B & C>
-export function intersection<A, B>(decoders: [Decoder<A>, Decoder<B>], id?: string): Decoder<A & B>
-export function intersection(decoders: Array<Decoder<unknown>>, id?: string): Decoder<unknown> {
+export function intersection<A, B>(decoders: readonly [Decoder<A>, Decoder<B>], id?: string): Decoder<A & B> {
   return {
     decode: u => {
-      const len = decoders.length
-      const as: Array<unknown> = []
-      const es: Array<DE.DecodeError> = []
-      for (let i = 0; i < len; i++) {
-        const e = decoders[i].decode(u)
-        if (E.isLeft(e)) {
-          es.push(e.left)
-        } else {
-          as[i] = e.right
+      const ea = decoders[0].decode(u)
+      const eb = decoders[1].decode(u)
+      if (E.isLeft(ea)) {
+        if (E.isLeft(eb)) {
+          return E.left(DE.and(u, [ea.left, eb.left], id))
         }
+        return E.left(DE.and(u, [ea.left], id))
+      } else {
+        if (E.isLeft(eb)) {
+          return E.left(DE.and(u, [eb.left], id))
+        }
+        return E.right(U.intersect(ea.right, eb.right))
       }
-      if (U.isNonEmpty(es)) {
-        return E.left(DE.and(u, es, id))
-      }
-      return E.right(as.reduce(U.intersection.concat))
     }
   }
 }

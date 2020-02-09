@@ -122,16 +122,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B, C, D, E>(
-  arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>, Arbitrary<D>, Arbitrary<E>],
-  name?: string
-): Arbitrary<A & B & C & D & E>
-export function intersection<A, B, C, D>(
-  arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>, Arbitrary<D>],
-  name?: string
-): Arbitrary<A & B & C & D>
-export function intersection<A, B, C>(arbs: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>]): Arbitrary<A & B & C>
-export function intersection<A, B>(arbs: [Arbitrary<A>, Arbitrary<B>]): Arbitrary<A & B> { ... }
+export function intersection<A, B>(arbs: readonly [Arbitrary<A>, Arbitrary<B>]): Arbitrary<A & B> { ... }
 ```
 
 Added in v3.0.0
