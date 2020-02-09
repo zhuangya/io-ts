@@ -25,7 +25,6 @@ Added in v3.0.0
 - [partial](#partial)
 - [record](#record)
 - [sum](#sum)
-- [tuple1](#tuple1)
 - [tuple2](#tuple2)
 - [tuple3](#tuple3)
 - [type](#type)
@@ -162,16 +161,6 @@ Added in v3.0.0
 export function sum<T extends string>(
   tag: T
 ): <A>(encoders: { [K in keyof A]: Encoder<A[K] & Record<T, K>> }) => Encoder<A[keyof A]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple1
-
-**Signature**
-
-```ts
-export function tuple1<A>(itemA: Encoder<A>): Encoder<[A]> { ... }
 ```
 
 Added in v3.0.0

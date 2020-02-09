@@ -182,13 +182,6 @@ export function array<A>(items: Codec<A>, id?: string): Codec<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple1<A>(itemA: Codec<A>, id?: string): Codec<[A]> {
-  return make(decoder.tuple1(itemA, id), encoder.tuple1(itemA, id))
-}
-
-/**
- * @since 3.0.0
- */
 export function tuple2<A, B>(itemA: Codec<A>, itemB: Codec<B>, id?: string): Codec<[A, B]> {
   return make(decoder.tuple2(itemA, itemB, id), encoder.tuple2(itemA, itemB, id))
 }
@@ -263,7 +256,6 @@ export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> =
   partial,
   record,
   array,
-  tuple1,
   tuple2,
   tuple3,
   intersection,

@@ -77,7 +77,6 @@ Added in v3.0.0
 - [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
-- [tuple1](#tuple1)
 - [tuple2](#tuple2)
 - [tuple3](#tuple3)
 - [type](#type)
@@ -292,16 +291,6 @@ Added in v3.0.0
 export function sum<T extends string>(
   tag: T
 ): <A>(codecs: { [K in keyof A]: Codec<A[K] & Record<T, K>> }, id?: string) => Codec<A[keyof A]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple1
-
-**Signature**
-
-```ts
-export function tuple1<A>(itemA: Codec<A>, id?: string): Codec<[A]> { ... }
 ```
 
 Added in v3.0.0

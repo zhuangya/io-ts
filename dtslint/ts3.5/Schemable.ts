@@ -78,7 +78,6 @@ make(S => S.array(S.number)) // $ExpectType Schema<number[]>
 //
 // tuple
 //
-make(S => S.tuple1(S.string)) // $ExpectType Schema<[string]>
 make(S => S.tuple2(S.string, S.number)) // $ExpectType Schema<[string, number]>
 make(S => S.tuple3(S.string, S.number, S.boolean)) // $ExpectType Schema<[string, number, boolean]>
 

@@ -32,7 +32,6 @@ Added in v3.0.0
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
-- [tuple1](#tuple1)
 - [tuple2](#tuple2)
 - [tuple3](#tuple3)
 - [type](#type)
@@ -248,16 +247,6 @@ export function sum<T extends string>(
 ): <A>(
   ams: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ) => ArbitraryMutation<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple1
-
-**Signature**
-
-```ts
-export function tuple1<A>(itemA: ArbitraryMutation<A>): ArbitraryMutation<[A]> { ... }
 ```
 
 Added in v3.0.0

@@ -40,7 +40,6 @@ Added in v3.0.0
 - [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
-- [tuple1](#tuple1)
 - [tuple2](#tuple2)
 - [tuple3](#tuple3)
 - [type](#type)
@@ -256,16 +255,6 @@ Added in v3.0.0
 export function sum<T extends string>(
   tag: T
 ): <A>(compats: { [K in keyof A]: Compat<A[K] & Record<T, K>> }, id?: string) => Compat<A[keyof A]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple1
-
-**Signature**
-
-```ts
-export function tuple1<A>(itemA: Compat<A>, id?: string): Compat<[A]> { ... }
 ```
 
 Added in v3.0.0

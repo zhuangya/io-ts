@@ -118,11 +118,6 @@ export const array: <A>(eq: Eq<A>) => Eq<Array<A>> = A.getEq
 /**
  * @since 3.0.0
  */
-export const tuple1: <A>(itemA: Eq<A>) => Eq<[A]> = E.getTupleEq
-
-/**
- * @since 3.0.0
- */
 export const tuple2: <A, B>(itemA: Eq<A>, itemB: Eq<B>) => Eq<[A, B]> = E.getTupleEq
 
 /**
@@ -184,7 +179,6 @@ export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = {
   partial,
   record,
   array,
-  tuple1,
   tuple2,
   tuple3,
   intersection,

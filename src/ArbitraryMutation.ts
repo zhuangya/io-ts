@@ -177,16 +177,6 @@ export function array<A>(items: ArbitraryMutation<A>): ArbitraryMutation<Array<A
 /**
  * @since 3.0.0
  */
-export function tuple1<A>(itemA: ArbitraryMutation<A>): ArbitraryMutation<[A]> {
-  return make(
-    itemA.mutation.map(m => [m]),
-    A.tuple1(itemA.arbitrary)
-  )
-}
-
-/**
- * @since 3.0.0
- */
 export function tuple2<A, B>(itemA: ArbitraryMutation<A>, itemB: ArbitraryMutation<B>): ArbitraryMutation<[A, B]> {
   const mutations = [itemA.mutation, itemB.mutation]
   const index: fc.Arbitrary<0 | 1> = fc.oneof(fc.constant(0), fc.constant(1))
@@ -299,7 +289,6 @@ export const arbitraryMutation: S.Schemable<URI> & S.WithUnion<URI> & S.WithPars
   partial,
   record,
   array,
-  tuple1,
   tuple2,
   tuple3,
   intersection,

@@ -58,10 +58,6 @@ describe('Schema', () => {
     assertRoundtrip(DSL.array(DSL.number))
   })
 
-  it('tuple1', () => {
-    assertRoundtrip(DSL.tuple1(DSL.string))
-  })
-
   it('tuple2', () => {
     assertRoundtrip(DSL.tuple2(DSL.string, DSL.number))
   })

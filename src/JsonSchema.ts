@@ -150,21 +150,6 @@ export function array<A>(items: JsonSchema<A>): JsonSchema<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple1<A>(itemA: JsonSchema<A>): JsonSchema<[A]> {
-  return {
-    compile: () =>
-      C.make({
-        type: 'array',
-        items: [itemA.compile()],
-        minItems: 1,
-        maxItems: 1
-      })
-  }
-}
-
-/**
- * @since 3.0.0
- */
 export function tuple2<A, B>(itemA: JsonSchema<A>, itemB: JsonSchema<B>): JsonSchema<[A, B]> {
   return {
     compile: () =>
@@ -288,7 +273,6 @@ export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple1,
   tuple2,
   tuple3,
   intersection,

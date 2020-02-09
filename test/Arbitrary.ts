@@ -138,10 +138,6 @@ describe('Arbitrary', () => {
     assert(make(S => S.array(S.string)))
   })
 
-  it('tuple1', () => {
-    assert(make(S => S.tuple1(S.string)))
-  })
-
   it('tuple2', () => {
     assert(make(S => S.tuple2(S.string, S.number)))
   })

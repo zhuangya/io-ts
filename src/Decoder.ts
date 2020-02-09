@@ -293,13 +293,6 @@ function tupleN<T extends Array<Decoder<any>>>(
 /**
  * @since 3.0.0
  */
-export function tuple1<A>(itemA: Decoder<A>, id?: string): Decoder<[A]> {
-  return tupleN([itemA], id)
-}
-
-/**
- * @since 3.0.0
- */
 export function tuple2<A, B>(itemA: Decoder<A>, itemB: Decoder<B>, id?: string): Decoder<[A, B]> {
   return tupleN([itemA, itemB], id)
 }
@@ -457,7 +450,6 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
   partial,
   record,
   array,
-  tuple1,
   tuple2,
   tuple3,
   intersection,

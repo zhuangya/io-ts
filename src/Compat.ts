@@ -141,13 +141,6 @@ export function array<A>(items: Compat<A>, id?: string): Compat<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple1<A>(itemA: Compat<A>, id?: string): Compat<[A]> {
-  return make(codec.tuple1(itemA, id), guard.tuple1(itemA, id))
-}
-
-/**
- * @since 3.0.0
- */
 export function tuple2<A, B>(itemA: Compat<A>, itemB: Compat<B>, id?: string): Compat<[A, B]> {
   return make(codec.tuple2(itemA, itemB, id), guard.tuple2(itemA, itemB, id))
 }
@@ -241,7 +234,6 @@ export const compat: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI>
   partial,
   record,
   array,
-  tuple1,
   tuple2,
   tuple3,
   intersection,

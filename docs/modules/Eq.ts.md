@@ -26,7 +26,6 @@ Added in v3.0.0
 - [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
-- [tuple1](#tuple1)
 - [tuple2](#tuple2)
 - [tuple3](#tuple3)
 - [type](#type)
@@ -169,16 +168,6 @@ Added in v3.0.0
 
 ```ts
 export function sum<T extends string>(tag: T): <A>(eqs: { [K in keyof A]: Eq<A[K] & Record<T, K>> }) => Eq<A[keyof A]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple1
-
-**Signature**
-
-```ts
-export const tuple1: <A>(itemA: Eq<A>) => Eq<[A]> = ...
 ```
 
 Added in v3.0.0

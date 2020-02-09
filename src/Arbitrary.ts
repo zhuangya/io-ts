@@ -122,13 +122,6 @@ export function array<A>(items: Arbitrary<A>): Arbitrary<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple1<A>(itemA: Arbitrary<A>): Arbitrary<[A]> {
-  return fc.tuple(itemA)
-}
-
-/**
- * @since 3.0.0
- */
 export function tuple2<A, B>(itemA: Arbitrary<A>, itemB: Arbitrary<B>): Arbitrary<[A, B]> {
   return fc.tuple(itemA, itemB)
 }
@@ -212,7 +205,6 @@ export const arbitrary: S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI> =
   partial,
   record,
   array,
-  tuple1,
   tuple2,
   tuple3,
   intersection,

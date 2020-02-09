@@ -67,8 +67,13 @@ export type Model =
       readonly id: string | undefined
     }
   | {
-      readonly _tag: 'tuple'
-      readonly items: [Model] | [Model, Model] | [Model, Model, Model]
+      readonly _tag: 'tuple2'
+      readonly items: [Model, Model]
+      readonly id: string | undefined
+    }
+  | {
+      readonly _tag: 'tuple3'
+      readonly items: [Model, Model, Model]
       readonly id: string | undefined
     }
   | {
@@ -277,25 +282,11 @@ export function array<A>(items: DSL<A>, id?: string): DSL<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple1<A>(itemA: DSL<A>, id?: string): DSL<[A]> {
-  return {
-    dsl: () =>
-      C.make({
-        _tag: 'tuple',
-        items: [itemA.dsl()],
-        id
-      })
-  }
-}
-
-/**
- * @since 3.0.0
- */
 export function tuple2<A, B>(itemA: DSL<A>, itemB: DSL<B>, id?: string): DSL<[A, B]> {
   return {
     dsl: () =>
       C.make({
-        _tag: 'tuple',
+        _tag: 'tuple2',
         items: [itemA.dsl(), itemB.dsl()],
         id
       })
@@ -309,7 +300,7 @@ export function tuple3<A, B, C>(itemA: DSL<A>, itemB: DSL<B>, itemC: DSL<C>, id?
   return {
     dsl: () =>
       C.make({
-        _tag: 'tuple',
+        _tag: 'tuple3',
         items: [itemA.dsl(), itemB.dsl(), itemC.dsl()],
         id
       })
@@ -423,7 +414,6 @@ export const dsl: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple1,
   tuple2,
   tuple3,
   intersection,

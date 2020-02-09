@@ -172,15 +172,6 @@ export function array<A>(items: Guard<A>): Guard<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple1<A>(itemA: Guard<A>): Guard<[A]> {
-  return {
-    is: (u: unknown): u is [A] => UnknownArray.is(u) && u.length === 1 && itemA.is(u[0])
-  }
-}
-
-/**
- * @since 3.0.0
- */
 export function tuple2<A, B>(itemA: Guard<A>, itemB: Guard<B>): Guard<[A, B]> {
   return {
     is: (u: unknown): u is [A, B] => UnknownArray.is(u) && u.length === 2 && itemA.is(u[0]) && itemB.is(u[1])
@@ -286,7 +277,6 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI> 
   partial,
   record,
   array,
-  tuple1,
   tuple2,
   tuple3,
   intersection,

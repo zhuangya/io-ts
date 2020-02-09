@@ -182,16 +182,6 @@ export function array<A>(items: Expression<A>): Expression<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple1<A>(itemA: Expression<A>): Expression<[A]> {
-  return {
-    expression: () =>
-      C.make(ts.createCall(ts.createPropertyAccess(schemable, 'tuple1'), undefined, [itemA.expression()]))
-  }
-}
-
-/**
- * @since 3.0.0
- */
 export function tuple2<A, B>(itemA: Expression<A>, itemB: Expression<B>): Expression<[A, B]> {
   return {
     expression: () =>
@@ -334,7 +324,6 @@ export const expression: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple1,
   tuple2,
   tuple3,
   intersection,
