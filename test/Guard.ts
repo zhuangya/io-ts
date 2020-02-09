@@ -138,12 +138,12 @@ describe('Guard', () => {
 
   describe('intersection', () => {
     it('should accepts valid inputs', () => {
-      const guard = G.intersection([G.type({ a: G.string }), G.type({ b: G.number })])
+      const guard = G.intersection(G.type({ a: G.string }), G.type({ b: G.number }))
       assert.strictEqual(guard.is({ a: 'a', b: 1 }), true)
     })
 
     it('should rejects invalid inputs', () => {
-      const guard = G.intersection([G.type({ a: G.string }), G.type({ b: G.number })])
+      const guard = G.intersection(G.type({ a: G.string }), G.type({ b: G.number }))
       assert.strictEqual(guard.is({ a: 'a' }), false)
     })
   })

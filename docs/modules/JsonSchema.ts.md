@@ -113,7 +113,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(jsonSchemas: readonly [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B> { ... }
+export function intersection<A, B>(jsonSchemaA: JsonSchema<A>, jsonSchemaB: JsonSchema<B>): JsonSchema<A & B> { ... }
 ```
 
 Added in v3.0.0

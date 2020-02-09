@@ -171,7 +171,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(codecs: readonly [Codec<A>, Codec<B>], id?: string): Codec<A & B> { ... }
+export function intersection<A, B>(codecA: Codec<A>, codecB: Codec<B>, id?: string): Codec<A & B> { ... }
 ```
 
 Added in v3.0.0

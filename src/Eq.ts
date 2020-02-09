@@ -130,9 +130,9 @@ export function tuple(eqs: Array<Eq<unknown>>): Eq<Array<unknown>> {
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(eqs: readonly [Eq<A>, Eq<B>]): Eq<A & B> {
+export function intersection<A, B>(eqA: Eq<A>, eqB: Eq<B>): Eq<A & B> {
   return {
-    equals: (x, y) => eqs.every(eq => eq.equals(x, y))
+    equals: (x, y) => eqA.equals(x, y) && eqB.equals(x, y)
   }
 }
 

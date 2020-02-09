@@ -124,7 +124,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(guards: readonly [Guard<A>, Guard<B>]): Guard<A & B> { ... }
+export function intersection<A, B>(guardA: Guard<A>, guardB: Guard<B>): Guard<A & B> { ... }
 ```
 
 Added in v3.0.0

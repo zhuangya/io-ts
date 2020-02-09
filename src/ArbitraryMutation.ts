@@ -202,10 +202,8 @@ export function tuple(items: Array<ArbitraryMutation<unknown>>): ArbitraryMutati
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(
-  ams: readonly [ArbitraryMutation<A>, ArbitraryMutation<B>]
-): ArbitraryMutation<A & B> {
-  return make(A.intersection([ams[0].mutation, ams[1].mutation]), A.intersection([ams[0].arbitrary, ams[1].arbitrary]))
+export function intersection<A, B>(amA: ArbitraryMutation<A>, amB: ArbitraryMutation<B>): ArbitraryMutation<A & B> {
+  return make(A.intersection(amA.mutation, amB.mutation), A.intersection(amA.arbitrary, amB.arbitrary))
 }
 
 /**

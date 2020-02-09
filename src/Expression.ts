@@ -207,12 +207,13 @@ export function tuple(items: Array<Expression<unknown>>): Expression<Array<unkno
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(expressions: readonly [Expression<A>, Expression<B>]): Expression<A & B> {
+export function intersection<A, B>(expressionA: Expression<A>, expressionB: Expression<B>): Expression<A & B> {
   return {
     expression: () =>
       C.make(
         ts.createCall(ts.createPropertyAccess(schemable, 'intersection'), undefined, [
-          ts.createArrayLiteral(expressions.map(expression => expression.expression()))
+          expressionA.expression(),
+          expressionB.expression()
         ])
       )
   }

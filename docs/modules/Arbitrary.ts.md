@@ -122,7 +122,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(arbs: readonly [Arbitrary<A>, Arbitrary<B>]): Arbitrary<A & B> { ... }
+export function intersection<A, B>(arbitraryA: Arbitrary<A>, arbitraryB: Arbitrary<B>): Arbitrary<A & B> { ... }
 ```
 
 Added in v3.0.0

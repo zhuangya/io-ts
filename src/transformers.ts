@@ -61,7 +61,7 @@ export function toTypeNode(model: DSL.Model): T.TypeNode<unknown> {
     case 'union':
       return T.union(model.models.map(model => toTypeNode(model)) as any)
     case 'intersection':
-      return T.intersection(model.models.map(model => toTypeNode(model)) as any)
+      return T.intersection(toTypeNode(model.models[0]), toTypeNode(model.models[1]))
     case 'tuple':
       return T.tuple(model.items.map(item => toTypeNode(item)) as any)
     case 'type':
@@ -111,7 +111,7 @@ export function toExpression(model: DSL.Model): E.Expression<unknown> {
     case 'union':
       return E.union(model.models.map(model => toExpression(model)) as any)
     case 'intersection':
-      return E.intersection(model.models.map(model => toExpression(model)) as any)
+      return E.intersection(toExpression(model.models[0]), toExpression(model.models[1]))
     case 'tuple':
       return E.tuple(model.items.map(item => toExpression(item)) as any)
     case 'type':

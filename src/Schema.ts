@@ -57,7 +57,7 @@ export function getTransformer(refs: Record<string, Schema<unknown>>): <A>(dsl: 
       case 'tuple':
         return make(S => S.tuple(model.items.map(item => fromModel(item)(S)) as any))
       case 'intersection':
-        return make(S => S.intersection(model.models.map(model => fromModel(model)(S)) as any))
+        return make(S => S.intersection(fromModel(model.models[0])(S), fromModel(model.models[1])(S)))
       case 'sum':
         return make(S => S.sum(model.tag)(R.record.map(model.models, model => fromModel(model)(S))))
       case 'lazy':

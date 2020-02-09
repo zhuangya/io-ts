@@ -83,7 +83,7 @@ describe('JsonSchema', () => {
 
   describe('intersection', () => {
     it('should handle non primitive values', () => {
-      const validate = ajv.compile(J.intersection([J.type({ a: J.string }), J.type({ b: J.number })]).compile())
+      const validate = ajv.compile(J.intersection(J.type({ a: J.string }), J.type({ b: J.number })).compile())
       assert.strictEqual(validate({ a: 'a', b: 1 }), true)
       assert.strictEqual(validate({ a: 'a' }), false)
     })
@@ -108,7 +108,7 @@ describe('JsonSchema', () => {
     }
 
     it('should handle primitives', () => {
-      const validate = ajv.compile(J.intersection([Int, Positive]).compile())
+      const validate = ajv.compile(J.intersection(Int, Positive).compile())
       assert.strictEqual(validate(1), true)
       assert.strictEqual(validate(-1), false)
     })

@@ -63,7 +63,7 @@ describe('Schema', () => {
   })
 
   it('intersection', () => {
-    assertRoundtrip(DSL.intersection([DSL.type({ a: DSL.number }), DSL.type({ b: DSL.string })]))
+    assertRoundtrip(DSL.intersection(DSL.type({ a: DSL.number }), DSL.type({ b: DSL.string })))
   })
 
   it('sum', () => {

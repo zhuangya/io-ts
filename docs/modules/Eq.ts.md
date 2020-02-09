@@ -86,7 +86,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(eqs: readonly [Eq<A>, Eq<B>]): Eq<A & B> { ... }
+export function intersection<A, B>(eqA: Eq<A>, eqB: Eq<B>): Eq<A & B> { ... }
 ```
 
 Added in v3.0.0

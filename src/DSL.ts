@@ -296,12 +296,12 @@ export function tuple(items: Array<DSL<unknown>>, id?: string): DSL<Array<unknow
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(dsls: readonly [DSL<A>, DSL<B>], id?: string): DSL<A & B> {
+export function intersection<A, B>(dslA: DSL<A>, dslB: DSL<B>, id?: string): DSL<A & B> {
   return {
     dsl: () =>
       C.make({
         _tag: 'intersection',
-        models: [dsls[0].dsl(), dsls[1].dsl()],
+        models: [dslA.dsl(), dslB.dsl()],
         id
       })
   }

@@ -51,7 +51,7 @@ describe('Eq', () => {
   })
 
   it('intersection', () => {
-    const eq = E.intersection([E.type({ a: E.string }), E.type({ b: E.number })])
+    const eq = E.intersection(E.type({ a: E.string }), E.type({ b: E.number }))
     assert.deepStrictEqual(eq.equals({ a: 'a', b: 1 }, { a: 'a', b: 1 }), true)
     assert.deepStrictEqual(eq.equals({ a: 'a', b: 1 }, { a: 'c', b: 1 }), false)
     assert.deepStrictEqual(eq.equals({ a: 'a', b: 1 }, { a: 'a', b: 2 }), false)

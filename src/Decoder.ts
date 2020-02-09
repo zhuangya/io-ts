@@ -304,11 +304,11 @@ export function tuple(items: Array<Decoder<unknown>>, id?: string): Decoder<Arra
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(decoders: readonly [Decoder<A>, Decoder<B>], id?: string): Decoder<A & B> {
+export function intersection<A, B>(decoderA: Decoder<A>, decoderB: Decoder<B>, id?: string): Decoder<A & B> {
   return {
     decode: u => {
-      const ea = decoders[0].decode(u)
-      const eb = decoders[1].decode(u)
+      const ea = decoderA.decode(u)
+      const eb = decoderB.decode(u)
       if (E.isLeft(ea)) {
         if (E.isLeft(eb)) {
           return E.left(DE.and(u, [ea.left, eb.left], id))

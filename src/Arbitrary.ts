@@ -137,9 +137,9 @@ export function tuple(items: Array<Arbitrary<unknown>>): Arbitrary<unknown> {
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(arbs: readonly [Arbitrary<A>, Arbitrary<B>]): Arbitrary<A & B> {
+export function intersection<A, B>(arbitraryA: Arbitrary<A>, arbitraryB: Arbitrary<B>): Arbitrary<A & B> {
   return fc
-    .genericTuple<A | B>([...arbs])
+    .genericTuple<A | B>([arbitraryA, arbitraryB])
     .map(as => Object.assign({}, ...as))
 }
 

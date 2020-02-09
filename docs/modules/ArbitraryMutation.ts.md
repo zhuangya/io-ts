@@ -128,9 +128,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(
-  ams: readonly [ArbitraryMutation<A>, ArbitraryMutation<B>]
-): ArbitraryMutation<A & B> { ... }
+export function intersection<A, B>(amA: ArbitraryMutation<A>, amB: ArbitraryMutation<B>): ArbitraryMutation<A & B> { ... }
 ```
 
 Added in v3.0.0

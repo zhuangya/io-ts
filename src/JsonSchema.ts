@@ -175,9 +175,9 @@ export function tuple(items: Array<JsonSchema<any>>): JsonSchema<Array<any>> {
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(jsonSchemas: readonly [JsonSchema<A>, JsonSchema<B>]): JsonSchema<A & B> {
+export function intersection<A, B>(jsonSchemaA: JsonSchema<A>, jsonSchemaB: JsonSchema<B>): JsonSchema<A & B> {
   return {
-    compile: () => C.make({ allOf: jsonSchemas.map(jsonSchema => jsonSchema.compile()) })
+    compile: () => C.make({ allOf: [jsonSchemaA.compile(), jsonSchemaB.compile()] })
   }
 }
 

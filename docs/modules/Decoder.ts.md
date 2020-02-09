@@ -194,7 +194,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(decoders: readonly [Decoder<A>, Decoder<B>], id?: string): Decoder<A & B> { ... }
+export function intersection<A, B>(decoderA: Decoder<A>, decoderB: Decoder<B>, id?: string): Decoder<A & B> { ... }
 ```
 
 Added in v3.0.0

@@ -128,9 +128,9 @@ export function tuple(items: Array<Encoder<unknown>>): Encoder<Array<unknown>> {
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(encoders: readonly [Encoder<A>, Encoder<B>]): Encoder<A & B> {
+export function intersection<A, B>(encoderA: Encoder<A>, encoderB: Encoder<B>): Encoder<A & B> {
   return {
-    encode: a => encoders.map(encoder => encoder.encode(a)).reduce(U.intersection.concat)
+    encode: ab => U.intersect(encoderA.encode(ab), encoderB.encode(ab))
   }
 }
 

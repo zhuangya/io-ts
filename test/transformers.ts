@@ -49,7 +49,7 @@ describe('transformers', () => {
     })
 
     it('intersection', () => {
-      assertTypeNode(DSL.intersection([DSL.string, DSL.number]), 'string & number')
+      assertTypeNode(DSL.intersection(DSL.string, DSL.number), 'string & number')
     })
 
     it('tuple', () => {
@@ -133,7 +133,7 @@ describe('transformers', () => {
     })
 
     it('intersection', () => {
-      assertExpression(DSL.intersection([DSL.string, DSL.number]), 'S.intersection([S.string, S.number])')
+      assertExpression(DSL.intersection(DSL.string, DSL.number), 'S.intersection(S.string, S.number)')
     })
 
     it('tuple', () => {

@@ -124,7 +124,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(typeNodes: readonly [TypeNode<A>, TypeNode<B>]): TypeNode<A & B> { ... }
+export function intersection<A, B>(typeNodeA: TypeNode<A>, typeNodeB: TypeNode<B>): TypeNode<A & B> { ... }
 ```
 
 Added in v3.0.0

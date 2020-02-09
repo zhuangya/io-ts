@@ -355,17 +355,17 @@ describe('Compat', () => {
   describe('intersection', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.intersection([C.type({ a: C.string }), C.type({ b: C.number })])
+        const codec = C.intersection(C.type({ a: C.string }), C.type({ b: C.number }))
         assert.deepStrictEqual(codec.decode({ a: 'a', b: 1 }), right({ a: 'a', b: 1 }))
       })
 
       it('should handle primitives', () => {
-        const codec = C.intersection([Int, Positive])
+        const codec = C.intersection(Int, Positive)
         assert.deepStrictEqual(codec.decode(1), right(1))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.intersection([C.type({ a: C.string }), C.type({ b: C.number })])
+        const codec = C.intersection(C.type({ a: C.string }), C.type({ b: C.number }))
         assert.deepStrictEqual(
           codec.decode({ a: 'a' }),
           left(DE.and({ a: 'a' }, [DE.labeled({ a: 'a' }, [['b', DE.leaf(undefined, 'number')]])]))
@@ -379,12 +379,12 @@ describe('Compat', () => {
 
     describe('encode', () => {
       it('should encode a value', () => {
-        const codec = C.intersection([C.type({ a: C.string }), C.type({ b: NumberFromString })])
+        const codec = C.intersection(C.type({ a: C.string }), C.type({ b: NumberFromString }))
         assert.deepStrictEqual(codec.encode({ a: 'a', b: 1 }), { a: 'a', b: '1' })
       })
 
       it('should handle primitives', () => {
-        const codec = C.intersection([Int, Positive])
+        const codec = C.intersection(Int, Positive)
         assert.deepStrictEqual(codec.encode(1 as any), 1)
       })
     })

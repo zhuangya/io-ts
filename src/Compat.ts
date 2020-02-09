@@ -159,8 +159,8 @@ export function tuple(items: any, id?: string): Compat<any> {
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(compats: readonly [Compat<A>, Compat<B>], id?: string): Compat<A & B> {
-  return make(codec.intersection(compats, id), guard.intersection(compats, id))
+export function intersection<A, B>(compatA: Compat<A>, compatB: Compat<B>, id?: string): Compat<A & B> {
+  return make(codec.intersection(compatA, compatB, id), guard.intersection(compatA, compatB, id))
 }
 
 /**

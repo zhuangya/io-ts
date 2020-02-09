@@ -134,7 +134,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(expressions: readonly [Expression<A>, Expression<B>]): Expression<A & B> { ... }
+export function intersection<A, B>(expressionA: Expression<A>, expressionB: Expression<B>): Expression<A & B> { ... }
 ```
 
 Added in v3.0.0

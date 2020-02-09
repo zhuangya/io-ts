@@ -133,7 +133,7 @@ describe('Arbitrary', () => {
   })
 
   it('intersection', () => {
-    assert(make(S => S.intersection([S.type({ a: S.string }), S.type({ b: S.number })])))
+    assert(make(S => S.intersection(S.type({ a: S.string }), S.type({ b: S.number }))))
   })
 
   it('sum', () => {

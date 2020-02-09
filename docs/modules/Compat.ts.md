@@ -133,7 +133,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(compats: readonly [Compat<A>, Compat<B>], id?: string): Compat<A & B> { ... }
+export function intersection<A, B>(compatA: Compat<A>, compatB: Compat<B>, id?: string): Compat<A & B> { ... }
 ```
 
 Added in v3.0.0

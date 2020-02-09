@@ -251,7 +251,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(dsls: readonly [DSL<A>, DSL<B>], id?: string): DSL<A & B> { ... }
+export function intersection<A, B>(dslA: DSL<A>, dslB: DSL<B>, id?: string): DSL<A & B> { ... }
 ```
 
 Added in v3.0.0

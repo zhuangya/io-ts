@@ -187,9 +187,9 @@ export function tuple(items: Array<Guard<unknown>>): Guard<Array<unknown>> {
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(guards: readonly [Guard<A>, Guard<B>]): Guard<A & B> {
+export function intersection<A, B>(guardA: Guard<A>, guardB: Guard<B>): Guard<A & B> {
   return {
-    is: (u: unknown): u is A & B => guards.every(guard => guard.is(u))
+    is: (u: unknown): u is A & B => guardA.is(u) && guardB.is(u)
   }
 }
 

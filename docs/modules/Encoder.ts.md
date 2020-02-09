@@ -107,7 +107,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(encoders: readonly [Encoder<A>, Encoder<B>]): Encoder<A & B> { ... }
+export function intersection<A, B>(encoderA: Encoder<A>, encoderB: Encoder<B>): Encoder<A & B> { ... }
 ```
 
 Added in v3.0.0

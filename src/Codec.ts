@@ -195,8 +195,8 @@ export function tuple(items: any, id?: string): Codec<any> {
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(codecs: readonly [Codec<A>, Codec<B>], id?: string): Codec<A & B> {
-  return make(decoder.intersection(codecs, id), encoder.intersection(codecs, id))
+export function intersection<A, B>(codecA: Codec<A>, codecB: Codec<B>, id?: string): Codec<A & B> {
+  return make(decoder.intersection(codecA, codecB, id), encoder.intersection(codecA, codecB, id))
 }
 
 /**
