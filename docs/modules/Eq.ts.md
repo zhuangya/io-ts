@@ -26,7 +26,9 @@ Added in v3.0.0
 - [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
-- [tuple](#tuple)
+- [tuple1](#tuple1)
+- [tuple2](#tuple2)
+- [tuple3](#tuple3)
 - [type](#type)
 
 ---
@@ -171,16 +173,32 @@ export function sum<T extends string>(tag: T): <A>(eqs: { [K in keyof A]: Eq<A[K
 
 Added in v3.0.0
 
-# tuple
+# tuple1
 
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(eqs: [Eq<A>, Eq<B>, Eq<C>, Eq<D>, Eq<E>]): Eq<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(eqs: [Eq<A>, Eq<B>, Eq<C>, Eq<D>]): Eq<[A, B, C, D]>
-export function tuple<A, B, C>(eqs: [Eq<A>, Eq<B>, Eq<C>]): Eq<[A, B, C]>
-export function tuple<A, B>(eqs: [Eq<A>, Eq<B>]): Eq<[A, B]>
-export function tuple<A>(eqs: [Eq<A>]): Eq<[A]> { ... }
+export const tuple1: <A>(itemA: Eq<A>) => Eq<[A]> = ...
+```
+
+Added in v3.0.0
+
+# tuple2
+
+**Signature**
+
+```ts
+export const tuple2: <A, B>(itemA: Eq<A>, itemB: Eq<B>) => Eq<[A, B]> = ...
+```
+
+Added in v3.0.0
+
+# tuple3
+
+**Signature**
+
+```ts
+export const tuple3: <A, B, C>(itemA: Eq<A>, itemB: Eq<B>, itemC: Eq<C>) => Eq<[A, B, C]> = ...
 ```
 
 Added in v3.0.0

@@ -30,7 +30,9 @@ Added in v3.0.0
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
-- [tuple](#tuple)
+- [tuple1](#tuple1)
+- [tuple2](#tuple2)
+- [tuple3](#tuple3)
 - [type](#type)
 - [union](#union)
 
@@ -223,20 +225,36 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple
+# tuple1
 
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(
-  items: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
-): JsonSchema<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  items: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
-): JsonSchema<[A, B, C, D]>
-export function tuple<A, B, C>(items: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]): JsonSchema<[A, B, C]>
-export function tuple<A, B>(items: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<[A, B]>
-export function tuple<A>(items: [JsonSchema<A>]): JsonSchema<[A]> { ... }
+export function tuple1<A>(itemA: JsonSchema<A>): JsonSchema<[A]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple2
+
+**Signature**
+
+```ts
+export function tuple2<A, B>(itemA: JsonSchema<A>, itemB: JsonSchema<B>): JsonSchema<[A, B]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple3
+
+**Signature**
+
+```ts
+export function tuple3<A, B, C>(
+  itemA: JsonSchema<A>,
+  itemB: JsonSchema<B>,
+  itemC: JsonSchema<C>
+): JsonSchema<[A, B, C]> { ... }
 ```
 
 Added in v3.0.0

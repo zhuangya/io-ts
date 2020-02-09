@@ -31,7 +31,9 @@ Added in v3.0.0
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
-- [tuple](#tuple)
+- [tuple1](#tuple1)
+- [tuple2](#tuple2)
+- [tuple3](#tuple3)
 - [type](#type)
 - [union](#union)
 
@@ -229,20 +231,32 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple
+# tuple1
 
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(
-  items: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>, Arbitrary<D>, Arbitrary<E>]
-): Arbitrary<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  items: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>, Arbitrary<D>]
-): Arbitrary<[A, B, C, D]>
-export function tuple<A, B, C>(items: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>]): Arbitrary<[A, B, C]>
-export function tuple<A, B>(items: [Arbitrary<A>, Arbitrary<B>]): Arbitrary<[A, B]>
-export function tuple<A>(items: [Arbitrary<A>]): Arbitrary<[A]> { ... }
+export function tuple1<A>(itemA: Arbitrary<A>): Arbitrary<[A]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple2
+
+**Signature**
+
+```ts
+export function tuple2<A, B>(itemA: Arbitrary<A>, itemB: Arbitrary<B>): Arbitrary<[A, B]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple3
+
+**Signature**
+
+```ts
+export function tuple3<A, B, C>(itemA: Arbitrary<A>, itemB: Arbitrary<B>, itemC: Arbitrary<C>): Arbitrary<[A, B, C]> { ... }
 ```
 
 Added in v3.0.0

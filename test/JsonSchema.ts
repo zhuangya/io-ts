@@ -74,8 +74,8 @@ describe('JsonSchema', () => {
     assert.strictEqual(validate([1, 'a', 3]), false)
   })
 
-  it('tuple', () => {
-    const validate = ajv.compile(J.tuple([J.string, J.number]).compile())
+  it('tuple2', () => {
+    const validate = ajv.compile(J.tuple2(J.string, J.number).compile())
     assert.strictEqual(validate(['a', 1]), true)
     assert.strictEqual(validate(['a', 1, true]), false)
     assert.strictEqual(validate(['a']), false)

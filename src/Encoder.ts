@@ -112,16 +112,27 @@ export function array<A>(items: Encoder<A>): Encoder<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(
-  items: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>, Encoder<E>]
-): Encoder<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(items: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>]): Encoder<[A, B, C, D]>
-export function tuple<A, B, C>(items: [Encoder<A>, Encoder<B>, Encoder<C>]): Encoder<[A, B, C]>
-export function tuple<A, B>(items: [Encoder<A>, Encoder<B>]): Encoder<[A, B]>
-export function tuple<A>(items: [Encoder<A>]): Encoder<[A]>
-export function tuple(items: Array<Encoder<unknown>>): Encoder<Array<unknown>> {
+export function tuple1<A>(itemA: Encoder<A>): Encoder<[A]> {
   return {
-    encode: as => items.map((encoder, i) => encoder.encode(as[i]))
+    encode: as => [itemA.encode(as[0])]
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple2<A, B>(itemA: Encoder<A>, itemB: Encoder<B>): Encoder<[A, B]> {
+  return {
+    encode: as => [itemA.encode(as[0]), itemB.encode(as[1])]
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple3<A, B, C>(itemA: Encoder<A>, itemB: Encoder<B>, itemC: Encoder<C>): Encoder<[A, B, C]> {
+  return {
+    encode: as => [itemA.encode(as[0]), itemB.encode(as[1]), itemC.encode(as[2])]
   }
 }
 
@@ -197,7 +208,9 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithRefinement<
   partial,
   record,
   array,
-  tuple,
+  tuple1,
+  tuple2,
+  tuple3,
   intersection,
   sum,
   lazy: (_, f) => lazy(f),

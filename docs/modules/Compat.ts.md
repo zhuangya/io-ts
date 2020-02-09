@@ -40,7 +40,9 @@ Added in v3.0.0
 - [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
-- [tuple](#tuple)
+- [tuple1](#tuple1)
+- [tuple2](#tuple2)
+- [tuple3](#tuple3)
 - [type](#type)
 - [union](#union)
 
@@ -258,22 +260,32 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple
+# tuple1
 
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(
-  items: [Compat<A>, Compat<B>, Compat<C>, Compat<D>, Compat<E>],
-  id?: string
-): Compat<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  compitemsats: [Compat<A>, Compat<B>, Compat<C>, Compat<D>],
-  id?: string
-): Compat<[A, B, C, D]>
-export function tuple<A, B, C>(items: [Compat<A>, Compat<B>, Compat<C>], id?: string): Compat<[A, B, C]>
-export function tuple<A, B>(compats: [Compat<A>, Compat<B>], id?: string): Compat<[A, B]>
-export function tuple<A>(items: [Compat<A>], id?: string): Compat<[A]> { ... }
+export function tuple1<A>(itemA: Compat<A>, id?: string): Compat<[A]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple2
+
+**Signature**
+
+```ts
+export function tuple2<A, B>(itemA: Compat<A>, itemB: Compat<B>, id?: string): Compat<[A, B]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple3
+
+**Signature**
+
+```ts
+export function tuple3<A, B, C>(itemA: Compat<A>, itemB: Compat<B>, itemC: Compat<C>, id?: string): Compat<[A, B, C]> { ... }
 ```
 
 Added in v3.0.0

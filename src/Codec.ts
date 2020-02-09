@@ -2,6 +2,8 @@
  * Breaking changes:
  * - remove `brand` combinator
  * - rename `recursive` to `lazy`
+ * - intersections support two, spreaded arguments
+ * - tuples support up to 3 spreaded arguments
  *
  * FAQ
  * - is it possible to provide a custom message?
@@ -180,16 +182,22 @@ export function array<A>(items: Codec<A>, id?: string): Codec<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(
-  items: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
-  id?: string
-): Codec<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(items: [Codec<A>, Codec<B>, Codec<C>, Codec<D>], id?: string): Codec<[A, B, C, D]>
-export function tuple<A, B, C>(items: [Codec<A>, Codec<B>, Codec<C>], id?: string): Codec<[A, B, C]>
-export function tuple<A, B>(items: [Codec<A>, Codec<B>], id?: string): Codec<[A, B]>
-export function tuple<A>(items: [Codec<A>], id?: string): Codec<[A]>
-export function tuple(items: any, id?: string): Codec<any> {
-  return make(decoder.tuple(items, id), encoder.tuple(items, id))
+export function tuple1<A>(itemA: Codec<A>, id?: string): Codec<[A]> {
+  return make(decoder.tuple1(itemA, id), encoder.tuple1(itemA, id))
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple2<A, B>(itemA: Codec<A>, itemB: Codec<B>, id?: string): Codec<[A, B]> {
+  return make(decoder.tuple2(itemA, itemB, id), encoder.tuple2(itemA, itemB, id))
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple3<A, B, C>(itemA: Codec<A>, itemB: Codec<B>, itemC: Codec<C>, id?: string): Codec<[A, B, C]> {
+  return make(decoder.tuple3(itemA, itemB, itemC, id), encoder.tuple3(itemA, itemB, itemC, id))
 }
 
 /**
@@ -255,7 +263,9 @@ export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> =
   partial,
   record,
   array,
-  tuple,
+  tuple1,
+  tuple2,
+  tuple3,
   intersection,
   sum,
   lazy,

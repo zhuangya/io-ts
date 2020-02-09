@@ -40,7 +40,9 @@ Added in v3.0.0
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
-- [tuple](#tuple)
+- [tuple1](#tuple1)
+- [tuple2](#tuple2)
+- [tuple3](#tuple3)
 - [type](#type)
 - [union](#union)
 - [withMessage](#withmessage)
@@ -335,22 +337,37 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple
+# tuple1
 
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(
-  items: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>],
+export function tuple1<A>(itemA: Decoder<A>, id?: string): Decoder<[A]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple2
+
+**Signature**
+
+```ts
+export function tuple2<A, B>(itemA: Decoder<A>, itemB: Decoder<B>, id?: string): Decoder<[A, B]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple3
+
+**Signature**
+
+```ts
+export function tuple3<A, B, C>(
+  itemA: Decoder<A>,
+  itemB: Decoder<B>,
+  itemC: Decoder<C>,
   id?: string
-): Decoder<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  items: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>],
-  id?: string
-): Decoder<[A, B, C, D]>
-export function tuple<A, B, C>(items: [Decoder<A>, Decoder<B>, Decoder<C>], id?: string): Decoder<[A, B, C]>
-export function tuple<A, B>(items: [Decoder<A>, Decoder<B>], id?: string): Decoder<[A, B]>
-export function tuple<A>(items: [Decoder<A>], id?: string): Decoder<[A]> { ... }
+): Decoder<[A, B, C]> { ... }
 ```
 
 Added in v3.0.0

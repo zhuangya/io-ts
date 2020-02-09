@@ -171,20 +171,27 @@ export function array<A>(items: TypeNode<A>): TypeNode<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(
-  items: [TypeNode<A>, TypeNode<B>, TypeNode<C>, TypeNode<D>, TypeNode<E>],
-  id?: string
-): TypeNode<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  items: [TypeNode<A>, TypeNode<B>, TypeNode<C>, TypeNode<D>],
-  id?: string
-): TypeNode<[A, B, C, D]>
-export function tuple<A, B, C>(items: [TypeNode<A>, TypeNode<B>, TypeNode<C>]): TypeNode<[A, B, C]>
-export function tuple<A, B>(items: [TypeNode<A>, TypeNode<B>]): TypeNode<[A, B]>
-export function tuple<A>(items: [TypeNode<A>]): TypeNode<[A]>
-export function tuple(items: Array<TypeNode<unknown>>): TypeNode<Array<unknown>> {
+export function tuple1<A>(itemA: TypeNode<A>): TypeNode<[A]> {
   return {
-    typeNode: () => C.make(ts.createTupleTypeNode(items.map(item => item.typeNode())))
+    typeNode: () => C.make(ts.createTupleTypeNode([itemA.typeNode()]))
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple2<A, B>(itemA: TypeNode<A>, itemB: TypeNode<B>): TypeNode<[A, B]> {
+  return {
+    typeNode: () => C.make(ts.createTupleTypeNode([itemA.typeNode(), itemB.typeNode()]))
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple3<A, B, C>(itemA: TypeNode<A>, itemB: TypeNode<B>, itemC: TypeNode<C>): TypeNode<[A, B, C]> {
+  return {
+    typeNode: () => C.make(ts.createTupleTypeNode([itemA.typeNode(), itemB.typeNode(), itemC.typeNode()]))
   }
 }
 
@@ -275,7 +282,9 @@ export const typeNode: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple,
+  tuple1,
+  tuple2,
+  tuple3,
   intersection,
   sum,
   lazy,

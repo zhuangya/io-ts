@@ -30,7 +30,9 @@ Added in v3.0.0
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
-- [tuple](#tuple)
+- [tuple1](#tuple1)
+- [tuple2](#tuple2)
+- [tuple3](#tuple3)
 - [type](#type)
 - [typeNode](#typenode)
 - [union](#union)
@@ -221,22 +223,32 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple
+# tuple1
 
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(
-  items: [TypeNode<A>, TypeNode<B>, TypeNode<C>, TypeNode<D>, TypeNode<E>],
-  id?: string
-): TypeNode<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  items: [TypeNode<A>, TypeNode<B>, TypeNode<C>, TypeNode<D>],
-  id?: string
-): TypeNode<[A, B, C, D]>
-export function tuple<A, B, C>(items: [TypeNode<A>, TypeNode<B>, TypeNode<C>]): TypeNode<[A, B, C]>
-export function tuple<A, B>(items: [TypeNode<A>, TypeNode<B>]): TypeNode<[A, B]>
-export function tuple<A>(items: [TypeNode<A>]): TypeNode<[A]> { ... }
+export function tuple1<A>(itemA: TypeNode<A>): TypeNode<[A]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple2
+
+**Signature**
+
+```ts
+export function tuple2<A, B>(itemA: TypeNode<A>, itemB: TypeNode<B>): TypeNode<[A, B]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple3
+
+**Signature**
+
+```ts
+export function tuple3<A, B, C>(itemA: TypeNode<A>, itemB: TypeNode<B>, itemC: TypeNode<C>): TypeNode<[A, B, C]> { ... }
 ```
 
 Added in v3.0.0

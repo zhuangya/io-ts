@@ -31,7 +31,9 @@ Added in v3.0.0
 - [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
-- [tuple](#tuple)
+- [tuple1](#tuple1)
+- [tuple2](#tuple2)
+- [tuple3](#tuple3)
 - [type](#type)
 - [union](#union)
 
@@ -231,16 +233,32 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple
+# tuple1
 
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(items: [Guard<A>, Guard<B>, Guard<C>, Guard<D>, Guard<E>]): Guard<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(items: [Guard<A>, Guard<B>, Guard<C>, Guard<D>]): Guard<[A, B, C, D]>
-export function tuple<A, B, C>(items: [Guard<A>, Guard<B>, Guard<C>]): Guard<[A, B, C]>
-export function tuple<A, B>(items: [Guard<A>, Guard<B>]): Guard<[A, B]>
-export function tuple<A>(items: [Guard<A>]): Guard<[A]> { ... }
+export function tuple1<A>(itemA: Guard<A>): Guard<[A]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple2
+
+**Signature**
+
+```ts
+export function tuple2<A, B>(itemA: Guard<A>, itemB: Guard<B>): Guard<[A, B]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple3
+
+**Signature**
+
+```ts
+export function tuple3<A, B, C>(itemA: Guard<A>, itemB: Guard<B>, itemC: Guard<C>): Guard<[A, B, C]> { ... }
 ```
 
 Added in v3.0.0

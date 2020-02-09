@@ -118,14 +118,17 @@ export const array: <A>(eq: Eq<A>) => Eq<Array<A>> = A.getEq
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(eqs: [Eq<A>, Eq<B>, Eq<C>, Eq<D>, Eq<E>]): Eq<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(eqs: [Eq<A>, Eq<B>, Eq<C>, Eq<D>]): Eq<[A, B, C, D]>
-export function tuple<A, B, C>(eqs: [Eq<A>, Eq<B>, Eq<C>]): Eq<[A, B, C]>
-export function tuple<A, B>(eqs: [Eq<A>, Eq<B>]): Eq<[A, B]>
-export function tuple<A>(eqs: [Eq<A>]): Eq<[A]>
-export function tuple(eqs: Array<Eq<unknown>>): Eq<Array<unknown>> {
-  return E.getTupleEq(...eqs)
-}
+export const tuple1: <A>(itemA: Eq<A>) => Eq<[A]> = E.getTupleEq
+
+/**
+ * @since 3.0.0
+ */
+export const tuple2: <A, B>(itemA: Eq<A>, itemB: Eq<B>) => Eq<[A, B]> = E.getTupleEq
+
+/**
+ * @since 3.0.0
+ */
+export const tuple3: <A, B, C>(itemA: Eq<A>, itemB: Eq<B>, itemC: Eq<C>) => Eq<[A, B, C]> = E.getTupleEq
 
 /**
  * @since 3.0.0
@@ -181,7 +184,9 @@ export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = {
   partial,
   record,
   array,
-  tuple,
+  tuple1,
+  tuple2,
+  tuple3,
   intersection,
   sum,
   lazy: (_, f) => lazy(f),

@@ -262,21 +262,10 @@ export function array<A>(items: Decoder<A>, id?: string): Decoder<Array<A>> {
   }
 }
 
-/**
- * @since 3.0.0
- */
-export function tuple<A, B, C, D, E>(
-  items: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>],
+function tupleN<T extends Array<Decoder<any>>>(
+  items: T & { readonly 0: Decoder<any> },
   id?: string
-): Decoder<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  items: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>],
-  id?: string
-): Decoder<[A, B, C, D]>
-export function tuple<A, B, C>(items: [Decoder<A>, Decoder<B>, Decoder<C>], id?: string): Decoder<[A, B, C]>
-export function tuple<A, B>(items: [Decoder<A>, Decoder<B>], id?: string): Decoder<[A, B]>
-export function tuple<A>(items: [Decoder<A>], id?: string): Decoder<[A]>
-export function tuple(items: Array<Decoder<unknown>>, id?: string): Decoder<Array<unknown>> {
+): Decoder<{ [K in keyof T]: [T[K]] extends [Decoder<infer A>] ? A : never }> {
   return {
     decode: u => {
       const e = UnknownArray.decode(u)
@@ -295,10 +284,36 @@ export function tuple(items: Array<Decoder<unknown>>, id?: string): Decoder<Arra
             a[i] = e.right
           }
         }
-        return U.isNonEmpty(es) ? E.left(DE.indexed(u, es, id)) : E.right(a)
+        return U.isNonEmpty(es) ? E.left(DE.indexed(u, es, id)) : E.right(a as any)
       }
     }
   }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple1<A>(itemA: Decoder<A>, id?: string): Decoder<[A]> {
+  return tupleN([itemA], id)
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple2<A, B>(itemA: Decoder<A>, itemB: Decoder<B>, id?: string): Decoder<[A, B]> {
+  return tupleN([itemA, itemB], id)
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple3<A, B, C>(
+  itemA: Decoder<A>,
+  itemB: Decoder<B>,
+  itemC: Decoder<C>,
+  id?: string
+): Decoder<[A, B, C]> {
+  return tupleN([itemA, itemB, itemC], id)
 }
 
 /**
@@ -442,7 +457,9 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
   partial,
   record,
   array,
-  tuple,
+  tuple1,
+  tuple2,
+  tuple3,
   intersection,
   sum,
   lazy,

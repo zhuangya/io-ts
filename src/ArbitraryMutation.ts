@@ -177,24 +177,39 @@ export function array<A>(items: ArbitraryMutation<A>): ArbitraryMutation<Array<A
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(
-  items: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>, ArbitraryMutation<E>]
-): ArbitraryMutation<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  items: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
-): ArbitraryMutation<[A, B, C, D]>
-export function tuple<A, B, C>(
-  items: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
-): ArbitraryMutation<[A, B, C]>
-export function tuple<A, B>(items: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<[A, B]>
-export function tuple<A>(items: [ArbitraryMutation<A>]): ArbitraryMutation<[A]>
-export function tuple(items: Array<ArbitraryMutation<unknown>>): ArbitraryMutation<unknown> {
-  const mutations = items.map(am => am.mutation)
-  const arbitraries = items.map(am => am.arbitrary)
-  const index: fc.Arbitrary<number> = fc.oneof(...items.map((_, i) => fc.constant(i)))
-  const arbitrary = A.tuple(arbitraries as any)
+export function tuple1<A>(itemA: ArbitraryMutation<A>): ArbitraryMutation<[A]> {
   return make(
-    arbitrary.chain(a => index.chain(index => mutations[index].map(m => unsafeUpdateAt(index, m, a)))),
+    itemA.mutation.map(m => [m]),
+    A.tuple1(itemA.arbitrary)
+  )
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple2<A, B>(itemA: ArbitraryMutation<A>, itemB: ArbitraryMutation<B>): ArbitraryMutation<[A, B]> {
+  const mutations = [itemA.mutation, itemB.mutation]
+  const index: fc.Arbitrary<0 | 1> = fc.oneof(fc.constant(0), fc.constant(1))
+  const arbitrary = A.tuple2(itemA.arbitrary, itemB.arbitrary)
+  return make(
+    arbitrary.chain(t => index.chain(i => mutations[i].map(m => unsafeUpdateAt(i, m, t)))),
+    arbitrary
+  )
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple3<A, B, C>(
+  itemA: ArbitraryMutation<A>,
+  itemB: ArbitraryMutation<B>,
+  itemC: ArbitraryMutation<C>
+): ArbitraryMutation<[A, B, C]> {
+  const mutations = [itemA.mutation, itemB.mutation, itemC.mutation]
+  const index: fc.Arbitrary<0 | 1 | 2> = fc.oneof(fc.constant(0), fc.constant(1), fc.constant(2))
+  const arbitrary = A.tuple3(itemA.arbitrary, itemB.arbitrary, itemC.arbitrary)
+  return make(
+    arbitrary.chain(t => index.chain(i => mutations[i].map(m => unsafeUpdateAt(i, m, t)))),
     arbitrary
   )
 }
@@ -284,7 +299,9 @@ export const arbitraryMutation: S.Schemable<URI> & S.WithUnion<URI> & S.WithPars
   partial,
   record,
   array,
-  tuple,
+  tuple1,
+  tuple2,
+  tuple3,
   intersection,
   sum,
   lazy: (_, f) => lazy(f),

@@ -150,24 +150,48 @@ export function array<A>(items: JsonSchema<A>): JsonSchema<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(
-  items: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>, JsonSchema<E>]
-): JsonSchema<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  items: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>, JsonSchema<D>]
-): JsonSchema<[A, B, C, D]>
-export function tuple<A, B, C>(items: [JsonSchema<A>, JsonSchema<B>, JsonSchema<C>]): JsonSchema<[A, B, C]>
-export function tuple<A, B>(items: [JsonSchema<A>, JsonSchema<B>]): JsonSchema<[A, B]>
-export function tuple<A>(items: [JsonSchema<A>]): JsonSchema<[A]>
-export function tuple(items: Array<JsonSchema<any>>): JsonSchema<Array<any>> {
-  const len = items.length
+export function tuple1<A>(itemA: JsonSchema<A>): JsonSchema<[A]> {
   return {
     compile: () =>
       C.make({
         type: 'array',
-        items: items.map(jsonSchema => jsonSchema.compile()),
-        minItems: len,
-        maxItems: len
+        items: [itemA.compile()],
+        minItems: 1,
+        maxItems: 1
+      })
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple2<A, B>(itemA: JsonSchema<A>, itemB: JsonSchema<B>): JsonSchema<[A, B]> {
+  return {
+    compile: () =>
+      C.make({
+        type: 'array',
+        items: [itemA.compile(), itemB.compile()],
+        minItems: 2,
+        maxItems: 2
+      })
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple3<A, B, C>(
+  itemA: JsonSchema<A>,
+  itemB: JsonSchema<B>,
+  itemC: JsonSchema<C>
+): JsonSchema<[A, B, C]> {
+  return {
+    compile: () =>
+      C.make({
+        type: 'array',
+        items: [itemA.compile(), itemB.compile(), itemC.compile()],
+        minItems: 3,
+        maxItems: 3
       })
   }
 }
@@ -264,7 +288,9 @@ export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple,
+  tuple1,
+  tuple2,
+  tuple3,
   intersection,
   sum,
   lazy,

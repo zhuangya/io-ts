@@ -141,19 +141,22 @@ export function array<A>(items: Compat<A>, id?: string): Compat<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(
-  items: [Compat<A>, Compat<B>, Compat<C>, Compat<D>, Compat<E>],
-  id?: string
-): Compat<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  compitemsats: [Compat<A>, Compat<B>, Compat<C>, Compat<D>],
-  id?: string
-): Compat<[A, B, C, D]>
-export function tuple<A, B, C>(items: [Compat<A>, Compat<B>, Compat<C>], id?: string): Compat<[A, B, C]>
-export function tuple<A, B>(compats: [Compat<A>, Compat<B>], id?: string): Compat<[A, B]>
-export function tuple<A>(items: [Compat<A>], id?: string): Compat<[A]>
-export function tuple(items: any, id?: string): Compat<any> {
-  return make(codec.tuple(items, id), guard.tuple(items, id))
+export function tuple1<A>(itemA: Compat<A>, id?: string): Compat<[A]> {
+  return make(codec.tuple1(itemA, id), guard.tuple1(itemA, id))
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple2<A, B>(itemA: Compat<A>, itemB: Compat<B>, id?: string): Compat<[A, B]> {
+  return make(codec.tuple2(itemA, itemB, id), guard.tuple2(itemA, itemB, id))
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple3<A, B, C>(itemA: Compat<A>, itemB: Compat<B>, itemC: Compat<C>, id?: string): Compat<[A, B, C]> {
+  return make(codec.tuple3(itemA, itemB, itemC, id), guard.tuple3(itemA, itemB, itemC, id))
 }
 
 /**
@@ -238,7 +241,9 @@ export const compat: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI>
   partial,
   record,
   array,
-  tuple,
+  tuple1,
+  tuple2,
+  tuple3,
   intersection,
   sum,
   lazy,

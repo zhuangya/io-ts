@@ -121,17 +121,22 @@ export function array<A>(items: Arbitrary<A>): Arbitrary<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(
-  items: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>, Arbitrary<D>, Arbitrary<E>]
-): Arbitrary<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  items: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>, Arbitrary<D>]
-): Arbitrary<[A, B, C, D]>
-export function tuple<A, B, C>(items: [Arbitrary<A>, Arbitrary<B>, Arbitrary<C>]): Arbitrary<[A, B, C]>
-export function tuple<A, B>(items: [Arbitrary<A>, Arbitrary<B>]): Arbitrary<[A, B]>
-export function tuple<A>(items: [Arbitrary<A>]): Arbitrary<[A]>
-export function tuple(items: Array<Arbitrary<unknown>>): Arbitrary<unknown> {
-  return fc.genericTuple(items)
+export function tuple1<A>(itemA: Arbitrary<A>): Arbitrary<[A]> {
+  return fc.genericTuple([itemA]) as any
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple2<A, B>(itemA: Arbitrary<A>, itemB: Arbitrary<B>): Arbitrary<[A, B]> {
+  return fc.genericTuple<A | B>([itemA, itemB]) as any
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple3<A, B, C>(itemA: Arbitrary<A>, itemB: Arbitrary<B>, itemC: Arbitrary<C>): Arbitrary<[A, B, C]> {
+  return fc.genericTuple<A | B | C>([itemA, itemB, itemC]) as any
 }
 
 /**
@@ -208,7 +213,9 @@ export const arbitrary: S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI> =
   partial,
   record,
   array,
-  tuple,
+  tuple1,
+  tuple2,
+  tuple3,
   intersection,
   sum,
   lazy: (_, f) => lazy(f),

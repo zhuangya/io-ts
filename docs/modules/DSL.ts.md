@@ -34,7 +34,9 @@ Added in v3.0.0
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
-- [tuple](#tuple)
+- [tuple1](#tuple1)
+- [tuple2](#tuple2)
+- [tuple3](#tuple3)
 - [type](#type)
 - [union](#union)
 
@@ -124,7 +126,7 @@ export type Model =
     }
   | {
       readonly _tag: 'tuple'
-      readonly items: NonEmptyArray<Model>
+      readonly items: [Model] | [Model, Model] | [Model, Model, Model]
       readonly id: string | undefined
     }
   | {
@@ -348,16 +350,32 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple
+# tuple1
 
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(items: [DSL<A>, DSL<B>, DSL<C>, DSL<D>, DSL<E>], id?: string): DSL<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(items: [DSL<A>, DSL<B>, DSL<C>, DSL<D>], id?: string): DSL<[A, B, C, D]>
-export function tuple<A, B, C>(items: [DSL<A>, DSL<B>, DSL<C>], id?: string): DSL<[A, B, C]>
-export function tuple<A, B>(items: [DSL<A>, DSL<B>], id?: string): DSL<[A, B]>
-export function tuple<A>(items: [DSL<A>], id?: string): DSL<[A]> { ... }
+export function tuple1<A>(itemA: DSL<A>, id?: string): DSL<[A]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple2
+
+**Signature**
+
+```ts
+export function tuple2<A, B>(itemA: DSL<A>, itemB: DSL<B>, id?: string): DSL<[A, B]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple3
+
+**Signature**
+
+```ts
+export function tuple3<A, B, C>(itemA: DSL<A>, itemB: DSL<B>, itemC: DSL<C>, id?: string): DSL<[A, B, C]> { ... }
 ```
 
 Added in v3.0.0

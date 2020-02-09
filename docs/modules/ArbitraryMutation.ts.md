@@ -32,7 +32,9 @@ Added in v3.0.0
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
-- [tuple](#tuple)
+- [tuple1](#tuple1)
+- [tuple2](#tuple2)
+- [tuple3](#tuple3)
 - [type](#type)
 - [union](#union)
 
@@ -250,22 +252,36 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple
+# tuple1
 
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(
-  items: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>, ArbitraryMutation<E>]
-): ArbitraryMutation<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  items: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>, ArbitraryMutation<D>]
-): ArbitraryMutation<[A, B, C, D]>
-export function tuple<A, B, C>(
-  items: [ArbitraryMutation<A>, ArbitraryMutation<B>, ArbitraryMutation<C>]
-): ArbitraryMutation<[A, B, C]>
-export function tuple<A, B>(items: [ArbitraryMutation<A>, ArbitraryMutation<B>]): ArbitraryMutation<[A, B]>
-export function tuple<A>(items: [ArbitraryMutation<A>]): ArbitraryMutation<[A]> { ... }
+export function tuple1<A>(itemA: ArbitraryMutation<A>): ArbitraryMutation<[A]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple2
+
+**Signature**
+
+```ts
+export function tuple2<A, B>(itemA: ArbitraryMutation<A>, itemB: ArbitraryMutation<B>): ArbitraryMutation<[A, B]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple3
+
+**Signature**
+
+```ts
+export function tuple3<A, B, C>(
+  itemA: ArbitraryMutation<A>,
+  itemB: ArbitraryMutation<B>,
+  itemC: ArbitraryMutation<C>
+): ArbitraryMutation<[A, B, C]> { ... }
 ```
 
 Added in v3.0.0

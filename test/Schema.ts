@@ -58,8 +58,16 @@ describe('Schema', () => {
     assertRoundtrip(DSL.array(DSL.number))
   })
 
-  it('tuple', () => {
-    assertRoundtrip(DSL.tuple([DSL.string, DSL.number]))
+  it('tuple1', () => {
+    assertRoundtrip(DSL.tuple1(DSL.string))
+  })
+
+  it('tuple2', () => {
+    assertRoundtrip(DSL.tuple2(DSL.string, DSL.number))
+  })
+
+  it('tuple3', () => {
+    assertRoundtrip(DSL.tuple3(DSL.string, DSL.number, DSL.boolean))
   })
 
   it('intersection', () => {

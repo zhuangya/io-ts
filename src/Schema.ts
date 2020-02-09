@@ -55,7 +55,15 @@ export function getTransformer(refs: Record<string, Schema<unknown>>): <A>(dsl: 
       case 'array':
         return make(S => S.array(fromModel(model.items)(S)))
       case 'tuple':
-        return make(S => S.tuple(model.items.map(item => fromModel(item)(S)) as any))
+        const items = model.items
+        switch (items.length) {
+          case 1:
+            return make(S => S.tuple1(fromModel(items[0])(S)))
+          case 2:
+            return make(S => S.tuple2(fromModel(items[0])(S), fromModel(items[1])(S)))
+          default:
+            return make(S => S.tuple3(fromModel(items[0])(S), fromModel(items[1])(S), fromModel(items[2])(S)))
+        }
       case 'intersection':
         return make(S => S.intersection(fromModel(model.models[0])(S), fromModel(model.models[1])(S)))
       case 'sum':

@@ -25,7 +25,9 @@ Added in v3.0.0
 - [partial](#partial)
 - [record](#record)
 - [sum](#sum)
-- [tuple](#tuple)
+- [tuple1](#tuple1)
+- [tuple2](#tuple2)
+- [tuple3](#tuple3)
 - [type](#type)
 
 ---
@@ -164,18 +166,32 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple
+# tuple1
 
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(
-  items: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>, Encoder<E>]
-): Encoder<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(items: [Encoder<A>, Encoder<B>, Encoder<C>, Encoder<D>]): Encoder<[A, B, C, D]>
-export function tuple<A, B, C>(items: [Encoder<A>, Encoder<B>, Encoder<C>]): Encoder<[A, B, C]>
-export function tuple<A, B>(items: [Encoder<A>, Encoder<B>]): Encoder<[A, B]>
-export function tuple<A>(items: [Encoder<A>]): Encoder<[A]> { ... }
+export function tuple1<A>(itemA: Encoder<A>): Encoder<[A]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple2
+
+**Signature**
+
+```ts
+export function tuple2<A, B>(itemA: Encoder<A>, itemB: Encoder<B>): Encoder<[A, B]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple3
+
+**Signature**
+
+```ts
+export function tuple3<A, B, C>(itemA: Encoder<A>, itemB: Encoder<B>, itemC: Encoder<C>): Encoder<[A, B, C]> { ... }
 ```
 
 Added in v3.0.0

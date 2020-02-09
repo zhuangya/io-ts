@@ -68,7 +68,7 @@ export type Model =
     }
   | {
       readonly _tag: 'tuple'
-      readonly items: NonEmptyArray<Model>
+      readonly items: [Model] | [Model, Model] | [Model, Model, Model]
       readonly id: string | undefined
     }
   | {
@@ -277,17 +277,40 @@ export function array<A>(items: DSL<A>, id?: string): DSL<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(items: [DSL<A>, DSL<B>, DSL<C>, DSL<D>, DSL<E>], id?: string): DSL<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(items: [DSL<A>, DSL<B>, DSL<C>, DSL<D>], id?: string): DSL<[A, B, C, D]>
-export function tuple<A, B, C>(items: [DSL<A>, DSL<B>, DSL<C>], id?: string): DSL<[A, B, C]>
-export function tuple<A, B>(items: [DSL<A>, DSL<B>], id?: string): DSL<[A, B]>
-export function tuple<A>(items: [DSL<A>], id?: string): DSL<[A]>
-export function tuple(items: Array<DSL<unknown>>, id?: string): DSL<Array<unknown>> {
+export function tuple1<A>(itemA: DSL<A>, id?: string): DSL<[A]> {
   return {
     dsl: () =>
       C.make({
         _tag: 'tuple',
-        items: items.map(jsonSchema => jsonSchema.dsl()) as any,
+        items: [itemA.dsl()],
+        id
+      })
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple2<A, B>(itemA: DSL<A>, itemB: DSL<B>, id?: string): DSL<[A, B]> {
+  return {
+    dsl: () =>
+      C.make({
+        _tag: 'tuple',
+        items: [itemA.dsl(), itemB.dsl()],
+        id
+      })
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple3<A, B, C>(itemA: DSL<A>, itemB: DSL<B>, itemC: DSL<C>, id?: string): DSL<[A, B, C]> {
+  return {
+    dsl: () =>
+      C.make({
+        _tag: 'tuple',
+        items: [itemA.dsl(), itemB.dsl(), itemC.dsl()],
         id
       })
   }
@@ -400,7 +423,9 @@ export const dsl: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple,
+  tuple1,
+  tuple2,
+  tuple3,
   intersection,
   sum,
   lazy,

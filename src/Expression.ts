@@ -182,23 +182,40 @@ export function array<A>(items: Expression<A>): Expression<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B, C, D, E>(
-  items: [Expression<A>, Expression<B>, Expression<C>, Expression<D>, Expression<E>],
-  id?: string
-): Expression<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(
-  items: [Expression<A>, Expression<B>, Expression<C>, Expression<D>],
-  id?: string
-): Expression<[A, B, C, D]>
-export function tuple<A, B, C>(items: [Expression<A>, Expression<B>, Expression<C>]): Expression<[A, B, C]>
-export function tuple<A, B>(items: [Expression<A>, Expression<B>]): Expression<[A, B]>
-export function tuple<A>(items: [Expression<A>]): Expression<[A]>
-export function tuple(items: Array<Expression<unknown>>): Expression<Array<unknown>> {
+export function tuple1<A>(itemA: Expression<A>): Expression<[A]> {
+  return {
+    expression: () =>
+      C.make(ts.createCall(ts.createPropertyAccess(schemable, 'tuple1'), undefined, [itemA.expression()]))
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple2<A, B>(itemA: Expression<A>, itemB: Expression<B>): Expression<[A, B]> {
   return {
     expression: () =>
       C.make(
-        ts.createCall(ts.createPropertyAccess(schemable, 'tuple'), undefined, [
-          ts.createArrayLiteral(items.map(item => item.expression()))
+        ts.createCall(ts.createPropertyAccess(schemable, 'tuple2'), undefined, [itemA.expression(), itemB.expression()])
+      )
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
+export function tuple3<A, B, C>(
+  itemA: Expression<A>,
+  itemB: Expression<B>,
+  itemC: Expression<C>
+): Expression<[A, B, C]> {
+  return {
+    expression: () =>
+      C.make(
+        ts.createCall(ts.createPropertyAccess(schemable, 'tuple3'), undefined, [
+          itemA.expression(),
+          itemB.expression(),
+          itemC.expression()
         ])
       )
   }
@@ -317,7 +334,9 @@ export const expression: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple,
+  tuple1,
+  tuple2,
+  tuple3,
   intersection,
   sum,
   lazy,

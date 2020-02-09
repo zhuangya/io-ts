@@ -27,7 +27,17 @@ function assert<A>(schema: Schema<A>): void {
   const eq = schema(E.eq)
   const guard = schema(G.guard)
   const validate = ajv.compile(schema(J.jsonSchema).compile())
-  fc.assert(fc.property(arb, a => guard.is(a) && eq.equals(a, a) && isRight(compat.decode(a)) && Boolean(validate(a))))
+  fc.assert(
+    fc.property(
+      arb,
+      a =>
+        guard.is(a) &&
+        eq.equals(a, a) &&
+        isRight(compat.decode(a)) &&
+        Boolean(validate(a)) &&
+        isRight(compat.decode(compat.encode(a)))
+    )
+  )
   fc.assert(fc.property(am.mutation, m => !guard.is(m) && isLeft(compat.decode(m))))
 }
 
@@ -128,8 +138,16 @@ describe('Arbitrary', () => {
     assert(make(S => S.array(S.string)))
   })
 
-  it('tuple', () => {
-    assert(make(S => S.tuple([S.string, S.number])))
+  it('tuple1', () => {
+    assert(make(S => S.tuple1(S.string)))
+  })
+
+  it('tuple2', () => {
+    assert(make(S => S.tuple2(S.string, S.number)))
+  })
+
+  it('tuple3', () => {
+    assert(make(S => S.tuple3(S.string, S.number, S.boolean)))
   })
 
   it('intersection', () => {

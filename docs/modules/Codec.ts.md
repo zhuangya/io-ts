@@ -10,6 +10,8 @@ Breaking changes:
 
 - remove `brand` combinator
 - rename `recursive` to `lazy`
+- intersections support two, spreaded arguments
+- tuples support up to 3 spreaded arguments
 
 FAQ
 
@@ -75,7 +77,9 @@ Added in v3.0.0
 - [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
-- [tuple](#tuple)
+- [tuple1](#tuple1)
+- [tuple2](#tuple2)
+- [tuple3](#tuple3)
 - [type](#type)
 - [withMessage](#withmessage)
 
@@ -292,19 +296,32 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple
+# tuple1
 
 **Signature**
 
 ```ts
-export function tuple<A, B, C, D, E>(
-  items: [Codec<A>, Codec<B>, Codec<C>, Codec<D>, Codec<E>],
-  id?: string
-): Codec<[A, B, C, D, E]>
-export function tuple<A, B, C, D>(items: [Codec<A>, Codec<B>, Codec<C>, Codec<D>], id?: string): Codec<[A, B, C, D]>
-export function tuple<A, B, C>(items: [Codec<A>, Codec<B>, Codec<C>], id?: string): Codec<[A, B, C]>
-export function tuple<A, B>(items: [Codec<A>, Codec<B>], id?: string): Codec<[A, B]>
-export function tuple<A>(items: [Codec<A>], id?: string): Codec<[A]> { ... }
+export function tuple1<A>(itemA: Codec<A>, id?: string): Codec<[A]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple2
+
+**Signature**
+
+```ts
+export function tuple2<A, B>(itemA: Codec<A>, itemB: Codec<B>, id?: string): Codec<[A, B]> { ... }
+```
+
+Added in v3.0.0
+
+# tuple3
+
+**Signature**
+
+```ts
+export function tuple3<A, B, C>(itemA: Codec<A>, itemB: Codec<B>, itemC: Codec<C>, id?: string): Codec<[A, B, C]> { ... }
 ```
 
 Added in v3.0.0
