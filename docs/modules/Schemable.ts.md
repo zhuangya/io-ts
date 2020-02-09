@@ -25,47 +25,47 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export interface Schemable<F extends URIS> {
-  readonly URI: F
-  readonly literal: <A extends Literal>(value: A, id?: string) => Kind<F, A>
-  readonly literals: <A extends Literal>(values: NonEmptyArray<A>, id?: string) => Kind<F, A>
+export interface Schemable<S extends URIS> {
+  readonly URI: S
+  readonly literal: <A extends Literal>(value: A, id?: string) => Kind<S, A>
+  readonly literals: <A extends Literal>(values: NonEmptyArray<A>, id?: string) => Kind<S, A>
   readonly literalsOr: <A extends Literal, B>(
     values: NonEmptyArray<A>,
-    schema: Kind<F, B>,
+    schema: Kind<S, B>,
     id?: string
-  ) => Kind<F, A | B>
-  readonly string: Kind<F, string>
-  readonly number: Kind<F, number>
-  readonly boolean: Kind<F, boolean>
-  readonly UnknownArray: Kind<F, Array<unknown>>
-  readonly UnknownRecord: Kind<F, Record<string, unknown>>
-  readonly type: <A>(properties: { [K in keyof A]: Kind<F, A[K]> }, id?: string) => Kind<F, A>
-  readonly partial: <A>(properties: { [K in keyof A]: Kind<F, A[K]> }, id?: string) => Kind<F, Partial<A>>
-  readonly record: <A>(codomain: Kind<F, A>, id?: string) => Kind<F, Record<string, A>>
-  readonly array: <A>(items: Kind<F, A>, id?: string) => Kind<F, Array<A>>
+  ) => Kind<S, A | B>
+  readonly string: Kind<S, string>
+  readonly number: Kind<S, number>
+  readonly boolean: Kind<S, boolean>
+  readonly UnknownArray: Kind<S, Array<unknown>>
+  readonly UnknownRecord: Kind<S, Record<string, unknown>>
+  readonly type: <A>(properties: { [K in keyof A]: Kind<S, A[K]> }, id?: string) => Kind<S, A>
+  readonly partial: <A>(properties: { [K in keyof A]: Kind<S, A[K]> }, id?: string) => Kind<S, Partial<A>>
+  readonly record: <A>(codomain: Kind<S, A>, id?: string) => Kind<S, Record<string, A>>
+  readonly array: <A>(items: Kind<S, A>, id?: string) => Kind<S, Array<A>>
   readonly tuple: {
-    <A, B, C, D, E>(items: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>, Kind<F, E>], id?: string): Kind<
-      F,
+    <A, B, C, D, E>(items: [Kind<S, A>, Kind<S, B>, Kind<S, C>, Kind<S, D>, Kind<S, E>], id?: string): Kind<
+      S,
       [A, B, C, D, E]
     >
-    <A, B, C, D>(items: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>], id?: string): Kind<F, [A, B, C, D]>
-    <A, B, C>(items: [Kind<F, A>, Kind<F, B>, Kind<F, C>], id?: string): Kind<F, [A, B, C]>
-    <A, B>(items: [Kind<F, A>, Kind<F, B>], id?: string): Kind<F, [A, B]>
-    <A>(items: [Kind<F, A>], id?: string): Kind<F, [A]>
+    <A, B, C, D>(items: [Kind<S, A>, Kind<S, B>, Kind<S, C>, Kind<S, D>], id?: string): Kind<S, [A, B, C, D]>
+    <A, B, C>(items: [Kind<S, A>, Kind<S, B>, Kind<S, C>], id?: string): Kind<S, [A, B, C]>
+    <A, B>(items: [Kind<S, A>, Kind<S, B>], id?: string): Kind<S, [A, B]>
+    <A>(items: [Kind<S, A>], id?: string): Kind<S, [A]>
   }
   readonly intersection: {
-    <A, B, C, D, E>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>, Kind<F, E>], id?: string): Kind<
-      F,
+    <A, B, C, D, E>(schemas: [Kind<S, A>, Kind<S, B>, Kind<S, C>, Kind<S, D>, Kind<S, E>], id?: string): Kind<
+      S,
       A & B & C & D & E
     >
-    <A, B, C, D>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>, Kind<F, D>], id?: string): Kind<F, A & B & C & D>
-    <A, B, C>(schemas: [Kind<F, A>, Kind<F, B>, Kind<F, C>], id?: string): Kind<F, A & B & C>
-    <A, B>(schemas: [Kind<F, A>, Kind<F, B>], id?: string): Kind<F, A & B>
+    <A, B, C, D>(schemas: [Kind<S, A>, Kind<S, B>, Kind<S, C>, Kind<S, D>], id?: string): Kind<S, A & B & C & D>
+    <A, B, C>(schemas: [Kind<S, A>, Kind<S, B>, Kind<S, C>], id?: string): Kind<S, A & B & C>
+    <A, B>(schemas: [Kind<S, A>, Kind<S, B>], id?: string): Kind<S, A & B>
   }
   readonly sum: <T extends string>(
     tag: T
-  ) => <A>(schemas: { [K in keyof A]: Kind<F, A[K] & Record<T, K>> }, id?: string) => Kind<F, A[keyof A]>
-  readonly lazy: <A>(id: string, f: () => Kind<F, A>) => Kind<F, A>
+  ) => <A>(schemas: { [K in keyof A]: Kind<S, A[K] & Record<T, K>> }, id?: string) => Kind<S, A[keyof A]>
+  readonly lazy: <A>(id: string, f: () => Kind<S, A>) => Kind<S, A>
 }
 ```
 
@@ -76,8 +76,8 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export interface WithParse<F extends URIS> extends WithRefinement<F> {
-  readonly parse: <A, B>(schema: Kind<F, A>, parser: (a: A) => Either<string, B>, id?: string) => Kind<F, B>
+export interface WithParse<S extends URIS> extends WithRefinement<S> {
+  readonly parse: <A, B>(schema: Kind<S, A>, parser: (a: A) => Either<string, B>, id?: string) => Kind<S, B>
 }
 ```
 
@@ -88,12 +88,12 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export interface WithRefinement<F extends URIS> {
+export interface WithRefinement<S extends URIS> {
   readonly refinement: <A, B extends A>(
-    schema: Kind<F, A>,
+    schema: Kind<S, A>,
     parser: (a: A) => Either<string, B>,
     id?: string
-  ) => Kind<F, B>
+  ) => Kind<S, B>
 }
 ```
 
@@ -104,11 +104,11 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export interface WithUnion<F extends URIS> {
+export interface WithUnion<S extends URIS> {
   readonly union: <A extends [unknown, ...Array<unknown>]>(
-    schemas: { [K in keyof A]: Kind<F, A[K]> },
+    schemas: { [K in keyof A]: Kind<S, A[K]> },
     id?: string
-  ) => Kind<F, A[number]>
+  ) => Kind<S, A[number]>
 }
 ```
 
