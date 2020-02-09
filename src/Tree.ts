@@ -37,8 +37,9 @@ export function toTree(e: DecodeError): Tree<string> {
         })
       )
     case 'And':
+      return make(value(e) + ', some of the following conditions are not met', e.errors.map(toTree))
     case 'Or':
-      return make(value(e), e.errors.map(toTree))
+      return make(value(e) + ', all the following conditions are not met', e.errors.map(toTree))
   }
 }
 
