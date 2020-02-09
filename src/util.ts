@@ -3,7 +3,6 @@
  */
 import { Eq, strictEqual } from 'fp-ts/lib/Eq'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import { Semigroup } from 'fp-ts/lib/Semigroup'
 
 /**
  * @since 3.0.0
@@ -31,23 +30,6 @@ export const eqStrict: Eq<unknown> = {
 
 function typeOf(x: unknown): string {
   return x === null ? 'null' : typeof x
-}
-
-/**
- * @since 3.0.0
- * @internal
- */
-export const intersection: Semigroup<unknown> = {
-  concat: (x, y) => {
-    if (x !== undefined && y !== undefined) {
-      const tx = typeOf(x)
-      const ty = typeOf(y)
-      if (tx === 'object' || ty === 'object') {
-        return Object.assign({}, x, y)
-      }
-      return y
-    }
-  }
 }
 
 /**
