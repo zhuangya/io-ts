@@ -230,7 +230,7 @@ export function lazy<A>(id: string, f: () => TypeNode<A>): TypeNode<A> {
         $ref = id
         return C.make(f().typeNode())
       }
-      return C.make(ts.createTypeReferenceNode(id, undefined))
+      return C.make(ts.createTypeReferenceNode($ref, undefined))
     }
   }
 }
