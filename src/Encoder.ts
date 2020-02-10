@@ -141,10 +141,10 @@ export function intersection<A, B>(encoderA: Encoder<A>, encoderB: Encoder<B>): 
  */
 export function sum<T extends string>(
   tag: T
-): <A>(encoders: { [K in keyof A]: Encoder<A[K] & Record<T, K>> }) => Encoder<A[keyof A]> {
-  return (encoders: any) => {
+): <A>(members: { [K in keyof A]: Encoder<A[K] & Record<T, K>> }) => Encoder<A[keyof A]> {
+  return (members: Record<string, Encoder<any>>) => {
     return {
-      encode: (a: any) => encoders[a[tag]].encode(a)
+      encode: (a: Record<string, any>) => members[a[tag]].encode(a)
     }
   }
 }

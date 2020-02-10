@@ -230,7 +230,7 @@ Added in v3.0.0
 ```ts
 export function sum<T extends string>(
   tag: T
-): <A>(typeNodes: { [K in keyof A]: Expression<A[K] & Record<T, K>> }) => Expression<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: Expression<A[K] & Record<T, K>> }) => Expression<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0

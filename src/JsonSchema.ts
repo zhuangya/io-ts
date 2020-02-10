@@ -195,10 +195,10 @@ export function intersection<A, B>(jsonSchemaA: JsonSchema<A>, jsonSchemaB: Json
  */
 export function sum<T extends string>(
   _tag: T
-): <A>(jsonSchemas: { [K in keyof A]: JsonSchema<A[K] & Record<T, K>> }) => JsonSchema<A[keyof A]> {
-  return (jsonSchemas: Record<string, JsonSchema<unknown>>) => {
+): <A>(members: { [K in keyof A]: JsonSchema<A[K] & Record<T, K>> }) => JsonSchema<A[keyof A]> {
+  return (members: Record<string, JsonSchema<unknown>>) => {
     return {
-      compile: () => C.make({ oneOf: Object.keys(jsonSchemas).map(k => jsonSchemas[k].compile()) })
+      compile: () => C.make({ oneOf: Object.keys(members).map(k => members[k].compile()) })
     }
   }
 }

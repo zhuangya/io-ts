@@ -48,7 +48,7 @@ export interface Schemable<S extends URIS> {
   readonly intersection: <A, B>(schemaA: Kind<S, A>, schemaB: Kind<S, B>, id?: string) => Kind<S, A & B>
   readonly sum: <T extends string>(
     tag: T
-  ) => <A>(schemas: { [K in keyof A]: Kind<S, A[K] & Record<T, K>> }, id?: string) => Kind<S, A[keyof A]>
+  ) => <A>(members: { [K in keyof A]: Kind<S, A[K] & Record<T, K>> }, id?: string) => Kind<S, A[keyof A]>
   readonly lazy: <A>(id: string, f: () => Kind<S, A>) => Kind<S, A>
 }
 ```

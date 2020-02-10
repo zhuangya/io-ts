@@ -216,16 +216,14 @@ export function intersection<A, B>(amA: ArbitraryMutation<A>, amB: ArbitraryMuta
  */
 export function sum<T extends string>(
   tag: T
-): <A>(
-  ams: { [K in keyof A]: ArbitraryMutation<A[K]> }
-) => ArbitraryMutation<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
+): <A>(members: { [K in keyof A]: ArbitraryMutation<A[K] & Record<T, K>> }) => ArbitraryMutation<A[keyof A]> {
   const f = A.sum(tag)
-  return <A>(ams: { [K in keyof A]: ArbitraryMutation<A[K]> }) => {
-    const mutations: Record<string, fc.Arbitrary<unknown>> = {}
-    const arbitraries: { [K in keyof A]: fc.Arbitrary<A[K]> } = {} as any
-    for (const k in ams) {
-      mutations[k] = ams[k].mutation
-      arbitraries[k] = ams[k].arbitrary
+  return (members: Record<string, ArbitraryMutation<any>>) => {
+    const mutations: Record<string, fc.Arbitrary<any>> = {}
+    const arbitraries: Record<string, fc.Arbitrary<any>> = {}
+    for (const k in members) {
+      mutations[k] = members[k].mutation
+      arbitraries[k] = members[k].arbitrary
     }
     return make(f(mutations), f(arbitraries))
   }

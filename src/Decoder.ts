@@ -350,9 +350,9 @@ export function lazy<A>(id: string, f: () => Decoder<A>): Decoder<A> {
  */
 export function sum<T extends string>(
   tag: T
-): <A>(decoders: { [K in keyof A]: Decoder<A[K] & Record<T, K>> }, id?: string) => Decoder<A[keyof A]> {
-  return (decoders: Record<string, Decoder<any>>, id?: string) => {
-    const keys = Object.keys(decoders)
+): <A>(members: { [K in keyof A]: Decoder<A[K] & Record<T, K>> }, id?: string) => Decoder<A[keyof A]> {
+  return (members, id?: string) => {
+    const keys = Object.keys(members)
     if (keys.length === 0) {
       return never
     }
@@ -364,8 +364,8 @@ export function sum<T extends string>(
           return e
         }
         const v = e.right[tag]
-        if (typeof v === 'string' && U.hasOwnProperty(decoders, v)) {
-          return decoders[v].decode(u)
+        if (typeof v === 'string' && U.hasOwnProperty(members, v)) {
+          return members[v].decode(u)
         }
         return E.left(DE.labeled(u, [[tag, DE.leaf(v, undefined, message)]], id))
       }

@@ -184,10 +184,10 @@ export function union<A extends [unknown, ...Array<unknown>]>(
  */
 export function sum<T extends string>(
   tag: T
-): <A>(compats: { [K in keyof A]: Compat<A[K] & Record<T, K>> }, id?: string) => Compat<A[keyof A]> {
+): <A>(members: { [K in keyof A]: Compat<A[K] & Record<T, K>> }, id?: string) => Compat<A[keyof A]> {
   const sumC = codec.sum(tag)
   const sumG = guard.sum(tag)
-  return (compats, id) => make(sumC(compats, id), sumG(compats, id))
+  return (members, id) => make(sumC(members, id), sumG(members, id))
 }
 
 /**

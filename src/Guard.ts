@@ -213,16 +213,16 @@ export function union<A extends [unknown, ...Array<unknown>]>(
  */
 export function sum<T extends string>(
   tag: T
-): <A>(guards: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => Guard<A[keyof A]> {
-  return <A>(guards: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => {
+): <A>(members: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => Guard<A[keyof A]> {
+  return <A>(members: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => {
     return {
       is: (u): u is A[keyof A] => {
         if (!UnknownRecord.is(u)) {
           return false
         }
         const v = u[tag]
-        if (typeof v === 'string' && hasOwnProperty(guards, v)) {
-          return guards[v].is(u)
+        if (typeof v === 'string' && hasOwnProperty(members, v)) {
+          return members[v].is(u)
         }
         return false
       }

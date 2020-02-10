@@ -326,14 +326,14 @@ export function intersection<A, B>(dslA: DSL<A>, dslB: DSL<B>, id?: string): DSL
  */
 export function sum<T extends string>(
   tag: T
-): <A>(dsls: { [K in keyof A]: DSL<A[K] & Record<T, K>> }, id?: string) => DSL<A[keyof A]> {
-  return (dsls, id) => {
+): <A>(members: { [K in keyof A]: DSL<A[K] & Record<T, K>> }, id?: string) => DSL<A[keyof A]> {
+  return (members, id) => {
     return {
       dsl: () =>
         C.make({
           _tag: 'sum',
           tag,
-          models: R.record.map<DSL<unknown>, Model>(dsls, p => p.dsl()),
+          models: R.record.map<DSL<unknown>, Model>(members, p => p.dsl()),
           id
         })
     }

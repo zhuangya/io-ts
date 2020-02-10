@@ -137,16 +137,18 @@ export function intersection<A, B>(eqA: Eq<A>, eqB: Eq<B>): Eq<A & B> {
 /**
  * @since 3.0.0
  */
-export function sum<T extends string>(tag: T): <A>(eqs: { [K in keyof A]: Eq<A[K] & Record<T, K>> }) => Eq<A[keyof A]> {
-  return (eqs: any) => {
+export function sum<T extends string>(
+  tag: T
+): <A>(members: { [K in keyof A]: Eq<A[K] & Record<T, K>> }) => Eq<A[keyof A]> {
+  return (members: Record<string, Eq<any>>) => {
     return {
-      equals: (x: any, y: any) => {
+      equals: (x: Record<string, any>, y: Record<string, any>) => {
         const vx = x[tag]
         const vy = y[tag]
         if (vx !== vy) {
           return false
         }
-        return eqs[vx].equals(x, y)
+        return members[vx].equals(x, y)
       }
     }
   }

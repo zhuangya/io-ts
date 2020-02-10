@@ -145,9 +145,9 @@ export function intersection<A, B>(arbitraryA: Arbitrary<A>, arbitraryB: Arbitra
  */
 export function sum<T extends string>(
   _tag: T
-): <A>(arbs: { [K in keyof A]: Arbitrary<A[K]> }) => Arbitrary<{ [K in keyof A]: { [F in T]: K } & A[K] }[keyof A]> {
-  return (arbs: any) => {
-    return fc.oneof(...Object.keys(arbs).map(k => arbs[k]))
+): <A>(members: { [K in keyof A]: Arbitrary<A[K] & Record<T, K>> }) => Arbitrary<A[keyof A]> {
+  return (members: Record<string, Arbitrary<any>>) => {
+    return fc.oneof(...Object.keys(members).map(k => members[k]))
   }
 }
 

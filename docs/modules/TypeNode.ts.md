@@ -217,7 +217,7 @@ Added in v3.0.0
 ```ts
 export function sum<T extends string>(
   _tag: T
-): <A>(typeNodes: { [K in keyof A]: TypeNode<A[K] & Record<T, K>> }) => TypeNode<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: TypeNode<A[K] & Record<T, K>> }) => TypeNode<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0

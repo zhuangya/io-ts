@@ -200,11 +200,10 @@ export function intersection<A, B>(typeNodeA: TypeNode<A>, typeNodeB: TypeNode<B
  */
 export function sum<T extends string>(
   _tag: T
-): <A>(typeNodes: { [K in keyof A]: TypeNode<A[K] & Record<T, K>> }) => TypeNode<A[keyof A]> {
-  return members => {
-    const typeNodes: Record<string, TypeNode<unknown>> = members
+): <A>(members: { [K in keyof A]: TypeNode<A[K] & Record<T, K>> }) => TypeNode<A[keyof A]> {
+  return (members: Record<string, TypeNode<unknown>>) => {
     return {
-      typeNode: () => C.make(ts.createUnionTypeNode(Object.keys(typeNodes).map(k => typeNodes[k].typeNode())))
+      typeNode: () => C.make(ts.createUnionTypeNode(Object.keys(members).map(k => members[k].typeNode())))
     }
   }
 }

@@ -231,9 +231,8 @@ export function intersection<A, B>(expressionA: Expression<A>, expressionB: Expr
  */
 export function sum<T extends string>(
   tag: T
-): <A>(typeNodes: { [K in keyof A]: Expression<A[K] & Record<T, K>> }) => Expression<A[keyof A]> {
-  return members => {
-    const expressions: Record<string, Expression<unknown>> = members
+): <A>(members: { [K in keyof A]: Expression<A[K] & Record<T, K>> }) => Expression<A[keyof A]> {
+  return (members: Record<string, Expression<unknown>>) => {
     return {
       expression: () =>
         C.make(
@@ -242,7 +241,7 @@ export function sum<T extends string>(
             undefined,
             [
               ts.createObjectLiteral(
-                Object.keys(expressions).map(k => ts.createPropertyAssignment(k, expressions[k].expression()))
+                Object.keys(members).map(k => ts.createPropertyAssignment(k, members[k].expression()))
               )
             ]
           )

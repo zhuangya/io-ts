@@ -205,10 +205,10 @@ export function intersection<A, B>(codecA: Codec<A>, codecB: Codec<B>, id?: stri
  */
 export function sum<T extends string>(
   tag: T
-): <A>(codecs: { [K in keyof A]: Codec<A[K] & Record<T, K>> }, id?: string) => Codec<A[keyof A]> {
+): <A>(members: { [K in keyof A]: Codec<A[K] & Record<T, K>> }, id?: string) => Codec<A[keyof A]> {
   const sumD = decoder.sum(tag)
   const sumE = encoder.sum(tag)
-  return (codecs, id) => make(sumD(codecs, id), sumE(codecs, id))
+  return (members, id) => make(sumD(members, id), sumE(members, id))
 }
 
 /**

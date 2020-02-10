@@ -331,7 +331,7 @@ Added in v3.0.0
 ```ts
 export function sum<T extends string>(
   tag: T
-): <A>(decoders: { [K in keyof A]: Decoder<A[K] & Record<T, K>> }, id?: string) => Decoder<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: Decoder<A[K] & Record<T, K>> }, id?: string) => Decoder<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0
