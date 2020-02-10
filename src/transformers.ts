@@ -4,11 +4,11 @@
 import * as C from 'fp-ts/lib/Const'
 import * as O from 'fp-ts/lib/Option'
 import { pipe } from 'fp-ts/lib/pipeable'
-import * as R from 'fp-ts/lib/Record'
 import * as ts from 'typescript'
 import * as DSL from './DSL'
 import * as T from './TypeNode'
 import * as E from './Expression'
+import * as S from '../src/Schema'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -42,113 +42,15 @@ const make = ts.createIdentifier('make')
 /**
  * @since 3.0.0
  */
-export function toTypeNode(model: DSL.Model): T.TypeNode<unknown> {
-  switch (model._tag) {
-    case 'string':
-      return T.string
-    case 'number':
-      return T.number
-    case 'boolean':
-      return T.boolean
-    case 'UnknownArray':
-      return T.UnknownArray
-    case 'UnknownRecord':
-      return T.UnknownRecord
-    case 'array':
-      return T.array(toTypeNode(model.items))
-    case 'record':
-      return T.record(toTypeNode(model.codomain))
-    case 'union':
-      return T.union(model.models.map(model => toTypeNode(model)) as any)
-    case 'intersection':
-      return T.intersection(toTypeNode(model.models[0]), toTypeNode(model.models[1]))
-    case 'tuple2':
-      return T.tuple2(toTypeNode(model.items[0]), toTypeNode(model.items[1]))
-    case 'tuple3':
-      return T.tuple3(toTypeNode(model.items[0]), toTypeNode(model.items[1]), toTypeNode(model.items[2]))
-    case 'type':
-      return T.type(
-        R.record.map<DSL.Model, T.TypeNode<unknown>>(model.properties, model => toTypeNode(model))
-      )
-    case 'partial':
-      return T.partial(
-        R.record.map<DSL.Model, T.TypeNode<unknown>>(model.properties, model => toTypeNode(model))
-      )
-    case '$ref':
-      return T.$ref(model.id)
-    case 'literal':
-      return T.literal(model.value)
-    case 'literals':
-      return T.literals(model.values)
-    case 'literalsOr':
-      return T.literalsOr(model.values, toTypeNode(model.model))
-    case 'lazy':
-      return T.lazy(model.id, () => toTypeNode(model.model))
-    case 'sum':
-      return T.sum(model.tag)(
-        R.record.map<DSL.Model, T.TypeNode<unknown>>(model.models, model => toTypeNode(model)) as any
-      )
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function toExpression(model: DSL.Model): E.Expression<unknown> {
-  switch (model._tag) {
-    case 'string':
-      return E.string
-    case 'number':
-      return E.number
-    case 'boolean':
-      return E.boolean
-    case 'UnknownArray':
-      return E.UnknownArray
-    case 'UnknownRecord':
-      return E.UnknownRecord
-    case 'array':
-      return E.array(toExpression(model.items))
-    case 'record':
-      return E.record(toExpression(model.codomain))
-    case 'union':
-      return E.union(model.models.map(model => toExpression(model)) as any)
-    case 'intersection':
-      return E.intersection(toExpression(model.models[0]), toExpression(model.models[1]))
-    case 'tuple2':
-      return E.tuple2(toExpression(model.items[0]), toExpression(model.items[1]))
-    case 'tuple3':
-      return E.tuple3(toExpression(model.items[0]), toExpression(model.items[1]), toExpression(model.items[2]))
-    case 'type':
-      return E.type(
-        R.record.map<DSL.Model, E.Expression<unknown>>(model.properties, model => toExpression(model))
-      )
-    case 'partial':
-      return E.partial(
-        R.record.map<DSL.Model, E.Expression<unknown>>(model.properties, model => toExpression(model))
-      )
-    case '$ref':
-      return E.$ref(model.id)
-    case 'literal':
-      return E.literal(model.value)
-    case 'literals':
-      return E.literals(model.values)
-    case 'literalsOr':
-      return E.literalsOr(model.values, toExpression(model.model))
-    case 'lazy':
-      return E.lazy(model.id, () => toExpression(model.model))
-    case 'sum':
-      return E.sum(model.tag)(
-        R.record.map<DSL.Model, E.Expression<unknown>>(model.models, model => toExpression(model)) as any
-      )
-  }
-}
-
-/**
- * @since 3.0.0
- */
 export function toDeclaration<A>(declaration: DSL.Declaration<A>): Declaration<A> {
   const id = declaration.id
   const model = declaration.dsl.dsl()
+  const deserializer = S.getDeserializer({})
+  const schema = deserializer({
+    dsl: () => model
+  })
+  const node = schema(T.typeNode)
+  const expr = schema(E.expression)
   const typeAnnotation =
     model._tag === 'lazy'
       ? ts.createTypeReferenceNode('Schema', [ts.createTypeReferenceNode(id, undefined)])
@@ -156,7 +58,7 @@ export function toDeclaration<A>(declaration: DSL.Declaration<A>): Declaration<A
 
   const typeNode =
     model._tag === 'lazy'
-      ? O.some(ts.createTypeAliasDeclaration(undefined, undefined, id, undefined, toTypeNode(model.model).typeNode()))
+      ? O.some(ts.createTypeAliasDeclaration(undefined, undefined, id, undefined, node.typeNode()))
       : O.none
 
   const statement = ts.createVariableStatement(
@@ -173,7 +75,7 @@ export function toDeclaration<A>(declaration: DSL.Declaration<A>): Declaration<A
               [ts.createParameter(undefined, undefined, undefined, schemable)],
               undefined,
               undefined,
-              toExpression(model).expression()
+              expr.expression()
             )
           ])
         )

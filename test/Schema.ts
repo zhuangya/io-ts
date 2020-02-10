@@ -2,10 +2,10 @@ import * as assert from 'assert'
 import * as S from '../src/Schema'
 import * as DSL from '../src/DSL'
 
-const transformer = S.getTransformer({})
+const deserializer = S.getDeserializer({})
 
 function assertRoundtrip<A>(dsl: DSL.DSL<A>): void {
-  const schema = transformer(dsl)
+  const schema = deserializer(dsl)
   assert.deepStrictEqual(schema(DSL.dsl).dsl(), dsl.dsl())
 }
 
@@ -92,7 +92,7 @@ describe('Schema', () => {
         b: DSL.literalsOr([null], DSL.$ref('A'))
       })
     )
-    const schema = transformer(dsl)
+    const schema = deserializer(dsl)
     assert.deepStrictEqual(schema(DSL.dsl).dsl(), expected.dsl())
   })
 

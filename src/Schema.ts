@@ -23,12 +23,21 @@ export function make<A>(f: Schema<A>): Schema<A> {
 /**
  * @since 3.0.0
  */
-export function getTransformer(refs: Record<string, Schema<unknown>>): <A>(dsl: DSL.DSL<A>) => Schema<A> {
+export interface Deserializer {
+  <A>(dsl: DSL.DSL<A>): Schema<A>
+}
+
+/**
+ * @since 3.0.0
+ */
+export function getDeserializer(refs: Record<string, Schema<unknown>>): Deserializer {
   function fromModel(model: DSL.Model): Schema<any> {
     switch (model._tag) {
       case '$ref':
         const ref = refs[model.id]
-        // TODO handle undefined
+        // if (ref === undefined) {
+        //   throw new Error(`cannot find ref: ${model.id}`)
+        // }
         return ref
       case 'literal':
         return make(S => S.literal(model.value, model.id))
