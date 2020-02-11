@@ -237,7 +237,7 @@ Added in v3.0.0
 ```ts
 export function literalsOr<A extends Literal, B>(
   values: NonEmptyArray<A>,
-  decoder: Decoder<B>,
+  or: Decoder<B>,
   id?: string
 ): Decoder<A | B> { ... }
 ```

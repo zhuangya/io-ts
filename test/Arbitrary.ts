@@ -9,6 +9,7 @@ import { URIS, Kind } from 'fp-ts/lib/HKT'
 import * as S from '../src/Schemable'
 import { isRight, right, left, isLeft } from 'fp-ts/lib/Either'
 import * as Ajv from 'ajv'
+import * as Sc from '../src/Schema'
 
 const ajv = new Ajv()
 
@@ -41,15 +42,7 @@ function assert<A>(schema: Schema<A>): void {
   fc.assert(fc.property(am.mutation, m => !guard.is(m) && isLeft(compat.decode(m))))
 }
 
-interface SchemaWithUnion<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithUnion<S>): Kind<S, A>
-}
-
-function makeWithUnion<A>(f: SchemaWithUnion<A>): SchemaWithUnion<A> {
-  return S.memoize(f)
-}
-
-function assertWithUnion<A>(schema: SchemaWithUnion<A>): void {
+function assertWithUnion<A>(schema: Sc.Schema<A>): void {
   const arb = schema(Arb.arbitrary)
   const am = schema(ArbMut.arbitraryMutation)
   const compat = schema(C.compat)
@@ -161,7 +154,7 @@ describe('Arbitrary', () => {
   })
 
   it('union', () => {
-    assertWithUnion(makeWithUnion(S => S.union([S.type({ a: S.string }), S.type({ b: S.number })])))
+    assertWithUnion(Sc.make(S => S.union([S.type({ a: S.string }), S.type({ b: S.number })])))
   })
 
   it('lazy', () => {

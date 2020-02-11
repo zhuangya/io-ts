@@ -63,10 +63,10 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: strin
  */
 export function literalsOr<A extends Literal, B>(
   values: NonEmptyArray<A>,
-  decoder: Decoder<B>,
+  or: Decoder<B>,
   id?: string
 ): Decoder<A | B> {
-  return union([literals(values), decoder], id)
+  return union([literals(values), or], id)
 }
 
 // -------------------------------------------------------------------------------------

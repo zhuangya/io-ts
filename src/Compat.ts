@@ -58,12 +58,8 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: strin
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(
-  values: NonEmptyArray<A>,
-  compat: Compat<B>,
-  id?: string
-): Compat<A | B> {
-  return make(codec.literalsOr(values, compat, id), guard.literalsOr(values, compat, id))
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Compat<B>, id?: string): Compat<A | B> {
+  return make(codec.literalsOr(values, or, id), guard.literalsOr(values, or, id))
 }
 
 // -------------------------------------------------------------------------------------

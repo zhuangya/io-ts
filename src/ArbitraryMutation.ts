@@ -57,9 +57,9 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>): Arbitrary
  */
 export function literalsOr<A extends Literal, B>(
   values: NonEmptyArray<A>,
-  am: ArbitraryMutation<B>
+  or: ArbitraryMutation<B>
 ): ArbitraryMutation<A | B> {
-  return make(A.union([literals(values).mutation, am.mutation]), A.literalsOr(values, am.arbitrary))
+  return make(A.union([literals(values).mutation, or.mutation]), A.literalsOr(values, or.arbitrary))
 }
 
 // -------------------------------------------------------------------------------------

@@ -42,12 +42,9 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>): JsonSchem
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(
-  values: NonEmptyArray<A>,
-  jsonSchema: JsonSchema<B>
-): JsonSchema<A | B> {
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: JsonSchema<B>): JsonSchema<A | B> {
   return {
-    compile: lazy => C.make({ anyOf: [{ enum: values }, jsonSchema.compile(lazy)] })
+    compile: lazy => C.make({ anyOf: [{ enum: values }, or.compile(lazy)] })
   }
 }
 

@@ -28,10 +28,10 @@ export interface Encoder<A> {
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(as: NonEmptyArray<A>, encoder: Encoder<B>): Encoder<A | B> {
+export function literalsOr<A extends Literal, B>(as: NonEmptyArray<A>, or: Encoder<B>): Encoder<A | B> {
   const literals = G.literals(as)
   return {
-    encode: ab => (literals.is(ab) ? ab : encoder.encode(ab))
+    encode: ab => (literals.is(ab) ? ab : or.encode(ab))
   }
 }
 

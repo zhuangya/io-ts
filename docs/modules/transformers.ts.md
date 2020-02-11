@@ -18,6 +18,8 @@ Added in v3.0.0
 - [printDeclaration](#printdeclaration)
 - [printNode](#printnode)
 - [toDeclaration](#todeclaration)
+- [toExpression](#toexpression)
+- [toTypeNode](#totypenode)
 
 ---
 
@@ -83,6 +85,26 @@ Added in v3.0.0
 
 ```ts
 export function toDeclaration<A>(declaration: DSL.Declaration<A>): Declaration<A> { ... }
+```
+
+Added in v3.0.0
+
+# toExpression
+
+**Signature**
+
+```ts
+export function toExpression(model: DSL.Model): E.Expression<unknown> { ... }
+```
+
+Added in v3.0.0
+
+# toTypeNode
+
+**Signature**
+
+```ts
+export function toTypeNode(model: DSL.Model): T.TypeNode<unknown> { ... }
 ```
 
 Added in v3.0.0

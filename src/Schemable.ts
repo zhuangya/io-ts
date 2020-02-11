@@ -13,11 +13,7 @@ export interface Schemable<S extends URIS> {
   readonly URI: S
   readonly literal: <A extends Literal>(value: A, id?: string) => Kind<S, A>
   readonly literals: <A extends Literal>(values: NonEmptyArray<A>, id?: string) => Kind<S, A>
-  readonly literalsOr: <A extends Literal, B>(
-    values: NonEmptyArray<A>,
-    schema: Kind<S, B>,
-    id?: string
-  ) => Kind<S, A | B>
+  readonly literalsOr: <A extends Literal, B>(values: NonEmptyArray<A>, or: Kind<S, B>, id?: string) => Kind<S, A | B>
   readonly string: Kind<S, string>
   readonly number: Kind<S, number>
   readonly boolean: Kind<S, boolean>

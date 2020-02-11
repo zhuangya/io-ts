@@ -164,10 +164,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(
-  values: NonEmptyArray<A>,
-  jsonSchema: JsonSchema<B>
-): JsonSchema<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: JsonSchema<B>): JsonSchema<A | B> { ... }
 ```
 
 Added in v3.0.0

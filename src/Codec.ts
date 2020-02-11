@@ -96,8 +96,8 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: strin
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, codec: Codec<B>, id?: string): Codec<A | B> {
-  return make(decoder.literalsOr(values, codec, id), encoder.literalsOr(values, codec, id))
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Codec<B>, id?: string): Codec<A | B> {
+  return make(decoder.literalsOr(values, or, id), encoder.literalsOr(values, or, id))
 }
 
 // -------------------------------------------------------------------------------------

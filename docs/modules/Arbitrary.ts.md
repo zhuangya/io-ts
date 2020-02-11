@@ -163,7 +163,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, arb: Arbitrary<B>): Arbitrary<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Arbitrary<B>): Arbitrary<A | B> { ... }
 ```
 
 Added in v3.0.0

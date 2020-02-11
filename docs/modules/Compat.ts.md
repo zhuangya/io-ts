@@ -174,11 +174,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(
-  values: NonEmptyArray<A>,
-  compat: Compat<B>,
-  id?: string
-): Compat<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Compat<B>, id?: string): Compat<A | B> { ... }
 ```
 
 Added in v3.0.0

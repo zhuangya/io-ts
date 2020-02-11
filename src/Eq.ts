@@ -23,10 +23,10 @@ import Eq = E.Eq
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(as: NonEmptyArray<A>, eq: Eq<B>): Eq<A | B> {
+export function literalsOr<A extends Literal, B>(as: NonEmptyArray<A>, or: Eq<B>): Eq<A | B> {
   const literals = G.literals(as)
   return {
-    equals: (x, y) => (literals.is(x) || literals.is(y) ? x === y : eq.equals(x, y))
+    equals: (x, y) => (literals.is(x) || literals.is(y) ? x === y : or.equals(x, y))
   }
 }
 

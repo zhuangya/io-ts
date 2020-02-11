@@ -165,7 +165,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, typeNode: TypeNode<B>): TypeNode<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: TypeNode<B>): TypeNode<A | B> { ... }
 ```
 
 Added in v3.0.0

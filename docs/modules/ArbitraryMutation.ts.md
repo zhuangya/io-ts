@@ -171,7 +171,7 @@ Added in v3.0.0
 ```ts
 export function literalsOr<A extends Literal, B>(
   values: NonEmptyArray<A>,
-  am: ArbitraryMutation<B>
+  or: ArbitraryMutation<B>
 ): ArbitraryMutation<A | B> { ... }
 ```
 

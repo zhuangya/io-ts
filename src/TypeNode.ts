@@ -63,9 +63,9 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>): TypeNode<
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, typeNode: TypeNode<B>): TypeNode<A | B> {
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: TypeNode<B>): TypeNode<A | B> {
   return {
-    typeNode: () => C.make(ts.createUnionTypeNode([...toLiteralsTypeNode(values), typeNode.typeNode()]))
+    typeNode: () => C.make(ts.createUnionTypeNode([...toLiteralsTypeNode(values), or.typeNode()]))
   }
 }
 

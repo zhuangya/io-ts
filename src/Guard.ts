@@ -43,8 +43,8 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>): Guard<A> 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, guard: Guard<B>): Guard<A | B> {
-  return union([literals(values), guard])
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Guard<B>): Guard<A | B> {
+  return union([literals(values), or])
 }
 
 // -------------------------------------------------------------------------------------

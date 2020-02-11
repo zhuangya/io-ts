@@ -38,8 +38,8 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>): Arbitrary
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, arb: Arbitrary<B>): Arbitrary<A | B> {
-  return fc.oneof<A | B>(literals(values), arb)
+export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Arbitrary<B>): Arbitrary<A | B> {
+  return fc.oneof<A | B>(literals(values), or)
 }
 
 // -------------------------------------------------------------------------------------
