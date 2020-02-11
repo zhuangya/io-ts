@@ -26,15 +26,6 @@ export interface JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function $ref(id: string): JsonSchema<unknown> {
-  return {
-    compile: () => C.make({ $ref: `#/definitions/${id}` })
-  }
-}
-
-/**
- * @since 3.0.0
- */
 export function literal<A extends Literal>(value: A): JsonSchema<A> {
   return literals([value])
 }

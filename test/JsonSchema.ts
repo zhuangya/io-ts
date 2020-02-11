@@ -134,22 +134,7 @@ describe('JsonSchema', () => {
   })
 
   describe('lazy', () => {
-    it('using the $ref constructor', () => {
-      const schema = J.lazy('A', () =>
-        J.type({
-          a: J.number,
-          b: J.literalsOr([null], J.$ref('A'))
-        })
-      )
-
-      const validate = ajv.compile(schema.compile(false))
-      assert.strictEqual(validate({}), false)
-      assert.strictEqual(validate({ a: 1 }), false)
-      assert.strictEqual(validate({ a: 1, b: null }), true)
-      assert.strictEqual(validate({ a: 1, b: { a: 2, b: null } }), true)
-    })
-
-    it('using a recursive definition', () => {
+    it('should support recursive json schemas', () => {
       interface A {
         a: number
         b: null | A

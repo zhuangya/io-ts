@@ -14,7 +14,6 @@ Added in v3.0.0
 
 - [JsonSchema (interface)](#jsonschema-interface)
 - [URI (type alias)](#uri-type-alias)
-- [\$ref](#ref)
 - [URI](#uri)
 - [UnknownArray](#unknownarray)
 - [UnknownRecord](#unknownrecord)
@@ -56,16 +55,6 @@ Added in v3.0.0
 
 ```ts
 export type URI = typeof URI
-```
-
-Added in v3.0.0
-
-# \$ref
-
-**Signature**
-
-```ts
-export function $ref(id: string): JsonSchema<unknown> { ... }
 ```
 
 Added in v3.0.0
