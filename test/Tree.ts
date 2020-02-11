@@ -8,7 +8,7 @@ function assertTree<A>(e: E.Either<DE.DecodeError, A>, expected: string): void {
   assert.deepStrictEqual((T.mapLeft(e) as any).left, expected)
 }
 
-describe.only('Tree', () => {
+describe('Tree', () => {
   it('literals', () => {
     const decoder = D.literals(['a', 1])
     assertTree(decoder.decode(null), 'Cannot decode null, expected "a" | 1')

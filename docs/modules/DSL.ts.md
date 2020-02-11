@@ -47,7 +47,7 @@ Added in v3.0.0
 
 ```ts
 export interface DSL<A> {
-  readonly dsl: () => C.Const<Model, A>
+  readonly dsl: (refs: boolean) => C.Const<Model, A>
 }
 ```
 

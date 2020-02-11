@@ -6,7 +6,7 @@ const deserializer = S.getDeserializer({})
 
 function assertRoundtrip<A>(dsl: DSL.DSL<A>): void {
   const schema = deserializer(dsl)
-  assert.deepStrictEqual(schema(DSL.dsl).dsl(), dsl.dsl())
+  assert.deepStrictEqual(schema(DSL.dsl).dsl(false), dsl.dsl(false))
 }
 
 describe('Schema', () => {
@@ -93,7 +93,7 @@ describe('Schema', () => {
       })
     )
     const schema = deserializer(dsl)
-    assert.deepStrictEqual(schema(DSL.dsl).dsl(), expected.dsl())
+    assert.deepStrictEqual(schema(DSL.dsl).dsl(false), expected.dsl(false))
   })
 
   it('union', () => {

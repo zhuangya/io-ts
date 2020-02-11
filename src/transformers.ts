@@ -44,7 +44,7 @@ const make = ts.createIdentifier('make')
  */
 export function toDeclaration<A>(declaration: DSL.Declaration<A>): Declaration<A> {
   const id = declaration.id
-  const model = declaration.dsl.dsl()
+  const model = declaration.dsl.dsl(false)
   const deserializer = S.getDeserializer({})
   const schema = deserializer({
     dsl: () => model

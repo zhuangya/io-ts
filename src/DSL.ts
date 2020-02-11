@@ -121,7 +121,7 @@ export function declaration<A>(id: string, dsl: DSL<A>): Declaration<A> {
  * @since 3.0.0
  */
 export interface DSL<A> {
-  readonly dsl: () => C.Const<Model, A>
+  readonly dsl: (refs: boolean) => C.Const<Model, A>
 }
 
 // -------------------------------------------------------------------------------------
@@ -170,11 +170,11 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: strin
  */
 export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, dsl: DSL<B>, id?: string): DSL<A | B> {
   return {
-    dsl: () =>
+    dsl: refs =>
       C.make({
         _tag: 'literalsOr',
         values,
-        model: dsl.dsl(),
+        model: dsl.dsl(refs),
         id
       })
   }
@@ -228,10 +228,10 @@ export const UnknownRecord: DSL<Record<string, unknown>> = {
  */
 export function type<A>(properties: { [K in keyof A]: DSL<A[K]> }, id?: string): DSL<A> {
   return {
-    dsl: () =>
+    dsl: refs =>
       C.make({
         _tag: 'type',
-        properties: R.record.map<DSL<unknown>, Model>(properties, p => p.dsl()),
+        properties: R.record.map<DSL<unknown>, Model>(properties, p => p.dsl(refs)),
         id
       })
   }
@@ -242,10 +242,10 @@ export function type<A>(properties: { [K in keyof A]: DSL<A[K]> }, id?: string):
  */
 export function partial<A>(properties: { [K in keyof A]: DSL<A[K]> }, id?: string): DSL<Partial<A>> {
   return {
-    dsl: () =>
+    dsl: refs =>
       C.make({
         _tag: 'partial',
-        properties: R.record.map<DSL<unknown>, Model>(properties, p => p.dsl()),
+        properties: R.record.map<DSL<unknown>, Model>(properties, p => p.dsl(refs)),
         id
       })
   }
@@ -256,10 +256,10 @@ export function partial<A>(properties: { [K in keyof A]: DSL<A[K]> }, id?: strin
  */
 export function record<A>(codomain: DSL<A>, id?: string): DSL<Record<string, A>> {
   return {
-    dsl: () =>
+    dsl: refs =>
       C.make({
         _tag: 'record',
-        codomain: codomain.dsl(),
+        codomain: codomain.dsl(refs),
         id
       })
   }
@@ -270,10 +270,10 @@ export function record<A>(codomain: DSL<A>, id?: string): DSL<Record<string, A>>
  */
 export function array<A>(items: DSL<A>, id?: string): DSL<Array<A>> {
   return {
-    dsl: () =>
+    dsl: refs =>
       C.make({
         _tag: 'array',
-        items: items.dsl(),
+        items: items.dsl(refs),
         id
       })
   }
@@ -284,10 +284,10 @@ export function array<A>(items: DSL<A>, id?: string): DSL<Array<A>> {
  */
 export function tuple2<A, B>(itemA: DSL<A>, itemB: DSL<B>, id?: string): DSL<[A, B]> {
   return {
-    dsl: () =>
+    dsl: refs =>
       C.make({
         _tag: 'tuple2',
-        items: [itemA.dsl(), itemB.dsl()],
+        items: [itemA.dsl(refs), itemB.dsl(refs)],
         id
       })
   }
@@ -298,10 +298,10 @@ export function tuple2<A, B>(itemA: DSL<A>, itemB: DSL<B>, id?: string): DSL<[A,
  */
 export function tuple3<A, B, C>(itemA: DSL<A>, itemB: DSL<B>, itemC: DSL<C>, id?: string): DSL<[A, B, C]> {
   return {
-    dsl: () =>
+    dsl: refs =>
       C.make({
         _tag: 'tuple3',
-        items: [itemA.dsl(), itemB.dsl(), itemC.dsl()],
+        items: [itemA.dsl(refs), itemB.dsl(refs), itemC.dsl(refs)],
         id
       })
   }
@@ -312,10 +312,10 @@ export function tuple3<A, B, C>(itemA: DSL<A>, itemB: DSL<B>, itemC: DSL<C>, id?
  */
 export function intersection<A, B>(dslA: DSL<A>, dslB: DSL<B>, id?: string): DSL<A & B> {
   return {
-    dsl: () =>
+    dsl: refs =>
       C.make({
         _tag: 'intersection',
-        models: [dslA.dsl(), dslB.dsl()],
+        models: [dslA.dsl(refs), dslB.dsl(refs)],
         id
       })
   }
@@ -329,11 +329,11 @@ export function sum<T extends string>(
 ): <A>(members: { [K in keyof A]: DSL<A[K] & Record<T, K>> }, id?: string) => DSL<A[keyof A]> {
   return (members, id) => {
     return {
-      dsl: () =>
+      dsl: refs =>
         C.make({
           _tag: 'sum',
           tag,
-          models: R.record.map<DSL<unknown>, Model>(members, p => p.dsl()),
+          models: R.record.map<DSL<unknown>, Model>(members, p => p.dsl(refs)),
           id
         })
     }
@@ -344,18 +344,16 @@ export function sum<T extends string>(
  * @since 3.0.0
  */
 export function lazy<A>(id: string, f: () => DSL<A>): DSL<A> {
-  let $ref: string
   return {
-    dsl: () => {
-      if (!$ref) {
-        $ref = id
-        return C.make({
-          _tag: 'lazy',
-          id,
-          model: f().dsl()
-        })
+    dsl: refs => {
+      if (refs) {
+        return C.make({ _tag: '$ref', id })
       }
-      return C.make({ _tag: '$ref', id })
+      return C.make({
+        _tag: 'lazy',
+        id,
+        model: f().dsl(true)
+      })
     }
   }
 }
@@ -368,10 +366,10 @@ export function union<A extends [unknown, ...Array<unknown>]>(
   id?: string
 ): DSL<A[number]> {
   return {
-    dsl: () =>
+    dsl: refs =>
       C.make({
         _tag: 'union',
-        models: dsls.map(dsl => dsl.dsl()) as any,
+        models: dsls.map(dsl => dsl.dsl(refs)) as any,
         id
       })
   }
