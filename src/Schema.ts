@@ -18,6 +18,11 @@ export interface Schema<A> {
 /**
  * @since 3.0.0
  */
+export type TypeOf<S> = S extends Schema<infer A> ? A : never
+
+/**
+ * @since 3.0.0
+ */
 export function make<A>(f: Schema<A>): Schema<A> {
   return S.memoize(f)
 }
