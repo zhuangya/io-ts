@@ -77,8 +77,7 @@ Added in v3.0.0
 - [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
-- [tuple2](#tuple2)
-- [tuple3](#tuple3)
+- [tuple](#tuple)
 - [type](#type)
 - [withMessage](#withmessage)
 
@@ -295,22 +294,12 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple2
+# tuple
 
 **Signature**
 
 ```ts
-export function tuple2<A, B>(itemA: Codec<A>, itemB: Codec<B>, id?: string): Codec<[A, B]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple3
-
-**Signature**
-
-```ts
-export function tuple3<A, B, C>(itemA: Codec<A>, itemB: Codec<B>, itemC: Codec<C>, id?: string): Codec<[A, B, C]> { ... }
+export function tuple<A, B>(left: Codec<A>, right: Codec<B>, id?: string): Codec<[A, B]> { ... }
 ```
 
 Added in v3.0.0

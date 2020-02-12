@@ -140,15 +140,8 @@ export function array<A>(items: Compat<A>, id?: string): Compat<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple2<A, B>(itemA: Compat<A>, itemB: Compat<B>, id?: string): Compat<[A, B]> {
-  return make(codec.tuple2(itemA, itemB, id), guard.tuple2(itemA, itemB, id))
-}
-
-/**
- * @since 3.0.0
- */
-export function tuple3<A, B, C>(itemA: Compat<A>, itemB: Compat<B>, itemC: Compat<C>, id?: string): Compat<[A, B, C]> {
-  return make(codec.tuple3(itemA, itemB, itemC, id), guard.tuple3(itemA, itemB, itemC, id))
+export function tuple<A, B>(left: Compat<A>, right: Compat<B>, id?: string): Compat<[A, B]> {
+  return make(codec.tuple(left, right, id), guard.tuple(left, right, id))
 }
 
 /**
@@ -233,8 +226,7 @@ export const compat: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI>
   partial,
   record,
   array,
-  tuple2,
-  tuple3,
+  tuple,
   intersection,
   sum,
   lazy,

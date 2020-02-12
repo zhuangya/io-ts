@@ -114,24 +114,24 @@ describe('Guard', () => {
     })
   })
 
-  describe('tuple2', () => {
+  describe('tuple', () => {
     it('should accepts valid inputs', () => {
-      const guard = G.tuple2(G.string, G.number)
+      const guard = G.tuple(G.string, G.number)
       assert.strictEqual(guard.is(['a', 1]), true)
     })
 
     it('should rejects invalid inputs', () => {
-      const guard = G.tuple2(G.string, G.number)
+      const guard = G.tuple(G.string, G.number)
       assert.strictEqual(guard.is([1, 2]), false)
     })
 
     it('should rejects additional fields', () => {
-      const guard = G.tuple2(G.string, G.number)
+      const guard = G.tuple(G.string, G.number)
       assert.strictEqual(guard.is(['a', 1, true]), false)
     })
 
     it('should rejects missing fields', () => {
-      const guard = G.tuple2(G.string, G.number)
+      const guard = G.tuple(G.string, G.number)
       assert.strictEqual(guard.is(['a']), false)
     })
   })

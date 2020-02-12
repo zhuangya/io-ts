@@ -87,8 +87,8 @@ describe('Tree', () => {
     )
   })
 
-  it('tuple2', () => {
-    const decoder = D.tuple2(D.string, D.number)
+  it('tuple', () => {
+    const decoder = D.tuple(D.string, D.number)
     assertTree(
       decoder.decode(['a', 'b']),
       `Cannot decode ["a","b"]

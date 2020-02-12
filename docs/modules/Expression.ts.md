@@ -31,8 +31,7 @@ Added in v3.0.0
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
-- [tuple2](#tuple2)
-- [tuple3](#tuple3)
+- [tuple](#tuple)
 - [type](#type)
 - [union](#union)
 
@@ -235,26 +234,12 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple2
+# tuple
 
 **Signature**
 
 ```ts
-export function tuple2<A, B>(itemA: Expression<A>, itemB: Expression<B>): Expression<[A, B]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple3
-
-**Signature**
-
-```ts
-export function tuple3<A, B, C>(
-  itemA: Expression<A>,
-  itemB: Expression<B>,
-  itemC: Expression<C>
-): Expression<[A, B, C]> { ... }
+export function tuple<A, B>(left: Expression<A>, right: Expression<B>): Expression<[A, B]> { ... }
 ```
 
 Added in v3.0.0

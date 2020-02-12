@@ -62,10 +62,8 @@ export function toTypeNode(model: DSL.Model): T.TypeNode<unknown> {
       return T.union(model.models.map(model => toTypeNode(model)) as any)
     case 'intersection':
       return T.intersection(toTypeNode(model.models[0]), toTypeNode(model.models[1]))
-    case 'tuple2':
-      return T.tuple2(toTypeNode(model.items[0]), toTypeNode(model.items[1]))
-    case 'tuple3':
-      return T.tuple3(toTypeNode(model.items[0]), toTypeNode(model.items[1]), toTypeNode(model.items[2]))
+    case 'tuple':
+      return T.tuple(toTypeNode(model.left), toTypeNode(model.right))
     case 'type':
       return T.type(
         R.record.map<DSL.Model, T.TypeNode<unknown>>(model.properties, model => toTypeNode(model))
@@ -114,10 +112,8 @@ export function toExpression(model: DSL.Model): E.Expression<unknown> {
       return E.union(model.models.map(model => toExpression(model)) as any)
     case 'intersection':
       return E.intersection(toExpression(model.models[0]), toExpression(model.models[1]))
-    case 'tuple2':
-      return E.tuple2(toExpression(model.items[0]), toExpression(model.items[1]))
-    case 'tuple3':
-      return E.tuple3(toExpression(model.items[0]), toExpression(model.items[1]), toExpression(model.items[2]))
+    case 'tuple':
+      return E.tuple(toExpression(model.left), toExpression(model.right))
     case 'type':
       return E.type(
         R.record.map<DSL.Model, E.Expression<unknown>>(model.properties, model => toExpression(model))

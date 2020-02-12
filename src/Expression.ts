@@ -181,31 +181,11 @@ export function array<A>(items: Expression<A>): Expression<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple2<A, B>(itemA: Expression<A>, itemB: Expression<B>): Expression<[A, B]> {
+export function tuple<A, B>(left: Expression<A>, right: Expression<B>): Expression<[A, B]> {
   return {
     expression: () =>
       C.make(
-        ts.createCall(ts.createPropertyAccess(schemable, 'tuple2'), undefined, [itemA.expression(), itemB.expression()])
-      )
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function tuple3<A, B, C>(
-  itemA: Expression<A>,
-  itemB: Expression<B>,
-  itemC: Expression<C>
-): Expression<[A, B, C]> {
-  return {
-    expression: () =>
-      C.make(
-        ts.createCall(ts.createPropertyAccess(schemable, 'tuple3'), undefined, [
-          itemA.expression(),
-          itemB.expression(),
-          itemC.expression()
-        ])
+        ts.createCall(ts.createPropertyAccess(schemable, 'tuple'), undefined, [left.expression(), right.expression()])
       )
   }
 }
@@ -322,8 +302,7 @@ export const expression: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple2,
-  tuple3,
+  tuple,
   intersection,
   sum,
   lazy,

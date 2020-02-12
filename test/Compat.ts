@@ -325,28 +325,41 @@ describe('Compat', () => {
     })
   })
 
-  describe('tuple2', () => {
+  describe('tuple', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.tuple2(C.string, C.number)
+        const codec = C.tuple(C.string, C.number)
         assert.deepStrictEqual(codec.decode(['a', 1]), right(['a', 1]))
       })
 
       it('should strip additional components', () => {
-        const codec = C.tuple2(C.string, C.number)
+        const codec = C.tuple(C.string, C.number)
         assert.deepStrictEqual(codec.decode(['a', 1, true]), right(['a', 1]))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.tuple2(C.string, C.number)
+        const codec = C.tuple(C.string, C.number)
         assert.deepStrictEqual(codec.decode(undefined), left(DE.leaf(undefined, 'Array<unknown>')))
         assert.deepStrictEqual(codec.decode(['a']), left(DE.indexed(['a'], [[1, DE.leaf(undefined, 'number')]])))
+        assert.deepStrictEqual(codec.decode([1, 2]), left(DE.indexed([1, 2], [[0, DE.leaf(1, 'string')]])))
+        assert.deepStrictEqual(
+          codec.decode([1]),
+          left(
+            DE.indexed(
+              [1],
+              [
+                [0, DE.leaf(1, 'string')],
+                [1, DE.leaf(undefined, 'number')]
+              ]
+            )
+          )
+        )
       })
     })
 
     describe('encode', () => {
       it('should encode a value', () => {
-        const codec = C.tuple2(NumberFromString, C.string)
+        const codec = C.tuple(NumberFromString, C.string)
         assert.deepStrictEqual(codec.encode([1, 'a']), ['1', 'a'])
       })
     })

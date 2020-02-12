@@ -47,12 +47,8 @@ describe('Expression', () => {
     assertExpression(E.intersection(E.string, E.number), 'S.intersection(S.string, S.number)')
   })
 
-  it('tuple2', () => {
-    assertExpression(E.tuple2(E.string, E.number), 'S.tuple2(S.string, S.number)')
-  })
-
-  it('tuple3', () => {
-    assertExpression(E.tuple3(E.string, E.number, E.boolean), 'S.tuple3(S.string, S.number, S.boolean)')
+  it('tuple', () => {
+    assertExpression(E.tuple(E.string, E.number), 'S.tuple(S.string, S.number)')
   })
 
   it('type', () => {

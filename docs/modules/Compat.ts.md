@@ -40,8 +40,7 @@ Added in v3.0.0
 - [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
-- [tuple2](#tuple2)
-- [tuple3](#tuple3)
+- [tuple](#tuple)
 - [type](#type)
 - [union](#union)
 
@@ -259,22 +258,12 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple2
+# tuple
 
 **Signature**
 
 ```ts
-export function tuple2<A, B>(itemA: Compat<A>, itemB: Compat<B>, id?: string): Compat<[A, B]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple3
-
-**Signature**
-
-```ts
-export function tuple3<A, B, C>(itemA: Compat<A>, itemB: Compat<B>, itemC: Compat<C>, id?: string): Compat<[A, B, C]> { ... }
+export function tuple<A, B>(left: Compat<A>, right: Compat<B>, id?: string): Compat<[A, B]> { ... }
 ```
 
 Added in v3.0.0

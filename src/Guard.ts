@@ -171,19 +171,9 @@ export function array<A>(items: Guard<A>): Guard<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple2<A, B>(itemA: Guard<A>, itemB: Guard<B>): Guard<[A, B]> {
+export function tuple<A, B>(left: Guard<A>, right: Guard<B>): Guard<[A, B]> {
   return {
-    is: (u: unknown): u is [A, B] => UnknownArray.is(u) && u.length === 2 && itemA.is(u[0]) && itemB.is(u[1])
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function tuple3<A, B, C>(itemA: Guard<A>, itemB: Guard<B>, itemC: Guard<C>): Guard<[A, B, C]> {
-  return {
-    is: (u: unknown): u is [A, B, C] =>
-      UnknownArray.is(u) && u.length === 3 && itemA.is(u[0]) && itemB.is(u[1]) && itemC.is(u[2])
+    is: (u: unknown): u is [A, B] => UnknownArray.is(u) && u.length === 2 && left.is(u[0]) && right.is(u[1])
   }
 }
 
@@ -276,8 +266,7 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI> 
   partial,
   record,
   array,
-  tuple2,
-  tuple3,
+  tuple,
   intersection,
   sum,
   lazy: (_, f) => lazy(f),

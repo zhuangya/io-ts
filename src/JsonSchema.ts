@@ -149,33 +149,14 @@ export function array<A>(items: JsonSchema<A>): JsonSchema<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple2<A, B>(itemA: JsonSchema<A>, itemB: JsonSchema<B>): JsonSchema<[A, B]> {
+export function tuple<A, B>(left: JsonSchema<A>, right: JsonSchema<B>): JsonSchema<[A, B]> {
   return {
     compile: lazy =>
       C.make({
         type: 'array',
-        items: [itemA.compile(lazy), itemB.compile(lazy)],
+        items: [left.compile(lazy), right.compile(lazy)],
         minItems: 2,
         maxItems: 2
-      })
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function tuple3<A, B, C>(
-  itemA: JsonSchema<A>,
-  itemB: JsonSchema<B>,
-  itemC: JsonSchema<C>
-): JsonSchema<[A, B, C]> {
-  return {
-    compile: lazy =>
-      C.make({
-        type: 'array',
-        items: [itemA.compile(lazy), itemB.compile(lazy), itemC.compile(lazy)],
-        minItems: 3,
-        maxItems: 3
       })
   }
 }
@@ -272,8 +253,7 @@ export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple2,
-  tuple3,
+  tuple,
   intersection,
   sum,
   lazy,

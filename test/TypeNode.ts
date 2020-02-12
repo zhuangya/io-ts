@@ -43,12 +43,8 @@ describe('TypeNode', () => {
     assertTypeNode(T.intersection(T.string, T.number), 'string & number')
   })
 
-  it('tuple2', () => {
-    assertTypeNode(T.tuple2(T.string, T.number), '[string, number]')
-  })
-
-  it('tuple3', () => {
-    assertTypeNode(T.tuple3(T.string, T.number, T.boolean), '[string, number, boolean]')
+  it('tuple', () => {
+    assertTypeNode(T.tuple(T.string, T.number), '[string, number]')
   })
 
   it('type', () => {

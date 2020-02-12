@@ -261,51 +261,41 @@ export function array<A>(items: Decoder<A>, id?: string): Decoder<Array<A>> {
   }
 }
 
-function tupleN<T extends Array<Decoder<any>>>(
-  items: T & { readonly 0: Decoder<any> },
-  id?: string
-): Decoder<{ [K in keyof T]: [T[K]] extends [Decoder<infer A>] ? A : never }> {
+/**
+ * @since 3.0.0
+ */
+export function tuple<A, B>(left: Decoder<A>, right: Decoder<B>, id?: string): Decoder<[A, B]> {
   return {
     decode: u => {
       const e = UnknownArray.decode(u)
       if (E.isLeft(e)) {
         return e
-      } else {
-        const us = e.right
-        const len = items.length
-        const a: Array<unknown> = new Array(len)
-        const es: Array<[number, DE.DecodeError]> = []
-        for (let i = 0; i < len; i++) {
-          const e = items[i].decode(us[i])
-          if (E.isLeft(e)) {
-            es.push([i, e.left])
-          } else {
-            a[i] = e.right
-          }
+      }
+      const us = e.right
+      const ea = left.decode(us[0])
+      const eb = right.decode(us[1])
+      if (E.isLeft(ea)) {
+        if (E.isLeft(eb)) {
+          return E.left(
+            DE.indexed(
+              u,
+              [
+                [0, ea.left],
+                [1, eb.left]
+              ],
+              id
+            )
+          )
         }
-        return U.isNonEmpty(es) ? E.left(DE.indexed(u, es, id)) : E.right(a as any)
+        return E.left(DE.indexed(u, [[0, ea.left]], id))
+      } else {
+        if (E.isLeft(eb)) {
+          return E.left(DE.indexed(u, [[1, eb.left]], id))
+        }
+        return E.right([ea.right, eb.right])
       }
     }
   }
-}
-
-/**
- * @since 3.0.0
- */
-export function tuple2<A, B>(itemA: Decoder<A>, itemB: Decoder<B>, id?: string): Decoder<[A, B]> {
-  return tupleN([itemA, itemB], id)
-}
-
-/**
- * @since 3.0.0
- */
-export function tuple3<A, B, C>(
-  itemA: Decoder<A>,
-  itemB: Decoder<B>,
-  itemC: Decoder<C>,
-  id?: string
-): Decoder<[A, B, C]> {
-  return tupleN([itemA, itemB, itemC], id)
 }
 
 /**
@@ -449,8 +439,7 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
   partial,
   record,
   array,
-  tuple2,
-  tuple3,
+  tuple,
   intersection,
   sum,
   lazy,

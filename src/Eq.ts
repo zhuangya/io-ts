@@ -109,12 +109,7 @@ export const array: <A>(eq: Eq<A>) => Eq<Array<A>> = A.getEq
 /**
  * @since 3.0.0
  */
-export const tuple2: <A, B>(itemA: Eq<A>, itemB: Eq<B>) => Eq<[A, B]> = E.getTupleEq
-
-/**
- * @since 3.0.0
- */
-export const tuple3: <A, B, C>(itemA: Eq<A>, itemB: Eq<B>, itemC: Eq<C>) => Eq<[A, B, C]> = E.getTupleEq
+export const tuple: <A, B>(left: Eq<A>, right: Eq<B>) => Eq<[A, B]> = E.getTupleEq
 
 /**
  * @since 3.0.0
@@ -172,8 +167,7 @@ export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = {
   partial,
   record,
   array,
-  tuple2,
-  tuple3,
+  tuple,
   intersection,
   sum,
   lazy: (_, f) => lazy(f),

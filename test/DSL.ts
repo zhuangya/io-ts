@@ -78,11 +78,12 @@ describe('DSL', () => {
     assert.deepStrictEqual(dsl.dsl(false), { _tag: 'array', items: { _tag: 'number' }, id: undefined })
   })
 
-  it('tuple2', () => {
-    const dsl = DSL.tuple2(DSL.string, DSL.number)
+  it('tuple', () => {
+    const dsl = DSL.tuple(DSL.string, DSL.number)
     assert.deepStrictEqual(dsl.dsl(false), {
-      _tag: 'tuple2',
-      items: [{ _tag: 'string' }, { _tag: 'number' }],
+      _tag: 'tuple',
+      left: { _tag: 'string' },
+      right: { _tag: 'number' },
       id: undefined
     })
   })

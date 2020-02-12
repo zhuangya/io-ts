@@ -170,18 +170,9 @@ export function array<A>(items: TypeNode<A>): TypeNode<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple2<A, B>(itemA: TypeNode<A>, itemB: TypeNode<B>): TypeNode<[A, B]> {
+export function tuple<A, B>(left: TypeNode<A>, right: TypeNode<B>): TypeNode<[A, B]> {
   return {
-    typeNode: () => C.make(ts.createTupleTypeNode([itemA.typeNode(), itemB.typeNode()]))
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function tuple3<A, B, C>(itemA: TypeNode<A>, itemB: TypeNode<B>, itemC: TypeNode<C>): TypeNode<[A, B, C]> {
-  return {
-    typeNode: () => C.make(ts.createTupleTypeNode([itemA.typeNode(), itemB.typeNode(), itemC.typeNode()]))
+    typeNode: () => C.make(ts.createTupleTypeNode([left.typeNode(), right.typeNode()]))
   }
 }
 
@@ -271,8 +262,7 @@ export const typeNode: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple2,
-  tuple3,
+  tuple,
   intersection,
   sum,
   lazy,

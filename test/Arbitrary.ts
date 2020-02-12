@@ -131,12 +131,8 @@ describe('Arbitrary', () => {
     assert(make(S => S.array(S.string)))
   })
 
-  it('tuple2', () => {
-    assert(make(S => S.tuple2(S.string, S.number)))
-  })
-
-  it('tuple3', () => {
-    assert(make(S => S.tuple3(S.string, S.number, S.boolean)))
+  it('tuple', () => {
+    assert(make(S => S.tuple(S.string, S.number)))
   })
 
   it('intersection', () => {

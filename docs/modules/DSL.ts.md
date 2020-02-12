@@ -34,8 +34,7 @@ Added in v3.0.0
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
-- [tuple2](#tuple2)
-- [tuple3](#tuple3)
+- [tuple](#tuple)
 - [type](#type)
 - [union](#union)
 
@@ -124,13 +123,9 @@ export type Model =
       readonly id: string | undefined
     }
   | {
-      readonly _tag: 'tuple2'
-      readonly items: [Model, Model]
-      readonly id: string | undefined
-    }
-  | {
-      readonly _tag: 'tuple3'
-      readonly items: [Model, Model, Model]
+      readonly _tag: 'tuple'
+      readonly left: Model
+      readonly right: Model
       readonly id: string | undefined
     }
   | {
@@ -358,22 +353,12 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple2
+# tuple
 
 **Signature**
 
 ```ts
-export function tuple2<A, B>(itemA: DSL<A>, itemB: DSL<B>, id?: string): DSL<[A, B]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple3
-
-**Signature**
-
-```ts
-export function tuple3<A, B, C>(itemA: DSL<A>, itemB: DSL<B>, itemC: DSL<C>, id?: string): DSL<[A, B, C]> { ... }
+export function tuple<A, B>(left: DSL<A>, right: DSL<B>, id?: string): DSL<[A, B]> { ... }
 ```
 
 Added in v3.0.0

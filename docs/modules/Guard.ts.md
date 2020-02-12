@@ -31,8 +31,7 @@ Added in v3.0.0
 - [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
-- [tuple2](#tuple2)
-- [tuple3](#tuple3)
+- [tuple](#tuple)
 - [type](#type)
 - [union](#union)
 
@@ -232,22 +231,12 @@ export function sum<T extends string>(
 
 Added in v3.0.0
 
-# tuple2
+# tuple
 
 **Signature**
 
 ```ts
-export function tuple2<A, B>(itemA: Guard<A>, itemB: Guard<B>): Guard<[A, B]> { ... }
-```
-
-Added in v3.0.0
-
-# tuple3
-
-**Signature**
-
-```ts
-export function tuple3<A, B, C>(itemA: Guard<A>, itemB: Guard<B>, itemC: Guard<C>): Guard<[A, B, C]> { ... }
+export function tuple<A, B>(left: Guard<A>, right: Guard<B>): Guard<[A, B]> { ... }
 ```
 
 Added in v3.0.0

@@ -181,15 +181,8 @@ export function array<A>(items: Codec<A>, id?: string): Codec<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple2<A, B>(itemA: Codec<A>, itemB: Codec<B>, id?: string): Codec<[A, B]> {
-  return make(decoder.tuple2(itemA, itemB, id), encoder.tuple2(itemA, itemB, id))
-}
-
-/**
- * @since 3.0.0
- */
-export function tuple3<A, B, C>(itemA: Codec<A>, itemB: Codec<B>, itemC: Codec<C>, id?: string): Codec<[A, B, C]> {
-  return make(decoder.tuple3(itemA, itemB, itemC, id), encoder.tuple3(itemA, itemB, itemC, id))
+export function tuple<A, B>(left: Codec<A>, right: Codec<B>, id?: string): Codec<[A, B]> {
+  return make(decoder.tuple(left, right, id), encoder.tuple(left, right, id))
 }
 
 /**
@@ -255,8 +248,7 @@ export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> =
   partial,
   record,
   array,
-  tuple2,
-  tuple3,
+  tuple,
   intersection,
   sum,
   lazy,

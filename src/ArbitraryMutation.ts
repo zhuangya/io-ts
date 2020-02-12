@@ -176,27 +176,10 @@ export function array<A>(items: ArbitraryMutation<A>): ArbitraryMutation<Array<A
 /**
  * @since 3.0.0
  */
-export function tuple2<A, B>(itemA: ArbitraryMutation<A>, itemB: ArbitraryMutation<B>): ArbitraryMutation<[A, B]> {
-  const mutations = [itemA.mutation, itemB.mutation]
+export function tuple<A, B>(left: ArbitraryMutation<A>, right: ArbitraryMutation<B>): ArbitraryMutation<[A, B]> {
+  const mutations = [left.mutation, right.mutation]
   const index: fc.Arbitrary<0 | 1> = fc.oneof(fc.constant(0), fc.constant(1))
-  const arbitrary = A.tuple2(itemA.arbitrary, itemB.arbitrary)
-  return make(
-    arbitrary.chain(t => index.chain(i => mutations[i].map(m => unsafeUpdateAt(i, m, t)))),
-    arbitrary
-  )
-}
-
-/**
- * @since 3.0.0
- */
-export function tuple3<A, B, C>(
-  itemA: ArbitraryMutation<A>,
-  itemB: ArbitraryMutation<B>,
-  itemC: ArbitraryMutation<C>
-): ArbitraryMutation<[A, B, C]> {
-  const mutations = [itemA.mutation, itemB.mutation, itemC.mutation]
-  const index: fc.Arbitrary<0 | 1 | 2> = fc.oneof(fc.constant(0), fc.constant(1), fc.constant(2))
-  const arbitrary = A.tuple3(itemA.arbitrary, itemB.arbitrary, itemC.arbitrary)
+  const arbitrary = A.tuple(left.arbitrary, right.arbitrary)
   return make(
     arbitrary.chain(t => index.chain(i => mutations[i].map(m => unsafeUpdateAt(i, m, t)))),
     arbitrary
@@ -286,8 +269,7 @@ export const arbitraryMutation: S.Schemable<URI> & S.WithUnion<URI> & S.WithPars
   partial,
   record,
   array,
-  tuple2,
-  tuple3,
+  tuple,
   intersection,
   sum,
   lazy: (_, f) => lazy(f),

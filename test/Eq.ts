@@ -43,8 +43,8 @@ describe('Eq', () => {
     assert.deepStrictEqual(eq.equals({ a: 1 }, {}), false)
   })
 
-  it('tuple2', () => {
-    const eq = E.tuple2(E.string, E.number)
+  it('tuple', () => {
+    const eq = E.tuple(E.string, E.number)
     assert.deepStrictEqual(eq.equals(['a', 1], ['a', 1]), true)
     assert.deepStrictEqual(eq.equals(['a', 1], ['b', 1]), false)
     assert.deepStrictEqual(eq.equals(['a', 1], ['a', 2]), false)
