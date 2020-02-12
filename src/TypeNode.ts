@@ -2,7 +2,6 @@
  * @since 3.0.0
  */
 import * as C from 'fp-ts/lib/Const'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as ts from 'typescript'
 import { Literal, fold } from './Literal'
 import * as S from './Schemable'
@@ -38,7 +37,7 @@ const toLiteralTypeNode = fold<ts.TypeNode>(
   () => ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword)
 )
 
-function toLiteralsTypeNode(values: Array<Literal>): Array<ts.TypeNode> {
+function toLiteralsTypeNode(values: readonly [Literal, ...Array<Literal>]): Array<ts.TypeNode> {
   return values.map(toLiteralTypeNode)
 }
 
@@ -54,7 +53,7 @@ export function literal<A extends Literal>(value: A): TypeNode<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: NonEmptyArray<A>): TypeNode<A> {
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): TypeNode<A> {
   return {
     typeNode: () => C.make(ts.createUnionTypeNode(toLiteralsTypeNode(values)))
   }
@@ -63,7 +62,7 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>): TypeNode<
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: TypeNode<B>): TypeNode<A | B> {
+export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: TypeNode<B>): TypeNode<A | B> {
   return {
     typeNode: () => C.make(ts.createUnionTypeNode([...toLiteralsTypeNode(values), or.typeNode()]))
   }
@@ -189,9 +188,9 @@ export function tuple3<A, B, C>(itemA: TypeNode<A>, itemB: TypeNode<B>, itemC: T
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(typeNodeA: TypeNode<A>, typeNodeB: TypeNode<B>): TypeNode<A & B> {
+export function intersection<A, B>(left: TypeNode<A>, right: TypeNode<B>): TypeNode<A & B> {
   return {
-    typeNode: () => C.make(ts.createIntersectionTypeNode([typeNodeA.typeNode(), typeNodeB.typeNode()]))
+    typeNode: () => C.make(ts.createIntersectionTypeNode([left.typeNode(), right.typeNode()]))
   }
 }
 
@@ -228,10 +227,10 @@ export function lazy<A>(id: string, f: () => TypeNode<A>): TypeNode<A> {
  * @since 3.0.0
  */
 export function union<A extends [unknown, ...Array<unknown>]>(
-  typeNodes: { [K in keyof A]: TypeNode<A[K]> }
+  members: { [K in keyof A]: TypeNode<A[K]> }
 ): TypeNode<A[number]> {
   return {
-    typeNode: () => C.make(ts.createUnionTypeNode(typeNodes.map(typeNode => typeNode.typeNode())))
+    typeNode: () => C.make(ts.createUnionTypeNode(members.map(typeNode => typeNode.typeNode())))
   }
 }
 

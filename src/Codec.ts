@@ -44,7 +44,6 @@
  */
 import { Either } from 'fp-ts/lib/Either'
 import { Invariant1 } from 'fp-ts/lib/Invariant'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as DE from './DecodeError'
 import { Decoder, decoder, withMessage as withMessageD } from './Decoder'
 import { Encoder, encoder } from './Encoder'
@@ -89,14 +88,18 @@ export function literal<A extends Literal>(value: A, id?: string): Codec<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Codec<A> {
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): Codec<A> {
   return make(decoder.literals(values, id), encoder.literals(values, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Codec<B>, id?: string): Codec<A | B> {
+export function literalsOr<A extends Literal, B>(
+  values: readonly [A, ...Array<A>],
+  or: Codec<B>,
+  id?: string
+): Codec<A | B> {
   return make(decoder.literalsOr(values, or, id), encoder.literalsOr(values, or, id))
 }
 
@@ -143,12 +146,8 @@ export function withMessage<A>(codec: Codec<A>, message: (e: DE.DecodeError) => 
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(
-  codec: Codec<A>,
-  parser: (a: A) => Either<string, B>,
-  id?: string
-): Codec<B> {
-  return make(decoder.refinement(codec, parser, id), encoder.refinement(codec, parser, id))
+export function refinement<A, B extends A>(from: Codec<A>, parser: (a: A) => Either<string, B>, id?: string): Codec<B> {
+  return make(decoder.refinement(from, parser, id), encoder.refinement(from, parser, id))
 }
 
 /**
@@ -196,8 +195,8 @@ export function tuple3<A, B, C>(itemA: Codec<A>, itemB: Codec<B>, itemC: Codec<C
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(codecA: Codec<A>, codecB: Codec<B>, id?: string): Codec<A & B> {
-  return make(decoder.intersection(codecA, codecB, id), encoder.intersection(codecA, codecB, id))
+export function intersection<A, B>(left: Codec<A>, right: Codec<B>, id?: string): Codec<A & B> {
+  return make(decoder.intersection(left, right, id), encoder.intersection(left, right, id))
 }
 
 /**

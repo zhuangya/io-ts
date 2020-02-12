@@ -123,7 +123,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(arbitraryA: Arbitrary<A>, arbitraryB: Arbitrary<B>): Arbitrary<A & B> { ... }
+export function intersection<A, B>(left: Arbitrary<A>, right: Arbitrary<B>): Arbitrary<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -153,7 +153,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: NonEmptyArray<A>): Arbitrary<A> { ... }
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): Arbitrary<A> { ... }
 ```
 
 Added in v3.0.0
@@ -163,7 +163,10 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Arbitrary<B>): Arbitrary<A | B> { ... }
+export function literalsOr<A extends Literal, B>(
+  values: readonly [A, ...Array<A>],
+  or: Arbitrary<B>
+): Arbitrary<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -183,7 +186,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function parse<A, B>(arb: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> { ... }
+export function parse<A, B>(from: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> { ... }
 ```
 
 Added in v3.0.0
@@ -266,7 +269,7 @@ Added in v3.0.0
 
 ```ts
 export function union<A extends [unknown, ...Array<unknown>]>(
-  arbs: { [K in keyof A]: Arbitrary<A[K]> }
+  members: { [K in keyof A]: Arbitrary<A[K]> }
 ): Arbitrary<A[number]> { ... }
 ```
 

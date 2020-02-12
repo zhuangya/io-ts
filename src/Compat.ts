@@ -8,7 +8,6 @@
  * @since 3.0.0
  */
 import { Either } from 'fp-ts/lib/Either'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { Codec, codec } from './Codec'
 import { decoder } from './Decoder'
 import { Guard, guard } from './Guard'
@@ -51,14 +50,18 @@ export function literal<A extends Literal>(value: A, id?: string): Compat<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Compat<A> {
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): Compat<A> {
   return make(codec.literals(values, id), guard.literals(values, id))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Compat<B>, id?: string): Compat<A | B> {
+export function literalsOr<A extends Literal, B>(
+  values: readonly [A, ...Array<A>],
+  or: Compat<B>,
+  id?: string
+): Compat<A | B> {
   return make(codec.literalsOr(values, or, id), guard.literalsOr(values, or, id))
 }
 
@@ -99,11 +102,11 @@ export const UnknownRecord: Compat<Record<string, unknown>> = make(codec.Unknown
  * @since 3.0.0
  */
 export function refinement<A, B extends A>(
-  compat: Compat<A>,
+  from: Compat<A>,
   parser: (a: A) => Either<string, B>,
   id?: string
 ): Compat<B> {
-  return make(codec.refinement(compat, parser, id), guard.refinement(compat, parser, id))
+  return make(codec.refinement(from, parser, id), guard.refinement(from, parser, id))
 }
 
 /**
@@ -151,22 +154,22 @@ export function tuple3<A, B, C>(itemA: Compat<A>, itemB: Compat<B>, itemC: Compa
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(compatA: Compat<A>, compatB: Compat<B>, id?: string): Compat<A & B> {
-  return make(codec.intersection(compatA, compatB, id), guard.intersection(compatA, compatB, id))
+export function intersection<A, B>(left: Compat<A>, right: Compat<B>, id?: string): Compat<A & B> {
+  return make(codec.intersection(left, right, id), guard.intersection(left, right, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function union<A extends [unknown, ...Array<unknown>]>(
-  compats: { [K in keyof A]: Compat<A[K]> },
+  members: { [K in keyof A]: Compat<A[K]> },
   id?: string
 ): Compat<A[number]> {
   return {
-    is: guard.union(compats, id).is,
-    decode: decoder.union(compats, id).decode,
+    is: guard.union(members, id).is,
+    decode: decoder.union(members, id).decode,
     encode: a => {
-      for (const compat of compats) {
+      for (const compat of members) {
         if (compat.is(a)) {
           return compat.encode(a)
         }

@@ -2,9 +2,7 @@
  * @since 3.0.0
  */
 import * as A from 'fp-ts/lib/Array'
-import { Either } from 'fp-ts/lib/Either'
 import * as E from 'fp-ts/lib/Eq'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as R from 'fp-ts/lib/Record'
 import * as G from './Guard'
 import { Literal } from './Literal'
@@ -23,8 +21,8 @@ import Eq = E.Eq
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(as: NonEmptyArray<A>, or: Eq<B>): Eq<A | B> {
-  const literals = G.literals(as)
+export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: Eq<B>): Eq<A | B> {
+  const literals = G.literals(values)
   return {
     equals: (x, y) => (literals.is(x) || literals.is(y) ? x === y : or.equals(x, y))
   }
@@ -78,25 +76,18 @@ export const UnknownRecord: Eq<Record<string, unknown>> = E.fromEquals((x, y) =>
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(eq: Eq<A>, _parser: (a: A) => Either<string, B>): Eq<B> {
-  return eq
-}
-
-/**
- * @since 3.0.0
- */
 export const type: <A>(eqs: { [K in keyof A]: Eq<A[K]> }) => Eq<A> = E.getStructEq
 
 /**
  * @since 3.0.0
  */
-export function partial<A>(eqs: { [K in keyof A]: Eq<A[K]> }): Eq<Partial<A>> {
+export function partial<A>(properties: { [K in keyof A]: Eq<A[K]> }): Eq<Partial<A>> {
   return {
     equals: (x, y) => {
-      for (const k in eqs) {
+      for (const k in properties) {
         const xk = x[k]
         const yk = y[k]
-        if (!(xk === undefined || yk === undefined ? xk === yk : eqs[k].equals(xk!, yk!))) {
+        if (!(xk === undefined || yk === undefined ? xk === yk : properties[k].equals(xk!, yk!))) {
           return false
         }
       }
@@ -128,9 +119,9 @@ export const tuple3: <A, B, C>(itemA: Eq<A>, itemB: Eq<B>, itemC: Eq<C>) => Eq<[
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(eqA: Eq<A>, eqB: Eq<B>): Eq<A & B> {
+export function intersection<A, B>(left: Eq<A>, right: Eq<B>): Eq<A & B> {
   return {
-    equals: (x, y) => eqA.equals(x, y) && eqB.equals(x, y)
+    equals: (x, y) => left.equals(x, y) && right.equals(x, y)
   }
 }
 
@@ -186,5 +177,5 @@ export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = {
   intersection,
   sum,
   lazy: (_, f) => lazy(f),
-  refinement: refinement as S.WithRefinement<E.URI>['refinement']
+  refinement: eq => eq
 }

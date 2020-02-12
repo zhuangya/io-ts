@@ -23,7 +23,6 @@ Added in v3.0.0
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
-- [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
 - [tuple2](#tuple2)
@@ -87,7 +86,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(eqA: Eq<A>, eqB: Eq<B>): Eq<A & B> { ... }
+export function intersection<A, B>(left: Eq<A>, right: Eq<B>): Eq<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -107,7 +106,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(as: NonEmptyArray<A>, or: Eq<B>): Eq<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: Eq<B>): Eq<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -127,7 +126,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(eqs: { [K in keyof A]: Eq<A[K]> }): Eq<Partial<A>> { ... }
+export function partial<A>(properties: { [K in keyof A]: Eq<A[K]> }): Eq<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -138,16 +137,6 @@ Added in v3.0.0
 
 ```ts
 export const record: <A>(codomain: Eq<A>) => Eq<Record<string, A>> = ...
-```
-
-Added in v3.0.0
-
-# refinement
-
-**Signature**
-
-```ts
-export function refinement<A, B extends A>(eq: Eq<A>, _parser: (a: A) => Either<string, B>): Eq<B> { ... }
 ```
 
 Added in v3.0.0

@@ -53,7 +53,7 @@ export function literal<A extends Literal>(value: A, id?: string): Decoder<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Decoder<A> {
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): Decoder<A> {
   const expected = id ? id : values.map(value => JSON.stringify(value)).join(' | ')
   return fromGuard(G.literals(values), id, u => `Cannot decode ${JSON.stringify(u)}, expected ${expected}`)
 }
@@ -62,7 +62,7 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: strin
  * @since 3.0.0
  */
 export function literalsOr<A extends Literal, B>(
-  values: NonEmptyArray<A>,
+  values: readonly [A, ...Array<A>],
   or: Decoder<B>,
   id?: string
 ): Decoder<A | B> {
@@ -128,10 +128,10 @@ export function withMessage<A>(decoder: Decoder<A>, message: (e: DE.DecodeError)
 /**
  * @since 3.0.0
  */
-export function parse<A, B>(decoder: Decoder<A>, parser: (a: A) => E.Either<string, B>, id?: string): Decoder<B> {
+export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string, B>, id?: string): Decoder<B> {
   return {
     decode: u => {
-      const e = decoder.decode(u)
+      const e = from.decode(u)
       if (E.isLeft(e)) {
         return e
       }
@@ -312,11 +312,11 @@ export function tuple3<A, B, C>(
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(decoderA: Decoder<A>, decoderB: Decoder<B>, id?: string): Decoder<A & B> {
+export function intersection<A, B>(left: Decoder<A>, right: Decoder<B>, id?: string): Decoder<A & B> {
   return {
     decode: u => {
-      const ea = decoderA.decode(u)
-      const eb = decoderB.decode(u)
+      const ea = left.decode(u)
+      const eb = right.decode(u)
       if (E.isLeft(ea)) {
         if (E.isLeft(eb)) {
           return E.left(DE.and(u, [ea.left, eb.left], id))
@@ -377,18 +377,18 @@ export function sum<T extends string>(
  * @since 3.0.0
  */
 export function union<A extends [unknown, ...Array<unknown>]>(
-  decoders: { [K in keyof A]: Decoder<A[K]> },
+  members: { [K in keyof A]: Decoder<A[K]> },
   id?: string
 ): Decoder<A[number]> {
   return {
     decode: u => {
-      const e = decoders[0].decode(u)
+      const e = members[0].decode(u)
       if (E.isRight(e)) {
         return e
       }
       const es: NonEmptyArray<DE.DecodeError> = [e.left]
-      for (let i = 1; i < decoders.length; i++) {
-        const e = decoders[i].decode(u)
+      for (let i = 1; i < members.length; i++) {
+        const e = members[i].decode(u)
         if (E.isRight(e)) {
           return e
         } else {

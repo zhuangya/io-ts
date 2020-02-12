@@ -135,7 +135,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(expressionA: Expression<A>, expressionB: Expression<B>): Expression<A & B> { ... }
+export function intersection<A, B>(left: Expression<A>, right: Expression<B>): Expression<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -165,7 +165,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: NonEmptyArray<A>): Expression<A> { ... }
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): Expression<A> { ... }
 ```
 
 Added in v3.0.0
@@ -176,8 +176,8 @@ Added in v3.0.0
 
 ```ts
 export function literalsOr<A extends Literal, B>(
-  values: NonEmptyArray<A>,
-  expression: Expression<B>
+  values: readonly [A, ...Array<A>],
+  or: Expression<B>
 ): Expression<A | B> { ... }
 ```
 

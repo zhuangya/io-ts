@@ -22,12 +22,12 @@ export type Model =
     }
   | {
       readonly _tag: 'literals'
-      readonly values: NonEmptyArray<Literal>
+      readonly values: readonly [Literal, ...Array<Literal>]
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'literalsOr'
-      readonly values: NonEmptyArray<Literal>
+      readonly values: readonly [Literal, ...Array<Literal>]
       readonly model: Model
       readonly id: string | undefined
     }
@@ -154,7 +154,7 @@ export function literal<A extends Literal>(value: A, id?: string): DSL<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): DSL<A> {
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): DSL<A> {
   return {
     dsl: () =>
       C.make({
@@ -168,13 +168,17 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: strin
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, dsl: DSL<B>, id?: string): DSL<A | B> {
+export function literalsOr<A extends Literal, B>(
+  values: readonly [A, ...Array<A>],
+  or: DSL<B>,
+  id?: string
+): DSL<A | B> {
   return {
     dsl: lazy =>
       C.make({
         _tag: 'literalsOr',
         values,
-        model: dsl.dsl(lazy),
+        model: or.dsl(lazy),
         id
       })
   }
@@ -310,12 +314,12 @@ export function tuple3<A, B, C>(itemA: DSL<A>, itemB: DSL<B>, itemC: DSL<C>, id?
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(dslA: DSL<A>, dslB: DSL<B>, id?: string): DSL<A & B> {
+export function intersection<A, B>(left: DSL<A>, right: DSL<B>, id?: string): DSL<A & B> {
   return {
     dsl: lazy =>
       C.make({
         _tag: 'intersection',
-        models: [dslA.dsl(lazy), dslB.dsl(lazy)],
+        models: [left.dsl(lazy), right.dsl(lazy)],
         id
       })
   }
@@ -362,14 +366,14 @@ export function lazy<A>(id: string, f: () => DSL<A>): DSL<A> {
  * @since 3.0.0
  */
 export function union<A extends [unknown, ...Array<unknown>]>(
-  dsls: { [K in keyof A]: DSL<A[K]> },
+  members: { [K in keyof A]: DSL<A[K]> },
   id?: string
 ): DSL<A[number]> {
   return {
     dsl: lazy =>
       C.make({
         _tag: 'union',
-        models: dsls.map(dsl => dsl.dsl(lazy)) as any,
+        models: members.map(dsl => dsl.dsl(lazy)) as any,
         id
       })
   }

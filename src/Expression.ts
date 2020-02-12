@@ -2,7 +2,6 @@
  * @since 3.0.0
  */
 import * as C from 'fp-ts/lib/Const'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as ts from 'typescript'
 import { Literal, fold } from './Literal'
 import * as S from './Schemable'
@@ -38,7 +37,7 @@ const toLiteralExpression = fold<ts.Expression>(
   () => ts.createNull()
 )
 
-function toLiteralsExpression(values: Array<Literal>): ts.Expression {
+function toLiteralsExpression(values: readonly [Literal, ...Array<Literal>]): ts.Expression {
   return ts.createArrayLiteral(values.map(toLiteralExpression))
 }
 
@@ -57,7 +56,7 @@ export function literal<A extends Literal>(value: A): Expression<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: NonEmptyArray<A>): Expression<A> {
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): Expression<A> {
   return {
     expression: () =>
       C.make(ts.createCall(ts.createPropertyAccess(schemable, 'literals'), undefined, [toLiteralsExpression(values)]))
@@ -68,15 +67,15 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>): Expressio
  * @since 3.0.0
  */
 export function literalsOr<A extends Literal, B>(
-  values: NonEmptyArray<A>,
-  expression: Expression<B>
+  values: readonly [A, ...Array<A>],
+  or: Expression<B>
 ): Expression<A | B> {
   return {
     expression: () =>
       C.make(
         ts.createCall(ts.createPropertyAccess(schemable, 'literalsOr'), undefined, [
           toLiteralsExpression(values),
-          expression.expression()
+          or.expression()
         ])
       )
   }
@@ -214,13 +213,13 @@ export function tuple3<A, B, C>(
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(expressionA: Expression<A>, expressionB: Expression<B>): Expression<A & B> {
+export function intersection<A, B>(left: Expression<A>, right: Expression<B>): Expression<A & B> {
   return {
     expression: () =>
       C.make(
         ts.createCall(ts.createPropertyAccess(schemable, 'intersection'), undefined, [
-          expressionA.expression(),
-          expressionB.expression()
+          left.expression(),
+          right.expression()
         ])
       )
   }

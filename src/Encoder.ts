@@ -3,7 +3,6 @@
  */
 import { Contravariant1 } from 'fp-ts/lib/Contravariant'
 import { identity } from 'fp-ts/lib/function'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { pipeable } from 'fp-ts/lib/pipeable'
 import * as G from './Guard'
 import { Literal } from './Literal'
@@ -28,8 +27,8 @@ export interface Encoder<A> {
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(as: NonEmptyArray<A>, or: Encoder<B>): Encoder<A | B> {
-  const literals = G.literals(as)
+export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: Encoder<B>): Encoder<A | B> {
+  const literals = G.literals(values)
   return {
     encode: ab => (literals.is(ab) ? ab : or.encode(ab))
   }
@@ -130,9 +129,9 @@ export function tuple3<A, B, C>(itemA: Encoder<A>, itemB: Encoder<B>, itemC: Enc
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(encoderA: Encoder<A>, encoderB: Encoder<B>): Encoder<A & B> {
+export function intersection<A, B>(left: Encoder<A>, right: Encoder<B>): Encoder<A & B> {
   return {
-    encode: ab => U.intersect(encoderA.encode(ab), encoderB.encode(ab))
+    encode: ab => U.intersect(left.encode(ab), right.encode(ab))
   }
 }
 

@@ -2,7 +2,6 @@
  * @since 3.0.0
  */
 import * as C from 'fp-ts/lib/Const'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as R from 'fp-ts/lib/Record'
 import { JSONSchema7 } from 'json-schema'
 import { Literal } from './Literal'
@@ -33,18 +32,21 @@ export function literal<A extends Literal>(value: A): JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: NonEmptyArray<A>): JsonSchema<A> {
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): JsonSchema<A> {
   return {
-    compile: () => C.make({ enum: values })
+    compile: () => C.make({ enum: [...values] })
   }
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: JsonSchema<B>): JsonSchema<A | B> {
+export function literalsOr<A extends Literal, B>(
+  values: readonly [A, ...Array<A>],
+  or: JsonSchema<B>
+): JsonSchema<A | B> {
   return {
-    compile: lazy => C.make({ anyOf: [{ enum: values }, or.compile(lazy)] })
+    compile: lazy => C.make({ anyOf: [{ enum: [...values] }, or.compile(lazy)] })
   }
 }
 
@@ -181,9 +183,9 @@ export function tuple3<A, B, C>(
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(jsonSchemaA: JsonSchema<A>, jsonSchemaB: JsonSchema<B>): JsonSchema<A & B> {
+export function intersection<A, B>(left: JsonSchema<A>, right: JsonSchema<B>): JsonSchema<A & B> {
   return {
-    compile: lazy => C.make({ allOf: [jsonSchemaA.compile(lazy), jsonSchemaB.compile(lazy)] })
+    compile: lazy => C.make({ allOf: [left.compile(lazy), right.compile(lazy)] })
   }
 }
 
@@ -226,10 +228,10 @@ export function lazy<A>(id: string, f: () => JsonSchema<A>): JsonSchema<A> {
  * @since 3.0.0
  */
 export function union<A extends [unknown, ...Array<unknown>]>(
-  jsonSchemas: { [K in keyof A]: JsonSchema<A[K]> }
+  members: { [K in keyof A]: JsonSchema<A[K]> }
 ): JsonSchema<A[number]> {
   return {
-    compile: lazy => C.make({ oneOf: jsonSchemas.map(jsonSchema => jsonSchema.compile(lazy)) })
+    compile: lazy => C.make({ oneOf: members.map(jsonSchema => jsonSchema.compile(lazy)) })
   }
 }
 

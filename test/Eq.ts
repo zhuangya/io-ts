@@ -89,7 +89,7 @@ describe('Eq', () => {
   })
 
   it('refinement', () => {
-    const eq = E.refinement(E.string, s => (s === 'a' ? right<string, 'a'>(s) : left('"a"')))
+    const eq = E.eq.refinement(E.string, s => (s === 'a' ? right<string, 'a'>(s) : left('"a"')))
     assert.strictEqual(eq, E.string)
   })
 })

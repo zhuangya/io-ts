@@ -108,7 +108,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(encoderA: Encoder<A>, encoderB: Encoder<B>): Encoder<A & B> { ... }
+export function intersection<A, B>(left: Encoder<A>, right: Encoder<B>): Encoder<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -128,7 +128,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(as: NonEmptyArray<A>, or: Encoder<B>): Encoder<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: Encoder<B>): Encoder<A | B> { ... }
 ```
 
 Added in v3.0.0

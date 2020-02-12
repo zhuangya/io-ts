@@ -125,7 +125,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(guardA: Guard<A>, guardB: Guard<B>): Guard<A & B> { ... }
+export function intersection<A, B>(left: Guard<A>, right: Guard<B>): Guard<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -155,7 +155,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: NonEmptyArray<A>): Guard<A> { ... }
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): Guard<A> { ... }
 ```
 
 Added in v3.0.0
@@ -165,7 +165,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Guard<B>): Guard<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: Guard<B>): Guard<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -205,7 +205,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> { ... }
+export function refinement<A, B extends A>(from: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> { ... }
 ```
 
 Added in v3.0.0
@@ -268,7 +268,7 @@ Added in v3.0.0
 
 ```ts
 export function union<A extends [unknown, ...Array<unknown>]>(
-  guards: { [K in keyof A]: Guard<A[K]> }
+  members: { [K in keyof A]: Guard<A[K]> }
 ): Guard<A[number]> { ... }
 ```
 

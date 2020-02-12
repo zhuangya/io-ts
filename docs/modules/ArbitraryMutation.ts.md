@@ -129,7 +129,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(amA: ArbitraryMutation<A>, amB: ArbitraryMutation<B>): ArbitraryMutation<A & B> { ... }
+export function intersection<A, B>(left: ArbitraryMutation<A>, right: ArbitraryMutation<B>): ArbitraryMutation<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -159,7 +159,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: NonEmptyArray<A>): ArbitraryMutation<A> { ... }
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): ArbitraryMutation<A> { ... }
 ```
 
 Added in v3.0.0
@@ -170,7 +170,7 @@ Added in v3.0.0
 
 ```ts
 export function literalsOr<A extends Literal, B>(
-  values: NonEmptyArray<A>,
+  values: readonly [A, ...Array<A>],
   or: ArbitraryMutation<B>
 ): ArbitraryMutation<A | B> { ... }
 ```
@@ -202,7 +202,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function parse<A, B>(am: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> { ... }
+export function parse<A, B>(from: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> { ... }
 ```
 
 Added in v3.0.0
@@ -289,7 +289,7 @@ Added in v3.0.0
 
 ```ts
 export function union<A extends [unknown, ...Array<unknown>]>(
-  ams: { [K in keyof A]: ArbitraryMutation<A[K]> }
+  members: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ): ArbitraryMutation<A[number]> { ... }
 ```
 

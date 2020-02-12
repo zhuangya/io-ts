@@ -134,7 +134,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(compatA: Compat<A>, compatB: Compat<B>, id?: string): Compat<A & B> { ... }
+export function intersection<A, B>(left: Compat<A>, right: Compat<B>, id?: string): Compat<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -164,7 +164,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Compat<A> { ... }
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): Compat<A> { ... }
 ```
 
 Added in v3.0.0
@@ -174,7 +174,11 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Compat<B>, id?: string): Compat<A | B> { ... }
+export function literalsOr<A extends Literal, B>(
+  values: readonly [A, ...Array<A>],
+  or: Compat<B>,
+  id?: string
+): Compat<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -225,7 +229,7 @@ Added in v3.0.0
 
 ```ts
 export function refinement<A, B extends A>(
-  compat: Compat<A>,
+  from: Compat<A>,
   parser: (a: A) => Either<string, B>,
   id?: string
 ): Compat<B> { ... }
@@ -291,7 +295,7 @@ Added in v3.0.0
 
 ```ts
 export function union<A extends [unknown, ...Array<unknown>]>(
-  compats: { [K in keyof A]: Compat<A[K]> },
+  members: { [K in keyof A]: Compat<A[K]> },
   id?: string
 ): Compat<A[number]> { ... }
 ```

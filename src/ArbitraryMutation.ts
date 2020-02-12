@@ -5,7 +5,6 @@ import * as fc from 'fast-check'
 import { isNonEmpty, unsafeUpdateAt } from 'fp-ts/lib/Array'
 import { Either, isLeft } from 'fp-ts/lib/Either'
 import { not } from 'fp-ts/lib/function'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import * as A from './Arbitrary'
 import * as G from './Guard'
 import { Literal } from './Literal'
@@ -48,7 +47,7 @@ const literalsArbitrary: A.Arbitrary<Literal> = A.union([A.string, A.number, A.b
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: NonEmptyArray<A>): ArbitraryMutation<A> {
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): ArbitraryMutation<A> {
   return make(literalsArbitrary.filter(not(G.literals(values).is)), A.literals(values))
 }
 
@@ -56,7 +55,7 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>): Arbitrary
  * @since 3.0.0
  */
 export function literalsOr<A extends Literal, B>(
-  values: NonEmptyArray<A>,
+  values: readonly [A, ...Array<A>],
   or: ArbitraryMutation<B>
 ): ArbitraryMutation<A | B> {
   return make(A.union([literals(values).mutation, or.mutation]), A.literalsOr(values, or.arbitrary))
@@ -105,10 +104,10 @@ export const UnknownRecord: ArbitraryMutation<Record<string, unknown>> = make(A.
 /**
  * @since 3.0.0
  */
-export function parse<A, B>(am: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> {
+export function parse<A, B>(from: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> {
   return make(
-    am.arbitrary.filter(a => isLeft(parser(a))),
-    A.parse(am.arbitrary, parser)
+    from.arbitrary.filter(a => isLeft(parser(a))),
+    A.parse(from.arbitrary, parser)
   )
 }
 
@@ -207,8 +206,8 @@ export function tuple3<A, B, C>(
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(amA: ArbitraryMutation<A>, amB: ArbitraryMutation<B>): ArbitraryMutation<A & B> {
-  return make(A.intersection(amA.mutation, amB.mutation), A.intersection(amA.arbitrary, amB.arbitrary))
+export function intersection<A, B>(left: ArbitraryMutation<A>, right: ArbitraryMutation<B>): ArbitraryMutation<A & B> {
+  return make(A.intersection(left.mutation, right.mutation), A.intersection(left.arbitrary, right.arbitrary))
 }
 
 /**
@@ -243,10 +242,10 @@ export function lazy<A>(f: () => ArbitraryMutation<A>): ArbitraryMutation<A> {
  * @since 3.0.0
  */
 export function union<A extends [unknown, ...Array<unknown>]>(
-  ams: { [K in keyof A]: ArbitraryMutation<A[K]> }
+  members: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ): ArbitraryMutation<A[number]> {
-  const mutations = ams.map(am => am.mutation)
-  const arbitraries = ams.map(am => am.arbitrary)
+  const mutations = members.map(am => am.mutation)
+  const arbitraries = members.map(am => am.arbitrary)
   return make(A.union(mutations as any), A.union(arbitraries as any))
 }
 

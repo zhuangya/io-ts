@@ -2,7 +2,6 @@
  * @since 3.0.0
  */
 import { Either, isRight } from 'fp-ts/lib/Either'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { Literal } from './Literal'
 import * as S from './Schemable'
 import { hasOwnProperty } from './util'
@@ -34,7 +33,7 @@ export function literal<A extends Literal>(value: A): Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: NonEmptyArray<A>): Guard<A> {
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): Guard<A> {
   return {
     is: (u: unknown): u is A => values.findIndex(a => a === u) !== -1
   }
@@ -43,7 +42,7 @@ export function literals<A extends Literal>(values: NonEmptyArray<A>): Guard<A> 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Guard<B>): Guard<A | B> {
+export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: Guard<B>): Guard<A | B> {
   return union([literals(values), or])
 }
 
@@ -96,9 +95,9 @@ export const UnknownRecord: Guard<Record<string, unknown>> = {
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(guard: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> {
+export function refinement<A, B extends A>(from: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> {
   return {
-    is: (u: unknown): u is B => guard.is(u) && isRight(parser(u))
+    is: (u: unknown): u is B => from.is(u) && isRight(parser(u))
   }
 }
 
@@ -191,9 +190,9 @@ export function tuple3<A, B, C>(itemA: Guard<A>, itemB: Guard<B>, itemC: Guard<C
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(guardA: Guard<A>, guardB: Guard<B>): Guard<A & B> {
+export function intersection<A, B>(left: Guard<A>, right: Guard<B>): Guard<A & B> {
   return {
-    is: (u: unknown): u is A & B => guardA.is(u) && guardB.is(u)
+    is: (u: unknown): u is A & B => left.is(u) && right.is(u)
   }
 }
 
@@ -201,10 +200,10 @@ export function intersection<A, B>(guardA: Guard<A>, guardB: Guard<B>): Guard<A 
  * @since 3.0.0
  */
 export function union<A extends [unknown, ...Array<unknown>]>(
-  guards: { [K in keyof A]: Guard<A[K]> }
+  members: { [K in keyof A]: Guard<A[K]> }
 ): Guard<A[number]> {
   return {
-    is: (u: unknown): u is A[number] => guards.some(guard => guard.is(u))
+    is: (u: unknown): u is A[number] => members.some(guard => guard.is(u))
   }
 }
 

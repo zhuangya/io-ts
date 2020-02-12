@@ -79,12 +79,12 @@ export type Model =
     }
   | {
       readonly _tag: 'literals'
-      readonly values: NonEmptyArray<Literal>
+      readonly values: readonly [Literal, ...Array<Literal>]
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'literalsOr'
-      readonly values: NonEmptyArray<Literal>
+      readonly values: readonly [Literal, ...Array<Literal>]
       readonly model: Model
       readonly id: string | undefined
     }
@@ -257,7 +257,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(dslA: DSL<A>, dslB: DSL<B>, id?: string): DSL<A & B> { ... }
+export function intersection<A, B>(left: DSL<A>, right: DSL<B>, id?: string): DSL<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -287,7 +287,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): DSL<A> { ... }
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): DSL<A> { ... }
 ```
 
 Added in v3.0.0
@@ -297,7 +297,11 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, dsl: DSL<B>, id?: string): DSL<A | B> { ... }
+export function literalsOr<A extends Literal, B>(
+  values: readonly [A, ...Array<A>],
+  or: DSL<B>,
+  id?: string
+): DSL<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -390,7 +394,7 @@ Added in v3.0.0
 
 ```ts
 export function union<A extends [unknown, ...Array<unknown>]>(
-  dsls: { [K in keyof A]: DSL<A[K]> },
+  members: { [K in keyof A]: DSL<A[K]> },
   id?: string
 ): DSL<A[number]> { ... }
 ```

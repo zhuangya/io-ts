@@ -3,7 +3,6 @@
  */
 import * as fc from 'fast-check'
 import { Either, isRight } from 'fp-ts/lib/Either'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { Literal } from './Literal'
 import * as S from './Schemable'
 import { intersect } from './util'
@@ -31,14 +30,17 @@ export function literal<A extends Literal>(value: A): Arbitrary<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: NonEmptyArray<A>): Arbitrary<A> {
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): Arbitrary<A> {
   return fc.oneof(...values.map(a => fc.constant(a)))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Arbitrary<B>): Arbitrary<A | B> {
+export function literalsOr<A extends Literal, B>(
+  values: readonly [A, ...Array<A>],
+  or: Arbitrary<B>
+): Arbitrary<A | B> {
   return fc.oneof<A | B>(literals(values), or)
 }
 
@@ -84,8 +86,8 @@ export const UnknownRecord: Arbitrary<Record<string, unknown>> = fc.dictionary(s
 /**
  * @since 3.0.0
  */
-export function parse<A, B>(arb: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> {
-  return arb
+export function parse<A, B>(from: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> {
+  return from
     .map(parser)
     .filter(isRight)
     .map((e: any) => e.right)
@@ -136,8 +138,8 @@ export function tuple3<A, B, C>(itemA: Arbitrary<A>, itemB: Arbitrary<B>, itemC:
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(arbitraryA: Arbitrary<A>, arbitraryB: Arbitrary<B>): Arbitrary<A & B> {
-  return fc.tuple(arbitraryA, arbitraryB).map(([a, b]) => intersect(a, b))
+export function intersection<A, B>(left: Arbitrary<A>, right: Arbitrary<B>): Arbitrary<A & B> {
+  return fc.tuple(left, right).map(([a, b]) => intersect(a, b))
 }
 
 /**
@@ -163,9 +165,9 @@ export function lazy<A>(f: () => Arbitrary<A>): Arbitrary<A> {
  * @since 3.0.0
  */
 export function union<A extends [unknown, ...Array<unknown>]>(
-  arbs: { [K in keyof A]: Arbitrary<A[K]> }
+  members: { [K in keyof A]: Arbitrary<A[K]> }
 ): Arbitrary<A[number]> {
-  return fc.oneof(...arbs)
+  return fc.oneof(...members)
 }
 
 // -------------------------------------------------------------------------------------

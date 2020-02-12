@@ -195,7 +195,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(decoderA: Decoder<A>, decoderB: Decoder<B>, id?: string): Decoder<A & B> { ... }
+export function intersection<A, B>(left: Decoder<A>, right: Decoder<B>, id?: string): Decoder<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -225,7 +225,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Decoder<A> { ... }
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -236,7 +236,7 @@ Added in v3.0.0
 
 ```ts
 export function literalsOr<A extends Literal, B>(
-  values: NonEmptyArray<A>,
+  values: readonly [A, ...Array<A>],
   or: Decoder<B>,
   id?: string
 ): Decoder<A | B> { ... }
@@ -289,7 +289,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function parse<A, B>(decoder: Decoder<A>, parser: (a: A) => E.Either<string, B>, id?: string): Decoder<B> { ... }
+export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string, B>, id?: string): Decoder<B> { ... }
 ```
 
 Added in v3.0.0
@@ -377,7 +377,7 @@ Added in v3.0.0
 
 ```ts
 export function union<A extends [unknown, ...Array<unknown>]>(
-  decoders: { [K in keyof A]: Decoder<A[K]> },
+  members: { [K in keyof A]: Decoder<A[K]> },
   id?: string
 ): Decoder<A[number]> { ... }
 ```

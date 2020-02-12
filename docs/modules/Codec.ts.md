@@ -174,7 +174,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(codecA: Codec<A>, codecB: Codec<B>, id?: string): Codec<A & B> { ... }
+export function intersection<A, B>(left: Codec<A>, right: Codec<B>, id?: string): Codec<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -204,7 +204,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: NonEmptyArray<A>, id?: string): Codec<A> { ... }
+export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): Codec<A> { ... }
 ```
 
 Added in v3.0.0
@@ -214,7 +214,11 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(values: NonEmptyArray<A>, or: Codec<B>, id?: string): Codec<A | B> { ... }
+export function literalsOr<A extends Literal, B>(
+  values: readonly [A, ...Array<A>],
+  or: Codec<B>,
+  id?: string
+): Codec<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -264,11 +268,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(
-  codec: Codec<A>,
-  parser: (a: A) => Either<string, B>,
-  id?: string
-): Codec<B> { ... }
+export function refinement<A, B extends A>(from: Codec<A>, parser: (a: A) => Either<string, B>, id?: string): Codec<B> { ... }
 ```
 
 Added in v3.0.0
