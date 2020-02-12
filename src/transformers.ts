@@ -9,6 +9,7 @@ import * as ts from 'typescript'
 import * as DSL from './DSL'
 import * as E from './Expression'
 import * as T from './TypeNode'
+import * as U from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -59,7 +60,7 @@ export function toTypeNode(model: DSL.Model): T.TypeNode<unknown> {
     case 'record':
       return T.record(toTypeNode(model.codomain))
     case 'union':
-      return T.union(model.models.map(model => toTypeNode(model)) as any)
+      return T.union(U.map(model.models, model => toTypeNode(model)))
     case 'intersection':
       return T.intersection(toTypeNode(model.models[0]), toTypeNode(model.models[1]))
     case 'tuple':
@@ -109,7 +110,7 @@ export function toExpression(model: DSL.Model): E.Expression<unknown> {
     case 'record':
       return E.record(toExpression(model.codomain))
     case 'union':
-      return E.union(model.models.map(model => toExpression(model)) as any)
+      return E.union(U.map(model.models, model => toExpression(model)))
     case 'intersection':
       return E.intersection(toExpression(model.models[0]), toExpression(model.models[1]))
     case 'tuple':

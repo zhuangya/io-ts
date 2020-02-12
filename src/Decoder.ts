@@ -52,7 +52,7 @@ export function literal<A extends Literal>(value: A, id?: string): Decoder<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): Decoder<A> {
+export function literals<A extends Literal>(values: U.ReadonlyNonEmptyArray<A>, id?: string): Decoder<A> {
   const expected = id ? id : values.map(value => JSON.stringify(value)).join(' | ')
   return fromGuard(G.literals(values), id, u => `Cannot decode ${JSON.stringify(u)}, expected ${expected}`)
 }
@@ -61,7 +61,7 @@ export function literals<A extends Literal>(values: readonly [A, ...Array<A>], i
  * @since 3.0.0
  */
 export function literalsOr<A extends Literal, B>(
-  values: readonly [A, ...Array<A>],
+  values: U.ReadonlyNonEmptyArray<A>,
   or: Decoder<B>,
   id?: string
 ): Decoder<A | B> {
@@ -164,7 +164,7 @@ export function type<A>(properties: { [K in keyof A]: Decoder<A[K]> }, id?: stri
             a[k] = e.right
           }
         }
-        return U.isNonEmpty(es) ? E.left(DE.labeled(u, es, id)) : E.right(a as any)
+        return U.isNonEmpty(es) ? E.left(DE.labeled(u, es, id)) : E.right(a as A)
       }
     }
   }
@@ -365,7 +365,7 @@ export function sum<T extends string>(
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: Decoder<A[K]> },
   id?: string
 ): Decoder<A[number]> {

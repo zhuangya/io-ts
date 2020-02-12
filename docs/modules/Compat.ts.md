@@ -163,7 +163,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): Compat<A> { ... }
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>, id?: string): Compat<A> { ... }
 ```
 
 Added in v3.0.0
@@ -174,7 +174,7 @@ Added in v3.0.0
 
 ```ts
 export function literalsOr<A extends Literal, B>(
-  values: readonly [A, ...Array<A>],
+  values: ReadonlyNonEmptyArray<A>,
   or: Compat<B>,
   id?: string
 ): Compat<A | B> { ... }
@@ -283,7 +283,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: Compat<A[K]> },
   id?: string
 ): Compat<A[number]> { ... }

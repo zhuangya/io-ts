@@ -28,9 +28,9 @@ Added in v3.0.0
 export interface Schemable<S extends URIS> {
   readonly URI: S
   readonly literal: <A extends Literal>(value: A, id?: string) => Kind<S, A>
-  readonly literals: <A extends Literal>(values: readonly [A, ...Array<A>], id?: string) => Kind<S, A>
+  readonly literals: <A extends Literal>(values: ReadonlyNonEmptyArray<A>, id?: string) => Kind<S, A>
   readonly literalsOr: <A extends Literal, B>(
-    values: readonly [A, ...Array<A>],
+    values: ReadonlyNonEmptyArray<A>,
     or: Kind<S, B>,
     id?: string
   ) => Kind<S, A | B>
@@ -88,7 +88,7 @@ Added in v3.0.0
 
 ```ts
 export interface WithUnion<S extends URIS> {
-  readonly union: <A extends [unknown, ...Array<unknown>]>(
+  readonly union: <A extends ReadonlyNonEmptyTuple<unknown>>(
     members: { [K in keyof A]: Kind<S, A[K]> },
     id?: string
   ) => Kind<S, A[number]>

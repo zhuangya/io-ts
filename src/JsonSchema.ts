@@ -6,6 +6,7 @@ import * as R from 'fp-ts/lib/Record'
 import { JSONSchema7 } from 'json-schema'
 import { Literal } from './Literal'
 import * as S from './Schemable'
+import { ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -32,7 +33,7 @@ export function literal<A extends Literal>(value: A): JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): JsonSchema<A> {
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): JsonSchema<A> {
   return {
     compile: () => C.make({ enum: [...values] })
   }
@@ -42,7 +43,7 @@ export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): 
  * @since 3.0.0
  */
 export function literalsOr<A extends Literal, B>(
-  values: readonly [A, ...Array<A>],
+  values: ReadonlyNonEmptyArray<A>,
   or: JsonSchema<B>
 ): JsonSchema<A | B> {
   return {
@@ -208,7 +209,7 @@ export function lazy<A>(id: string, f: () => JsonSchema<A>): JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: JsonSchema<A[K]> }
 ): JsonSchema<A[number]> {
   return {

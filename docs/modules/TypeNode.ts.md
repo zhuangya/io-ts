@@ -154,7 +154,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): TypeNode<A> { ... }
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): TypeNode<A> { ... }
 ```
 
 Added in v3.0.0
@@ -164,7 +164,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: TypeNode<B>): TypeNode<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: TypeNode<B>): TypeNode<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -256,7 +256,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: TypeNode<A[K]> }
 ): TypeNode<A[number]> { ... }
 ```

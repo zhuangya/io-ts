@@ -127,7 +127,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: Encoder<B>): Encoder<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: U.ReadonlyNonEmptyArray<A>, or: Encoder<B>): Encoder<A | B> { ... }
 ```
 
 Added in v3.0.0

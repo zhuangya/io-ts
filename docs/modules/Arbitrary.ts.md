@@ -152,7 +152,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): Arbitrary<A> { ... }
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Arbitrary<A> { ... }
 ```
 
 Added in v3.0.0
@@ -162,10 +162,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(
-  values: readonly [A, ...Array<A>],
-  or: Arbitrary<B>
-): Arbitrary<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Arbitrary<B>): Arbitrary<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -257,7 +254,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: Arbitrary<A[K]> }
 ): Arbitrary<A[number]> { ... }
 ```

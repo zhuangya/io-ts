@@ -78,12 +78,12 @@ export type Model =
     }
   | {
       readonly _tag: 'literals'
-      readonly values: NonEmpty<Literal>
+      readonly values: U.ReadonlyNonEmptyArray<Literal>
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'literalsOr'
-      readonly values: NonEmpty<Literal>
+      readonly values: U.ReadonlyNonEmptyArray<Literal>
       readonly model: Model
       readonly id: string | undefined
     }
@@ -141,7 +141,7 @@ export type Model =
     }
   | {
       readonly _tag: 'union'
-      readonly models: NonEmpty<Model>
+      readonly models: U.ReadonlyNonEmptyTuple<Model>
       readonly id: string | undefined
     }
   | {
@@ -282,7 +282,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): DSL<A> { ... }
+export function literals<A extends Literal>(values: U.ReadonlyNonEmptyArray<A>, id?: string): DSL<A> { ... }
 ```
 
 Added in v3.0.0
@@ -293,7 +293,7 @@ Added in v3.0.0
 
 ```ts
 export function literalsOr<A extends Literal, B>(
-  values: readonly [A, ...Array<A>],
+  values: U.ReadonlyNonEmptyArray<A>,
   or: DSL<B>,
   id?: string
 ): DSL<A | B> { ... }
@@ -378,7 +378,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: DSL<A[K]> },
   id?: string
 ): DSL<A[number]> { ... }

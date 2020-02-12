@@ -2,10 +2,10 @@
  * @since 3.0.0
  */
 import * as C from 'fp-ts/lib/Const'
-import { NonEmpty } from './DecodeError'
 import * as R from 'fp-ts/lib/Record'
 import { Literal } from './Literal'
 import * as S from './Schemable'
+import * as U from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -22,12 +22,12 @@ export type Model =
     }
   | {
       readonly _tag: 'literals'
-      readonly values: NonEmpty<Literal>
+      readonly values: U.ReadonlyNonEmptyArray<Literal>
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'literalsOr'
-      readonly values: NonEmpty<Literal>
+      readonly values: U.ReadonlyNonEmptyArray<Literal>
       readonly model: Model
       readonly id: string | undefined
     }
@@ -85,7 +85,7 @@ export type Model =
     }
   | {
       readonly _tag: 'union'
-      readonly models: NonEmpty<Model>
+      readonly models: U.ReadonlyNonEmptyTuple<Model>
       readonly id: string | undefined
     }
   | {
@@ -150,7 +150,7 @@ export function literal<A extends Literal>(value: A, id?: string): DSL<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): DSL<A> {
+export function literals<A extends Literal>(values: U.ReadonlyNonEmptyArray<A>, id?: string): DSL<A> {
   return {
     dsl: () =>
       C.make({
@@ -165,7 +165,7 @@ export function literals<A extends Literal>(values: readonly [A, ...Array<A>], i
  * @since 3.0.0
  */
 export function literalsOr<A extends Literal, B>(
-  values: readonly [A, ...Array<A>],
+  values: U.ReadonlyNonEmptyArray<A>,
   or: DSL<B>,
   id?: string
 ): DSL<A | B> {
@@ -348,7 +348,7 @@ export function lazy<A>(id: string, f: () => DSL<A>): DSL<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: DSL<A[K]> },
   id?: string
 ): DSL<A[number]> {
@@ -356,7 +356,7 @@ export function union<A extends [unknown, ...Array<unknown>]>(
     dsl: lazy =>
       C.make({
         _tag: 'union',
-        models: members.map(dsl => dsl.dsl(lazy)) as any,
+        models: U.map(members, dsl => dsl.dsl(lazy)),
         id
       })
   }

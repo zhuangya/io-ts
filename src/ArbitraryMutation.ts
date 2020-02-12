@@ -9,6 +9,7 @@ import * as A from './Arbitrary'
 import * as G from './Guard'
 import { Literal } from './Literal'
 import * as S from './Schemable'
+import * as U from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -47,7 +48,7 @@ const literalsArbitrary: A.Arbitrary<Literal> = A.union([A.string, A.number, A.b
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): ArbitraryMutation<A> {
+export function literals<A extends Literal>(values: U.ReadonlyNonEmptyArray<A>): ArbitraryMutation<A> {
   return make(literalsArbitrary.filter(not(G.literals(values).is)), A.literals(values))
 }
 
@@ -55,7 +56,7 @@ export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): 
  * @since 3.0.0
  */
 export function literalsOr<A extends Literal, B>(
-  values: readonly [A, ...Array<A>],
+  values: U.ReadonlyNonEmptyArray<A>,
   or: ArbitraryMutation<B>
 ): ArbitraryMutation<A | B> {
   return make(A.union([literals(values).mutation, or.mutation]), A.literalsOr(values, or.arbitrary))
@@ -224,12 +225,12 @@ export function lazy<A>(f: () => ArbitraryMutation<A>): ArbitraryMutation<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ): ArbitraryMutation<A[number]> {
-  const mutations = members.map(am => am.mutation)
-  const arbitraries = members.map(am => am.arbitrary)
-  return make(A.union(mutations as any), A.union(arbitraries as any))
+  const mutations = U.map(members, member => member.mutation)
+  const arbitraries = U.map(members, member => member.arbitrary)
+  return make(A.union(mutations), A.union(arbitraries))
 }
 
 // -------------------------------------------------------------------------------------

@@ -5,6 +5,7 @@ import * as C from 'fp-ts/lib/Const'
 import * as ts from 'typescript'
 import { Literal, fold } from './Literal'
 import * as S from './Schemable'
+import { ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -37,7 +38,7 @@ const toLiteralExpression = fold<ts.Expression>(
   () => ts.createNull()
 )
 
-function toLiteralsExpression(values: readonly [Literal, ...Array<Literal>]): ts.Expression {
+function toLiteralsExpression(values: ReadonlyNonEmptyArray<Literal>): ts.Expression {
   return ts.createArrayLiteral(values.map(toLiteralExpression))
 }
 
@@ -56,7 +57,7 @@ export function literal<A extends Literal>(value: A): Expression<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): Expression<A> {
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Expression<A> {
   return {
     expression: () =>
       C.make(ts.createCall(ts.createPropertyAccess(schemable, 'literals'), undefined, [toLiteralsExpression(values)]))
@@ -67,7 +68,7 @@ export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): 
  * @since 3.0.0
  */
 export function literalsOr<A extends Literal, B>(
-  values: readonly [A, ...Array<A>],
+  values: ReadonlyNonEmptyArray<A>,
   or: Expression<B>
 ): Expression<A | B> {
   return {
@@ -252,7 +253,7 @@ export function lazy<A>(id: string, f: () => Expression<A>): Expression<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: Expression<A[K]> }
 ): Expression<A[number]> {
   return {

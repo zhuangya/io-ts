@@ -105,7 +105,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: Eq<B>): Eq<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Eq<B>): Eq<A | B> { ... }
 ```
 
 Added in v3.0.0

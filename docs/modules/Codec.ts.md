@@ -203,7 +203,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): Codec<A> { ... }
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>, id?: string): Codec<A> { ... }
 ```
 
 Added in v3.0.0
@@ -214,7 +214,7 @@ Added in v3.0.0
 
 ```ts
 export function literalsOr<A extends Literal, B>(
-  values: readonly [A, ...Array<A>],
+  values: ReadonlyNonEmptyArray<A>,
   or: Codec<B>,
   id?: string
 ): Codec<A | B> { ... }

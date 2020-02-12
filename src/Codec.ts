@@ -49,6 +49,7 @@ import { Decoder, decoder, withMessage as withMessageD } from './Decoder'
 import { Encoder, encoder } from './Encoder'
 import { Literal } from './Literal'
 import * as S from './Schemable'
+import { ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -88,7 +89,7 @@ export function literal<A extends Literal>(value: A, id?: string): Codec<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>], id?: string): Codec<A> {
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>, id?: string): Codec<A> {
   return make(decoder.literals(values, id), encoder.literals(values, id))
 }
 
@@ -96,7 +97,7 @@ export function literals<A extends Literal>(values: readonly [A, ...Array<A>], i
  * @since 3.0.0
  */
 export function literalsOr<A extends Literal, B>(
-  values: readonly [A, ...Array<A>],
+  values: ReadonlyNonEmptyArray<A>,
   or: Codec<B>,
   id?: string
 ): Codec<A | B> {

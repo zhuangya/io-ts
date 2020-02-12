@@ -158,7 +158,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): ArbitraryMutation<A> { ... }
+export function literals<A extends Literal>(values: U.ReadonlyNonEmptyArray<A>): ArbitraryMutation<A> { ... }
 ```
 
 Added in v3.0.0
@@ -169,7 +169,7 @@ Added in v3.0.0
 
 ```ts
 export function literalsOr<A extends Literal, B>(
-  values: readonly [A, ...Array<A>],
+  values: U.ReadonlyNonEmptyArray<A>,
   or: ArbitraryMutation<B>
 ): ArbitraryMutation<A | B> { ... }
 ```
@@ -273,7 +273,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ): ArbitraryMutation<A[number]> { ... }
 ```

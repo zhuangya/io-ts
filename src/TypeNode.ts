@@ -5,6 +5,7 @@ import * as C from 'fp-ts/lib/Const'
 import * as ts from 'typescript'
 import { Literal, fold } from './Literal'
 import * as S from './Schemable'
+import { ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -37,7 +38,7 @@ const toLiteralTypeNode = fold<ts.TypeNode>(
   () => ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword)
 )
 
-function toLiteralsTypeNode(values: readonly [Literal, ...Array<Literal>]): Array<ts.TypeNode> {
+function toLiteralsTypeNode(values: ReadonlyNonEmptyArray<Literal>): Array<ts.TypeNode> {
   return values.map(toLiteralTypeNode)
 }
 
@@ -53,7 +54,7 @@ export function literal<A extends Literal>(value: A): TypeNode<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): TypeNode<A> {
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): TypeNode<A> {
   return {
     typeNode: () => C.make(ts.createUnionTypeNode(toLiteralsTypeNode(values)))
   }
@@ -62,7 +63,7 @@ export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: TypeNode<B>): TypeNode<A | B> {
+export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: TypeNode<B>): TypeNode<A | B> {
   return {
     typeNode: () => C.make(ts.createUnionTypeNode([...toLiteralsTypeNode(values), or.typeNode()]))
   }
@@ -217,7 +218,7 @@ export function lazy<A>(id: string, f: () => TypeNode<A>): TypeNode<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: TypeNode<A[K]> }
 ): TypeNode<A[number]> {
   return {

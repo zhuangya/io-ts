@@ -4,7 +4,7 @@
 import { Either, isRight } from 'fp-ts/lib/Either'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { hasOwnProperty } from './util'
+import { hasOwnProperty, ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -33,7 +33,7 @@ export function literal<A extends Literal>(value: A): Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): Guard<A> {
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Guard<A> {
   return {
     is: (u: unknown): u is A => values.findIndex(a => a === u) !== -1
   }
@@ -42,7 +42,7 @@ export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: Guard<B>): Guard<A | B> {
+export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Guard<B>): Guard<A | B> {
   return union([literals(values), or])
 }
 
@@ -189,7 +189,7 @@ export function intersection<A, B>(left: Guard<A>, right: Guard<B>): Guard<A & B
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: Guard<A[K]> }
 ): Guard<A[number]> {
   return {

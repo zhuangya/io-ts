@@ -27,7 +27,7 @@ export interface Encoder<A> {
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: Encoder<B>): Encoder<A | B> {
+export function literalsOr<A extends Literal, B>(values: U.ReadonlyNonEmptyArray<A>, or: Encoder<B>): Encoder<A | B> {
   const literals = G.literals(values)
   return {
     encode: ab => (literals.is(ab) ? ab : or.encode(ab))

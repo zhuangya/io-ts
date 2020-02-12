@@ -5,7 +5,7 @@ import * as fc from 'fast-check'
 import { Either, isRight } from 'fp-ts/lib/Either'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { intersect } from './util'
+import { intersect, ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -30,17 +30,14 @@ export function literal<A extends Literal>(value: A): Arbitrary<A> {
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: readonly [A, ...Array<A>]): Arbitrary<A> {
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Arbitrary<A> {
   return fc.oneof(...values.map(a => fc.constant(a)))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(
-  values: readonly [A, ...Array<A>],
-  or: Arbitrary<B>
-): Arbitrary<A | B> {
+export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Arbitrary<B>): Arbitrary<A | B> {
   return fc.oneof<A | B>(literals(values), or)
 }
 
@@ -157,7 +154,7 @@ export function lazy<A>(f: () => Arbitrary<A>): Arbitrary<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends [unknown, ...Array<unknown>]>(
+export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: Arbitrary<A[K]> }
 ): Arbitrary<A[number]> {
   return fc.oneof(...members)

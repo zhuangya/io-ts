@@ -1,11 +1,7 @@
 /**
  * @since 3.0.0
  */
-
-/**
- * @since 3.0.0
- */
-export type NonEmpty<A> = readonly [A, ...Array<A>]
+import { ReadonlyNonEmptyArray } from './util'
 
 /**
  * @since 3.0.0
@@ -23,7 +19,7 @@ export type LabeledError = readonly [string, DecodeError]
 export interface Indexed {
   readonly _tag: 'Indexed'
   readonly actual: unknown
-  readonly errors: NonEmpty<IndexedError>
+  readonly errors: ReadonlyNonEmptyArray<IndexedError>
   readonly id: string | undefined
   readonly message: string | undefined
 }
@@ -31,7 +27,12 @@ export interface Indexed {
 /**
  * @since 3.0.0
  */
-export function indexed(actual: unknown, errors: NonEmpty<IndexedError>, id?: string, message?: string): DecodeError {
+export function indexed(
+  actual: unknown,
+  errors: ReadonlyNonEmptyArray<IndexedError>,
+  id?: string,
+  message?: string
+): DecodeError {
   return { _tag: 'Indexed', actual, errors, id, message }
 }
 
@@ -41,7 +42,7 @@ export function indexed(actual: unknown, errors: NonEmpty<IndexedError>, id?: st
 export interface Labeled {
   readonly _tag: 'Labeled'
   readonly actual: unknown
-  readonly errors: NonEmpty<LabeledError>
+  readonly errors: ReadonlyNonEmptyArray<LabeledError>
   readonly id: string | undefined
   readonly message: string | undefined
 }
@@ -49,7 +50,12 @@ export interface Labeled {
 /**
  * @since 3.0.0
  */
-export function labeled(actual: unknown, errors: NonEmpty<LabeledError>, id?: string, message?: string): DecodeError {
+export function labeled(
+  actual: unknown,
+  errors: ReadonlyNonEmptyArray<LabeledError>,
+  id?: string,
+  message?: string
+): DecodeError {
   return { _tag: 'Labeled', actual, errors, id, message }
 }
 
@@ -59,7 +65,7 @@ export function labeled(actual: unknown, errors: NonEmpty<LabeledError>, id?: st
 export interface And {
   readonly _tag: 'And'
   readonly actual: unknown
-  readonly errors: NonEmpty<DecodeError>
+  readonly errors: ReadonlyNonEmptyArray<DecodeError>
   readonly id: string | undefined
   readonly message: string | undefined
 }
@@ -67,7 +73,12 @@ export interface And {
 /**
  * @since 3.0.0
  */
-export function and(actual: unknown, errors: NonEmpty<DecodeError>, id?: string, message?: string): DecodeError {
+export function and(
+  actual: unknown,
+  errors: ReadonlyNonEmptyArray<DecodeError>,
+  id?: string,
+  message?: string
+): DecodeError {
   return { _tag: 'And', actual, errors, id, message }
 }
 
@@ -77,7 +88,7 @@ export function and(actual: unknown, errors: NonEmpty<DecodeError>, id?: string,
 export interface Or {
   readonly _tag: 'Or'
   readonly actual: unknown
-  readonly errors: NonEmpty<DecodeError>
+  readonly errors: ReadonlyNonEmptyArray<DecodeError>
   readonly id: string | undefined
   readonly message: string | undefined
 }
@@ -85,7 +96,12 @@ export interface Or {
 /**
  * @since 3.0.0
  */
-export function or(actual: unknown, errors: NonEmpty<DecodeError>, id?: string, message?: string): DecodeError {
+export function or(
+  actual: unknown,
+  errors: ReadonlyNonEmptyArray<DecodeError>,
+  id?: string,
+  message?: string
+): DecodeError {
   return { _tag: 'Or', actual, errors, id, message }
 }
 

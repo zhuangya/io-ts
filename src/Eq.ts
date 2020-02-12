@@ -7,7 +7,7 @@ import * as R from 'fp-ts/lib/Record'
 import * as G from './Guard'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { eqStrict, hasOwnProperty } from './util'
+import { eqStrict, hasOwnProperty, ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -21,7 +21,7 @@ import Eq = E.Eq
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(values: readonly [A, ...Array<A>], or: Eq<B>): Eq<A | B> {
+export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Eq<B>): Eq<A | B> {
   const literals = G.literals(values)
   return {
     equals: (x, y) => (literals.is(x) || literals.is(y) ? x === y : or.equals(x, y))
