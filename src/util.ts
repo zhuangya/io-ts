@@ -2,13 +2,12 @@
  * @since 3.0.0
  */
 import { Eq, strictEqual } from 'fp-ts/lib/Eq'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 
 /**
  * @since 3.0.0
  * @internal
  */
-export function isNonEmpty<A>(as: Array<A>): as is NonEmptyArray<A> {
+export function isNonEmpty<A>(as: Array<A>): as is [A, ...Array<A>] {
   return as.length > 0
 }
 

@@ -79,12 +79,12 @@ export type Model =
     }
   | {
       readonly _tag: 'literals'
-      readonly values: readonly [Literal, ...Array<Literal>]
+      readonly values: NonEmpty<Literal>
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'literalsOr'
-      readonly values: readonly [Literal, ...Array<Literal>]
+      readonly values: NonEmpty<Literal>
       readonly model: Model
       readonly id: string | undefined
     }
@@ -146,7 +146,7 @@ export type Model =
     }
   | {
       readonly _tag: 'union'
-      readonly models: NonEmptyArray<Model>
+      readonly models: NonEmpty<Model>
       readonly id: string | undefined
     }
   | {

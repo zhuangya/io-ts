@@ -18,6 +18,9 @@ Added in v3.0.0
 - [Leaf (interface)](#leaf-interface)
 - [Or (interface)](#or-interface)
 - [DecodeError (type alias)](#decodeerror-type-alias)
+- [IndexedError (type alias)](#indexederror-type-alias)
+- [LabeledError (type alias)](#labelederror-type-alias)
+- [NonEmpty (type alias)](#nonempty-type-alias)
 - [and](#and)
 - [indexed](#indexed)
 - [labeled](#labeled)
@@ -34,7 +37,7 @@ Added in v3.0.0
 export interface And {
   readonly _tag: 'And'
   readonly actual: unknown
-  readonly errors: NonEmptyArray<DecodeError>
+  readonly errors: NonEmpty<DecodeError>
   readonly id: string | undefined
   readonly message: string | undefined
 }
@@ -50,7 +53,7 @@ Added in v3.0.0
 export interface Indexed {
   readonly _tag: 'Indexed'
   readonly actual: unknown
-  readonly errors: NonEmptyArray<[number, DecodeError]>
+  readonly errors: NonEmpty<IndexedError>
   readonly id: string | undefined
   readonly message: string | undefined
 }
@@ -66,7 +69,7 @@ Added in v3.0.0
 export interface Labeled {
   readonly _tag: 'Labeled'
   readonly actual: unknown
-  readonly errors: NonEmptyArray<[string, DecodeError]>
+  readonly errors: NonEmpty<LabeledError>
   readonly id: string | undefined
   readonly message: string | undefined
 }
@@ -97,7 +100,7 @@ Added in v3.0.0
 export interface Or {
   readonly _tag: 'Or'
   readonly actual: unknown
-  readonly errors: NonEmptyArray<DecodeError>
+  readonly errors: NonEmpty<DecodeError>
   readonly id: string | undefined
   readonly message: string | undefined
 }
@@ -115,12 +118,42 @@ export type DecodeError = Leaf | And | Or | Indexed | Labeled
 
 Added in v3.0.0
 
+# IndexedError (type alias)
+
+**Signature**
+
+```ts
+export type IndexedError = readonly [number, DecodeError]
+```
+
+Added in v3.0.0
+
+# LabeledError (type alias)
+
+**Signature**
+
+```ts
+export type LabeledError = readonly [string, DecodeError]
+```
+
+Added in v3.0.0
+
+# NonEmpty (type alias)
+
+**Signature**
+
+```ts
+export type NonEmpty<A> = readonly [A, ...Array<A>]
+```
+
+Added in v3.0.0
+
 # and
 
 **Signature**
 
 ```ts
-export function and(actual: unknown, errors: NonEmptyArray<DecodeError>, id?: string, message?: string): DecodeError { ... }
+export function and(actual: unknown, errors: NonEmpty<DecodeError>, id?: string, message?: string): DecodeError { ... }
 ```
 
 Added in v3.0.0
@@ -130,12 +163,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function indexed(
-  actual: unknown,
-  errors: NonEmptyArray<[number, DecodeError]>,
-  id?: string,
-  message?: string
-): DecodeError { ... }
+export function indexed(actual: unknown, errors: NonEmpty<IndexedError>, id?: string, message?: string): DecodeError { ... }
 ```
 
 Added in v3.0.0
@@ -145,12 +173,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function labeled(
-  actual: unknown,
-  errors: NonEmptyArray<[string, DecodeError]>,
-  id?: string,
-  message?: string
-): DecodeError { ... }
+export function labeled(actual: unknown, errors: NonEmpty<LabeledError>, id?: string, message?: string): DecodeError { ... }
 ```
 
 Added in v3.0.0
@@ -170,7 +193,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function or(actual: unknown, errors: NonEmptyArray<DecodeError>, id?: string, message?: string): DecodeError { ... }
+export function or(actual: unknown, errors: NonEmpty<DecodeError>, id?: string, message?: string): DecodeError { ... }
 ```
 
 Added in v3.0.0

@@ -5,7 +5,6 @@ import { Alternative1 } from 'fp-ts/lib/Alternative'
 import { Applicative1 } from 'fp-ts/lib/Applicative'
 import * as E from 'fp-ts/lib/Either'
 import { flow } from 'fp-ts/lib/function'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { pipeable } from 'fp-ts/lib/pipeable'
 import * as DE from './DecodeError'
 import * as G from './Guard'
@@ -155,7 +154,7 @@ export function type<A>(properties: { [K in keyof A]: Decoder<A[K]> }, id?: stri
         return e
       } else {
         const r = e.right
-        let a: A = {} as any
+        let a: Partial<A> = {}
         const es: Array<[string, DE.DecodeError]> = []
         for (const k in properties) {
           const e = properties[k].decode(r[k])
@@ -165,7 +164,7 @@ export function type<A>(properties: { [K in keyof A]: Decoder<A[K]> }, id?: stri
             a[k] = e.right
           }
         }
-        return U.isNonEmpty(es) ? E.left(DE.labeled(u, es, id)) : E.right(a)
+        return U.isNonEmpty(es) ? E.left(DE.labeled(u, es, id)) : E.right(a as any)
       }
     }
   }
@@ -386,7 +385,7 @@ export function union<A extends [unknown, ...Array<unknown>]>(
       if (E.isRight(e)) {
         return e
       }
-      const es: NonEmptyArray<DE.DecodeError> = [e.left]
+      const es: [DE.DecodeError, ...Array<DE.DecodeError>] = [e.left]
       for (let i = 1; i < members.length; i++) {
         const e = members[i].decode(u)
         if (E.isRight(e)) {

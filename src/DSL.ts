@@ -2,7 +2,7 @@
  * @since 3.0.0
  */
 import * as C from 'fp-ts/lib/Const'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
+import { NonEmpty } from './DecodeError'
 import * as R from 'fp-ts/lib/Record'
 import { Literal } from './Literal'
 import * as S from './Schemable'
@@ -22,12 +22,12 @@ export type Model =
     }
   | {
       readonly _tag: 'literals'
-      readonly values: readonly [Literal, ...Array<Literal>]
+      readonly values: NonEmpty<Literal>
       readonly id: string | undefined
     }
   | {
       readonly _tag: 'literalsOr'
-      readonly values: readonly [Literal, ...Array<Literal>]
+      readonly values: NonEmpty<Literal>
       readonly model: Model
       readonly id: string | undefined
     }
@@ -89,7 +89,7 @@ export type Model =
     }
   | {
       readonly _tag: 'union'
-      readonly models: NonEmptyArray<Model>
+      readonly models: NonEmpty<Model>
       readonly id: string | undefined
     }
   | {
