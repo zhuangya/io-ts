@@ -83,6 +83,8 @@ export function toTypeNode(model: DSL.Model): T.TypeNode<unknown> {
       return T.literalsOr(model.values, toTypeNode(model.model))
     case 'lazy':
       return T.lazy(model.id, () => toTypeNode(model.model))
+    case 'readonly':
+      return T.readonly(toTypeNode(model.model))
     case 'sum':
       return T.sum(model.tag)(
         R.record.map<DSL.Model, T.TypeNode<unknown>>(model.models, model => toTypeNode(model)) as any
@@ -133,6 +135,8 @@ export function toExpression(model: DSL.Model): E.Expression<unknown> {
       return E.literalsOr(model.values, toExpression(model.model))
     case 'lazy':
       return E.lazy(model.id, () => toExpression(model.model))
+    case 'readonly':
+      return E.readonly(toExpression(model.model))
     case 'sum':
       return E.sum(model.tag)(
         R.record.map<DSL.Model, E.Expression<unknown>>(model.models, model => toExpression(model)) as any

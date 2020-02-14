@@ -218,6 +218,15 @@ export function lazy<A>(id: string, f: () => TypeNode<A>): TypeNode<A> {
 /**
  * @since 3.0.0
  */
+export function readonly<A>(mutable: TypeNode<A>): TypeNode<Readonly<A>> {
+  return {
+    typeNode: () => C.make(ts.createTypeReferenceNode('Readonly', [mutable.typeNode()]))
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
 export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: TypeNode<A[K]> }
 ): TypeNode<A[number]> {
@@ -267,5 +276,6 @@ export const typeNode: S.Schemable<URI> & S.WithUnion<URI> = {
   intersection,
   sum,
   lazy,
+  readonly,
   union
 }

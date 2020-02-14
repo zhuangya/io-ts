@@ -94,6 +94,11 @@ export type Model =
       readonly model: Model
     }
   | {
+      readonly _tag: 'readonly'
+      readonly model: Model
+      readonly id: string | undefined
+    }
+  | {
       readonly _tag: '$ref'
       readonly id: string
     }
@@ -348,6 +353,20 @@ export function lazy<A>(id: string, f: () => DSL<A>): DSL<A> {
 /**
  * @since 3.0.0
  */
+export function readonly<A>(mutable: DSL<A>, id?: string): DSL<Readonly<A>> {
+  return {
+    dsl: lazy =>
+      C.make({
+        _tag: 'readonly',
+        model: mutable.dsl(lazy),
+        id
+      })
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
 export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: DSL<A[K]> },
   id?: string
@@ -403,5 +422,6 @@ export const dsl: S.Schemable<URI> & S.WithUnion<URI> = {
   intersection,
   sum,
   lazy,
+  readonly,
   union
 }

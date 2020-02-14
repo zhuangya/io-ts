@@ -31,6 +31,7 @@ Added in v3.0.0
 - [literalsOr](#literalsor)
 - [number](#number)
 - [partial](#partial)
+- [readonly](#readonly)
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
@@ -148,6 +149,11 @@ export type Model =
       readonly _tag: 'lazy'
       readonly id: string
       readonly model: Model
+    }
+  | {
+      readonly _tag: 'readonly'
+      readonly model: Model
+      readonly id: string | undefined
     }
   | {
       readonly _tag: '$ref'
@@ -317,6 +323,16 @@ Added in v3.0.0
 
 ```ts
 export function partial<A>(properties: { [K in keyof A]: DSL<A[K]> }, id?: string): DSL<Partial<A>> { ... }
+```
+
+Added in v3.0.0
+
+# readonly
+
+**Signature**
+
+```ts
+export function readonly<A>(mutable: DSL<A>, id?: string): DSL<Readonly<A>> { ... }
 ```
 
 Added in v3.0.0

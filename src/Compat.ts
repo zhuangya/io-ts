@@ -190,6 +190,13 @@ export function lazy<A>(id: string, f: () => Compat<A>): Compat<A> {
   return make(codec.lazy(id, f), guard.lazy(id, f))
 }
 
+/**
+ * @since 3.0.0
+ */
+export function readonly<A>(mutable: Compat<A>, id?: string): Compat<Readonly<A>> {
+  return make(codec.readonly(mutable, id), guard.readonly(mutable, id))
+}
+
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
@@ -231,6 +238,7 @@ export const compat: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI>
   intersection,
   sum,
   lazy,
+  readonly,
   refinement: refinement as S.WithRefinement<URI>['refinement'],
   union
 }

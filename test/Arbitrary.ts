@@ -145,14 +145,6 @@ describe('Arbitrary', () => {
     assert(make(S => S.sum('_tag')({ A: A(S), B: B(S) })))
   })
 
-  it('refinement', () => {
-    assertWithRefinement(makeWithRefinement(S => S.refinement(S.number, n => (n > 0 ? right(n) : left('Positive')))))
-  })
-
-  it('union', () => {
-    assertWithUnion(Sc.make(S => S.union([S.type({ a: S.string }), S.type({ b: S.number })])))
-  })
-
   it('lazy', () => {
     interface A {
       a: number
@@ -168,5 +160,17 @@ describe('Arbitrary', () => {
       )
     )
     assert(schema)
+  })
+
+  it('readonly', () => {
+    assert(make(S => S.readonly(S.type({ a: S.string }))))
+  })
+
+  it('refinement', () => {
+    assertWithRefinement(makeWithRefinement(S => S.refinement(S.number, n => (n > 0 ? right(n) : left('Positive')))))
+  })
+
+  it('union', () => {
+    assertWithUnion(Sc.make(S => S.union([S.type({ a: S.string }), S.type({ b: S.number })])))
   })
 })

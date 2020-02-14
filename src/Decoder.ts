@@ -337,6 +337,13 @@ export function lazy<A>(id: string, f: () => Decoder<A>): Decoder<A> {
 /**
  * @since 3.0.0
  */
+export function readonly<A>(mutable: Decoder<A>, id?: string): Decoder<Readonly<A>> {
+  return mapLeft(mutable, e => ({ ...e, id }))
+}
+
+/**
+ * @since 3.0.0
+ */
 export function sum<T extends string>(
   tag: T
 ): <A>(members: { [K in keyof A]: Decoder<A[K] & Record<T, K>> }, id?: string) => Decoder<A[keyof A]> {
@@ -443,6 +450,7 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
   intersection,
   sum,
   lazy,
+  readonly,
   refinement: parse,
   parse,
   union

@@ -209,6 +209,13 @@ export function lazy<A>(id: string, f: () => JsonSchema<A>): JsonSchema<A> {
 /**
  * @since 3.0.0
  */
+export function readonly<A>(mutable: JsonSchema<A>): JsonSchema<Readonly<A>> {
+  return mutable
+}
+
+/**
+ * @since 3.0.0
+ */
 export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: JsonSchema<A[K]> }
 ): JsonSchema<A[number]> {
@@ -258,5 +265,6 @@ export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = {
   intersection,
   sum,
   lazy,
+  readonly,
   union
 }

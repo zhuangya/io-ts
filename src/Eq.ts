@@ -153,6 +153,13 @@ export function lazy<A>(f: () => Eq<A>): Eq<A> {
 /**
  * @since 3.0.0
  */
+export function readonly<A>(mutable: Eq<A>): Eq<Readonly<A>> {
+  return mutable
+}
+
+/**
+ * @since 3.0.0
+ */
 export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = {
   ...E.eq,
   literal: () => eqStrict,
@@ -171,5 +178,6 @@ export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = {
   intersection,
   sum,
   lazy: (_, f) => lazy(f),
+  readonly,
   refinement: eq => eq
 }

@@ -36,6 +36,7 @@ Added in v3.0.0
 - [make](#make)
 - [number](#number)
 - [partial](#partial)
+- [readonly](#readonly)
 - [record](#record)
 - [refinement](#refinement)
 - [string](#string)
@@ -208,6 +209,16 @@ Added in v3.0.0
 
 ```ts
 export function partial<A>(properties: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> { ... }
+```
+
+Added in v3.0.0
+
+# readonly
+
+**Signature**
+
+```ts
+export function readonly<A>(mutable: Compat<A>, id?: string): Compat<Readonly<A>> { ... }
 ```
 
 Added in v3.0.0

@@ -225,6 +225,13 @@ export function lazy<A>(f: () => ArbitraryMutation<A>): ArbitraryMutation<A> {
 /**
  * @since 3.0.0
  */
+export function readonly<A>(mutable: ArbitraryMutation<A>): ArbitraryMutation<Readonly<A>> {
+  return mutable
+}
+
+/**
+ * @since 3.0.0
+ */
 export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ): ArbitraryMutation<A[number]> {
@@ -274,6 +281,7 @@ export const arbitraryMutation: S.Schemable<URI> & S.WithUnion<URI> & S.WithPars
   intersection,
   sum,
   lazy: (_, f) => lazy(f),
+  readonly,
   refinement: parse,
   parse,
   union

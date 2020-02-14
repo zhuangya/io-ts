@@ -211,6 +211,13 @@ export function lazy<A>(id: string, f: () => Codec<A>): Codec<A> {
   return make(decoder.lazy(id, f), encoder.lazy(id, f))
 }
 
+/**
+ * @since 3.0.0
+ */
+export function readonly<A>(mutable: Codec<A>, id?: string): Codec<Readonly<A>> {
+  return make(decoder.readonly(mutable, id), encoder.readonly(mutable, id))
+}
+
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
@@ -253,5 +260,6 @@ export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> =
   intersection,
   sum,
   lazy,
+  readonly,
   refinement: refinement as S.WithRefinement<URI>['refinement']
 }

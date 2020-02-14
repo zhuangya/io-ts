@@ -229,6 +229,13 @@ export function lazy<A>(f: () => Guard<A>): Guard<A> {
   }
 }
 
+/**
+ * @since 3.0.0
+ */
+export function readonly<A>(mutable: Guard<A>): Guard<Readonly<A>> {
+  return mutable
+}
+
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
@@ -270,6 +277,7 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI> 
   intersection,
   sum,
   lazy: (_, f) => lazy(f),
+  readonly,
   refinement: refinement as S.WithRefinement<URI>['refinement'],
   union
 }

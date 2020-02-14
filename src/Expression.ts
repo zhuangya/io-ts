@@ -253,6 +253,16 @@ export function lazy<A>(id: string, f: () => Expression<A>): Expression<A> {
 /**
  * @since 3.0.0
  */
+export function readonly<A>(mutable: Expression<A>): Expression<Readonly<A>> {
+  return {
+    expression: () =>
+      C.make(ts.createCall(ts.createPropertyAccess(schemable, 'readonly'), undefined, [mutable.expression()]))
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
 export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: Expression<A[K]> }
 ): Expression<A[number]> {
@@ -307,5 +317,6 @@ export const expression: S.Schemable<URI> & S.WithUnion<URI> = {
   intersection,
   sum,
   lazy,
+  readonly,
   union
 }

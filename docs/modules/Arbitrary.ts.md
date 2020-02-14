@@ -28,6 +28,7 @@ Added in v3.0.0
 - [number](#number)
 - [parse](#parse)
 - [partial](#partial)
+- [readonly](#readonly)
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
@@ -193,6 +194,16 @@ Added in v3.0.0
 
 ```ts
 export function partial<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<Partial<A>> { ... }
+```
+
+Added in v3.0.0
+
+# readonly
+
+**Signature**
+
+```ts
+export function readonly<A>(mutable: Arbitrary<A>): Arbitrary<Readonly<A>> { ... }
 ```
 
 Added in v3.0.0
