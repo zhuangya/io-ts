@@ -37,7 +37,7 @@ export type TypeOf<D> = D extends Decoder<infer A> ? A : never
  */
 export function fromGuard<A>(guard: G.Guard<A>, id?: string, message?: (u: unknown) => string): Decoder<A> {
   return {
-    decode: E.fromPredicate(guard.is, u => DE.leaf(u, id, message ? message(u) : undefined))
+    decode: u => (guard.is(u) ? E.right(u) : E.left(DE.leaf(u, id, message ? message(u) : undefined)))
   }
 }
 
