@@ -53,6 +53,13 @@ export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A
 /**
  * @since 3.0.0
  */
+export const never: Guard<never> = {
+  is: (_u): _u is never => false
+}
+
+/**
+ * @since 3.0.0
+ */
 export const string: Guard<string> = {
   is: (u: unknown): u is string => typeof u === 'string'
 }

@@ -75,9 +75,7 @@ export function literalsOr<A extends Literal, B>(
 /**
  * @since 3.0.0
  */
-export const never: Decoder<never> = {
-  decode: u => E.left(DE.leaf(u, 'never'))
-}
+export const never: Decoder<never> = fromGuard(G.never, 'never')
 
 /**
  * @since 3.0.0

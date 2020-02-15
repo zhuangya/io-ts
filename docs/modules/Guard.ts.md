@@ -25,6 +25,7 @@ Added in v3.0.0
 - [literal](#literal)
 - [literals](#literals)
 - [literalsOr](#literalsor)
+- [never](#never)
 - [number](#number)
 - [partial](#partial)
 - [readonly](#readonly)
@@ -166,6 +167,16 @@ Added in v3.0.0
 
 ```ts
 export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Guard<B>): Guard<A | B> { ... }
+```
+
+Added in v3.0.0
+
+# never
+
+**Signature**
+
+```ts
+export const never: Guard<never> = ...
 ```
 
 Added in v3.0.0
