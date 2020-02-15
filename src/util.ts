@@ -6,7 +6,7 @@ import { Eq, strictEqual } from 'fp-ts/lib/Eq'
 /**
  * @internal
  */
-export function isNonEmpty<A>(as: Array<A>): as is [A, ...Array<A>] {
+export function isNonEmpty<A>(as: ReadonlyArray<A>): as is ReadonlyNonEmptyTuple<A> {
   return as.length > 0
 }
 
