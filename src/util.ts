@@ -6,13 +6,6 @@ import { Eq, strictEqual } from 'fp-ts/lib/Eq'
 /**
  * @internal
  */
-export function isNonEmpty<A>(as: ReadonlyArray<A>): as is ReadonlyNonEmptyTuple<A> {
-  return as.length > 0
-}
-
-/**
- * @internal
- */
 export function hasOwnProperty<O extends object>(o: O, k: string): k is keyof O & string {
   return Object.prototype.hasOwnProperty.call(o, k)
 }
@@ -49,6 +42,13 @@ export type ReadonlyNonEmptyTuple<A> = readonly [A, ...ReadonlyArray<A>]
 
 /**
  * @internal
+ */
+export function map<A, B>(ne: ReadonlyNonEmptyTuple<A>, f: (a: A) => B): ReadonlyNonEmptyTuple<B> {
+  return [f(ne[0]), ...ne.slice(1).map(f)]
+}
+
+/**
+ * @internal
  * @since 3.0.0
  */
 export interface ReadonlyNonEmptyArray<A> extends ReadonlyArray<A> {
@@ -58,6 +58,6 @@ export interface ReadonlyNonEmptyArray<A> extends ReadonlyArray<A> {
 /**
  * @internal
  */
-export function map<A, B>(ne: ReadonlyNonEmptyTuple<A>, f: (a: A) => B): ReadonlyNonEmptyTuple<B> {
-  return [f(ne[0]), ...ne.slice(1).map(f)]
+export function isNonEmpty<A>(as: ReadonlyArray<A>): as is ReadonlyNonEmptyArray<A> {
+  return as.length > 0
 }

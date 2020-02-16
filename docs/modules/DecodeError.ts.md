@@ -18,8 +18,6 @@ Added in v3.0.0
 - [Leaf (interface)](#leaf-interface)
 - [Or (interface)](#or-interface)
 - [DecodeError (type alias)](#decodeerror-type-alias)
-- [IndexedError (type alias)](#indexederror-type-alias)
-- [LabeledError (type alias)](#labelederror-type-alias)
 - [and](#and)
 - [indexed](#indexed)
 - [labeled](#labeled)
@@ -52,7 +50,7 @@ Added in v3.0.0
 export interface Indexed {
   readonly _tag: 'Indexed'
   readonly actual: unknown
-  readonly errors: ReadonlyNonEmptyArray<IndexedError>
+  readonly errors: ReadonlyNonEmptyArray<readonly [number, DecodeError]>
   readonly id: string | undefined
   readonly message: string | undefined
 }
@@ -68,7 +66,7 @@ Added in v3.0.0
 export interface Labeled {
   readonly _tag: 'Labeled'
   readonly actual: unknown
-  readonly errors: ReadonlyNonEmptyArray<LabeledError>
+  readonly errors: ReadonlyNonEmptyArray<readonly [string, DecodeError]>
   readonly id: string | undefined
   readonly message: string | undefined
 }
@@ -117,26 +115,6 @@ export type DecodeError = Leaf | And | Or | Indexed | Labeled
 
 Added in v3.0.0
 
-# IndexedError (type alias)
-
-**Signature**
-
-```ts
-export type IndexedError = readonly [number, DecodeError]
-```
-
-Added in v3.0.0
-
-# LabeledError (type alias)
-
-**Signature**
-
-```ts
-export type LabeledError = readonly [string, DecodeError]
-```
-
-Added in v3.0.0
-
 # and
 
 **Signature**
@@ -159,7 +137,7 @@ Added in v3.0.0
 ```ts
 export function indexed(
   actual: unknown,
-  errors: ReadonlyNonEmptyArray<IndexedError>,
+  errors: ReadonlyNonEmptyArray<readonly [number, DecodeError]>,
   id?: string,
   message?: string
 ): DecodeError { ... }
@@ -174,7 +152,7 @@ Added in v3.0.0
 ```ts
 export function labeled(
   actual: unknown,
-  errors: ReadonlyNonEmptyArray<LabeledError>,
+  errors: ReadonlyNonEmptyArray<readonly [string, DecodeError]>,
   id?: string,
   message?: string
 ): DecodeError { ... }

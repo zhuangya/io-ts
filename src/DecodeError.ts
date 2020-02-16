@@ -6,20 +6,10 @@ import { ReadonlyNonEmptyArray } from './util'
 /**
  * @since 3.0.0
  */
-export type IndexedError = readonly [number, DecodeError]
-
-/**
- * @since 3.0.0
- */
-export type LabeledError = readonly [string, DecodeError]
-
-/**
- * @since 3.0.0
- */
 export interface Indexed {
   readonly _tag: 'Indexed'
   readonly actual: unknown
-  readonly errors: ReadonlyNonEmptyArray<IndexedError>
+  readonly errors: ReadonlyNonEmptyArray<readonly [number, DecodeError]>
   readonly id: string | undefined
   readonly message: string | undefined
 }
@@ -29,7 +19,7 @@ export interface Indexed {
  */
 export function indexed(
   actual: unknown,
-  errors: ReadonlyNonEmptyArray<IndexedError>,
+  errors: ReadonlyNonEmptyArray<readonly [number, DecodeError]>,
   id?: string,
   message?: string
 ): DecodeError {
@@ -42,7 +32,7 @@ export function indexed(
 export interface Labeled {
   readonly _tag: 'Labeled'
   readonly actual: unknown
-  readonly errors: ReadonlyNonEmptyArray<LabeledError>
+  readonly errors: ReadonlyNonEmptyArray<readonly [string, DecodeError]>
   readonly id: string | undefined
   readonly message: string | undefined
 }
@@ -52,7 +42,7 @@ export interface Labeled {
  */
 export function labeled(
   actual: unknown,
-  errors: ReadonlyNonEmptyArray<LabeledError>,
+  errors: ReadonlyNonEmptyArray<readonly [string, DecodeError]>,
   id?: string,
   message?: string
 ): DecodeError {
