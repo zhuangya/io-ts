@@ -54,7 +54,6 @@ export function labeled(
  */
 export interface And {
   readonly _tag: 'And'
-  readonly actual: unknown
   readonly errors: ReadonlyNonEmptyArray<DecodeError>
   readonly id: string | undefined
   readonly message: string | undefined
@@ -63,36 +62,8 @@ export interface And {
 /**
  * @since 3.0.0
  */
-export function and(
-  actual: unknown,
-  errors: ReadonlyNonEmptyArray<DecodeError>,
-  id?: string,
-  message?: string
-): DecodeError {
-  return { _tag: 'And', actual, errors, id, message }
-}
-
-/**
- * @since 3.0.0
- */
-export interface Or {
-  readonly _tag: 'Or'
-  readonly actual: unknown
-  readonly errors: ReadonlyNonEmptyArray<DecodeError>
-  readonly id: string | undefined
-  readonly message: string | undefined
-}
-
-/**
- * @since 3.0.0
- */
-export function or(
-  actual: unknown,
-  errors: ReadonlyNonEmptyArray<DecodeError>,
-  id?: string,
-  message?: string
-): DecodeError {
-  return { _tag: 'Or', actual, errors, id, message }
+export function and(errors: ReadonlyNonEmptyArray<DecodeError>, id?: string, message?: string): DecodeError {
+  return { _tag: 'And', errors, id, message }
 }
 
 /**
@@ -120,4 +91,4 @@ export function leaf(actual: unknown, id?: string, message?: string): DecodeErro
 /**
  * @since 3.0.0
  */
-export type DecodeError = Leaf | And | Or | Indexed | Labeled
+export type DecodeError = Leaf | And | Indexed | Labeled

@@ -64,10 +64,7 @@ describe('Decoder', () => {
 
     it('should reject an invalid input', () => {
       const decoder = D.union([D.string, D.number])
-      assert.deepStrictEqual(
-        decoder.decode(true),
-        E.left(DE.or(true, [DE.leaf(true, 'string'), DE.leaf(true, 'number')]))
-      )
+      assert.deepStrictEqual(decoder.decode(true), E.left(DE.and([DE.leaf(true, 'string'), DE.leaf(true, 'number')])))
     })
   })
 })

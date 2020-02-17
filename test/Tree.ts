@@ -18,7 +18,7 @@ describe('Tree', () => {
     const decoder = D.literalsOr(['a', 1], D.type({ a: D.string, b: D.number }))
     assertTree(
       decoder.decode(null),
-      `Cannot decode null, all the following conditions are not met
+      `All the following conditions are not met:
 ├─ Cannot decode null, expected "a" | 1
 └─ Cannot decode null, expected Record<string, unknown>`
     )
@@ -100,7 +100,7 @@ describe('Tree', () => {
     const decoder = D.intersection(D.type({ a: D.string }), D.type({ b: D.number }))
     assertTree(
       decoder.decode({}),
-      `Cannot decode {}, some of the following conditions are not met
+      `All the following conditions are not met:
 ├─ Cannot decode {}
 │  └─ ("a") Cannot decode undefined, expected string
 └─ Cannot decode {}
@@ -129,7 +129,7 @@ describe('Tree', () => {
     const decoder = D.union([D.string, D.number, D.boolean])
     assertTree(
       decoder.decode(null),
-      `Cannot decode null, all the following conditions are not met
+      `All the following conditions are not met:
 ├─ Cannot decode null, expected string
 ├─ Cannot decode null, expected number
 └─ Cannot decode null, expected boolean`
@@ -152,13 +152,29 @@ describe('Tree', () => {
     assertTree(
       decoder.decode({ a: 1, b: {} }),
       `Cannot decode {"a":1,"b":{}}, expected A
-└─ ("b") Cannot decode {}, all the following conditions are not met
+└─ ("b") All the following conditions are not met:
    ├─ Cannot decode {}, expected null
    └─ Cannot decode {}, expected A
       ├─ ("a") Cannot decode undefined, expected number
-      └─ ("b") Cannot decode undefined, all the following conditions are not met
+      └─ ("b") All the following conditions are not met:
          ├─ Cannot decode undefined, expected null
          └─ Cannot decode undefined, expected A`
+    )
+  })
+
+  it('And', () => {
+    const decoder = D.union([D.string, D.number], 'MyUnion')
+    assertTree(
+      decoder.decode(null),
+      `All the following conditions are not met while decoding to MyUnion:
+├─ Cannot decode null, expected string
+└─ Cannot decode null, expected number`
+    )
+    assertTree(
+      D.withMessage(decoder, () => 'Cannot decode').decode(null),
+      `Cannot decode
+├─ Cannot decode null, expected string
+└─ Cannot decode null, expected number`
     )
   })
 })

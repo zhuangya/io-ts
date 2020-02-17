@@ -306,12 +306,12 @@ export function intersection<A, B>(left: Decoder<A>, right: Decoder<B>, id?: str
       const eb = right.decode(u)
       if (E.isLeft(ea)) {
         if (E.isLeft(eb)) {
-          return E.left(DE.and(u, [ea.left, eb.left], id))
+          return E.left(DE.and([ea.left, eb.left], id))
         }
-        return E.left(DE.and(u, [ea.left], id))
+        return E.left(DE.and([ea.left], id))
       } else {
         if (E.isLeft(eb)) {
-          return E.left(DE.and(u, [eb.left], id))
+          return E.left(DE.and([eb.left], id))
         }
         return E.right(U.intersect(ea.right, eb.right))
       }
@@ -389,7 +389,7 @@ export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
           es.push(e.left)
         }
       }
-      return E.left(DE.or(u, es, id))
+      return E.left(DE.and(es, id))
     }
   }
 }

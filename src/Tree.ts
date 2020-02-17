@@ -6,11 +6,11 @@ import { flow } from 'fp-ts/lib/function'
 import { drawTree, make, Tree } from 'fp-ts/lib/Tree'
 import { DecodeError } from './DecodeError'
 
-function value(e: DecodeError): string {
-  if (e.message) {
-    return e.message
+function title(actual: unknown, id: string | undefined, message: string | undefined) {
+  if (message) {
+    return message
   }
-  return `Cannot decode ${JSON.stringify(e.actual)}` + (e.id ? `, expected ${e.id}` : '')
+  return `Cannot decode ${JSON.stringify(actual)}` + (id ? `, expected ${id}` : '')
 }
 
 /**
@@ -19,10 +19,10 @@ function value(e: DecodeError): string {
 export function toTree(e: DecodeError): Tree<string> {
   switch (e._tag) {
     case 'Leaf':
-      return make(value(e))
+      return make(title(e.actual, e.id, e.message))
     case 'Indexed':
       return make(
-        value(e),
+        title(e.actual, e.id, e.message),
         e.errors.map(([i, e]) => {
           const t = toTree(e)
           return { ...t, value: `(${i}) ${t.value}` }
@@ -30,16 +30,19 @@ export function toTree(e: DecodeError): Tree<string> {
       )
     case 'Labeled':
       return make(
-        value(e),
+        title(e.actual, e.id, e.message),
         e.errors.map(([k, e]) => {
           const t = toTree(e)
           return { ...t, value: `(${JSON.stringify(k)}) ${t.value}` }
         })
       )
     case 'And':
-      return make(value(e) + ', some of the following conditions are not met', e.errors.map(toTree))
-    case 'Or':
-      return make(value(e) + ', all the following conditions are not met', e.errors.map(toTree))
+      return make(
+        e.message
+          ? e.message
+          : `All the following conditions are not met` + (e.id ? ` while decoding to ${e.id}` : '') + ':',
+        e.errors.map(toTree)
+      )
   }
 }
 

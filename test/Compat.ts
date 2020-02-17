@@ -139,12 +139,12 @@ describe('Compat', () => {
         const codec = C.literalsOr(['a', null], NumberFromString)
         assert.deepStrictEqual(
           codec.decode(2),
-          left(DE.or(2, [DE.leaf(2, undefined, 'Cannot decode 2, expected "a" | null'), DE.leaf(2, 'string')]))
+          left(DE.and([DE.leaf(2, undefined, 'Cannot decode 2, expected "a" | null'), DE.leaf(2, 'string')]))
         )
         assert.deepStrictEqual(
           codec.decode('b'),
           left(
-            DE.or('b', [
+            DE.and([
               DE.leaf('b', undefined, 'Cannot decode "b", expected "a" | null'),
               DE.leaf('b', 'NumberFromString', 'not a number')
             ])
@@ -381,11 +381,11 @@ describe('Compat', () => {
         const codec = C.intersection(C.type({ a: C.string }), C.type({ b: C.number }))
         assert.deepStrictEqual(
           codec.decode({ a: 'a' }),
-          left(DE.and({ a: 'a' }, [DE.labeled({ a: 'a' }, [['b', DE.leaf(undefined, 'number')]])]))
+          left(DE.and([DE.labeled({ a: 'a' }, [['b', DE.leaf(undefined, 'number')]])]))
         )
         assert.deepStrictEqual(
           codec.decode({ b: 1 }),
-          left(DE.and({ b: 1 }, [DE.labeled({ b: 1 }, [['a', DE.leaf(undefined, 'string')]])]))
+          left(DE.and([DE.labeled({ b: 1 }, [['a', DE.leaf(undefined, 'string')]])]))
         )
       })
     })
