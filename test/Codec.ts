@@ -27,11 +27,11 @@ describe('Codec', () => {
     })
   })
 
-  describe('withMessage', () => {
+  describe('withExpected', () => {
     describe('decode', () => {
-      it('should, return the provided name', () => {
-        const codec = C.withMessage(C.number, () => 'please insert a number')
-        assert.deepStrictEqual(codec.decode('a'), left(DE.leaf('a', 'number', 'please insert a number')))
+      it('should, return the provided expected', () => {
+        const codec = C.withExpected(C.number, () => 'a number')
+        assert.deepStrictEqual(codec.decode('a'), left(DE.leaf('a', 'a number')))
       })
     })
   })

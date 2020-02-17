@@ -45,7 +45,7 @@
 import { Either } from 'fp-ts/lib/Either'
 import { Invariant1 } from 'fp-ts/lib/Invariant'
 import * as DE from './DecodeError'
-import { Decoder, decoder, withMessage as withMessageD } from './Decoder'
+import { Decoder, decoder, withExpected as withExpectedD } from './Decoder'
 import { Encoder, encoder } from './Encoder'
 import { Literal } from './Literal'
 import * as S from './Schemable'
@@ -140,8 +140,8 @@ export const UnknownRecord: Codec<Record<string, unknown>> = make(decoder.Unknow
 /**
  * @since 3.0.0
  */
-export function withMessage<A>(codec: Codec<A>, message: (e: DE.DecodeError) => string): Codec<A> {
-  return make(withMessageD(codec, message), codec)
+export function withExpected<A>(codec: Codec<A>, message: (e: DE.DecodeError) => string): Codec<A> {
+  return make(withExpectedD(codec, message), codec)
 }
 
 /**

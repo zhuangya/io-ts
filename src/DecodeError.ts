@@ -10,8 +10,7 @@ export interface Indexed {
   readonly _tag: 'Indexed'
   readonly actual: unknown
   readonly errors: ReadonlyNonEmptyArray<readonly [number, DecodeError]>
-  readonly id: string | undefined
-  readonly message: string | undefined
+  readonly expected: string | undefined
 }
 
 /**
@@ -20,10 +19,9 @@ export interface Indexed {
 export function indexed(
   actual: unknown,
   errors: ReadonlyNonEmptyArray<readonly [number, DecodeError]>,
-  id?: string,
-  message?: string
+  expected?: string
 ): DecodeError {
-  return { _tag: 'Indexed', actual, errors, id, message }
+  return { _tag: 'Indexed', actual, errors, expected }
 }
 
 /**
@@ -33,8 +31,7 @@ export interface Labeled {
   readonly _tag: 'Labeled'
   readonly actual: unknown
   readonly errors: ReadonlyNonEmptyArray<readonly [string, DecodeError]>
-  readonly id: string | undefined
-  readonly message: string | undefined
+  readonly expected: string | undefined
 }
 
 /**
@@ -43,10 +40,9 @@ export interface Labeled {
 export function labeled(
   actual: unknown,
   errors: ReadonlyNonEmptyArray<readonly [string, DecodeError]>,
-  id?: string,
-  message?: string
+  expected?: string
 ): DecodeError {
-  return { _tag: 'Labeled', actual, errors, id, message }
+  return { _tag: 'Labeled', actual, errors, expected }
 }
 
 /**
@@ -55,15 +51,14 @@ export function labeled(
 export interface And {
   readonly _tag: 'And'
   readonly errors: ReadonlyNonEmptyArray<DecodeError>
-  readonly id: string | undefined
-  readonly message: string | undefined
+  readonly expected: string | undefined
 }
 
 /**
  * @since 3.0.0
  */
-export function and(errors: ReadonlyNonEmptyArray<DecodeError>, id?: string, message?: string): DecodeError {
-  return { _tag: 'And', errors, id, message }
+export function and(errors: ReadonlyNonEmptyArray<DecodeError>, expected?: string): DecodeError {
+  return { _tag: 'And', errors, expected }
 }
 
 /**
@@ -72,19 +67,17 @@ export function and(errors: ReadonlyNonEmptyArray<DecodeError>, id?: string, mes
 export interface Leaf {
   readonly _tag: 'Leaf'
   readonly actual: unknown
-  readonly id: string | undefined
-  readonly message: string | undefined
+  readonly expected: string | undefined
 }
 
 /**
  * @since 3.0.0
  */
-export function leaf(actual: unknown, id?: string, message?: string): DecodeError {
+export function leaf(actual: unknown, expected?: string): DecodeError {
   return {
     _tag: 'Leaf',
     actual,
-    id,
-    message
+    expected
   }
 }
 

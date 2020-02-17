@@ -116,7 +116,7 @@ describe('Tree', () => {
     assertTree(
       decoder.decode({}),
       `Cannot decode {}
-└─ ("_tag") "A" | "B"`
+└─ ("_tag") Cannot decode undefined, expected "A" | "B"`
     )
     assertTree(
       decoder.decode({ _tag: 'A' }),
@@ -167,12 +167,6 @@ describe('Tree', () => {
     assertTree(
       decoder.decode(null),
       `All the following conditions are not met while decoding to MyUnion:
-├─ Cannot decode null, expected string
-└─ Cannot decode null, expected number`
-    )
-    assertTree(
-      D.withMessage(decoder, () => 'Cannot decode').decode(null),
-      `Cannot decode
 ├─ Cannot decode null, expected string
 └─ Cannot decode null, expected number`
     )

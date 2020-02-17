@@ -8,14 +8,10 @@ import * as DE from '../src/DecodeError'
 
 const NumberFromString: C.Compat<number> = C.make(
   Co.make(
-    D.parse(
-      D.string,
-      s => {
-        const n = parseFloat(s)
-        return isNaN(n) ? left('not a number') : right(n)
-      },
-      'NumberFromString'
-    ),
+    D.parse(D.string, s => {
+      const n = parseFloat(s)
+      return isNaN(n) ? left('NumberFromString') : right(n)
+    }),
     { encode: String }
   ),
   G.number
@@ -88,7 +84,7 @@ describe('Compat', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.literal('a')
-        assert.deepStrictEqual(codec.decode('b'), left(DE.leaf('b', undefined, 'Cannot decode "b", expected "a"')))
+        assert.deepStrictEqual(codec.decode('b'), left(DE.leaf('b', '"a"')))
       })
     })
 
@@ -110,10 +106,7 @@ describe('Compat', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.literals(['a', null])
-        assert.deepStrictEqual(
-          codec.decode('b'),
-          left(DE.leaf('b', undefined, 'Cannot decode "b", expected "a" | null'))
-        )
+        assert.deepStrictEqual(codec.decode('b'), left(DE.leaf('b', '"a" | null')))
       })
     })
 
@@ -137,18 +130,10 @@ describe('Compat', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.literalsOr(['a', null], NumberFromString)
-        assert.deepStrictEqual(
-          codec.decode(2),
-          left(DE.and([DE.leaf(2, undefined, 'Cannot decode 2, expected "a" | null'), DE.leaf(2, 'string')]))
-        )
+        assert.deepStrictEqual(codec.decode(2), left(DE.and([DE.leaf(2, '"a" | null'), DE.leaf(2, 'string')])))
         assert.deepStrictEqual(
           codec.decode('b'),
-          left(
-            DE.and([
-              DE.leaf('b', undefined, 'Cannot decode "b", expected "a" | null'),
-              DE.leaf('b', 'NumberFromString', 'not a number')
-            ])
-          )
+          left(DE.and([DE.leaf('b', '"a" | null'), DE.leaf('b', 'NumberFromString')]))
         )
       })
     })
@@ -166,20 +151,20 @@ describe('Compat', () => {
   describe('refinement', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.refinement(C.string, s => (s.length > 0 ? right(s) : left('please entere a non empty string')))
+        const codec = C.refinement(C.string, s => (s.length > 0 ? right(s) : left('please enter a non empty string')))
         assert.deepStrictEqual(codec.decode('a'), right('a'))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.refinement(C.string, s => (s.length > 0 ? right(s) : left('please entere a non empty string')))
+        const codec = C.refinement(C.string, s => (s.length > 0 ? right(s) : left('please enter a non empty string')))
         assert.deepStrictEqual(codec.decode(undefined), left(DE.leaf(undefined, 'string')))
-        assert.deepStrictEqual(codec.decode(''), left(DE.leaf('', undefined, 'please entere a non empty string')))
+        assert.deepStrictEqual(codec.decode(''), left(DE.leaf('', 'please enter a non empty string')))
       })
     })
 
     describe('encode', () => {
       it('should encode a value', () => {
-        const codec = C.refinement(C.string, s => (s.length > 0 ? right(s) : left('please entere a non empty string')))
+        const codec = C.refinement(C.string, s => (s.length > 0 ? right(s) : left('please enter a non empty string')))
         assert.strictEqual(codec.encode('a'), 'a')
       })
     })
@@ -420,10 +405,7 @@ describe('Compat', () => {
         const B = C.type({ _tag: C.literal('B'), b: C.number })
         const codec = sum({ A, B })
         assert.deepStrictEqual(codec.decode(null), left(DE.leaf(null, 'Record<string, unknown>')))
-        assert.deepStrictEqual(
-          codec.decode({}),
-          left(DE.labeled({}, [['_tag', DE.leaf(undefined, undefined, '"A" | "B"')]]))
-        )
+        assert.deepStrictEqual(codec.decode({}), left(DE.labeled({}, [['_tag', DE.leaf(undefined, '"A" | "B"')]])))
         assert.deepStrictEqual(
           codec.decode({ _tag: 'A', a: 1 }),
           left(DE.labeled({ _tag: 'A', a: 1 }, [['a', DE.leaf(1, 'string')]]))
@@ -473,7 +455,7 @@ describe('Compat', () => {
         )
         assert.deepStrictEqual(
           codec.decode({ a: 'a', b: null }),
-          left(DE.labeled({ a: 'a', b: null }, [['a', DE.leaf('a', 'NumberFromString', 'not a number')]], 'A'))
+          left(DE.labeled({ a: 'a', b: null }, [['a', DE.leaf('a', 'NumberFromString')]], 'A'))
         )
       })
     })

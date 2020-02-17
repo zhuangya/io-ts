@@ -80,7 +80,7 @@ Added in v3.0.0
 - [sum](#sum)
 - [tuple](#tuple)
 - [type](#type)
-- [withMessage](#withmessage)
+- [withExpected](#withexpected)
 
 ---
 
@@ -325,12 +325,12 @@ export function type<A>(properties: { [K in keyof A]: Codec<A[K]> }, id?: string
 
 Added in v3.0.0
 
-# withMessage
+# withExpected
 
 **Signature**
 
 ```ts
-export function withMessage<A>(codec: Codec<A>, message: (e: DE.DecodeError) => string): Codec<A> { ... }
+export function withExpected<A>(codec: Codec<A>, message: (e: DE.DecodeError) => string): Codec<A> { ... }
 ```
 
 Added in v3.0.0

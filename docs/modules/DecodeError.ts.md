@@ -32,8 +32,7 @@ Added in v3.0.0
 export interface And {
   readonly _tag: 'And'
   readonly errors: ReadonlyNonEmptyArray<DecodeError>
-  readonly id: string | undefined
-  readonly message: string | undefined
+  readonly expected: string | undefined
 }
 ```
 
@@ -48,8 +47,7 @@ export interface Indexed {
   readonly _tag: 'Indexed'
   readonly actual: unknown
   readonly errors: ReadonlyNonEmptyArray<readonly [number, DecodeError]>
-  readonly id: string | undefined
-  readonly message: string | undefined
+  readonly expected: string | undefined
 }
 ```
 
@@ -64,8 +62,7 @@ export interface Labeled {
   readonly _tag: 'Labeled'
   readonly actual: unknown
   readonly errors: ReadonlyNonEmptyArray<readonly [string, DecodeError]>
-  readonly id: string | undefined
-  readonly message: string | undefined
+  readonly expected: string | undefined
 }
 ```
 
@@ -79,8 +76,7 @@ Added in v3.0.0
 export interface Leaf {
   readonly _tag: 'Leaf'
   readonly actual: unknown
-  readonly id: string | undefined
-  readonly message: string | undefined
+  readonly expected: string | undefined
 }
 ```
 
@@ -101,7 +97,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function and(errors: ReadonlyNonEmptyArray<DecodeError>, id?: string, message?: string): DecodeError { ... }
+export function and(errors: ReadonlyNonEmptyArray<DecodeError>, expected?: string): DecodeError { ... }
 ```
 
 Added in v3.0.0
@@ -114,8 +110,7 @@ Added in v3.0.0
 export function indexed(
   actual: unknown,
   errors: ReadonlyNonEmptyArray<readonly [number, DecodeError]>,
-  id?: string,
-  message?: string
+  expected?: string
 ): DecodeError { ... }
 ```
 
@@ -129,8 +124,7 @@ Added in v3.0.0
 export function labeled(
   actual: unknown,
   errors: ReadonlyNonEmptyArray<readonly [string, DecodeError]>,
-  id?: string,
-  message?: string
+  expected?: string
 ): DecodeError { ... }
 ```
 
@@ -141,7 +135,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function leaf(actual: unknown, id?: string, message?: string): DecodeError { ... }
+export function leaf(actual: unknown, expected?: string): DecodeError { ... }
 ```
 
 Added in v3.0.0

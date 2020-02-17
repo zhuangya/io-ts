@@ -35,9 +35,9 @@ export type TypeOf<D> = D extends Decoder<infer A> ? A : never
 /**
  * @since 3.0.0
  */
-export function fromGuard<A>(guard: G.Guard<A>, id?: string, message?: (u: unknown) => string): Decoder<A> {
+export function fromGuard<A>(guard: G.Guard<A>, expected?: string): Decoder<A> {
   return {
-    decode: u => (guard.is(u) ? E.right(u) : E.left(DE.leaf(u, id, message ? message(u) : undefined)))
+    decode: u => (guard.is(u) ? E.right(u) : E.left(DE.leaf(u, expected)))
   }
 }
 
@@ -46,7 +46,7 @@ export function fromGuard<A>(guard: G.Guard<A>, id?: string, message?: (u: unkno
  */
 export function literal<A extends Literal>(value: A, id?: string): Decoder<A> {
   const expected = id ? id : JSON.stringify(value)
-  return fromGuard(G.literal(value), id, u => `Cannot decode ${JSON.stringify(u)}, expected ${expected}`)
+  return fromGuard(G.literal(value), expected)
 }
 
 /**
@@ -54,7 +54,7 @@ export function literal<A extends Literal>(value: A, id?: string): Decoder<A> {
  */
 export function literals<A extends Literal>(values: U.ReadonlyNonEmptyArray<A>, id?: string): Decoder<A> {
   const expected = id ? id : values.map(value => JSON.stringify(value)).join(' | ')
-  return fromGuard(G.literals(values), id, u => `Cannot decode ${JSON.stringify(u)}, expected ${expected}`)
+  return fromGuard(G.literals(values), expected)
 }
 
 /**
@@ -118,14 +118,14 @@ export function mapLeft<A>(decoder: Decoder<A>, f: (e: DE.DecodeError) => DE.Dec
 /**
  * @since 3.0.0
  */
-export function withMessage<A>(decoder: Decoder<A>, message: (e: DE.DecodeError) => string): Decoder<A> {
-  return mapLeft(decoder, e => ({ ...e, message: message(e) }))
+export function withExpected<A>(decoder: Decoder<A>, message: (e: DE.DecodeError) => string): Decoder<A> {
+  return mapLeft(decoder, e => ({ ...e, expected: message(e) }))
 }
 
 /**
  * @since 3.0.0
  */
-export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string, B>, id?: string): Decoder<B> {
+export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string, B>, _id?: string): Decoder<B> {
   return {
     decode: u => {
       const e = from.decode(u)
@@ -134,7 +134,7 @@ export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string,
       }
       const pe = parser(e.right)
       if (E.isLeft(pe)) {
-        return E.left(DE.leaf(u, id, pe.left))
+        return E.left(DE.leaf(u, pe.left))
       }
       return pe
     }
@@ -328,7 +328,7 @@ export function lazy<A>(id: string, f: () => Decoder<A>): Decoder<A> {
     {
       decode: u => get().decode(u)
     },
-    e => ({ ...e, id })
+    e => ({ ...e, expected: id })
   )
 }
 
@@ -350,7 +350,7 @@ export function sum<T extends string>(
     if (keys.length === 0) {
       return never
     }
-    const message = keys.map(k => JSON.stringify(k)).join(' | ')
+    const expected = keys.map(k => JSON.stringify(k)).join(' | ')
     return {
       decode: u => {
         const e = UnknownRecord.decode(u)
@@ -361,7 +361,7 @@ export function sum<T extends string>(
         if (typeof v === 'string' && U.hasOwnProperty(members, v)) {
           return members[v].decode(u)
         }
-        return E.left(DE.labeled(u, [[tag, DE.leaf(v, undefined, message)]], id))
+        return E.left(DE.labeled(u, [[tag, DE.leaf(v, expected)]], id))
       }
     }
   }

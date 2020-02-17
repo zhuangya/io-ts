@@ -44,7 +44,7 @@ Added in v3.0.0
 - [tuple](#tuple)
 - [type](#type)
 - [union](#union)
-- [withMessage](#withmessage)
+- [withExpected](#withexpected)
 
 ---
 
@@ -185,7 +185,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function fromGuard<A>(guard: G.Guard<A>, id?: string, message?: (u: unknown) => string): Decoder<A> { ... }
+export function fromGuard<A>(guard: G.Guard<A>, expected?: string): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -289,7 +289,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string, B>, id?: string): Decoder<B> { ... }
+export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string, B>, _id?: string): Decoder<B> { ... }
 ```
 
 Added in v3.0.0
@@ -379,12 +379,12 @@ export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
 
 Added in v3.0.0
 
-# withMessage
+# withExpected
 
 **Signature**
 
 ```ts
-export function withMessage<A>(decoder: Decoder<A>, message: (e: DE.DecodeError) => string): Decoder<A> { ... }
+export function withExpected<A>(decoder: Decoder<A>, message: (e: DE.DecodeError) => string): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
