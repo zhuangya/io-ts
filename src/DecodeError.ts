@@ -1,7 +1,8 @@
 /**
  * @since 3.0.0
  */
-import { ReadonlyNonEmptyArray } from './util'
+import { ReadonlyNonEmptyArray, concat } from './util'
+import { Semigroup } from 'fp-ts/lib/Semigroup'
 
 /**
  * @since 3.0.0
@@ -85,3 +86,14 @@ export function leaf(actual: unknown, expected?: string): DecodeError {
  * @since 3.0.0
  */
 export type DecodeError = Leaf | And | Indexed | Labeled
+
+/**
+ * @since 3.0.0
+ */
+export const semigroupDecodeError: Semigroup<DecodeError> = {
+  concat: (x, y) => and(concat(toArray(x), toArray(y)))
+}
+
+function toArray(e: DecodeError): ReadonlyNonEmptyArray<DecodeError> {
+  return e._tag === 'And' && e.expected === undefined ? e.errors : [e]
+}

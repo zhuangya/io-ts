@@ -21,6 +21,7 @@ Added in v3.0.0
 - [indexed](#indexed)
 - [labeled](#labeled)
 - [leaf](#leaf)
+- [semigroupDecodeError](#semigroupdecodeerror)
 
 ---
 
@@ -136,6 +137,16 @@ Added in v3.0.0
 
 ```ts
 export function leaf(actual: unknown, expected?: string): DecodeError { ... }
+```
+
+Added in v3.0.0
+
+# semigroupDecodeError
+
+**Signature**
+
+```ts
+export const semigroupDecodeError: Semigroup<DecodeError> = ...
 ```
 
 Added in v3.0.0

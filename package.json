@@ -54,7 +54,7 @@
     "doctoc": "^1.4.0",
     "dtslint": "github:gcanti/dtslint",
     "fast-check": "^1.22.2",
-    "fp-ts": "^2.4.4",
+    "fp-ts": "^2.5.0",
     "import-path-rewrite": "github:gcanti/import-path-rewrite",
     "jest": "^24.8.0",
     "mocha": "^5.2.0",

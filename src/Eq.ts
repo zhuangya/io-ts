@@ -7,7 +7,7 @@ import * as R from 'fp-ts/lib/Record'
 import * as G from './Guard'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { eqStrict, hasOwnProperty, ReadonlyNonEmptyArray } from './util'
+import { hasOwnProperty, ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -162,8 +162,8 @@ export function readonly<A>(mutable: Eq<A>): Eq<Readonly<A>> {
  */
 export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = {
   ...E.eq,
-  literal: () => eqStrict,
-  literals: () => eqStrict,
+  literal: () => E.eqStrict,
+  literals: () => E.eqStrict,
   literalsOr,
   string,
   number,

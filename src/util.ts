@@ -1,20 +1,12 @@
 /**
  * @since 3.0.0
  */
-import { Eq, strictEqual } from 'fp-ts/lib/Eq'
 
 /**
  * @internal
  */
 export function hasOwnProperty<O extends object>(o: O, k: string): k is keyof O & string {
   return Object.prototype.hasOwnProperty.call(o, k)
-}
-
-/**
- * @internal
- */
-export const eqStrict: Eq<unknown> = {
-  equals: strictEqual
 }
 
 function typeOf(x: unknown): string {
@@ -53,6 +45,15 @@ export function map<A, B>(ne: ReadonlyNonEmptyTuple<A>, f: (a: A) => B): Readonl
  */
 export interface ReadonlyNonEmptyArray<A> extends ReadonlyArray<A> {
   readonly 0: A
+}
+
+/**
+ * @internal
+ */
+export function concat<A>(fx: ReadonlyArray<A>, fy: ReadonlyNonEmptyArray<A>): ReadonlyNonEmptyArray<A>
+export function concat<A>(fx: ReadonlyNonEmptyArray<A>, fy: ReadonlyArray<A>): ReadonlyNonEmptyArray<A>
+export function concat<A>(fx: ReadonlyArray<A>, fy: ReadonlyArray<A>): ReadonlyArray<A> {
+  return fx.concat(fy)
 }
 
 /**
