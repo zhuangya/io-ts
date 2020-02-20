@@ -36,12 +36,16 @@ describe('Guard', () => {
 
   describe('refinement', () => {
     it('should accepts valid inputs', () => {
-      const guard = G.refinement(G.string, s => (s.length > 0 ? right(s) : left('please entere a non empty string')))
+      const guard = G.guard.refinement(G.string, s =>
+        s.length > 0 ? right(s) : left('please entere a non empty string')
+      )
       assert.strictEqual(guard.is('a'), true)
     })
 
     it('should rejects invalid inputs', () => {
-      const guard = G.refinement(G.string, s => (s.length > 0 ? right(s) : left('please entere a non empty string')))
+      const guard = G.guard.refinement(G.string, s =>
+        s.length > 0 ? right(s) : left('please entere a non empty string')
+      )
       assert.strictEqual(guard.is(undefined), false)
       assert.strictEqual(guard.is(''), false)
     })

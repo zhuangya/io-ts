@@ -1,7 +1,6 @@
 /**
  * @since 3.0.0
  */
-import { Either, isRight } from 'fp-ts/lib/Either'
 import { Literal } from './Literal'
 import * as S from './Schemable'
 import { hasOwnProperty, ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
@@ -102,9 +101,9 @@ export const UnknownRecord: Guard<Record<string, unknown>> = {
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(from: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> {
+export function refinement<A, B extends A>(from: Guard<A>, predicate: (a: A) => boolean): Guard<B> {
   return {
-    is: (u: unknown): u is B => from.is(u) && isRight(parser(u))
+    is: (u: unknown): u is B => from.is(u) && predicate(u)
   }
 }
 
@@ -112,76 +111,57 @@ export function refinement<A, B extends A>(from: Guard<A>, parser: (a: A) => Eit
  * @since 3.0.0
  */
 export function type<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
-  return {
-    is: (u: unknown): u is A => {
-      if (!UnknownRecord.is(u)) {
+  return refinement<Record<string, unknown>, { [K in keyof A]: A[K] }>(UnknownRecord, r => {
+    for (const k in properties) {
+      if (!properties[k].is(r[k])) {
         return false
       }
-      for (const k in properties) {
-        if (!properties[k].is(u[k])) {
-          return false
-        }
-      }
-      return true
     }
-  }
+    return true
+  })
 }
 
 /**
  * @since 3.0.0
  */
 export function partial<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>> {
-  return {
-    is: (u: unknown): u is Partial<A> => {
-      if (!UnknownRecord.is(u)) {
+  return refinement(UnknownRecord, r => {
+    for (const k in properties) {
+      const v = r[k]
+      if (v !== undefined && !properties[k].is(v)) {
         return false
       }
-      for (const k in properties) {
-        const v = u[k]
-        if (v !== undefined && !properties[k].is(v)) {
-          return false
-        }
-      }
-      return true
     }
-  }
+    return true
+  })
 }
 
 /**
  * @since 3.0.0
  */
 export function record<A>(codomain: Guard<A>): Guard<Record<string, A>> {
-  return {
-    is: (u: unknown): u is Record<string, A> => {
-      if (!UnknownRecord.is(u)) {
+  return refinement(UnknownRecord, r => {
+    for (const k in r) {
+      if (!codomain.is(r[k])) {
         return false
       }
-      for (const k in u) {
-        if (!codomain.is(u[k])) {
-          return false
-        }
-      }
-      return true
     }
-  }
+    return true
+  })
 }
 
 /**
  * @since 3.0.0
  */
 export function array<A>(items: Guard<A>): Guard<Array<A>> {
-  return {
-    is: (u: unknown): u is Array<A> => UnknownArray.is(u) && u.every(items.is)
-  }
+  return refinement(UnknownArray, us => us.every(items.is))
 }
 
 /**
  * @since 3.0.0
  */
 export function tuple<A, B>(left: Guard<A>, right: Guard<B>): Guard<[A, B]> {
-  return {
-    is: (u: unknown): u is [A, B] => UnknownArray.is(u) && u.length === 2 && left.is(u[0]) && right.is(u[1])
-  }
+  return refinement(UnknownArray, us => us.length === 2 && left.is(us[0]) && right.is(us[1]))
 }
 
 /**
@@ -211,18 +191,13 @@ export function sum<T extends string>(
   tag: T
 ): <A>(members: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => Guard<A[keyof A]> {
   return <A>(members: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => {
-    return {
-      is: (u): u is A[keyof A] => {
-        if (!UnknownRecord.is(u)) {
-          return false
-        }
-        const v = u[tag]
-        if (typeof v === 'string' && hasOwnProperty(members, v)) {
-          return members[v].is(u)
-        }
-        return false
+    return refinement<Record<string, unknown>, { [K in keyof A]: A[K] & Record<T, K> }[keyof A]>(UnknownRecord, r => {
+      const v = r[tag]
+      if (typeof v === 'string' && hasOwnProperty(members, v)) {
+        return members[v].is(r)
       }
-    }
+      return false
+    })
   }
 }
 
@@ -285,6 +260,6 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI> 
   sum,
   lazy: (_, f) => lazy(f),
   readonly,
-  refinement: refinement as S.WithRefinement<URI>['refinement'],
+  refinement: (from, parser) => refinement(from, a => parser(a)._tag === 'Right'),
   union
 }

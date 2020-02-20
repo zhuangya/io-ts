@@ -226,7 +226,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(from: Guard<A>, parser: (a: A) => Either<string, B>): Guard<B> { ... }
+export function refinement<A, B extends A>(from: Guard<A>, predicate: (a: A) => boolean): Guard<B> { ... }
 ```
 
 Added in v3.0.0
