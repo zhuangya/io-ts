@@ -39,6 +39,7 @@ Added in v3.0.0
 - [partial](#partial)
 - [readonly](#readonly)
 - [record](#record)
+- [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
 - [tuple](#tuple)
@@ -175,7 +176,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI> = ...
+export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -320,6 +321,16 @@ Added in v3.0.0
 
 ```ts
 export function record<A>(codomain: Decoder<A>, id?: string): Decoder<Record<string, A>> { ... }
+```
+
+Added in v3.0.0
+
+# refinement
+
+**Signature**
+
+```ts
+export function refinement<A, B extends A>(from: Decoder<A>, refinement: (a: A) => a is B, id?: string): Decoder<B> { ... }
 ```
 
 Added in v3.0.0

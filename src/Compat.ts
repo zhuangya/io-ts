@@ -7,10 +7,9 @@
  *   - `unknown` primitive
  * @since 3.0.0
  */
-import { Either } from 'fp-ts/lib/Either'
-import { Codec, codec } from './Codec'
-import { decoder } from './Decoder'
-import { Guard, guard } from './Guard'
+import * as C from './Codec'
+import * as D from './Decoder'
+import * as G from './Guard'
 import { Literal } from './Literal'
 import * as S from './Schemable'
 import { ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
@@ -24,7 +23,7 @@ import { ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
  *
  * @since 3.0.0
  */
-export interface Compat<A> extends Codec<A>, Guard<A> {}
+export interface Compat<A> extends C.Codec<A>, G.Guard<A> {}
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -33,7 +32,7 @@ export interface Compat<A> extends Codec<A>, Guard<A> {}
 /**
  * @since 3.0.0
  */
-export function make<A>(codec: Codec<A>, guard: Guard<A>): Compat<A> {
+export function make<A>(codec: C.Codec<A>, guard: G.Guard<A>): Compat<A> {
   return {
     is: guard.is,
     decode: codec.decode,
@@ -45,14 +44,14 @@ export function make<A>(codec: Codec<A>, guard: Guard<A>): Compat<A> {
  * @since 3.0.0
  */
 export function literal<A extends Literal>(value: A, id?: string): Compat<A> {
-  return make(codec.literal(value, id), guard.literal(value, id))
+  return make(C.codec.literal(value, id), G.guard.literal(value, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>, id?: string): Compat<A> {
-  return make(codec.literals(values, id), guard.literals(values, id))
+  return make(C.codec.literals(values, id), G.guard.literals(values, id))
 }
 
 /**
@@ -63,7 +62,7 @@ export function literalsOr<A extends Literal, B>(
   or: Compat<B>,
   id?: string
 ): Compat<A | B> {
-  return make(codec.literalsOr(values, or, id), guard.literalsOr(values, or, id))
+  return make(C.codec.literalsOr(values, or, id), G.guard.literalsOr(values, or, id))
 }
 
 // -------------------------------------------------------------------------------------
@@ -73,27 +72,27 @@ export function literalsOr<A extends Literal, B>(
 /**
  * @since 3.0.0
  */
-export const string: Compat<string> = make(codec.string, guard.string)
+export const string: Compat<string> = make(C.codec.string, G.guard.string)
 
 /**
  * @since 3.0.0
  */
-export const number: Compat<number> = make(codec.number, guard.number)
+export const number: Compat<number> = make(C.codec.number, G.guard.number)
 
 /**
  * @since 3.0.0
  */
-export const boolean: Compat<boolean> = make(codec.boolean, guard.boolean)
+export const boolean: Compat<boolean> = make(C.codec.boolean, G.guard.boolean)
 
 /**
  * @since 3.0.0
  */
-export const UnknownArray: Compat<Array<unknown>> = make(codec.UnknownArray, guard.UnknownArray)
+export const UnknownArray: Compat<Array<unknown>> = make(C.codec.UnknownArray, G.guard.UnknownArray)
 
 /**
  * @since 3.0.0
  */
-export const UnknownRecord: Compat<Record<string, unknown>> = make(codec.UnknownRecord, guard.UnknownRecord)
+export const UnknownRecord: Compat<Record<string, unknown>> = make(C.codec.UnknownRecord, G.guard.UnknownRecord)
 
 // -------------------------------------------------------------------------------------
 // combinators
@@ -102,54 +101,50 @@ export const UnknownRecord: Compat<Record<string, unknown>> = make(codec.Unknown
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(
-  from: Compat<A>,
-  parser: (a: A) => Either<string, B>,
-  id?: string
-): Compat<B> {
-  return make(codec.refinement(from, parser, id), guard.refinement(from, parser, id))
+export function refinement<A, B extends A>(from: Compat<A>, refinement: (a: A) => a is B, id?: string): Compat<B> {
+  return make(C.refinement(from, refinement, id), G.refinement(from, refinement))
 }
 
 /**
  * @since 3.0.0
  */
 export function type<A>(properties: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> {
-  return make(codec.type(properties, id), guard.type(properties, id))
+  return make(C.codec.type(properties, id), G.guard.type(properties, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function partial<A>(properties: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> {
-  return make(codec.partial(properties, id), guard.partial(properties, id))
+  return make(C.codec.partial(properties, id), G.guard.partial(properties, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function record<A>(codomain: Compat<A>, id?: string): Compat<Record<string, A>> {
-  return make(codec.record(codomain, id), guard.record(codomain, id))
+  return make(C.codec.record(codomain, id), G.guard.record(codomain, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function array<A>(items: Compat<A>, id?: string): Compat<Array<A>> {
-  return make(codec.array(items, id), guard.array(items, id))
+  return make(C.codec.array(items, id), G.guard.array(items, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function tuple<A, B>(left: Compat<A>, right: Compat<B>, id?: string): Compat<[A, B]> {
-  return make(codec.tuple(left, right, id), guard.tuple(left, right, id))
+  return make(C.codec.tuple(left, right, id), G.guard.tuple(left, right, id))
 }
 
 /**
  * @since 3.0.0
  */
 export function intersection<A, B>(left: Compat<A>, right: Compat<B>, id?: string): Compat<A & B> {
-  return make(codec.intersection(left, right, id), guard.intersection(left, right, id))
+  return make(C.codec.intersection(left, right, id), G.guard.intersection(left, right, id))
 }
 
 /**
@@ -160,8 +155,8 @@ export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   id?: string
 ): Compat<A[number]> {
   return {
-    is: guard.union(members, id).is,
-    decode: decoder.union(members, id).decode,
+    is: G.guard.union(members, id).is,
+    decode: D.decoder.union(members, id).decode,
     encode: a => {
       for (const compat of members) {
         if (compat.is(a)) {
@@ -178,8 +173,8 @@ export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
 export function sum<T extends string>(
   tag: T
 ): <A>(members: { [K in keyof A]: Compat<A[K] & Record<T, K>> }, id?: string) => Compat<A[keyof A]> {
-  const sumC = codec.sum(tag)
-  const sumG = guard.sum(tag)
+  const sumC = C.codec.sum(tag)
+  const sumG = G.guard.sum(tag)
   return (members, id) => make(sumC(members, id), sumG(members, id))
 }
 
@@ -187,14 +182,14 @@ export function sum<T extends string>(
  * @since 3.0.0
  */
 export function lazy<A>(id: string, f: () => Compat<A>): Compat<A> {
-  return make(codec.lazy(id, f), guard.lazy(id, f))
+  return make(C.codec.lazy(id, f), G.guard.lazy(id, f))
 }
 
 /**
  * @since 3.0.0
  */
 export function readonly<A>(mutable: Compat<A>, id?: string): Compat<Readonly<A>> {
-  return make(codec.readonly(mutable, id), guard.readonly(mutable, id))
+  return make(C.codec.readonly(mutable, id), G.guard.readonly(mutable, id))
 }
 
 // -------------------------------------------------------------------------------------
@@ -220,7 +215,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const compat: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI> = {
+export const compat: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
   literals,
@@ -239,6 +234,5 @@ export const compat: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI>
   sum,
   lazy,
   readonly,
-  refinement: refinement as S.WithRefinement<URI>['refinement'],
   union
 }

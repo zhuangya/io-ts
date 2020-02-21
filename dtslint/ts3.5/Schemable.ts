@@ -1,10 +1,9 @@
 import { Kind, URIS } from 'fp-ts/lib/HKT'
 import * as S from '../../src/Schemable'
 import { left, right } from 'fp-ts/lib/Either'
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 
 interface Schema<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithUnion<S> & S.WithRefinement<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S> & S.WithUnion<S>): Kind<S, A>
 }
 
 function make<A>(f: Schema<A>): Schema<A> {
@@ -121,12 +120,6 @@ const B: Schema<B> = make(S =>
     })
   )
 )
-
-//
-// refinement
-//
-// $ExpectType Schema<number>
-make(S => S.refinement(S.number, n => (n > 0 ? left('Positive') : right(n))))
 
 //
 // union

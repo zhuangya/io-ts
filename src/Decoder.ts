@@ -125,6 +125,22 @@ export function withExpected<A>(decoder: Decoder<A>, message: (e: DE.DecodeError
 /**
  * @since 3.0.0
  */
+export function refinement<A, B extends A>(from: Decoder<A>, refinement: (a: A) => a is B, id?: string): Decoder<B> {
+  return {
+    decode: u => {
+      const e = from.decode(u)
+      if (E.isLeft(e)) {
+        return e
+      }
+      const a = e.right
+      return refinement(a) ? E.right(a) : E.left(DE.leaf(u, id))
+    }
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
 export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string, B>, _id?: string): Decoder<B> {
   return {
     decode: u => {
@@ -417,7 +433,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI> = {
+export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   map: (fa, f) => ({
     decode: u => E.either.map(fa.decode(u), f)
@@ -449,8 +465,6 @@ export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> &
   sum,
   lazy,
   readonly,
-  refinement: parse,
-  parse,
   union
 }
 

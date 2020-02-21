@@ -160,7 +160,7 @@ export function readonly<A>(mutable: Eq<A>): Eq<Readonly<A>> {
 /**
  * @since 3.0.0
  */
-export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = {
+export const eq: typeof E.eq & S.Schemable<E.URI> = {
   ...E.eq,
   literal: () => E.eqStrict,
   literals: () => E.eqStrict,
@@ -178,6 +178,5 @@ export const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI> = {
   intersection,
   sum,
   lazy: (_, f) => lazy(f),
-  readonly,
-  refinement: eq => eq
+  readonly
 }

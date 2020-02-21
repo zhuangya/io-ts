@@ -116,7 +116,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const guard: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI> = ...
+export const guard: S.Schemable<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -226,7 +226,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(from: Guard<A>, predicate: (a: A) => boolean): Guard<B> { ... }
+export function refinement<A, B extends A>(from: Guard<A>, refinement: (a: A) => a is B): Guard<B> { ... }
 ```
 
 Added in v3.0.0

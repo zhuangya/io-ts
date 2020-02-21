@@ -54,7 +54,7 @@ Laws: same as `Codec`
 **Signature**
 
 ```ts
-export interface Compat<A> extends Codec<A>, Guard<A> {}
+export interface Compat<A> extends C.Codec<A>, G.Guard<A> {}
 ```
 
 Added in v3.0.0
@@ -124,7 +124,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const compat: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI> = ...
+export const compat: S.Schemable<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -188,7 +188,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(codec: Codec<A>, guard: Guard<A>): Compat<A> { ... }
+export function make<A>(codec: C.Codec<A>, guard: G.Guard<A>): Compat<A> { ... }
 ```
 
 Added in v3.0.0
@@ -238,11 +238,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(
-  from: Compat<A>,
-  parser: (a: A) => Either<string, B>,
-  id?: string
-): Compat<B> { ... }
+export function refinement<A, B extends A>(from: Compat<A>, refinement: (a: A) => a is B, id?: string): Compat<B> { ... }
 ```
 
 Added in v3.0.0

@@ -13,8 +13,6 @@ Added in v3.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Schemable (interface)](#schemable-interface)
-- [WithParse (interface)](#withparse-interface)
-- [WithRefinement (interface)](#withrefinement-interface)
 - [WithUnion (interface)](#withunion-interface)
 - [memoize](#memoize)
 
@@ -50,34 +48,6 @@ export interface Schemable<S extends URIS> {
   ) => <A>(members: { [K in keyof A]: Kind<S, A[K] & Record<T, K>> }, id?: string) => Kind<S, A[keyof A]>
   readonly lazy: <A>(id: string, f: () => Kind<S, A>) => Kind<S, A>
   readonly readonly: <A>(mutable: Kind<S, A>, id?: string) => Kind<S, Readonly<A>>
-}
-```
-
-Added in v3.0.0
-
-# WithParse (interface)
-
-**Signature**
-
-```ts
-export interface WithParse<S extends URIS> extends WithRefinement<S> {
-  readonly parse: <A, B>(from: Kind<S, A>, parser: (a: A) => Either<string, B>, id?: string) => Kind<S, B>
-}
-```
-
-Added in v3.0.0
-
-# WithRefinement (interface)
-
-**Signature**
-
-```ts
-export interface WithRefinement<S extends URIS> {
-  readonly refinement: <A, B extends A>(
-    from: Kind<S, A>,
-    parser: (a: A) => Either<string, B>,
-    id?: string
-  ) => Kind<S, B>
 }
 ```
 

@@ -101,9 +101,9 @@ export const UnknownRecord: Guard<Record<string, unknown>> = {
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(from: Guard<A>, predicate: (a: A) => boolean): Guard<B> {
+export function refinement<A, B extends A>(from: Guard<A>, refinement: (a: A) => a is B): Guard<B> {
   return {
-    is: (u: unknown): u is B => from.is(u) && predicate(u)
+    is: (u: unknown): u is B => from.is(u) && refinement(u)
   }
 }
 
@@ -111,7 +111,9 @@ export function refinement<A, B extends A>(from: Guard<A>, predicate: (a: A) => 
  * @since 3.0.0
  */
 export function type<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
-  return refinement<Record<string, unknown>, { [K in keyof A]: A[K] }>(UnknownRecord, r => {
+  return refinement(UnknownRecord, (r): r is {
+    [K in keyof A]: A[K]
+  } => {
     for (const k in properties) {
       if (!properties[k].is(r[k])) {
         return false
@@ -125,7 +127,7 @@ export function type<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
  * @since 3.0.0
  */
 export function partial<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>> {
-  return refinement(UnknownRecord, r => {
+  return refinement(UnknownRecord, (r): r is Partial<A> => {
     for (const k in properties) {
       const v = r[k]
       if (v !== undefined && !properties[k].is(v)) {
@@ -140,7 +142,7 @@ export function partial<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<P
  * @since 3.0.0
  */
 export function record<A>(codomain: Guard<A>): Guard<Record<string, A>> {
-  return refinement(UnknownRecord, r => {
+  return refinement(UnknownRecord, (r): r is Record<string, A> => {
     for (const k in r) {
       if (!codomain.is(r[k])) {
         return false
@@ -154,14 +156,14 @@ export function record<A>(codomain: Guard<A>): Guard<Record<string, A>> {
  * @since 3.0.0
  */
 export function array<A>(items: Guard<A>): Guard<Array<A>> {
-  return refinement(UnknownArray, us => us.every(items.is))
+  return refinement(UnknownArray, (us): us is Array<A> => us.every(items.is))
 }
 
 /**
  * @since 3.0.0
  */
 export function tuple<A, B>(left: Guard<A>, right: Guard<B>): Guard<[A, B]> {
-  return refinement(UnknownArray, us => us.length === 2 && left.is(us[0]) && right.is(us[1]))
+  return refinement(UnknownArray, (us): us is [A, B] => us.length === 2 && left.is(us[0]) && right.is(us[1]))
 }
 
 /**
@@ -191,7 +193,7 @@ export function sum<T extends string>(
   tag: T
 ): <A>(members: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => Guard<A[keyof A]> {
   return <A>(members: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => {
-    return refinement<Record<string, unknown>, { [K in keyof A]: A[K] & Record<T, K> }[keyof A]>(UnknownRecord, r => {
+    return refinement(UnknownRecord, (r): r is { [K in keyof A]: A[K] & Record<T, K> }[keyof A] => {
       const v = r[tag]
       if (typeof v === 'string' && hasOwnProperty(members, v)) {
         return members[v].is(r)
@@ -241,7 +243,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const guard: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI> = {
+export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
   literals,
@@ -260,6 +262,5 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> & S.WithRefinement<URI> 
   sum,
   lazy: (_, f) => lazy(f),
   readonly,
-  refinement: (from, parser) => refinement(from, a => parser(a)._tag === 'Right'),
   union
 }

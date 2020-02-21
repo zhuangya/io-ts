@@ -179,7 +179,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> = {
+export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   URI,
   contramap: (fa, f) => ({
     encode: b => fa.encode(f(b))
@@ -200,8 +200,7 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> & S.WithRefinement<
   intersection,
   sum,
   lazy: (_, f) => lazy(f),
-  readonly,
-  refinement: encoder => encoder
+  readonly
 }
 
 const { contramap } = pipeable(encoder)

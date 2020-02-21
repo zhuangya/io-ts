@@ -26,7 +26,6 @@ Added in v3.0.0
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [number](#number)
-- [parse](#parse)
 - [partial](#partial)
 - [readonly](#readonly)
 - [record](#record)
@@ -93,7 +92,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const arbitrary: S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI> = ...
+export const arbitrary: S.Schemable<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -174,16 +173,6 @@ Added in v3.0.0
 
 ```ts
 export const number: Arbitrary<number> = ...
-```
-
-Added in v3.0.0
-
-# parse
-
-**Signature**
-
-```ts
-export function parse<A, B>(from: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> { ... }
 ```
 
 Added in v3.0.0

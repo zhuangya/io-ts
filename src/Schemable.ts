@@ -1,7 +1,6 @@
 /**
  * @since 3.0.0
  */
-import { Either } from 'fp-ts/lib/Either'
 import { Kind, URIS } from 'fp-ts/lib/HKT'
 import { Literal } from './Literal'
 import { ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
@@ -44,24 +43,6 @@ export interface WithUnion<S extends URIS> {
     members: { [K in keyof A]: Kind<S, A[K]> },
     id?: string
   ) => Kind<S, A[number]>
-}
-
-/**
- * @since 3.0.0
- */
-export interface WithRefinement<S extends URIS> {
-  readonly refinement: <A, B extends A>(
-    from: Kind<S, A>,
-    parser: (a: A) => Either<string, B>,
-    id?: string
-  ) => Kind<S, B>
-}
-
-/**
- * @since 3.0.0
- */
-export interface WithParse<S extends URIS> extends WithRefinement<S> {
-  readonly parse: <A, B>(from: Kind<S, A>, parser: (a: A) => Either<string, B>, id?: string) => Kind<S, B>
 }
 
 /**

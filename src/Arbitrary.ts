@@ -2,7 +2,6 @@
  * @since 3.0.0
  */
 import * as fc from 'fast-check'
-import { Either, isRight } from 'fp-ts/lib/Either'
 import { Literal } from './Literal'
 import * as S from './Schemable'
 import { intersect, ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
@@ -80,15 +79,16 @@ export const UnknownRecord: Arbitrary<Record<string, unknown>> = fc.dictionary(s
 // combinators
 // -------------------------------------------------------------------------------------
 
-/**
- * @since 3.0.0
- */
-export function parse<A, B>(from: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> {
-  return from
-    .map(parser)
-    .filter(isRight)
-    .map((e: any) => e.right)
-}
+// TODO: parse?
+// /**
+//  * @since 3.0.0
+//  */
+// export function parse<A, B>(from: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> {
+//   return from
+//     .map(parser)
+//     .filter(isRight)
+//     .map((e: any) => e.right)
+// }
 
 /**
  * @since 3.0.0
@@ -190,7 +190,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const arbitrary: S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI> = {
+export const arbitrary: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
   literals,
@@ -209,7 +209,5 @@ export const arbitrary: S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI> =
   sum,
   lazy: (_, f) => lazy(f),
   readonly,
-  refinement: parse,
-  parse,
   union
 }

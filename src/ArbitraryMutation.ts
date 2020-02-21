@@ -3,7 +3,6 @@
  */
 import * as fc from 'fast-check'
 import { isNonEmpty, unsafeUpdateAt } from 'fp-ts/lib/Array'
-import { Either, isLeft } from 'fp-ts/lib/Either'
 import { not } from 'fp-ts/lib/function'
 import * as A from './Arbitrary'
 import * as G from './Guard'
@@ -102,15 +101,16 @@ export const UnknownRecord: ArbitraryMutation<Record<string, unknown>> = make(A.
 // combinators
 // -------------------------------------------------------------------------------------
 
-/**
- * @since 3.0.0
- */
-export function parse<A, B>(from: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> {
-  return make(
-    from.arbitrary.filter(a => isLeft(parser(a))),
-    A.parse(from.arbitrary, parser)
-  )
-}
+// TODO: parse?
+// /**
+//  * @since 3.0.0
+//  */
+// export function parse<A, B>(from: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> {
+//   return make(
+//     from.arbitrary.filter(a => isLeft(parser(a))),
+//     A.parse(from.arbitrary, parser)
+//   )
+// }
 
 /**
  * @since 3.0.0
@@ -263,7 +263,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 3.0.0
  */
-export const arbitraryMutation: S.Schemable<URI> & S.WithUnion<URI> & S.WithParse<URI> = {
+export const arbitraryMutation: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
   literals,
@@ -282,7 +282,5 @@ export const arbitraryMutation: S.Schemable<URI> & S.WithUnion<URI> & S.WithPars
   sum,
   lazy: (_, f) => lazy(f),
   readonly,
-  refinement: parse,
-  parse,
   union
 }

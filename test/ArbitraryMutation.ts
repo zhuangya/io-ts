@@ -1,5 +1,5 @@
 import * as fc from 'fast-check'
-import { isLeft, isRight, right, left } from 'fp-ts/lib/Either'
+import { isLeft, isRight } from 'fp-ts/lib/Either'
 import { Kind, URIS } from 'fp-ts/lib/HKT'
 import * as Arb from '../src/Arbitrary'
 import * as ArbMut from '../src/ArbitraryMutation'
@@ -8,14 +8,14 @@ import * as G from '../src/Guard'
 import * as S from '../src/Schemable'
 
 interface Schema<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithRefinement<S>): Kind<S, A>
+  <S extends URIS>(S: S.Schemable<S>): Kind<S, A>
 }
 
 function make<A>(f: Schema<A>): Schema<A> {
   return S.memoize(f)
 }
 
-function assertWithLazy<A>(schema: Schema<A>): void {
+function assert<A>(schema: Schema<A>): void {
   const arb = schema(Arb.arbitrary)
   const am = schema(ArbMut.arbitraryMutation)
   const decoder = schema(D.decoder)
@@ -49,15 +49,12 @@ describe('ArbitraryMutation', () => {
 
     const schema: Schema<A> = make(S =>
       S.lazy('A', () =>
-        S.refinement(
-          S.type({
-            a: S.string,
-            b: S.literalsOr([null], schema(S))
-          }),
-          a => (a.a.length > 0 ? right(a) : left('empty string'))
-        )
+        S.type({
+          a: S.string,
+          b: S.literalsOr([null], schema(S))
+        })
       )
     )
-    assertWithLazy(schema)
+    assert(schema)
   })
 })

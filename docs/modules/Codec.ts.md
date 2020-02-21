@@ -17,8 +17,6 @@ FAQ
 
 - is it possible to provide a custom message?
   - `withMessage` (already existing codecs)
-  - `refinement`
-  - `parse`
 - how to change a field? (for example snake case to camel case)
   - `map`
 
@@ -34,22 +32,20 @@ Open questions:
 
 Schemas:
 
-- Schemable<URI> & WithRefinement<URI>
-  - Codec
-  - Encoder
+- Schemable<URI>
   - Eq
+  - Encoder
+  - Codec
 - Schemable<URI> & WithUnion<URI>
-  - JsonSchema
-  - DSL
-  - Expression
-  - TypeNode
-- Schemable<URI> & WithUnion<URI> & WithRefinement<URI>
-  - Compat
-  - Guard
-- Schemable<URI> & WithUnion<URI> & WithParse<URI>
   - Arbitrary
   - ArbitraryMutation
+  - Compat
   - Decoder
+  - DSL
+  - Guard
+  - Expression
+  - JsonSchema
+  - TypeNode
 
 Added in v3.0.0
 
@@ -94,7 +90,7 @@ Laws:
 **Signature**
 
 ```ts
-export interface Codec<A> extends Decoder<A>, Encoder<A> {}
+export interface Codec<A> extends D.Decoder<A>, E.Encoder<A> {}
 ```
 
 Added in v3.0.0
@@ -164,7 +160,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const codec: Invariant1<URI> & S.Schemable<URI> & S.WithRefinement<URI> = ...
+export const codec: Invariant1<URI> & S.Schemable<URI> = ...
 ```
 
 Added in v3.0.0
@@ -228,7 +224,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(decoder: Decoder<A>, encoder: Encoder<A>): Codec<A> { ... }
+export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> { ... }
 ```
 
 Added in v3.0.0
@@ -278,7 +274,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(from: Codec<A>, parser: (a: A) => Either<string, B>, id?: string): Codec<B> { ... }
+export function refinement<A, B extends A>(from: Codec<A>, refinement: (a: A) => a is B, id?: string): Codec<B> { ... }
 ```
 
 Added in v3.0.0

@@ -21,15 +21,13 @@ interface PositiveBrand {
   readonly Positive: unique symbol
 }
 type Positive = number & PositiveBrand
-const positiveParser = (n: number) => (n > 0 ? right(n as Positive) : left('Positive'))
-const Positive: C.Compat<Positive> = C.refinement(C.number, positiveParser)
+const Positive: C.Compat<Positive> = C.refinement(C.number, (n): n is Positive => n > 0)
 
 interface IntBrand {
   readonly Int: unique symbol
 }
 type Int = number & IntBrand
-const intParser = (n: number) => (Number.isInteger(n) ? right(n as Int) : left('Int'))
-const Int: C.Compat<Int> = C.refinement(C.number, intParser)
+const Int: C.Compat<Int> = C.refinement(C.number, (n): n is Int => Number.isInteger(n))
 
 describe('Compat', () => {
   describe('string', () => {
@@ -151,20 +149,20 @@ describe('Compat', () => {
   describe('refinement', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.refinement(C.string, s => (s.length > 0 ? right(s) : left('please enter a non empty string')))
+        const codec = C.refinement(C.string, (s): s is string => s.length > 0)
         assert.deepStrictEqual(codec.decode('a'), right('a'))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.refinement(C.string, s => (s.length > 0 ? right(s) : left('please enter a non empty string')))
+        const codec = C.refinement(C.string, (s): s is string => s.length > 0)
         assert.deepStrictEqual(codec.decode(undefined), left(DE.leaf(undefined, 'string')))
-        assert.deepStrictEqual(codec.decode(''), left(DE.leaf('', 'please enter a non empty string')))
+        assert.deepStrictEqual(codec.decode(''), left(DE.leaf('')))
       })
     })
 
     describe('encode', () => {
       it('should encode a value', () => {
-        const codec = C.refinement(C.string, s => (s.length > 0 ? right(s) : left('please enter a non empty string')))
+        const codec = C.refinement(C.string, (s): s is string => s.length > 0)
         assert.strictEqual(codec.encode('a'), 'a')
       })
     })

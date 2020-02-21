@@ -7,7 +7,7 @@ import * as G from '../src/Guard'
 import * as J from '../src/JsonSchema'
 import { URIS, Kind } from 'fp-ts/lib/HKT'
 import * as S from '../src/Schemable'
-import { isRight, right, left, isLeft } from 'fp-ts/lib/Either'
+import { isRight, isLeft } from 'fp-ts/lib/Either'
 import * as Ajv from 'ajv'
 import * as Sc from '../src/Schema'
 
@@ -53,22 +53,6 @@ function assertWithUnion<A>(schema: Sc.Schema<A>): void {
       a => compat.is(a) && isRight(compat.decode(a)) && Boolean(validate(a)) && isRight(compat.decode(compat.encode(a)))
     )
   )
-  fc.assert(fc.property(am.mutation, m => !compat.is(m) && isLeft(compat.decode(m))))
-}
-
-interface SchemaWithRefinement<A> {
-  <S extends URIS>(S: S.Schemable<S> & S.WithRefinement<S>): Kind<S, A>
-}
-
-function makeWithRefinement<A>(f: SchemaWithRefinement<A>): SchemaWithRefinement<A> {
-  return S.memoize(f)
-}
-
-function assertWithRefinement<A>(schema: SchemaWithRefinement<A>): void {
-  const arb = schema(Arb.arbitrary)
-  const am = schema(ArbMut.arbitraryMutation)
-  const compat = schema(C.compat)
-  fc.assert(fc.property(arb, a => compat.is(a) && isRight(compat.decode(a))))
   fc.assert(fc.property(am.mutation, m => !compat.is(m) && isLeft(compat.decode(m))))
 }
 
@@ -164,10 +148,6 @@ describe('Arbitrary', () => {
 
   it('readonly', () => {
     assert(make(S => S.readonly(S.type({ a: S.string }))))
-  })
-
-  it('refinement', () => {
-    assertWithRefinement(makeWithRefinement(S => S.refinement(S.number, n => (n > 0 ? right(n) : left('Positive')))))
   })
 
   it('union', () => {
