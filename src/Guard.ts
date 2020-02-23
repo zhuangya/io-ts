@@ -88,10 +88,7 @@ export const UnknownArray: Guard<Array<unknown>> = {
  * @since 3.0.0
  */
 export const UnknownRecord: Guard<Record<string, unknown>> = {
-  is: (u: unknown): u is Record<string, unknown> => {
-    const s = Object.prototype.toString.call(u)
-    return s === '[object Object]' || s === '[object Window]'
-  }
+  is: (u: unknown): u is Record<string, unknown> => Object.prototype.toString.call(u) === '[object Object]'
 }
 
 // -------------------------------------------------------------------------------------
