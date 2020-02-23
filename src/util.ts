@@ -59,6 +59,13 @@ export function concat<A>(fx: ReadonlyArray<A>, fy: ReadonlyArray<A>): ReadonlyA
 /**
  * @internal
  */
+export function snoc<A>(fx: ReadonlyNonEmptyArray<A>, a: A): ReadonlyNonEmptyArray<A> {
+  return concat(fx, [a])
+}
+
+/**
+ * @internal
+ */
 export function isNonEmpty<A>(as: ReadonlyArray<A>): as is ReadonlyNonEmptyArray<A> {
   return as.length > 0
 }
