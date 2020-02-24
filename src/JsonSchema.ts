@@ -179,7 +179,7 @@ export function sum<T extends string>(
 ): <A>(members: { [K in keyof A]: JsonSchema<A[K] & Record<T, K>> }) => JsonSchema<A[keyof A]> {
   return (members: Record<string, JsonSchema<unknown>>) => {
     return {
-      compile: lazy => C.make({ oneOf: Object.keys(members).map(k => members[k].compile(lazy)) })
+      compile: lazy => C.make({ anyOf: Object.keys(members).map(k => members[k].compile(lazy)) })
     }
   }
 }
@@ -220,7 +220,7 @@ export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
   members: { [K in keyof A]: JsonSchema<A[K]> }
 ): JsonSchema<A[number]> {
   return {
-    compile: lazy => C.make({ oneOf: members.map(jsonSchema => jsonSchema.compile(lazy)) })
+    compile: lazy => C.make({ anyOf: members.map(jsonSchema => jsonSchema.compile(lazy)) })
   }
 }
 
