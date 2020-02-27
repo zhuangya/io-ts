@@ -149,13 +149,6 @@ export function lazy<A>(f: () => Encoder<A>): Encoder<A> {
   }
 }
 
-/**
- * @since 3.0.0
- */
-export function readonly<A>(mutable: Encoder<A>): Encoder<Readonly<A>> {
-  return mutable
-}
-
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
@@ -199,8 +192,7 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   tuple,
   intersection,
   sum,
-  lazy: (_, f) => lazy(f),
-  readonly
+  lazy: (_, f) => lazy(f)
 }
 
 const { contramap } = pipeable(encoder)

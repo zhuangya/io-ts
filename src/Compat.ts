@@ -185,13 +185,6 @@ export function lazy<A>(id: string, f: () => Compat<A>): Compat<A> {
   return make(C.codec.lazy(id, f), G.guard.lazy(id, f))
 }
 
-/**
- * @since 3.0.0
- */
-export function readonly<A>(mutable: Compat<A>, id?: string): Compat<Readonly<A>> {
-  return make(C.codec.readonly(mutable, id), G.guard.readonly(mutable, id))
-}
-
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
@@ -233,6 +226,5 @@ export const compat: S.Schemable<URI> & S.WithUnion<URI> = {
   intersection,
   sum,
   lazy,
-  readonly,
   union
 }

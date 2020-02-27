@@ -206,13 +206,6 @@ export function lazy<A>(id: string, f: () => Codec<A>): Codec<A> {
   return make(D.decoder.lazy(id, f), E.encoder.lazy(id, f))
 }
 
-/**
- * @since 3.0.0
- */
-export function readonly<A>(mutable: Codec<A>, id?: string): Codec<Readonly<A>> {
-  return make(D.decoder.readonly(mutable, id), E.encoder.readonly(mutable, id))
-}
-
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
@@ -254,6 +247,5 @@ export const codec: Invariant1<URI> & S.Schemable<URI> = {
   tuple,
   intersection,
   sum,
-  lazy,
-  readonly
+  lazy
 }

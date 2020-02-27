@@ -69,7 +69,6 @@ Added in v3.0.0
 - [make](#make)
 - [number](#number)
 - [partial](#partial)
-- [readonly](#readonly)
 - [record](#record)
 - [refinement](#refinement)
 - [string](#string)
@@ -245,16 +244,6 @@ Added in v3.0.0
 
 ```ts
 export function partial<A>(properties: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> { ... }
-```
-
-Added in v3.0.0
-
-# readonly
-
-**Signature**
-
-```ts
-export function readonly<A>(mutable: Codec<A>, id?: string): Codec<Readonly<A>> { ... }
 ```
 
 Added in v3.0.0

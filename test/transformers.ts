@@ -114,10 +114,6 @@ describe('transformers', () => {
         assertTypeNode(dsl, '{\n    a: number;\n    b: null | A;\n}')
       })
     })
-
-    it('readonly', () => {
-      assertTypeNode(DSL.readonly(DSL.type({ a: DSL.string })), 'Readonly<{\n    a: string;\n}>')
-    })
   })
 
   describe('toExpression', () => {
@@ -220,10 +216,6 @@ describe('transformers', () => {
         assertExpression(dsl, 'S.lazy(() => S.type({ a: S.number, b: S.literalsOr([null], A(S)) }))')
       })
     })
-  })
-
-  it('readonly', () => {
-    assertExpression(DSL.readonly(DSL.type({ a: DSL.string })), 'S.readonly(S.type({ a: S.string }))')
   })
 
   describe('toDeclaration', () => {

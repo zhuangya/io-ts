@@ -146,10 +146,6 @@ describe('Arbitrary', () => {
     assert(schema)
   })
 
-  it('readonly', () => {
-    assert(make(S => S.readonly(S.type({ a: S.string }))))
-  })
-
   it('union', () => {
     assertWithUnion(Sc.make(S => S.union([S.type({ a: S.string }), S.type({ b: S.number })])))
   })

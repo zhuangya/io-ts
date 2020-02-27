@@ -47,7 +47,6 @@ export interface Schemable<S extends URIS> {
     tag: T
   ) => <A>(members: { [K in keyof A]: Kind<S, A[K] & Record<T, K>> }, id?: string) => Kind<S, A[keyof A]>
   readonly lazy: <A>(id: string, f: () => Kind<S, A>) => Kind<S, A>
-  readonly readonly: <A>(mutable: Kind<S, A>, id?: string) => Kind<S, Readonly<A>>
 }
 ```
 

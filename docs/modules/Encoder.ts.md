@@ -23,7 +23,6 @@ Added in v3.0.0
 - [lazy](#lazy)
 - [literalsOr](#literalsor)
 - [partial](#partial)
-- [readonly](#readonly)
 - [record](#record)
 - [sum](#sum)
 - [tuple](#tuple)
@@ -139,16 +138,6 @@ Added in v3.0.0
 
 ```ts
 export function partial<A>(properties: { [K in keyof A]: Encoder<A[K]> }): Encoder<Partial<A>> { ... }
-```
-
-Added in v3.0.0
-
-# readonly
-
-**Signature**
-
-```ts
-export function readonly<A>(mutable: Encoder<A>): Encoder<Readonly<A>> { ... }
 ```
 
 Added in v3.0.0

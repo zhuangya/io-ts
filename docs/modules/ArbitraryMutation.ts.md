@@ -28,7 +28,6 @@ Added in v3.0.0
 - [make](#make)
 - [number](#number)
 - [partial](#partial)
-- [readonly](#readonly)
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
@@ -202,16 +201,6 @@ Added in v3.0.0
 
 ```ts
 export function partial<A>(properties: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<Partial<A>> { ... }
-```
-
-Added in v3.0.0
-
-# readonly
-
-**Signature**
-
-```ts
-export function readonly<A>(mutable: ArbitraryMutation<A>): ArbitraryMutation<Readonly<A>> { ... }
 ```
 
 Added in v3.0.0

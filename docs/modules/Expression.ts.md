@@ -28,7 +28,6 @@ Added in v3.0.0
 - [literalsOr](#literalsor)
 - [number](#number)
 - [partial](#partial)
-- [readonly](#readonly)
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
@@ -199,16 +198,6 @@ Added in v3.0.0
 
 ```ts
 export function partial<A>(properties: { [K in keyof A]: Expression<A[K]> }): Expression<Partial<A>> { ... }
-```
-
-Added in v3.0.0
-
-# readonly
-
-**Signature**
-
-```ts
-export function readonly<A>(mutable: Expression<A>): Expression<Readonly<A>> { ... }
 ```
 
 Added in v3.0.0

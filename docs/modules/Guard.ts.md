@@ -28,7 +28,6 @@ Added in v3.0.0
 - [never](#never)
 - [number](#number)
 - [partial](#partial)
-- [readonly](#readonly)
 - [record](#record)
 - [refinement](#refinement)
 - [string](#string)
@@ -197,16 +196,6 @@ Added in v3.0.0
 
 ```ts
 export function partial<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>> { ... }
-```
-
-Added in v3.0.0
-
-# readonly
-
-**Signature**
-
-```ts
-export function readonly<A>(mutable: Guard<A>): Guard<Readonly<A>> { ... }
 ```
 
 Added in v3.0.0
