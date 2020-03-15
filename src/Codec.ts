@@ -39,12 +39,12 @@
  * @since 3.0.0
  */
 import { Invariant1 } from 'fp-ts/lib/Invariant'
-import * as DE from './DecodeError'
 import * as D from './Decoder'
 import * as E from './Encoder'
 import { Literal } from './Literal'
 import * as S from './Schemable'
 import { ReadonlyNonEmptyArray } from './util'
+import * as T from 'fp-ts/lib/Tree'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -135,14 +135,17 @@ export const UnknownRecord: Codec<Record<string, unknown>> = make(D.decoder.Unkn
 /**
  * @since 3.0.0
  */
-export function withExpected<A>(codec: Codec<A>, message: (e: DE.DecodeError) => string): Codec<A> {
-  return make(D.withExpected(codec, message), codec)
+export function withExpected<A>(
+  codec: Codec<A>,
+  expected: (actual: unknown, e: T.Tree<string>) => T.Tree<string>
+): Codec<A> {
+  return make(D.withExpected(codec, expected), codec)
 }
 
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(from: Codec<A>, refinement: (a: A) => a is B, id?: string): Codec<B> {
+export function refinement<A, B extends A>(from: Codec<A>, refinement: (a: A) => a is B, id: string): Codec<B> {
   return make(D.refinement(from, refinement, id), from)
 }
 

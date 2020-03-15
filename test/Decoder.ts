@@ -1,8 +1,8 @@
 import * as assert from 'assert'
 import * as E from 'fp-ts/lib/Either'
-import * as DE from '../src/DecodeError'
-import * as D from '../src/Decoder'
 import { pipe } from 'fp-ts/lib/pipeable'
+import * as T from 'fp-ts/lib/Tree'
+import * as D from '../src/Decoder'
 
 describe('Decoder', () => {
   describe('decoder', () => {
@@ -37,21 +37,7 @@ describe('Decoder', () => {
 
     it('zero', () => {
       const decoder = D.decoder.zero()
-      assert.deepStrictEqual(decoder.decode(null), E.left(DE.leaf(null, 'never')))
-    })
-  })
-
-  describe('literal', () => {
-    it('should reject an invalid input with the passed id', () => {
-      const decoder = D.literal(1, 'myid')
-      assert.deepStrictEqual(decoder.decode(null), E.left(DE.leaf(null, 'myid')))
-    })
-  })
-
-  describe('literals', () => {
-    it('should reject an invalid input with the passed id', () => {
-      const decoder = D.literals([1], 'myid')
-      assert.deepStrictEqual(decoder.decode(null), E.left(DE.leaf(null, 'myid')))
+      assert.deepStrictEqual(decoder.decode(null), E.left(T.make('cannot decode null, should be never')))
     })
   })
 
@@ -64,7 +50,15 @@ describe('Decoder', () => {
 
     it('should reject an invalid input', () => {
       const decoder = D.union([D.string, D.number])
-      assert.deepStrictEqual(decoder.decode(true), E.left(DE.and([DE.leaf(true, 'string'), DE.leaf(true, 'number')])))
+      assert.deepStrictEqual(
+        decoder.decode(true),
+        E.left(
+          T.make('should match some schema', [
+            T.make('cannot decode true, should be string'),
+            T.make('cannot decode true, should be number')
+          ])
+        )
+      )
     })
   })
 })

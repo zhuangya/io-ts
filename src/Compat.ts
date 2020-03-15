@@ -101,7 +101,7 @@ export const UnknownRecord: Compat<Record<string, unknown>> = make(C.codec.Unkno
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(from: Compat<A>, refinement: (a: A) => a is B, id?: string): Compat<B> {
+export function refinement<A, B extends A>(from: Compat<A>, refinement: (a: A) => a is B, id: string): Compat<B> {
   return make(C.refinement(from, refinement, id), G.refinement(from, refinement))
 }
 

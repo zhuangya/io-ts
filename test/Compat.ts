@@ -1,10 +1,10 @@
 import * as assert from 'assert'
-import * as C from '../src/Compat'
-import * as G from '../src/Guard'
+import { left, right } from 'fp-ts/lib/Either'
+import * as T from 'fp-ts/lib/Tree'
 import * as Co from '../src/Codec'
+import * as C from '../src/Compat'
 import * as D from '../src/Decoder'
-import { right, left } from 'fp-ts/lib/Either'
-import * as DE from '../src/DecodeError'
+import * as G from '../src/Guard'
 
 const NumberFromString: C.Compat<number> = C.make(
   Co.make(
@@ -21,13 +21,13 @@ interface PositiveBrand {
   readonly Positive: unique symbol
 }
 type Positive = number & PositiveBrand
-const Positive: C.Compat<Positive> = C.refinement(C.number, (n): n is Positive => n > 0)
+const Positive: C.Compat<Positive> = C.refinement(C.number, (n): n is Positive => n > 0, 'Positive')
 
 interface IntBrand {
   readonly Int: unique symbol
 }
 type Int = number & IntBrand
-const Int: C.Compat<Int> = C.refinement(C.number, (n): n is Int => Number.isInteger(n))
+const Int: C.Compat<Int> = C.refinement(C.number, (n): n is Int => Number.isInteger(n), 'Int')
 
 describe('Compat', () => {
   describe('string', () => {
@@ -39,7 +39,7 @@ describe('Compat', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.string
-        assert.deepStrictEqual(codec.decode(null), left(DE.leaf(null, 'string')))
+        assert.deepStrictEqual(codec.decode(null), left(T.make('cannot decode null, should be string')))
       })
     })
   })
@@ -53,7 +53,7 @@ describe('Compat', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.number
-        assert.deepStrictEqual(codec.decode(null), left(DE.leaf(null, 'number')))
+        assert.deepStrictEqual(codec.decode(null), left(T.make('cannot decode null, should be number')))
       })
     })
   })
@@ -68,7 +68,7 @@ describe('Compat', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.boolean
-        assert.deepStrictEqual(codec.decode(null), left(DE.leaf(null, 'boolean')))
+        assert.deepStrictEqual(codec.decode(null), left(T.make('cannot decode null, should be boolean')))
       })
     })
   })
@@ -82,7 +82,7 @@ describe('Compat', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.literal('a')
-        assert.deepStrictEqual(codec.decode('b'), left(DE.leaf('b', '"a"')))
+        assert.deepStrictEqual(codec.decode('b'), left(T.make('cannot decode "b", should be "a"')))
       })
     })
 
@@ -104,7 +104,7 @@ describe('Compat', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.literals(['a', null])
-        assert.deepStrictEqual(codec.decode('b'), left(DE.leaf('b', '"a" | null')))
+        assert.deepStrictEqual(codec.decode('b'), left(T.make('cannot decode "b", should be "a" | null')))
       })
     })
 
@@ -128,10 +128,23 @@ describe('Compat', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.literalsOr(['a', null], NumberFromString)
-        assert.deepStrictEqual(codec.decode(2), left(DE.and([DE.leaf(2, '"a" | null'), DE.leaf(2, 'string')])))
+        assert.deepStrictEqual(
+          codec.decode(2),
+          left(
+            T.make('should match some schema', [
+              T.make('cannot decode 2, should be "a" | null'),
+              T.make('cannot decode 2, should be string')
+            ])
+          )
+        )
         assert.deepStrictEqual(
           codec.decode('b'),
-          left(DE.and([DE.leaf('b', '"a" | null'), DE.leaf('b', 'NumberFromString')]))
+          left(
+            T.make('should match some schema', [
+              T.make('cannot decode "b", should be "a" | null'),
+              T.make('NumberFromString')
+            ])
+          )
         )
       })
     })
@@ -149,20 +162,20 @@ describe('Compat', () => {
   describe('refinement', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.refinement(C.string, (s): s is string => s.length > 0)
+        const codec = C.refinement(C.string, (s): s is string => s.length > 0, 'NonEmptyString')
         assert.deepStrictEqual(codec.decode('a'), right('a'))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.refinement(C.string, (s): s is string => s.length > 0)
-        assert.deepStrictEqual(codec.decode(undefined), left(DE.leaf(undefined, 'string')))
-        assert.deepStrictEqual(codec.decode(''), left(DE.leaf('')))
+        const codec = C.refinement(C.string, (s): s is string => s.length > 0, 'NonEmptyString')
+        assert.deepStrictEqual(codec.decode(undefined), left(T.make('cannot decode undefined, should be string')))
+        assert.deepStrictEqual(codec.decode(''), left(T.make('cannot refine "", should be NonEmptyString')))
       })
     })
 
     describe('encode', () => {
       it('should encode a value', () => {
-        const codec = C.refinement(C.string, (s): s is string => s.length > 0)
+        const codec = C.refinement(C.string, (s): s is string => s.length > 0, 'NonEmptyString')
         assert.strictEqual(codec.encode('a'), 'a')
       })
     })
@@ -188,8 +201,14 @@ describe('Compat', () => {
         const codec = C.type({
           a: C.string
         })
-        assert.deepStrictEqual(codec.decode(undefined), left(DE.leaf(undefined, 'Record<string, unknown>')))
-        assert.deepStrictEqual(codec.decode({ a: 1 }), left(DE.labeled({ a: 1 }, [['a', DE.leaf(1, 'string')]])))
+        assert.deepStrictEqual(
+          codec.decode(undefined),
+          left(T.make('cannot decode undefined, should be Record<string, unknown>'))
+        )
+        assert.deepStrictEqual(
+          codec.decode({ a: 1 }),
+          left(T.make('required property "a"', [T.make('cannot decode 1, should be string')]))
+        )
       })
     })
 
@@ -232,8 +251,14 @@ describe('Compat', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.partial({ a: C.string })
-        assert.deepStrictEqual(codec.decode(undefined), left(DE.leaf(undefined, 'Record<string, unknown>')))
-        assert.deepStrictEqual(codec.decode({ a: 1 }), left(DE.labeled({ a: 1 }, [['a', DE.leaf(1, 'string')]])))
+        assert.deepStrictEqual(
+          codec.decode(undefined),
+          left(T.make('cannot decode undefined, should be Record<string, unknown>'))
+        )
+        assert.deepStrictEqual(
+          codec.decode({ a: 1 }),
+          left(T.make('optional property "a"', [T.make('cannot decode 1, should be string')]))
+        )
       })
     })
 
@@ -272,8 +297,14 @@ describe('Compat', () => {
 
       it('should reject an invalid value', () => {
         const codec = C.record(C.number)
-        assert.deepStrictEqual(codec.decode(undefined), left(DE.leaf(undefined, 'Record<string, unknown>')))
-        assert.deepStrictEqual(codec.decode({ a: 'a' }), left(DE.labeled({ a: 'a' }, [['a', DE.leaf('a', 'number')]])))
+        assert.deepStrictEqual(
+          codec.decode(undefined),
+          left(T.make('cannot decode undefined, should be Record<string, unknown>'))
+        )
+        assert.deepStrictEqual(
+          codec.decode({ a: 'a' }),
+          left(T.make('key "a"', [T.make('cannot decode "a", should be number')]))
+        )
       })
     })
 
@@ -295,8 +326,11 @@ describe('Compat', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.array(C.string)
-        assert.deepStrictEqual(codec.decode(undefined), left(DE.leaf(undefined, 'Array<unknown>')))
-        assert.deepStrictEqual(codec.decode([1]), left(DE.indexed([1], [[0, DE.leaf(1, 'string')]])))
+        assert.deepStrictEqual(
+          codec.decode(undefined),
+          left(T.make('cannot decode undefined, should be Array<unknown>'))
+        )
+        assert.deepStrictEqual(codec.decode([1]), left(T.make('item 0', [T.make('cannot decode 1, should be string')])))
       })
     })
 
@@ -322,20 +356,17 @@ describe('Compat', () => {
 
       it('should reject an invalid input', () => {
         const codec = C.tuple(C.string, C.number)
-        assert.deepStrictEqual(codec.decode(undefined), left(DE.leaf(undefined, 'Array<unknown>')))
-        assert.deepStrictEqual(codec.decode(['a']), left(DE.indexed(['a'], [[1, DE.leaf(undefined, 'number')]])))
-        assert.deepStrictEqual(codec.decode([1, 2]), left(DE.indexed([1, 2], [[0, DE.leaf(1, 'string')]])))
         assert.deepStrictEqual(
-          codec.decode([1]),
-          left(
-            DE.indexed(
-              [1],
-              [
-                [0, DE.leaf(1, 'string')],
-                [1, DE.leaf(undefined, 'number')]
-              ]
-            )
-          )
+          codec.decode(undefined),
+          left(T.make('cannot decode undefined, should be Array<unknown>'))
+        )
+        assert.deepStrictEqual(
+          codec.decode(['a']),
+          left(T.make('component 1', [T.make('cannot decode undefined, should be number')]))
+        )
+        assert.deepStrictEqual(
+          codec.decode([1, 2]),
+          left(T.make('component 0', [T.make('cannot decode 1, should be string')]))
         )
       })
     })
@@ -364,11 +395,11 @@ describe('Compat', () => {
         const codec = C.intersection(C.type({ a: C.string }), C.type({ b: C.number }))
         assert.deepStrictEqual(
           codec.decode({ a: 'a' }),
-          left(DE.and([DE.labeled({ a: 'a' }, [['b', DE.leaf(undefined, 'number')]])]))
+          left(T.make('required property "b"', [T.make('cannot decode undefined, should be number')]))
         )
         assert.deepStrictEqual(
           codec.decode({ b: 1 }),
-          left(DE.and([DE.labeled({ b: 1 }, [['a', DE.leaf(undefined, 'string')]])]))
+          left(T.make('required property "a"', [T.make('cannot decode undefined, should be string')]))
         )
       })
     })
@@ -402,17 +433,23 @@ describe('Compat', () => {
         const A = C.type({ _tag: C.literal('A'), a: C.string })
         const B = C.type({ _tag: C.literal('B'), b: C.number })
         const codec = sum({ A, B })
-        assert.deepStrictEqual(codec.decode(null), left(DE.leaf(null, 'Record<string, unknown>')))
-        assert.deepStrictEqual(codec.decode({}), left(DE.labeled({}, [['_tag', DE.leaf(undefined, '"A" | "B"')]])))
+        assert.deepStrictEqual(
+          codec.decode(null),
+          left(T.make('cannot decode null, should be Record<string, unknown>'))
+        )
+        assert.deepStrictEqual(
+          codec.decode({}),
+          left(T.make('required property "_tag"', [T.make('cannot decode undefined, should be "A" | "B"')]))
+        )
         assert.deepStrictEqual(
           codec.decode({ _tag: 'A', a: 1 }),
-          left(DE.labeled({ _tag: 'A', a: 1 }, [['a', DE.leaf(1, 'string')]]))
+          left(T.make('required property "a"', [T.make('cannot decode 1, should be string')]))
         )
       })
 
       it('should support empty records', () => {
         const decoder = sum({})
-        assert.deepStrictEqual(decoder.decode({}), left(DE.leaf({}, 'never')))
+        assert.deepStrictEqual(decoder.decode({}), left(T.make('cannot decode {}, should be never')))
       })
     })
 
@@ -449,11 +486,24 @@ describe('Compat', () => {
       it('should reject an invalid input', () => {
         assert.deepStrictEqual(
           codec.decode({ a: 1, b: null }),
-          left(DE.labeled({ a: 1, b: null }, [['a', DE.leaf(1, 'string')]], 'A'))
+          left(T.make('A', [T.make('required property "a"', [T.make('cannot decode 1, should be string')])]))
         )
         assert.deepStrictEqual(
           codec.decode({ a: 'a', b: null }),
-          left(DE.labeled({ a: 'a', b: null }, [['a', DE.leaf('a', 'NumberFromString')]], 'A'))
+          left(T.make('A', [T.make('required property "a"', [T.make('NumberFromString')])]))
+        )
+        assert.deepStrictEqual(
+          codec.decode({ a: '1', b: {} }),
+          left(
+            T.make('A', [
+              T.make('required property "b"', [
+                T.make('should match some schema', [
+                  T.make('cannot decode {}, should be null'),
+                  T.make('A', [T.make('required property "a"', [T.make('cannot decode undefined, should be string')])])
+                ])
+              ])
+            ])
+          )
         )
       })
     })

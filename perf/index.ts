@@ -26,8 +26,8 @@ function make<A>(f: Schema<A>): Schema<A> {
   return f
 }
 
-const TVector = t.tuple([t.number, t.number, t.number])
-const Vector = make(S => S.tuple([S.number, S.number, S.number]))
+const TVector = t.tuple([t.number, t.number])
+const Vector = make(S => S.tuple(S.number, S.number))
 
 const TAsteroid = t.type({
   type: t.literal('asteroid'),
@@ -108,7 +108,7 @@ const Union = make(S =>
   })
 )
 const DUnion = Union(D.decoder)
-const JUnion = Union(J.jsonSchema)()
+const JUnion = Union(J.jsonSchema)
 
 const good = {
   type: 'ship',
@@ -143,7 +143,7 @@ const bad = {
       rank: 'captain',
       home: {
         type: 'planet',
-        location: [5, 6, 7],
+        location: [5, 6],
         mass: 8,
         population: 'a',
         habitable: true
@@ -154,6 +154,9 @@ const bad = {
 
 const ajv = new Ajv({ allErrors: true })
 const validateJSON = ajv.compile(JUnion)
+
+console.log((DUnion.decode(bad) as any).left)
+console.log(validateJSON(bad))
 
 suite
   .add('index (good)', function() {
@@ -180,4 +183,4 @@ suite
   .on('complete', function(this: any) {
     console.log('Fastest is ' + this.filter('fastest').map('name'))
   })
-  .run({ async: true })
+// .run({ async: true })

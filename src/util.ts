@@ -46,26 +46,3 @@ export function map<A, B>(ne: ReadonlyNonEmptyTuple<A>, f: (a: A) => B): Readonl
 export interface ReadonlyNonEmptyArray<A> extends ReadonlyArray<A> {
   readonly 0: A
 }
-
-/**
- * @internal
- */
-export function concat<A>(fx: ReadonlyArray<A>, fy: ReadonlyNonEmptyArray<A>): ReadonlyNonEmptyArray<A>
-export function concat<A>(fx: ReadonlyNonEmptyArray<A>, fy: ReadonlyArray<A>): ReadonlyNonEmptyArray<A>
-export function concat<A>(fx: ReadonlyArray<A>, fy: ReadonlyArray<A>): ReadonlyArray<A> {
-  return fx.concat(fy)
-}
-
-/**
- * @internal
- */
-export function snoc<A>(fx: ReadonlyNonEmptyArray<A>, a: A): ReadonlyNonEmptyArray<A> {
-  return concat(fx, [a])
-}
-
-/**
- * @internal
- */
-export function isNonEmpty<A>(as: ReadonlyArray<A>): as is ReadonlyNonEmptyArray<A> {
-  return as.length > 0
-}

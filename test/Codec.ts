@@ -1,9 +1,9 @@
 import * as assert from 'assert'
 import { left, right } from 'fp-ts/lib/Either'
+import * as T from 'fp-ts/lib/Tree'
 import * as C from '../src/Codec'
 import * as D from '../src/Decoder'
 import * as E from '../src/Encoder'
-import * as DE from '../src/DecodeError'
 
 interface PositiveBrand {
   readonly Positive: unique symbol
@@ -30,8 +30,8 @@ describe('Codec', () => {
   describe('withExpected', () => {
     describe('decode', () => {
       it('should, return the provided expected', () => {
-        const codec = C.withExpected(C.number, () => 'a number')
-        assert.deepStrictEqual(codec.decode('a'), left(DE.leaf('a', 'a number')))
+        const codec = C.withExpected(C.number, () => T.make(`not a number`))
+        assert.deepStrictEqual(codec.decode('a'), left(T.make('not a number')))
       })
     })
   })
