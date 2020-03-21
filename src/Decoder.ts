@@ -4,12 +4,13 @@
 import { Alternative1 as D } from 'fp-ts/lib/Alternative'
 import { Applicative1 } from 'fp-ts/lib/Applicative'
 import * as E from 'fp-ts/lib/Either'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { pipe, pipeable } from 'fp-ts/lib/pipeable'
+import * as T from 'fp-ts/lib/Tree'
 import * as G from './Guard'
 import { Literal } from './Literal'
 import * as S from './Schemable'
 import * as U from './util'
-import * as T from 'fp-ts/lib/Tree'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -19,7 +20,7 @@ import * as T from 'fp-ts/lib/Tree'
  * @since 3.0.0
  */
 export interface Decoder<A> {
-  readonly decode: (u: unknown) => E.Either<T.Tree<string>, A>
+  readonly decode: (u: unknown) => E.Either<NonEmptyArray<T.Tree<string>>, A>
 }
 
 /**
@@ -37,7 +38,7 @@ export type TypeOf<D> = D extends Decoder<infer A> ? A : never
 export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
   return {
     decode: u =>
-      guard.is(u) ? E.right(u) : E.left(T.make(`cannot decode ${JSON.stringify(u)}, should be ${expected}`))
+      guard.is(u) ? E.right(u) : E.left([T.make(`cannot decode ${JSON.stringify(u)}, should be ${expected}`)])
   }
 }
 
@@ -107,13 +108,13 @@ export const UnknownRecord: Decoder<Record<string, unknown>> = fromGuard(G.Unkno
  */
 export function withExpected<A>(
   decoder: Decoder<A>,
-  expected: (actual: unknown, e: T.Tree<string>) => T.Tree<string>
+  expected: (actual: unknown, nea: NonEmptyArray<T.Tree<string>>) => NonEmptyArray<T.Tree<string>>
 ): Decoder<A> {
   return {
     decode: u =>
       pipe(
         decoder.decode(u),
-        E.mapLeft(tree => expected(u, tree))
+        E.mapLeft(nea => expected(u, nea))
       )
   }
 }
@@ -133,7 +134,7 @@ export function refinement<A, B extends A>(
         return e
       }
       const a = e.right
-      return refinement(a) ? E.right(a) : E.left(T.make(`cannot refine ${JSON.stringify(u)}, should be ${expected}`))
+      return refinement(a) ? E.right(a) : E.left([T.make(`cannot refine ${JSON.stringify(u)}, should be ${expected}`)])
     }
   }
 }
@@ -150,7 +151,7 @@ export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string,
       }
       const pe = parser(e.right)
       if (E.isLeft(pe)) {
-        return E.left(T.make(pe.left))
+        return E.left([T.make(pe.left)])
       }
       return pe
     }
@@ -172,7 +173,7 @@ export function type<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decoder<
         for (const k in properties) {
           const e = properties[k].decode(r[k])
           if (E.isLeft(e)) {
-            return E.left(T.make(`required property ${JSON.stringify(k)}`, [e.left]))
+            return E.left([T.make(`required property ${JSON.stringify(k)}`, e.left)])
           } else {
             a[k] = e.right
           }
@@ -205,7 +206,7 @@ export function partial<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decod
             } else {
               const e = properties[k].decode(rk)
               if (E.isLeft(e)) {
-                return E.left(T.make(`optional property ${JSON.stringify(k)}`, [e.left]))
+                return E.left([T.make(`optional property ${JSON.stringify(k)}`, e.left)])
               } else {
                 a[k] = e.right
               }
@@ -233,7 +234,7 @@ export function record<A>(codomain: Decoder<A>): Decoder<Record<string, A>> {
         for (const k in r) {
           const e = codomain.decode(r[k])
           if (E.isLeft(e)) {
-            return E.left(T.make(`key ${JSON.stringify(k)}`, [e.left]))
+            return E.left([T.make(`key ${JSON.stringify(k)}`, e.left)])
           } else {
             a[k] = e.right
           }
@@ -260,7 +261,7 @@ export function array<A>(items: Decoder<A>): Decoder<Array<A>> {
         for (let i = 0; i < len; i++) {
           const e = items.decode(us[i])
           if (E.isLeft(e)) {
-            return E.left(T.make(`item ${i}`, [e.left]))
+            return E.left([T.make(`item ${i}`, e.left)])
           } else {
             a[i] = e.right
           }
@@ -284,11 +285,11 @@ export function tuple<A, B>(left: Decoder<A>, right: Decoder<B>): Decoder<[A, B]
       const us = e.right
       const ea = left.decode(us[0])
       if (E.isLeft(ea)) {
-        return E.left(T.make(`component 0`, [ea.left]))
+        return E.left([T.make(`component 0`, ea.left)])
       }
       const eb = right.decode(us[1])
       if (E.isLeft(eb)) {
-        return E.left(T.make(`component 1`, [eb.left]))
+        return E.left([T.make(`component 1`, eb.left)])
       }
       return E.right([ea.right, eb.right])
     }
@@ -319,12 +320,13 @@ export function intersection<A, B>(left: Decoder<A>, right: Decoder<B>): Decoder
  */
 export function lazy<A>(id: string, f: () => Decoder<A>): Decoder<A> {
   const get = S.memoize<void, Decoder<A>>(f)
-  return withExpected(
-    {
-      decode: u => get().decode(u)
-    },
-    (_, tree) => T.make(id, [tree])
-  )
+  return {
+    decode: u =>
+      pipe(
+        get().decode(u),
+        E.mapLeft(nea => [T.make(id, nea)])
+      )
+  }
 }
 
 /**
@@ -349,11 +351,11 @@ export function sum<T extends string>(
         if (typeof v === 'string' && U.hasOwnProperty(members, v)) {
           return members[v].decode(u)
         }
-        return E.left(
+        return E.left([
           T.make(`required property ${JSON.stringify(tag)}`, [
             T.make(`cannot decode ${JSON.stringify(v)}, should be ${expected}`)
           ])
-        )
+        ])
       }
     }
   }
@@ -367,16 +369,21 @@ export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
 ): Decoder<A[number]> {
   return {
     decode: u => {
-      const forest: T.Forest<string> = []
-      for (let i = 0; i < members.length; i++) {
-        const e = members[i].decode(u)
-        if (E.isRight(e)) {
-          return e
-        } else {
-          forest.push(e.left)
+      const e = members[0].decode(u)
+      if (E.isRight(e)) {
+        return e
+      } else {
+        const forest: NonEmptyArray<T.Tree<string>> = [T.make(`member 0`, e.left)]
+        for (let i = 1; i < members.length; i++) {
+          const e = members[i].decode(u)
+          if (E.isRight(e)) {
+            return e
+          } else {
+            forest.push(T.make(`member ${i}`, e.left))
+          }
         }
+        return E.left(forest)
       }
-      return E.left(T.make('should match some schema', forest))
     }
   }
 }

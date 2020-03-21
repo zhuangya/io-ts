@@ -30,8 +30,8 @@ describe('Codec', () => {
   describe('withExpected', () => {
     describe('decode', () => {
       it('should, return the provided expected', () => {
-        const codec = C.withExpected(C.number, () => T.make(`not a number`))
-        assert.deepStrictEqual(codec.decode('a'), left(T.make('not a number')))
+        const codec = C.withExpected(C.number, () => [T.make(`not a number`)])
+        assert.deepStrictEqual(codec.decode('a'), left([T.make('not a number')]))
       })
     })
   })

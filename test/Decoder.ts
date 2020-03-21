@@ -37,7 +37,7 @@ describe('Decoder', () => {
 
     it('zero', () => {
       const decoder = D.decoder.zero()
-      assert.deepStrictEqual(decoder.decode(null), E.left(T.make('cannot decode null, should be never')))
+      assert.deepStrictEqual(decoder.decode(null), E.left([T.make('cannot decode null, should be never')]))
     })
   })
 
@@ -52,12 +52,10 @@ describe('Decoder', () => {
       const decoder = D.union([D.string, D.number])
       assert.deepStrictEqual(
         decoder.decode(true),
-        E.left(
-          T.make('should match some schema', [
-            T.make('cannot decode true, should be string'),
-            T.make('cannot decode true, should be number')
-          ])
-        )
+        E.left([
+          T.make('member 0', [T.make('cannot decode true, should be string')]),
+          T.make('member 1', [T.make('cannot decode true, should be number')])
+        ])
       )
     })
   })
