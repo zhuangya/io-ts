@@ -1,6 +1,6 @@
 ---
 title: Decoder.ts
-nav_order: 6
+nav_order: 5
 parent: Modules
 ---
 
@@ -32,7 +32,6 @@ Added in v3.0.0
 - [literals](#literals)
 - [literalsOr](#literalsor)
 - [map](#map)
-- [mapLeft](#mapleft)
 - [never](#never)
 - [number](#number)
 - [parse](#parse)
@@ -54,7 +53,7 @@ Added in v3.0.0
 
 ```ts
 export interface Decoder<A> {
-  readonly decode: (u: unknown) => E.Either<DE.DecodeError, A>
+  readonly decode: (u: unknown) => E.Either<NonEmptyArray<T.Tree<string>>, A>
 }
 ```
 
@@ -155,7 +154,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(items: Decoder<A>, id?: string): Decoder<Array<A>> { ... }
+export function array<A>(items: Decoder<A>): Decoder<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -175,7 +174,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const decoder: Applicative1<URI> & Alternative1<URI> & S.Schemable<URI> & S.WithUnion<URI> = ...
+export const decoder: Applicative1<URI> & D<URI> & S.Schemable<URI> & S.WithUnion<URI> = ...
 ```
 
 Added in v3.0.0
@@ -185,7 +184,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function fromGuard<A>(guard: G.Guard<A>, expected?: string): Decoder<A> { ... }
+export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -195,7 +194,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(left: Decoder<A>, right: Decoder<B>, id?: string): Decoder<A & B> { ... }
+export function intersection<A, B>(left: Decoder<A>, right: Decoder<B>): Decoder<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -215,7 +214,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends Literal>(value: A, id?: string): Decoder<A> { ... }
+export function literal<A extends Literal>(value: A): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -225,7 +224,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: U.ReadonlyNonEmptyArray<A>, id?: string): Decoder<A> { ... }
+export function literals<A extends Literal>(values: U.ReadonlyNonEmptyArray<A>): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -235,11 +234,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(
-  values: U.ReadonlyNonEmptyArray<A>,
-  or: Decoder<B>,
-  id?: string
-): Decoder<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: U.ReadonlyNonEmptyArray<A>, or: Decoder<B>): Decoder<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -250,16 +245,6 @@ Added in v3.0.0
 
 ```ts
 <A, B>(f: (a: A) => B) => (fa: Decoder<A>) => Decoder<B>
-```
-
-Added in v3.0.0
-
-# mapLeft
-
-**Signature**
-
-```ts
-export function mapLeft<A>(decoder: Decoder<A>, f: (e: DE.DecodeError) => DE.DecodeError): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -289,7 +274,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string, B>, _id?: string): Decoder<B> { ... }
+export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string, B>): Decoder<B> { ... }
 ```
 
 Added in v3.0.0
@@ -299,7 +284,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(properties: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<Partial<A>> { ... }
+export function partial<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decoder<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -309,7 +294,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codomain: Decoder<A>, id?: string): Decoder<Record<string, A>> { ... }
+export function record<A>(codomain: Decoder<A>): Decoder<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -319,7 +304,11 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(from: Decoder<A>, refinement: (a: A) => a is B, id?: string): Decoder<B> { ... }
+export function refinement<A, B extends A>(
+  from: Decoder<A>,
+  refinement: (a: A) => a is B,
+  expected: string
+): Decoder<B> { ... }
 ```
 
 Added in v3.0.0
@@ -341,7 +330,7 @@ Added in v3.0.0
 ```ts
 export function sum<T extends string>(
   tag: T
-): <A>(members: { [K in keyof A]: Decoder<A[K] & Record<T, K>> }, id?: string) => Decoder<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: Decoder<A[K] & Record<T, K>> }) => Decoder<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0
@@ -351,7 +340,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B>(left: Decoder<A>, right: Decoder<B>, id?: string): Decoder<[A, B]> { ... }
+export function tuple<A, B>(left: Decoder<A>, right: Decoder<B>): Decoder<[A, B]> { ... }
 ```
 
 Added in v3.0.0
@@ -361,7 +350,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(properties: { [K in keyof A]: Decoder<A[K]> }, id?: string): Decoder<A> { ... }
+export function type<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decoder<A> { ... }
 ```
 
 Added in v3.0.0
@@ -372,8 +361,7 @@ Added in v3.0.0
 
 ```ts
 export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: Decoder<A[K]> },
-  id?: string
+  members: { [K in keyof A]: Decoder<A[K]> }
 ): Decoder<A[number]> { ... }
 ```
 
@@ -384,7 +372,10 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function withExpected<A>(decoder: Decoder<A>, message: (e: DE.DecodeError) => string): Decoder<A> { ... }
+export function withExpected<A>(
+  decoder: Decoder<A>,
+  expected: (actual: unknown, nea: NonEmptyArray<T.Tree<string>>) => NonEmptyArray<T.Tree<string>>
+): Decoder<A> { ... }
 ```
 
 Added in v3.0.0

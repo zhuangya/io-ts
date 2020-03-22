@@ -448,6 +448,9 @@ export const decoder: Applicative1<URI> & D<URI> & S.Schemable<URI> & S.WithUnio
 const { alt, ap, apFirst, apSecond, map } = pipeable(decoder)
 
 export {
+  /**
+   * @since 3.0.0
+   */
   alt,
   /**
    * @since 3.0.0

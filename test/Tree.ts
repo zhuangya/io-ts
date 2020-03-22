@@ -1,16 +1,17 @@
 import * as assert from 'assert'
 import * as E from 'fp-ts/lib/Either'
 import * as D from '../src/Decoder'
-import { mapLeft } from '../src/Tree'
+import { toString } from '../src/Tree'
+import { pipe } from 'fp-ts/lib/pipeable'
 
 describe('Tree', () => {
   it('should draw a tree', () => {
     const codec = D.type({
       a: D.string
     })
-    assert.deepStrictEqual(mapLeft(codec.decode({ a: 'a' })), E.right({ a: 'a' }))
+    assert.deepStrictEqual(pipe(codec.decode({ a: 'a' }), E.mapLeft(toString)), E.right({ a: 'a' }))
     assert.deepStrictEqual(
-      mapLeft(codec.decode({ a: 1 })),
+      pipe(codec.decode({ a: 1 }), E.mapLeft(toString)),
       E.left(`required property "a"
 └─ cannot decode 1, should be string`)
     )

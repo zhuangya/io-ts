@@ -227,7 +227,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(from: Compat<A>, refinement: (a: A) => a is B, id?: string): Compat<B> { ... }
+export function refinement<A, B extends A>(from: Compat<A>, refinement: (a: A) => a is B, id: string): Compat<B> { ... }
 ```
 
 Added in v3.0.0
