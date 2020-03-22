@@ -275,9 +275,10 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyArray<unknown>>(
-  ...members: { [K in keyof A]: Compat<A[K]> }
-): Compat<A[number]> { ... }
+export function union<A, B extends ReadonlyArray<unknown>>(
+  member: Compat<A>,
+  ...members: { [K in keyof B]: Compat<B[K]> }
+): Compat<A | B[number]> { ... }
 ```
 
 Added in v3.0.0

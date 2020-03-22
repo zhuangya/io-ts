@@ -126,6 +126,5 @@ const B: Schema<B> = make(S =>
 //
 // union
 //
-make(S => S.union()) // $ExpectType Schema<never>
 make(S => S.union(S.string)) // $ExpectType Schema<string>
 make(S => S.union(S.string, S.number)) // $ExpectType Schema<string | number>

@@ -360,9 +360,10 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyArray<unknown>>(
-  ...members: { [K in keyof A]: Decoder<A[K]> }
-): Decoder<A[number]> { ... }
+export function union<A, B extends ReadonlyArray<unknown>>(
+  member: Decoder<A>,
+  ...members: { [K in keyof B]: Decoder<B[K]> }
+): Decoder<A | B[number]> { ... }
 ```
 
 Added in v3.0.0

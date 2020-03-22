@@ -259,14 +259,16 @@ export function lazy<A>(id: string, f: () => Expression<A>): Expression<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends ReadonlyArray<unknown>>(
-  ...members: { [K in keyof A]: Expression<A[K]> }
-): Expression<A[number]> {
+export function union<A, B extends ReadonlyArray<unknown>>(
+  member: Expression<A>,
+  ...members: { [K in keyof B]: Expression<B[K]> }
+): Expression<A | B[number]> {
+  const ms = [member, ...members]
   return {
     expression: () =>
       C.make(
         ts.createCall(ts.createPropertyAccess(schemable, 'union'), undefined, [
-          ts.createArrayLiteral(members.map(member => member.expression()))
+          ts.createArrayLiteral(ms.map(m => m.expression()))
         ])
       )
   }

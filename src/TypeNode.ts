@@ -220,11 +220,13 @@ export function lazy<A>(id: string, f: () => TypeNode<A>): TypeNode<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends ReadonlyArray<unknown>>(
-  ...members: { [K in keyof A]: TypeNode<A[K]> }
-): TypeNode<A[number]> {
+export function union<A, B extends ReadonlyArray<unknown>>(
+  member: TypeNode<A>,
+  ...members: { [K in keyof B]: TypeNode<B[K]> }
+): TypeNode<A | B[number]> {
+  const ms = [member, ...members]
   return {
-    typeNode: () => C.make(ts.createUnionTypeNode(members.map(typeNode => typeNode.typeNode())))
+    typeNode: () => C.make(ts.createUnionTypeNode(ms.map(typeNode => typeNode.typeNode())))
   }
 }
 

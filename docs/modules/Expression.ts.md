@@ -272,9 +272,10 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyArray<unknown>>(
-  ...members: { [K in keyof A]: Expression<A[K]> }
-): Expression<A[number]> { ... }
+export function union<A, B extends ReadonlyArray<unknown>>(
+  member: Expression<A>,
+  ...members: { [K in keyof B]: Expression<B[K]> }
+): Expression<A | B[number]> { ... }
 ```
 
 Added in v3.0.0

@@ -365,22 +365,23 @@ export function sum<T extends string>(
 /**
  * @since 3.0.0
  */
-export function union<A extends ReadonlyArray<unknown>>(
-  ...members: { [K in keyof A]: Decoder<A[K]> }
-): Decoder<A[number]> {
+export function union<A, B extends ReadonlyArray<unknown>>(
+  member: Decoder<A>,
+  ...members: { [K in keyof B]: Decoder<B[K]> }
+): Decoder<A | B[number]> {
   return {
     decode: u => {
-      const e = members[0].decode(u)
+      const e = member.decode(u)
       if (E.isRight(e)) {
         return e
       } else {
         const forest: NonEmptyArray<T.Tree<string>> = [T.make(`member 0`, e.left)]
-        for (let i = 1; i < members.length; i++) {
+        for (let i = 0; i < members.length; i++) {
           const e = members[i].decode(u)
           if (E.isRight(e)) {
             return e
           } else {
-            forest.push(T.make(`member ${i}`, e.left))
+            forest.push(T.make(`member ${i + 1}`, e.left))
           }
         }
         return E.left(forest)

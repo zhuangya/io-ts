@@ -41,7 +41,6 @@ Schemas:
   - ArbitraryMutation
   - Compat
   - Decoder
-  - DSL
   - Guard
   - Expression
   - JsonSchema

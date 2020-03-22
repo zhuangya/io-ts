@@ -177,9 +177,13 @@ export function intersection<A, B>(left: Guard<A>, right: Guard<B>): Guard<A & B
 /**
  * @since 3.0.0
  */
-export function union<A extends ReadonlyArray<unknown>>(...members: { [K in keyof A]: Guard<A[K]> }): Guard<A[number]> {
+export function union<A, B extends ReadonlyArray<unknown>>(
+  member: Guard<A>,
+  ...members: { [K in keyof B]: Guard<B[K]> }
+): Guard<A | B[number]> {
+  const ms = [member, ...members]
   return {
-    is: (u: unknown): u is A[number] => members.some(guard => guard.is(u))
+    is: (u: unknown): u is A | B[number] => ms.some(guard => guard.is(u))
   }
 }
 

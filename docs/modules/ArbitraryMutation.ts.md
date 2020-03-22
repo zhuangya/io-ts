@@ -264,9 +264,10 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyArray<unknown>>(
-  ...members: { [K in keyof A]: ArbitraryMutation<A[K]> }
-): ArbitraryMutation<A[number]> { ... }
+export function union<A, B extends ReadonlyArray<unknown>>(
+  member: ArbitraryMutation<A>,
+  ...members: { [K in keyof B]: ArbitraryMutation<B[K]> }
+): ArbitraryMutation<B[number]> { ... }
 ```
 
 Added in v3.0.0

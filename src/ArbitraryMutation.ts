@@ -230,12 +230,13 @@ export function lazy<A>(f: () => ArbitraryMutation<A>): ArbitraryMutation<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends ReadonlyArray<unknown>>(
-  ...members: { [K in keyof A]: ArbitraryMutation<A[K]> }
-): ArbitraryMutation<A[number]> {
+export function union<A, B extends ReadonlyArray<unknown>>(
+  member: ArbitraryMutation<A>,
+  ...members: { [K in keyof B]: ArbitraryMutation<B[K]> }
+): ArbitraryMutation<B[number]> {
   const mutations = members.map(member => member.mutation)
   const arbitraries = members.map(member => member.arbitrary)
-  return make(A.union(...mutations), A.union(...arbitraries))
+  return make(A.union(member.mutation, ...mutations), A.union(member.arbitrary, ...arbitraries))
 }
 
 // -------------------------------------------------------------------------------------
