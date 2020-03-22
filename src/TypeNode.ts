@@ -5,7 +5,7 @@ import * as C from 'fp-ts/lib/Const'
 import * as ts from 'typescript'
 import { Literal, fold } from './Literal'
 import * as S from './Schemable'
-import { ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
+import { ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -218,8 +218,8 @@ export function lazy<A>(id: string, f: () => TypeNode<A>): TypeNode<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: TypeNode<A[K]> }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: TypeNode<A[K]> }
 ): TypeNode<A[number]> {
   return {
     typeNode: () => C.make(ts.createUnionTypeNode(members.map(typeNode => typeNode.typeNode())))
@@ -268,4 +268,21 @@ export const typeNode: S.Schemable<URI> & S.WithUnion<URI> = {
   sum,
   lazy,
   union
+}
+
+// -------------------------------------------------------------------------------------
+// helpers
+// -------------------------------------------------------------------------------------
+
+const printer = ts.createPrinter({
+  newLine: ts.NewLineKind.LineFeed
+})
+
+const source = ts.createSourceFile('', '', ts.ScriptTarget.Latest)
+
+/**
+ * @since 3.0.0
+ */
+export function print(node: ts.Node): string {
+  return printer.printNode(ts.EmitHint.Unspecified, node, source)
 }

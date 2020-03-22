@@ -6,7 +6,7 @@ import * as R from 'fp-ts/lib/Record'
 import { JSONSchema7 } from 'json-schema'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
+import { ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -209,8 +209,8 @@ export function lazy<A>(id: string, f: () => JsonSchema<A>): JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: JsonSchema<A[K]> }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: JsonSchema<A[K]> }
 ): JsonSchema<A[number]> {
   return {
     compile: lazy => C.make({ anyOf: members.map(jsonSchema => jsonSchema.compile(lazy)) })

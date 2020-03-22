@@ -12,7 +12,7 @@ import * as D from './Decoder'
 import * as G from './Guard'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
+import { ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -146,12 +146,12 @@ export function intersection<A, B>(left: Compat<A>, right: Compat<B>): Compat<A 
 /**
  * @since 3.0.0
  */
-export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: Compat<A[K]> }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: Compat<A[K]> }
 ): Compat<A[number]> {
   return {
-    is: G.guard.union(members).is,
-    decode: D.decoder.union(members).decode,
+    is: G.guard.union(...members).is,
+    decode: D.decoder.union(...members).decode,
     encode: a => {
       for (const compat of members) {
         if (compat.is(a)) {

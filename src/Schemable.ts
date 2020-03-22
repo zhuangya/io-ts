@@ -3,7 +3,7 @@
  */
 import { Kind, URIS } from 'fp-ts/lib/HKT'
 import { Literal } from './Literal'
-import { ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
+import { ReadonlyNonEmptyArray } from './util'
 
 /**
  * @since 3.0.0
@@ -34,8 +34,8 @@ export interface Schemable<S extends URIS> {
  * @since 3.0.0
  */
 export interface WithUnion<S extends URIS> {
-  readonly union: <A extends ReadonlyNonEmptyTuple<unknown>>(
-    members: { [K in keyof A]: Kind<S, A[K]> }
+  readonly union: <A extends ReadonlyArray<unknown>>(
+    ...members: { [K in keyof A]: Kind<S, A[K]> }
   ) => Kind<S, A[number]>
 }
 

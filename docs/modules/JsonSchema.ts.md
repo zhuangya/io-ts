@@ -1,6 +1,6 @@
 ---
 title: JsonSchema.ts
-nav_order: 12
+nav_order: 11
 parent: Modules
 ---
 
@@ -248,8 +248,8 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: JsonSchema<A[K]> }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: JsonSchema<A[K]> }
 ): JsonSchema<A[number]> { ... }
 ```
 

@@ -62,7 +62,7 @@ export function literals<A extends Literal>(values: U.ReadonlyNonEmptyArray<A>):
  * @since 3.0.0
  */
 export function literalsOr<A extends Literal, B>(values: U.ReadonlyNonEmptyArray<A>, or: Decoder<B>): Decoder<A | B> {
-  return union([literals(values), or])
+  return union(literals(values), or)
 }
 
 // -------------------------------------------------------------------------------------
@@ -364,8 +364,8 @@ export function sum<T extends string>(
 /**
  * @since 3.0.0
  */
-export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: Decoder<A[K]> }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: Decoder<A[K]> }
 ): Decoder<A[number]> {
   return {
     decode: u => {

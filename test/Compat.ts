@@ -518,7 +518,7 @@ describe('Compat', () => {
   describe('union', () => {
     describe('encode', () => {
       it('should encode a value', () => {
-        const compat = C.union([C.string, C.number])
+        const compat = C.union(C.string, C.number)
         assert.deepStrictEqual(compat.encode('a'), 'a')
         assert.deepStrictEqual(compat.encode(1), 1)
       })

@@ -43,13 +43,13 @@ describe('Decoder', () => {
 
   describe('union', () => {
     it('should decode a valid input', () => {
-      const decoder = D.union([D.string, D.number])
+      const decoder = D.union(D.string, D.number)
       assert.deepStrictEqual(decoder.decode('a'), E.right('a'))
       assert.deepStrictEqual(decoder.decode(1), E.right(1))
     })
 
     it('should reject an invalid input', () => {
-      const decoder = D.union([D.string, D.number])
+      const decoder = D.union(D.string, D.number)
       assert.deepStrictEqual(
         decoder.decode(true),
         E.left([

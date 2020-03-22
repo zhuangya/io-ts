@@ -149,13 +149,13 @@ describe('Guard', () => {
 
   describe('union', () => {
     it('should accepts valid inputs', () => {
-      const guard = G.union([G.string, G.number])
+      const guard = G.union(G.string, G.number)
       assert.strictEqual(guard.is('a'), true)
       assert.strictEqual(guard.is(1), true)
     })
 
     it('should rejects invalid inputs', () => {
-      const guard = G.union([G.string, G.number])
+      const guard = G.union(G.string, G.number)
       assert.strictEqual(guard.is(undefined), false)
     })
   })
@@ -179,7 +179,7 @@ describe('Guard', () => {
     })
 
     it('should rejects invalid inputs', () => {
-      const guard = G.union([G.string, G.number])
+      const guard = G.union(G.string, G.number)
       assert.strictEqual(guard.is(undefined), false)
     })
   })

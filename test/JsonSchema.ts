@@ -127,7 +127,7 @@ describe('JsonSchema', () => {
   })
 
   it('union', () => {
-    const validate = ajv.compile(J.union([J.string, J.number]).compile(false))
+    const validate = ajv.compile(J.union(J.string, J.number).compile(false))
     assert.strictEqual(validate('a'), true)
     assert.strictEqual(validate(1), true)
     assert.strictEqual(validate(true), false)

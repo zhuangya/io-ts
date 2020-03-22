@@ -139,7 +139,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(items: Codec<A>, id?: string): Codec<Array<A>> { ... }
+export function array<A>(items: Codec<A>): Codec<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -169,7 +169,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(left: Codec<A>, right: Codec<B>, id?: string): Codec<A & B> { ... }
+export function intersection<A, B>(left: Codec<A>, right: Codec<B>): Codec<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -189,7 +189,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends Literal>(value: A, id?: string): Codec<A> { ... }
+export function literal<A extends Literal>(value: A): Codec<A> { ... }
 ```
 
 Added in v3.0.0
@@ -199,7 +199,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>, id?: string): Codec<A> { ... }
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Codec<A> { ... }
 ```
 
 Added in v3.0.0
@@ -209,11 +209,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(
-  values: ReadonlyNonEmptyArray<A>,
-  or: Codec<B>,
-  id?: string
-): Codec<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Codec<B>): Codec<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -243,7 +239,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(properties: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> { ... }
+export function partial<A>(properties: { [K in keyof A]: Codec<A[K]> }): Codec<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -253,7 +249,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codomain: Codec<A>, id?: string): Codec<Record<string, A>> { ... }
+export function record<A>(codomain: Codec<A>): Codec<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -263,7 +259,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(from: Codec<A>, refinement: (a: A) => a is B, id: string): Codec<B> { ... }
+export function refinement<A, B extends A>(from: Codec<A>, refinement: (a: A) => a is B, expected: string): Codec<B> { ... }
 ```
 
 Added in v3.0.0
@@ -285,7 +281,7 @@ Added in v3.0.0
 ```ts
 export function sum<T extends string>(
   tag: T
-): <A>(members: { [K in keyof A]: Codec<A[K] & Record<T, K>> }, id?: string) => Codec<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: Codec<A[K] & Record<T, K>> }) => Codec<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0
@@ -295,7 +291,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B>(left: Codec<A>, right: Codec<B>, id?: string): Codec<[A, B]> { ... }
+export function tuple<A, B>(left: Codec<A>, right: Codec<B>): Codec<[A, B]> { ... }
 ```
 
 Added in v3.0.0
@@ -305,7 +301,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(properties: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> { ... }
+export function type<A>(properties: { [K in keyof A]: Codec<A[K]> }): Codec<A> { ... }
 ```
 
 Added in v3.0.0

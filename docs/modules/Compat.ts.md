@@ -103,7 +103,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(items: Compat<A>, id?: string): Compat<Array<A>> { ... }
+export function array<A>(items: Compat<A>): Compat<Array<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -133,7 +133,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(left: Compat<A>, right: Compat<B>, id?: string): Compat<A & B> { ... }
+export function intersection<A, B>(left: Compat<A>, right: Compat<B>): Compat<A & B> { ... }
 ```
 
 Added in v3.0.0
@@ -153,7 +153,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends Literal>(value: A, id?: string): Compat<A> { ... }
+export function literal<A extends Literal>(value: A): Compat<A> { ... }
 ```
 
 Added in v3.0.0
@@ -163,7 +163,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>, id?: string): Compat<A> { ... }
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Compat<A> { ... }
 ```
 
 Added in v3.0.0
@@ -173,11 +173,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literalsOr<A extends Literal, B>(
-  values: ReadonlyNonEmptyArray<A>,
-  or: Compat<B>,
-  id?: string
-): Compat<A | B> { ... }
+export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Compat<B>): Compat<A | B> { ... }
 ```
 
 Added in v3.0.0
@@ -207,7 +203,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(properties: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> { ... }
+export function partial<A>(properties: { [K in keyof A]: Compat<A[K]> }): Compat<Partial<A>> { ... }
 ```
 
 Added in v3.0.0
@@ -217,7 +213,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codomain: Compat<A>, id?: string): Compat<Record<string, A>> { ... }
+export function record<A>(codomain: Compat<A>): Compat<Record<string, A>> { ... }
 ```
 
 Added in v3.0.0
@@ -227,7 +223,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(from: Compat<A>, refinement: (a: A) => a is B, id: string): Compat<B> { ... }
+export function refinement<A, B extends A>(from: Compat<A>, refinement: (a: A) => a is B, expected: string): Compat<B> { ... }
 ```
 
 Added in v3.0.0
@@ -249,7 +245,7 @@ Added in v3.0.0
 ```ts
 export function sum<T extends string>(
   tag: T
-): <A>(members: { [K in keyof A]: Compat<A[K] & Record<T, K>> }, id?: string) => Compat<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: Compat<A[K] & Record<T, K>> }) => Compat<A[keyof A]> { ... }
 ```
 
 Added in v3.0.0
@@ -259,7 +255,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B>(left: Compat<A>, right: Compat<B>, id?: string): Compat<[A, B]> { ... }
+export function tuple<A, B>(left: Compat<A>, right: Compat<B>): Compat<[A, B]> { ... }
 ```
 
 Added in v3.0.0
@@ -269,7 +265,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(properties: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> { ... }
+export function type<A>(properties: { [K in keyof A]: Compat<A[K]> }): Compat<A> { ... }
 ```
 
 Added in v3.0.0
@@ -279,9 +275,8 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: Compat<A[K]> },
-  id?: string
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: Compat<A[K]> }
 ): Compat<A[number]> { ... }
 ```
 

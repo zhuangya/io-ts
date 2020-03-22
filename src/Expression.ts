@@ -5,7 +5,7 @@ import * as C from 'fp-ts/lib/Const'
 import * as ts from 'typescript'
 import { Literal, fold } from './Literal'
 import * as S from './Schemable'
-import { ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
+import { ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -253,8 +253,8 @@ export function lazy<A>(id: string, f: () => Expression<A>): Expression<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: Expression<A[K]> }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: Expression<A[K]> }
 ): Expression<A[number]> {
   return {
     expression: () =>
@@ -308,4 +308,21 @@ export const expression: S.Schemable<URI> & S.WithUnion<URI> = {
   sum,
   lazy,
   union
+}
+
+// -------------------------------------------------------------------------------------
+// helpers
+// -------------------------------------------------------------------------------------
+
+const printer = ts.createPrinter({
+  newLine: ts.NewLineKind.LineFeed
+})
+
+const source = ts.createSourceFile('', '', ts.ScriptTarget.Latest)
+
+/**
+ * @since 3.0.0
+ */
+export function print(node: ts.Node): string {
+  return printer.printNode(ts.EmitHint.Unspecified, node, source)
 }

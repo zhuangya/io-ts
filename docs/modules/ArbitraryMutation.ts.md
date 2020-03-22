@@ -262,8 +262,8 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends U.ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: ArbitraryMutation<A[K]> }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ): ArbitraryMutation<A[number]> { ... }
 ```
 

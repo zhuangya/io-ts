@@ -4,7 +4,7 @@
 import * as fc from 'fast-check'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { intersect, ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
+import { intersect, ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -154,8 +154,8 @@ export function lazy<A>(f: () => Arbitrary<A>): Arbitrary<A> {
 /**
  * @since 3.0.0
  */
-export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: Arbitrary<A[K]> }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: Arbitrary<A[K]> }
 ): Arbitrary<A[number]> {
   return fc.oneof(...members)
 }

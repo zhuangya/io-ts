@@ -1,9 +1,8 @@
 import * as assert from 'assert'
 import * as T from '../src/TypeNode'
-import { printNode } from '../src/transformers'
 
 function assertTypeNode<A>(typeNode: T.TypeNode<A>, expected: string): void {
-  assert.strictEqual(printNode(typeNode.typeNode()), expected)
+  assert.strictEqual(T.print(typeNode.typeNode()), expected)
 }
 
 describe('TypeNode', () => {
@@ -36,7 +35,7 @@ describe('TypeNode', () => {
   })
 
   it('union', () => {
-    assertTypeNode(T.union([T.string, T.number]), 'string | number')
+    assertTypeNode(T.union(T.string, T.number), 'string | number')
   })
 
   it('intersection', () => {

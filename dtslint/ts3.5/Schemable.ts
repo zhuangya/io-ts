@@ -1,6 +1,5 @@
 import { Kind, URIS } from 'fp-ts/lib/HKT'
 import * as S from '../../src/Schemable'
-import { left, right } from 'fp-ts/lib/Either'
 
 interface Schema<A> {
   <S extends URIS>(S: S.Schemable<S> & S.WithUnion<S>): Kind<S, A>
@@ -124,4 +123,4 @@ const B: Schema<B> = make(S =>
 //
 // union
 //
-make(S => S.union([S.string, S.number])) // $ExpectType Schema<string | number>
+make(S => S.union(S.string, S.number)) // $ExpectType Schema<string | number>

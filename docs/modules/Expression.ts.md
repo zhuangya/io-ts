@@ -1,6 +1,6 @@
 ---
 title: Expression.ts
-nav_order: 9
+nav_order: 8
 parent: Modules
 ---
 
@@ -28,6 +28,7 @@ Added in v3.0.0
 - [literalsOr](#literalsor)
 - [number](#number)
 - [partial](#partial)
+- [print](#print)
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
@@ -202,6 +203,16 @@ export function partial<A>(properties: { [K in keyof A]: Expression<A[K]> }): Ex
 
 Added in v3.0.0
 
+# print
+
+**Signature**
+
+```ts
+export function print(node: ts.Node): string { ... }
+```
+
+Added in v3.0.0
+
 # record
 
 **Signature**
@@ -259,8 +270,8 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: Expression<A[K]> }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: Expression<A[K]> }
 ): Expression<A[number]> { ... }
 ```
 

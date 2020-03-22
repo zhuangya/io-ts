@@ -1,9 +1,8 @@
 import * as assert from 'assert'
 import * as E from '../src/Expression'
-import { printNode } from '../src/transformers'
 
 function assertExpression<A>(expression: E.Expression<A>, expected: string): void {
-  assert.deepStrictEqual(printNode(expression.expression()), expected)
+  assert.deepStrictEqual(E.print(expression.expression()), expected)
 }
 
 describe('Expression', () => {
@@ -40,7 +39,7 @@ describe('Expression', () => {
   })
 
   it('union', () => {
-    assertExpression(E.union([E.string, E.number]), 'S.union([S.string, S.number])')
+    assertExpression(E.union(E.string, E.number), 'S.union([S.string, S.number])')
   })
 
   it('intersection', () => {

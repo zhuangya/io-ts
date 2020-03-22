@@ -147,6 +147,6 @@ describe('Arbitrary', () => {
   })
 
   it('union', () => {
-    assertWithUnion(Sc.make(S => S.union([S.type({ a: S.string }), S.type({ b: S.number })])))
+    assertWithUnion(Sc.make(S => S.union(S.type({ a: S.string }), S.type({ b: S.number }))))
   })
 })

@@ -1,6 +1,6 @@
 ---
 title: Guard.ts
-nav_order: 10
+nav_order: 9
 parent: Modules
 ---
 
@@ -267,9 +267,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: Guard<A[K]> }
-): Guard<A[number]> { ... }
+export function union<A extends ReadonlyArray<unknown>>(...members: { [K in keyof A]: Guard<A[K]> }): Guard<A[number]> { ... }
 ```
 
 Added in v3.0.0

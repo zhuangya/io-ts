@@ -29,18 +29,6 @@ export function intersect<A, B>(a: A, b: B): A & B {
 
 /**
  * @internal
- */
-export type ReadonlyNonEmptyTuple<A> = readonly [A, ...ReadonlyArray<A>]
-
-/**
- * @internal
- */
-export function map<A, B>(ne: ReadonlyNonEmptyTuple<A>, f: (a: A) => B): ReadonlyNonEmptyTuple<B> {
-  return [f(ne[0]), ...ne.slice(1).map(f)]
-}
-
-/**
- * @internal
  * @since 3.0.0
  */
 export interface ReadonlyNonEmptyArray<A> extends ReadonlyArray<A> {

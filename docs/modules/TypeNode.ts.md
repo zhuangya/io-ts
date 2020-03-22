@@ -1,6 +1,6 @@
 ---
 title: TypeNode.ts
-nav_order: 20
+nav_order: 18
 parent: Modules
 ---
 
@@ -27,6 +27,7 @@ Added in v3.0.0
 - [literalsOr](#literalsor)
 - [number](#number)
 - [partial](#partial)
+- [print](#print)
 - [record](#record)
 - [string](#string)
 - [sum](#sum)
@@ -189,6 +190,16 @@ export function partial<A>(properties: { [K in keyof A]: TypeNode<A[K]> }): Type
 
 Added in v3.0.0
 
+# print
+
+**Signature**
+
+```ts
+export function print(node: ts.Node): string { ... }
+```
+
+Added in v3.0.0
+
 # record
 
 **Signature**
@@ -256,8 +267,8 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: TypeNode<A[K]> }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: TypeNode<A[K]> }
 ): TypeNode<A[number]> { ... }
 ```
 

@@ -3,7 +3,7 @@
  */
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { hasOwnProperty, ReadonlyNonEmptyArray, ReadonlyNonEmptyTuple } from './util'
+import { hasOwnProperty, ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -42,7 +42,7 @@ export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): G
  * @since 3.0.0
  */
 export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Guard<B>): Guard<A | B> {
-  return union([literals(values), or])
+  return union(literals(values), or)
 }
 
 // -------------------------------------------------------------------------------------
@@ -175,9 +175,7 @@ export function intersection<A, B>(left: Guard<A>, right: Guard<B>): Guard<A & B
 /**
  * @since 3.0.0
  */
-export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: Guard<A[K]> }
-): Guard<A[number]> {
+export function union<A extends ReadonlyArray<unknown>>(...members: { [K in keyof A]: Guard<A[K]> }): Guard<A[number]> {
   return {
     is: (u: unknown): u is A[number] => members.some(guard => guard.is(u))
   }
