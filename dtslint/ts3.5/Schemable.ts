@@ -76,7 +76,10 @@ make(S => S.array(S.number)) // $ExpectType Schema<number[]>
 //
 // tuple
 //
+make(S => S.tuple()) // $ExpectType Schema<[]>
+make(S => S.tuple(S.string)) // $ExpectType Schema<[string]>
 make(S => S.tuple(S.string, S.number)) // $ExpectType Schema<[string, number]>
+make(S => S.tuple(S.string, S.number, S.boolean)) // $ExpectType Schema<[string, number, boolean]>
 
 //
 // intersection
@@ -123,4 +126,6 @@ const B: Schema<B> = make(S =>
 //
 // union
 //
+make(S => S.union()) // $ExpectType Schema<never>
+make(S => S.union(S.string)) // $ExpectType Schema<string>
 make(S => S.union(S.string, S.number)) // $ExpectType Schema<string | number>

@@ -177,8 +177,8 @@ export function array<A>(items: Codec<A>): Codec<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B>(left: Codec<A>, right: Codec<B>): Codec<[A, B]> {
-  return make(D.decoder.tuple(left, right), E.encoder.tuple(left, right))
+export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Codec<A[K]> }): Codec<A> {
+  return make(D.decoder.tuple<A>(...(components as any)), E.encoder.tuple<A>(...(components as any)))
 }
 
 /**
@@ -244,7 +244,7 @@ export const codec: Invariant1<URI> & S.Schemable<URI> = {
   partial,
   record,
   array,
-  tuple,
+  tuple: tuple as S.Schemable<URI>['tuple'],
   intersection,
   sum,
   lazy

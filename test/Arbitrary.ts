@@ -116,6 +116,8 @@ describe('Arbitrary', () => {
   })
 
   it('tuple', () => {
+    assert(make(S => S.tuple()))
+    assert(make(S => S.tuple(S.string)))
     assert(make(S => S.tuple(S.string, S.number)))
   })
 

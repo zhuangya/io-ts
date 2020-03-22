@@ -132,8 +132,8 @@ export function array<A>(items: Compat<A>): Compat<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B>(left: Compat<A>, right: Compat<B>): Compat<[A, B]> {
-  return make(C.codec.tuple(left, right), G.guard.tuple(left, right))
+export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Compat<A[K]> }): Compat<A> {
+  return make(C.codec.tuple<A>(...(components as any)), G.guard.tuple<A>(...(components as any)))
 }
 
 /**
@@ -217,7 +217,7 @@ export const compat: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple,
+  tuple: tuple as S.Schemable<URI>['tuple'],
   intersection,
   sum,
   lazy,

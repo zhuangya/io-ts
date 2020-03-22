@@ -167,7 +167,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const tuple: <A, B>(left: Eq<A>, right: Eq<B>) => Eq<[A, B]> = ...
+export const tuple: <A extends ReadonlyArray<unknown>>(
+  ...components: { [K in keyof A]: Eq<A[K]> }
+) => Eq<A> = ...
 ```
 
 Added in v3.0.0

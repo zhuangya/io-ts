@@ -177,14 +177,19 @@ export function array<A>(items: ArbitraryMutation<A>): ArbitraryMutation<Array<A
 /**
  * @since 3.0.0
  */
-export function tuple<A, B>(left: ArbitraryMutation<A>, right: ArbitraryMutation<B>): ArbitraryMutation<[A, B]> {
-  const mutations = [left.mutation, right.mutation]
-  const index: fc.Arbitrary<0 | 1> = fc.oneof(fc.constant(0), fc.constant(1))
-  const arbitrary = A.tuple(left.arbitrary, right.arbitrary)
+export function tuple<A extends ReadonlyArray<unknown>>(
+  ...components: { [K in keyof A]: ArbitraryMutation<A[K]> }
+): ArbitraryMutation<A> {
+  const arbitrary = A.tuple(...components.map(c => c.arbitrary))
+  if (components.length === 0) {
+    return make(fc.constant({}), arbitrary) as any
+  }
+  const mutations = components.map(c => c.mutation)
+  const index = fc.oneof(...components.map((_, i) => fc.constant(i)))
   return make(
     arbitrary.chain(t => index.chain(i => mutations[i].map(m => unsafeUpdateAt(i, m, t)))),
     arbitrary
-  )
+  ) as any
 }
 
 /**
@@ -270,7 +275,7 @@ export const arbitraryMutation: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple,
+  tuple: tuple as S.Schemable<URI>['tuple'],
   intersection,
   sum,
   lazy: (_, f) => lazy(f),

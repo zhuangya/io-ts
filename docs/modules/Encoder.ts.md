@@ -169,7 +169,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B>(left: Encoder<A>, right: Encoder<B>): Encoder<[A, B]> { ... }
+export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> { ... }
 ```
 
 Added in v3.0.0

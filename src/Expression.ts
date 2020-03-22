@@ -182,11 +182,17 @@ export function array<A>(items: Expression<A>): Expression<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B>(left: Expression<A>, right: Expression<B>): Expression<[A, B]> {
+export function tuple<A extends ReadonlyArray<unknown>>(
+  ...components: { [K in keyof A]: Expression<A[K]> }
+): Expression<A> {
   return {
     expression: () =>
       C.make(
-        ts.createCall(ts.createPropertyAccess(schemable, 'tuple'), undefined, [left.expression(), right.expression()])
+        ts.createCall(
+          ts.createPropertyAccess(schemable, 'tuple'),
+          undefined,
+          components.map(c => c.expression())
+        )
       )
   }
 }
@@ -303,7 +309,7 @@ export const expression: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple,
+  tuple: tuple as S.Schemable<URI>['tuple'],
   intersection,
   sum,
   lazy,

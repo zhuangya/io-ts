@@ -26,8 +26,8 @@ function make<A>(f: Schema<A>): Schema<A> {
   return f
 }
 
-const TVector = t.tuple([t.number, t.number])
-const Vector = make(S => S.tuple(S.number, S.number))
+const TVector = t.tuple([t.number, t.number, t.number])
+const Vector = make(S => S.tuple(S.number, S.number, S.number))
 
 const TAsteroid = t.type({
   type: t.literal('asteroid'),

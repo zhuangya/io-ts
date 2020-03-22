@@ -275,7 +275,7 @@ export function array<A>(items: Decoder<A>): Decoder<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B>(left: Decoder<A>, right: Decoder<B>): Decoder<[A, B]> {
+export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Decoder<A[K]> }): Decoder<A> {
   return {
     decode: u => {
       const e = UnknownArray.decode(u)
@@ -283,15 +283,16 @@ export function tuple<A, B>(left: Decoder<A>, right: Decoder<B>): Decoder<[A, B]
         return e
       }
       const us = e.right
-      const ea = left.decode(us[0])
-      if (E.isLeft(ea)) {
-        return E.left([T.make(`component 0`, ea.left)])
+      const a: Array<unknown> = []
+      for (let i = 0; i < components.length; i++) {
+        const e = components[i].decode(us[i])
+        if (E.isLeft(e)) {
+          return E.left([T.make(`component ${i}`, e.left)])
+        } else {
+          a.push(e.right)
+        }
       }
-      const eb = right.decode(us[1])
-      if (E.isLeft(eb)) {
-        return E.left([T.make(`component 1`, eb.left)])
-      }
-      return E.right([ea.right, eb.right])
+      return E.right(a as any)
     }
   }
 }
@@ -438,7 +439,7 @@ export const decoder: Applicative1<URI> & D<URI> & S.Schemable<URI> & S.WithUnio
   partial,
   record,
   array,
-  tuple,
+  tuple: tuple as S.Schemable<URI>['tuple'],
   intersection,
   sum,
   lazy,

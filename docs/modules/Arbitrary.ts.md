@@ -223,7 +223,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B>(left: Arbitrary<A>, right: Arbitrary<B>): Arbitrary<[A, B]> { ... }
+export function tuple<A extends ReadonlyArray<unknown>>(
+  ...components: { [K in keyof A]: Arbitrary<A[K]> }
+): Arbitrary<A> { ... }
 ```
 
 Added in v3.0.0

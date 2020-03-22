@@ -109,7 +109,9 @@ export const array: <A>(eq: Eq<A>) => Eq<Array<A>> = A.getEq
 /**
  * @since 3.0.0
  */
-export const tuple: <A, B>(left: Eq<A>, right: Eq<B>) => Eq<[A, B]> = E.getTupleEq
+export const tuple: <A extends ReadonlyArray<unknown>>(
+  ...components: { [K in keyof A]: Eq<A[K]> }
+) => Eq<A> = E.getTupleEq as any
 
 /**
  * @since 3.0.0

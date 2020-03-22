@@ -255,7 +255,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B>(left: Compat<A>, right: Compat<B>): Compat<[A, B]> { ... }
+export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Compat<A[K]> }): Compat<A> { ... }
 ```
 
 Added in v3.0.0

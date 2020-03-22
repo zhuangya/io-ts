@@ -291,7 +291,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B>(left: Codec<A>, right: Codec<B>): Codec<[A, B]> { ... }
+export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Codec<A[K]> }): Codec<A> { ... }
 ```
 
 Added in v3.0.0

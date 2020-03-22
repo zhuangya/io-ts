@@ -22,7 +22,7 @@ export interface Schemable<S extends URIS> {
   readonly partial: <A>(properties: { [K in keyof A]: Kind<S, A[K]> }) => Kind<S, Partial<A>>
   readonly record: <A>(codomain: Kind<S, A>) => Kind<S, Record<string, A>>
   readonly array: <A>(items: Kind<S, A>) => Kind<S, Array<A>>
-  readonly tuple: <A, B>(left: Kind<S, A>, right: Kind<S, B>) => Kind<S, [A, B]>
+  readonly tuple: <A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Kind<S, A[K]> }) => Kind<S, A>
   readonly intersection: <A, B>(left: Kind<S, A>, right: Kind<S, B>) => Kind<S, A & B>
   readonly sum: <T extends string>(
     tag: T

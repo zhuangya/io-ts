@@ -121,8 +121,13 @@ export function array<A>(items: Arbitrary<A>): Arbitrary<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B>(left: Arbitrary<A>, right: Arbitrary<B>): Arbitrary<[A, B]> {
-  return fc.tuple(left, right)
+export function tuple<A extends ReadonlyArray<unknown>>(
+  ...components: { [K in keyof A]: Arbitrary<A[K]> }
+): Arbitrary<A> {
+  if (components.length === 0) {
+    return fc.constant([]) as any
+  }
+  return (fc.tuple as any)(...components)
 }
 
 /**
@@ -197,7 +202,7 @@ export const arbitrary: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple,
+  tuple: tuple as S.Schemable<URI>['tuple'],
   intersection,
   sum,
   lazy: (_, f) => lazy(f),

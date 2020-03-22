@@ -237,7 +237,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B>(left: TypeNode<A>, right: TypeNode<B>): TypeNode<[A, B]> { ... }
+export function tuple<A extends ReadonlyArray<unknown>>(
+  ...components: { [K in keyof A]: TypeNode<A[K]> }
+): TypeNode<A> { ... }
 ```
 
 Added in v3.0.0

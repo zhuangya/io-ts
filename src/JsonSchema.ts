@@ -150,14 +150,17 @@ export function array<A>(items: JsonSchema<A>): JsonSchema<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B>(left: JsonSchema<A>, right: JsonSchema<B>): JsonSchema<[A, B]> {
+export function tuple<A extends ReadonlyArray<unknown>>(
+  ...components: { [K in keyof A]: JsonSchema<A[K]> }
+): JsonSchema<A> {
+  const len = components.length
   return {
     compile: lazy =>
       C.make({
         type: 'array',
-        items: [left.compile(lazy), right.compile(lazy)],
-        minItems: 2,
-        maxItems: 2
+        items: len > 0 ? components.map(c => c.compile(lazy)) : undefined,
+        minItems: len,
+        maxItems: len
       })
   }
 }
@@ -254,7 +257,7 @@ export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple,
+  tuple: tuple as S.Schemable<URI>['tuple'],
   intersection,
   sum,
   lazy,

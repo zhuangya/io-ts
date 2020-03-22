@@ -159,8 +159,10 @@ export function array<A>(items: Guard<A>): Guard<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B>(left: Guard<A>, right: Guard<B>): Guard<[A, B]> {
-  return refinement(UnknownArray, (us): us is [A, B] => us.length === 2 && left.is(us[0]) && right.is(us[1]))
+export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
+  return {
+    is: (u): u is A => Array.isArray(u) && u.length === components.length && components.every((c, i) => c.is(u[i]))
+  }
 }
 
 /**
@@ -245,7 +247,7 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   partial,
   record,
   array,
-  tuple,
+  tuple: tuple as S.Schemable<URI>['tuple'],
   intersection,
   sum,
   lazy: (_, f) => lazy(f),

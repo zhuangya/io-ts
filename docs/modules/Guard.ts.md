@@ -247,7 +247,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B>(left: Guard<A>, right: Guard<B>): Guard<[A, B]> { ... }
+export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Guard<A[K]> }): Guard<A> { ... }
 ```
 
 Added in v3.0.0

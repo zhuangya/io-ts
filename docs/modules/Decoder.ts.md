@@ -340,7 +340,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A, B>(left: Decoder<A>, right: Decoder<B>): Decoder<[A, B]> { ... }
+export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Decoder<A[K]> }): Decoder<A> { ... }
 ```
 
 Added in v3.0.0

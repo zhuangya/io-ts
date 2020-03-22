@@ -111,9 +111,9 @@ export function array<A>(items: Encoder<A>): Encoder<Array<A>> {
 /**
  * @since 3.0.0
  */
-export function tuple<A, B>(left: Encoder<A>, right: Encoder<B>): Encoder<[A, B]> {
+export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> {
   return {
-    encode: as => [left.encode(as[0]), right.encode(as[1])]
+    encode: as => components.map((c, i) => c.encode(as[i]))
   }
 }
 
