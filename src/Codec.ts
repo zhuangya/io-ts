@@ -78,26 +78,22 @@ export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> 
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal>(value: A, id?: string): Codec<A> {
-  return make(D.decoder.literal(value, id), E.encoder.literal(value, id))
+export function literal<A extends Literal>(value: A): Codec<A> {
+  return make(D.decoder.literal(value), E.encoder.literal(value))
 }
 
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>, id?: string): Codec<A> {
-  return make(D.decoder.literals(values, id), E.encoder.literals(values, id))
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Codec<A> {
+  return make(D.decoder.literals(values), E.encoder.literals(values))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(
-  values: ReadonlyNonEmptyArray<A>,
-  or: Codec<B>,
-  id?: string
-): Codec<A | B> {
-  return make(D.decoder.literalsOr(values, or, id), E.encoder.literalsOr(values, or, id))
+export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Codec<B>): Codec<A | B> {
+  return make(D.decoder.literalsOr(values, or), E.encoder.literalsOr(values, or))
 }
 
 // -------------------------------------------------------------------------------------
@@ -146,50 +142,50 @@ export function withExpected<A>(
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(from: Codec<A>, refinement: (a: A) => a is B, id: string): Codec<B> {
-  return make(D.refinement(from, refinement, id), from)
+export function refinement<A, B extends A>(from: Codec<A>, refinement: (a: A) => a is B, expected: string): Codec<B> {
+  return make(D.refinement(from, refinement, expected), from)
 }
 
 /**
  * @since 3.0.0
  */
-export function type<A>(properties: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<A> {
-  return make(D.decoder.type(properties, id), E.encoder.type(properties, id))
+export function type<A>(properties: { [K in keyof A]: Codec<A[K]> }): Codec<A> {
+  return make(D.decoder.type(properties), E.encoder.type(properties))
 }
 
 /**
  * @since 3.0.0
  */
-export function partial<A>(properties: { [K in keyof A]: Codec<A[K]> }, id?: string): Codec<Partial<A>> {
-  return make(D.decoder.partial(properties, id), E.encoder.partial(properties, id))
+export function partial<A>(properties: { [K in keyof A]: Codec<A[K]> }): Codec<Partial<A>> {
+  return make(D.decoder.partial(properties), E.encoder.partial(properties))
 }
 
 /**
  * @since 3.0.0
  */
-export function record<A>(codomain: Codec<A>, id?: string): Codec<Record<string, A>> {
-  return make(D.decoder.record(codomain, id), E.encoder.record(codomain, id))
+export function record<A>(codomain: Codec<A>): Codec<Record<string, A>> {
+  return make(D.decoder.record(codomain), E.encoder.record(codomain))
 }
 
 /**
  * @since 3.0.0
  */
-export function array<A>(items: Codec<A>, id?: string): Codec<Array<A>> {
-  return make(D.decoder.array(items, id), E.encoder.array(items, id))
+export function array<A>(items: Codec<A>): Codec<Array<A>> {
+  return make(D.decoder.array(items), E.encoder.array(items))
 }
 
 /**
  * @since 3.0.0
  */
-export function tuple<A, B>(left: Codec<A>, right: Codec<B>, id?: string): Codec<[A, B]> {
-  return make(D.decoder.tuple(left, right, id), E.encoder.tuple(left, right, id))
+export function tuple<A, B>(left: Codec<A>, right: Codec<B>): Codec<[A, B]> {
+  return make(D.decoder.tuple(left, right), E.encoder.tuple(left, right))
 }
 
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(left: Codec<A>, right: Codec<B>, id?: string): Codec<A & B> {
-  return make(D.decoder.intersection(left, right, id), E.encoder.intersection(left, right, id))
+export function intersection<A, B>(left: Codec<A>, right: Codec<B>): Codec<A & B> {
+  return make(D.decoder.intersection(left, right), E.encoder.intersection(left, right))
 }
 
 /**
@@ -197,10 +193,10 @@ export function intersection<A, B>(left: Codec<A>, right: Codec<B>, id?: string)
  */
 export function sum<T extends string>(
   tag: T
-): <A>(members: { [K in keyof A]: Codec<A[K] & Record<T, K>> }, id?: string) => Codec<A[keyof A]> {
+): <A>(members: { [K in keyof A]: Codec<A[K] & Record<T, K>> }) => Codec<A[keyof A]> {
   const sumD = D.decoder.sum(tag)
   const sumE = E.encoder.sum(tag)
-  return (members, id) => make(sumD(members, id), sumE(members, id))
+  return members => make(sumD(members), sumE(members))
 }
 
 /**

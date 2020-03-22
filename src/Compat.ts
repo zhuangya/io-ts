@@ -43,26 +43,22 @@ export function make<A>(codec: C.Codec<A>, guard: G.Guard<A>): Compat<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal>(value: A, id?: string): Compat<A> {
-  return make(C.codec.literal(value, id), G.guard.literal(value, id))
+export function literal<A extends Literal>(value: A): Compat<A> {
+  return make(C.codec.literal(value), G.guard.literal(value))
 }
 
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>, id?: string): Compat<A> {
-  return make(C.codec.literals(values, id), G.guard.literals(values, id))
+export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Compat<A> {
+  return make(C.codec.literals(values), G.guard.literals(values))
 }
 
 /**
  * @since 3.0.0
  */
-export function literalsOr<A extends Literal, B>(
-  values: ReadonlyNonEmptyArray<A>,
-  or: Compat<B>,
-  id?: string
-): Compat<A | B> {
-  return make(C.codec.literalsOr(values, or, id), G.guard.literalsOr(values, or, id))
+export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Compat<B>): Compat<A | B> {
+  return make(C.codec.literalsOr(values, or), G.guard.literalsOr(values, or))
 }
 
 // -------------------------------------------------------------------------------------
@@ -101,62 +97,61 @@ export const UnknownRecord: Compat<Record<string, unknown>> = make(C.codec.Unkno
 /**
  * @since 3.0.0
  */
-export function refinement<A, B extends A>(from: Compat<A>, refinement: (a: A) => a is B, id: string): Compat<B> {
-  return make(C.refinement(from, refinement, id), G.refinement(from, refinement))
+export function refinement<A, B extends A>(from: Compat<A>, refinement: (a: A) => a is B, expected: string): Compat<B> {
+  return make(C.refinement(from, refinement, expected), G.refinement(from, refinement))
 }
 
 /**
  * @since 3.0.0
  */
-export function type<A>(properties: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<A> {
-  return make(C.codec.type(properties, id), G.guard.type(properties, id))
+export function type<A>(properties: { [K in keyof A]: Compat<A[K]> }): Compat<A> {
+  return make(C.codec.type(properties), G.guard.type(properties))
 }
 
 /**
  * @since 3.0.0
  */
-export function partial<A>(properties: { [K in keyof A]: Compat<A[K]> }, id?: string): Compat<Partial<A>> {
-  return make(C.codec.partial(properties, id), G.guard.partial(properties, id))
+export function partial<A>(properties: { [K in keyof A]: Compat<A[K]> }): Compat<Partial<A>> {
+  return make(C.codec.partial(properties), G.guard.partial(properties))
 }
 
 /**
  * @since 3.0.0
  */
-export function record<A>(codomain: Compat<A>, id?: string): Compat<Record<string, A>> {
-  return make(C.codec.record(codomain, id), G.guard.record(codomain, id))
+export function record<A>(codomain: Compat<A>): Compat<Record<string, A>> {
+  return make(C.codec.record(codomain), G.guard.record(codomain))
 }
 
 /**
  * @since 3.0.0
  */
-export function array<A>(items: Compat<A>, id?: string): Compat<Array<A>> {
-  return make(C.codec.array(items, id), G.guard.array(items, id))
+export function array<A>(items: Compat<A>): Compat<Array<A>> {
+  return make(C.codec.array(items), G.guard.array(items))
 }
 
 /**
  * @since 3.0.0
  */
-export function tuple<A, B>(left: Compat<A>, right: Compat<B>, id?: string): Compat<[A, B]> {
-  return make(C.codec.tuple(left, right, id), G.guard.tuple(left, right, id))
+export function tuple<A, B>(left: Compat<A>, right: Compat<B>): Compat<[A, B]> {
+  return make(C.codec.tuple(left, right), G.guard.tuple(left, right))
 }
 
 /**
  * @since 3.0.0
  */
-export function intersection<A, B>(left: Compat<A>, right: Compat<B>, id?: string): Compat<A & B> {
-  return make(C.codec.intersection(left, right, id), G.guard.intersection(left, right, id))
+export function intersection<A, B>(left: Compat<A>, right: Compat<B>): Compat<A & B> {
+  return make(C.codec.intersection(left, right), G.guard.intersection(left, right))
 }
 
 /**
  * @since 3.0.0
  */
 export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
-  members: { [K in keyof A]: Compat<A[K]> },
-  id?: string
+  members: { [K in keyof A]: Compat<A[K]> }
 ): Compat<A[number]> {
   return {
-    is: G.guard.union(members, id).is,
-    decode: D.decoder.union(members, id).decode,
+    is: G.guard.union(members).is,
+    decode: D.decoder.union(members).decode,
     encode: a => {
       for (const compat of members) {
         if (compat.is(a)) {
@@ -172,10 +167,10 @@ export function union<A extends ReadonlyNonEmptyTuple<unknown>>(
  */
 export function sum<T extends string>(
   tag: T
-): <A>(members: { [K in keyof A]: Compat<A[K] & Record<T, K>> }, id?: string) => Compat<A[keyof A]> {
+): <A>(members: { [K in keyof A]: Compat<A[K] & Record<T, K>> }) => Compat<A[keyof A]> {
   const sumC = C.codec.sum(tag)
   const sumG = G.guard.sum(tag)
-  return (members, id) => make(sumC(members, id), sumG(members, id))
+  return members => make(sumC(members), sumG(members))
 }
 
 /**
