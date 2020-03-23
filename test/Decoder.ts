@@ -59,5 +59,9 @@ describe('Decoder', () => {
         ])
       )
     })
+
+    it('should handle zero members', () => {
+      assert.deepStrictEqual(D.union().decode({}), E.left([T.make('cannot decode {}, should be never')]))
+    })
   })
 })

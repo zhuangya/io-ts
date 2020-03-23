@@ -196,13 +196,11 @@ export function lazy<A>(id: string, f: () => JsonSchema<A>): JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function union<A, B extends ReadonlyArray<unknown>>(
-  member: JsonSchema<A>,
-  ...members: { [K in keyof B]: JsonSchema<B[K]> }
-): JsonSchema<A | B[number]> {
-  const ms = [member, ...members]
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: JsonSchema<A[K]> }
+): JsonSchema<A[number]> {
   return {
-    compile: lazy => C.make({ anyOf: ms.map(jsonSchema => jsonSchema.compile(lazy)) })
+    compile: lazy => C.make({ anyOf: members.map(m => m.compile(lazy)) })
   }
 }
 

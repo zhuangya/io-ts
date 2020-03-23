@@ -127,6 +127,11 @@ describe('Guard', () => {
       const guard = G.union(G.string, G.number)
       assert.strictEqual(guard.is(undefined), false)
     })
+
+    it('should handle zero members', () => {
+      assert.deepStrictEqual(G.union().is(null), false)
+      assert.deepStrictEqual(G.union().is({}), false)
+    })
   })
 
   describe('lazy', () => {
@@ -172,6 +177,11 @@ describe('Guard', () => {
       })
       assert.strictEqual(guard.is(undefined), false)
       assert.strictEqual(guard.is({}), false)
+    })
+
+    it('should handle zero members', () => {
+      assert.deepStrictEqual(sum({}).is(null), false)
+      assert.deepStrictEqual(sum({}).is({}), false)
     })
   })
 })

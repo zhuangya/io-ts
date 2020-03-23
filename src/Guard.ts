@@ -165,13 +165,9 @@ export function intersection<A, B>(left: Guard<A>, right: Guard<B>): Guard<A & B
 /**
  * @since 3.0.0
  */
-export function union<A, B extends ReadonlyArray<unknown>>(
-  member: Guard<A>,
-  ...members: { [K in keyof B]: Guard<B[K]> }
-): Guard<A | B[number]> {
-  const ms = [member, ...members]
+export function union<A extends ReadonlyArray<unknown>>(...members: { [K in keyof A]: Guard<A[K]> }): Guard<A[number]> {
   return {
-    is: (u: unknown): u is A | B[number] => ms.some(guard => guard.is(u))
+    is: (u: unknown): u is A | A[number] => members.some(m => m.is(u))
   }
 }
 
@@ -181,15 +177,14 @@ export function union<A, B extends ReadonlyArray<unknown>>(
 export function sum<T extends string>(
   tag: T
 ): <A>(members: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => Guard<A[keyof A]> {
-  return <A>(members: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => {
-    return refinement(UnknownRecord, (r): r is { [K in keyof A]: A[K] & Record<T, K> }[keyof A] => {
+  return <A>(members: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) =>
+    refinement(UnknownRecord, (r): r is { [K in keyof A]: A[K] & Record<T, K> }[keyof A] => {
       const v = r[tag]
       if (typeof v === 'string' && hasOwnProperty(members, v)) {
         return members[v].is(r)
       }
       return false
     })
-  }
 }
 
 /**

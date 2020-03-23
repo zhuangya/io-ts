@@ -465,13 +465,6 @@ describe('Compat', () => {
         assert.deepStrictEqual(compat.encode(1), 1)
         assert.deepStrictEqual(compat.encode(true), true)
       })
-
-      it('should throw if none of the codecs are applicable', () => {
-        const compat = C.union(C.string, C.number)
-        assert.throws(() => {
-          compat.encode(true as any)
-        })
-      })
     })
   })
 })

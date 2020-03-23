@@ -134,25 +134,18 @@ export function intersection<A, B>(left: Compat<A>, right: Compat<B>): Compat<A 
 /**
  * @since 3.0.0
  */
-export function union<A, B extends ReadonlyArray<unknown>>(
-  member: Compat<A>,
-  ...members: { [K in keyof B]: Compat<B[K]> }
-): Compat<A | B[number]> {
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: Compat<A[K]> }
+): Compat<A[number]> {
   return {
-    is: G.guard.union(member, ...members).is,
-    decode: D.decoder.union(member, ...members).decode,
-    encode: x => {
-      if (member.is(x)) {
-        return member.encode(x)
-      }
-      for (const compat of members) {
-        if (compat.is(x)) {
-          return compat.encode(x)
+    is: G.guard.union(...members).is,
+    decode: D.decoder.union(...members).decode,
+    encode: a => {
+      for (const member of members) {
+        if (member.is(a)) {
+          return member.encode(a)
         }
-        continue
       }
-      // https://github.com/gcanti/io-ts/pull/305
-      throw new Error('no encoder found to encode value in union')
     }
   }
 }

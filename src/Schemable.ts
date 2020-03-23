@@ -34,10 +34,9 @@ export interface Schemable<S extends URIS> {
  * @since 3.0.0
  */
 export interface WithUnion<S extends URIS> {
-  readonly union: <A, B extends ReadonlyArray<unknown>>(
-    member: Kind<S, A>,
-    ...members: { [K in keyof B]: Kind<S, B[K]> }
-  ) => Kind<S, A | B[number]>
+  readonly union: <A extends ReadonlyArray<unknown>>(
+    ...members: { [K in keyof A]: Kind<S, A[K]> }
+  ) => Kind<S, A[number]>
 }
 
 /**

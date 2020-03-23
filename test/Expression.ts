@@ -39,7 +39,8 @@ describe('Expression', () => {
   })
 
   it('union', () => {
-    assertExpression(E.union(E.string, E.number), 'S.union([S.string, S.number])')
+    assertExpression(E.union(E.string, E.number), 'S.union(S.string, S.number)')
+    assertExpression(E.union(), 'S.union()')
   })
 
   it('intersection', () => {
@@ -70,6 +71,7 @@ describe('Expression', () => {
       }),
       'S.sum("_tag")({ A: S.type({ _tag: S.literal("A"), a: S.string }), B: S.type({ _tag: S.literal("B"), b: S.number }) })'
     )
+    assertExpression(E.sum('_tag')({}), 'S.sum("_tag")({})')
   })
 
   describe('lazy', () => {
