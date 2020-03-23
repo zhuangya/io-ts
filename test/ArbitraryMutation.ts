@@ -41,19 +41,14 @@ describe('ArbitraryMutation', () => {
     })
   })
 
-  it('lazy', () => {
+  it.skip('lazy', () => {
     interface A {
       a: string
-      b: null | A
+      b?: A
     }
 
     const schema: Schema<A> = make(S =>
-      S.lazy('A', () =>
-        S.type({
-          a: S.string,
-          b: S.literalsOr([null], schema(S))
-        })
-      )
+      S.lazy('A', () => S.intersection(S.type({ a: S.string }), S.partial({ b: schema(S) })))
     )
     assert(schema)
   })

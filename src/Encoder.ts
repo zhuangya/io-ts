@@ -4,8 +4,6 @@
 import { Contravariant1 } from 'fp-ts/lib/Contravariant'
 import { identity } from 'fp-ts/lib/function'
 import { pipeable } from 'fp-ts/lib/pipeable'
-import * as G from './Guard'
-import { Literal } from './Literal'
 import * as S from './Schemable'
 import * as U from './util'
 
@@ -18,20 +16,6 @@ import * as U from './util'
  */
 export interface Encoder<A> {
   readonly encode: (a: A) => unknown
-}
-
-// -------------------------------------------------------------------------------------
-// constructors
-// -------------------------------------------------------------------------------------
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends Literal, B>(values: U.ReadonlyNonEmptyArray<A>, or: Encoder<B>): Encoder<A | B> {
-  const literals = G.literals(values)
-  return {
-    encode: ab => (literals.is(ab) ? ab : or.encode(ab))
-  }
 }
 
 // -------------------------------------------------------------------------------------
@@ -178,8 +162,6 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
     encode: b => fa.encode(f(b))
   }),
   literal: () => id,
-  literals: () => id,
-  literalsOr,
   string: id,
   number: id,
   boolean: id,

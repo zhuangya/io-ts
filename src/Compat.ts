@@ -12,7 +12,6 @@ import * as D from './Decoder'
 import * as G from './Guard'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -43,22 +42,11 @@ export function make<A>(codec: C.Codec<A>, guard: G.Guard<A>): Compat<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal>(value: A): Compat<A> {
-  return make(C.codec.literal(value), G.guard.literal(value))
-}
-
-/**
- * @since 3.0.0
- */
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Compat<A> {
-  return make(C.codec.literals(values), G.guard.literals(values))
-}
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Compat<B>): Compat<A | B> {
-  return make(C.codec.literalsOr(values, or), G.guard.literalsOr(values, or))
+export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
+  value: A,
+  ...values: B
+): Compat<A | B[number]> {
+  return make(C.codec.literal(value, ...values), G.guard.literal(value, ...values))
 }
 
 // -------------------------------------------------------------------------------------
@@ -213,8 +201,6 @@ declare module 'fp-ts/lib/HKT' {
 export const compat: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
-  literals,
-  literalsOr,
   string,
   number,
   boolean,

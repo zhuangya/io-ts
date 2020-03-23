@@ -6,17 +6,10 @@ import * as C from 'fp-ts/lib/Const'
 const ajv = new Ajv()
 
 describe('JsonSchema', () => {
-  it('literals', () => {
-    const validate = ajv.compile(J.literals(['a']).compile(false))
+  it('literal', () => {
+    const validate = ajv.compile(J.literal('a').compile(false))
     assert.strictEqual(validate('a'), true)
     assert.strictEqual(validate(1), false)
-  })
-
-  it('literalsOr', () => {
-    const schema = J.literalsOr([null], J.type({ a: J.string, b: J.number })).compile(false)
-    const validate = ajv.compile(schema)
-    assert.strictEqual(validate(null), true)
-    assert.strictEqual(validate({ a: 'a', b: 1 }), true)
   })
 
   it('string', () => {
@@ -137,50 +130,39 @@ describe('JsonSchema', () => {
     it('should support recursive json schemas', () => {
       interface A {
         a: number
-        b: null | A
+        b?: A
       }
 
       const schema: J.JsonSchema<A> = J.lazy('A', () =>
-        J.type({
-          a: J.number,
-          b: J.literalsOr([null], schema)
-        })
+        J.intersection(J.type({ a: J.number }), J.partial({ b: schema }))
       )
 
       const validate = ajv.compile(schema.compile(false))
       assert.strictEqual(validate({}), false)
-      assert.strictEqual(validate({ a: 1 }), false)
-      assert.strictEqual(validate({ a: 1, b: null }), true)
-      assert.strictEqual(validate({ a: 1, b: { a: 2, b: null } }), true)
+      assert.strictEqual(validate({ a: 1 }), true)
+      assert.strictEqual(validate({ a: 1, b: null }), false)
+      assert.strictEqual(validate({ a: 1, b: { a: 2 } }), true)
     })
 
     it.skip('should support mutually recursive json schemas', () => {
       interface A {
-        b: null | B
+        b?: B
       }
       interface B {
-        a: null | A
+        a?: A
       }
-      const A: J.JsonSchema<A> = J.lazy('A', () =>
-        J.type({
-          b: J.literalsOr([null], B)
-        })
-      )
-      const B: J.JsonSchema<B> = J.lazy('B', () =>
-        J.type({
-          a: J.literalsOr([null], A)
-        })
-      )
+      const A: J.JsonSchema<A> = J.lazy('A', () => J.partial({ b: B }))
+      const B: J.JsonSchema<B> = J.lazy('B', () => J.partial({ a: A }))
       console.log(JSON.stringify(A.compile(false), null, 2))
       const validateA = ajv.compile(A.compile(false))
-      assert.strictEqual(validateA({ b: null }), true)
-      assert.strictEqual(validateA({ b: { a: null } }), true)
-      assert.strictEqual(validateA({ b: { a: { b: null } } }), true)
+      assert.strictEqual(validateA({}), true)
+      assert.strictEqual(validateA({ b: {} }), true)
+      assert.strictEqual(validateA({ b: { a: {} } }), true)
 
       const validateB = ajv.compile(B.compile(false))
-      assert.strictEqual(validateB({ a: null }), true)
-      assert.strictEqual(validateB({ a: { b: null } }), true)
-      assert.strictEqual(validateB({ a: { b: { a: null } } }), true)
+      assert.strictEqual(validateB({}), true)
+      assert.strictEqual(validateB({ a: {} }), true)
+      assert.strictEqual(validateB({ a: { b: {} } }), true)
     })
   })
 })

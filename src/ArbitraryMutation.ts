@@ -8,7 +8,6 @@ import * as A from './Arbitrary'
 import * as G from './Guard'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import * as U from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -35,30 +34,19 @@ export function make<A>(mutation: fc.Arbitrary<unknown>, arbitrary: fc.Arbitrary
   return { mutation, arbitrary }
 }
 
-/**
- * @since 3.0.0
- */
-export function literal<A extends Literal>(value: A): ArbitraryMutation<A> {
-  return literals([value])
-}
-
 const literalsArbitrary: A.Arbitrary<Literal> = A.union(A.string, A.number, A.boolean, fc.constant(null))
 
 /**
  * @since 3.0.0
  */
-export function literals<A extends Literal>(values: U.ReadonlyNonEmptyArray<A>): ArbitraryMutation<A> {
-  return make(literalsArbitrary.filter(not(G.literals(values).is)), A.literals(values))
-}
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends Literal, B>(
-  values: U.ReadonlyNonEmptyArray<A>,
-  or: ArbitraryMutation<B>
-): ArbitraryMutation<A | B> {
-  return make(A.union(literals(values).mutation, or.mutation), A.literalsOr(values, or.arbitrary))
+export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
+  value: A,
+  ...values: B
+): ArbitraryMutation<A | B[number]> {
+  return make(
+    literalsArbitrary.filter(not(G.guard.literal(value, ...values).is)),
+    A.arbitrary.literal(value, ...values)
+  )
 }
 
 // -------------------------------------------------------------------------------------
@@ -265,8 +253,6 @@ declare module 'fp-ts/lib/HKT' {
 export const arbitraryMutation: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
-  literals,
-  literalsOr,
   string,
   number,
   boolean,

@@ -26,11 +26,3 @@ export function intersect<A, B>(a: A, b: B): A & B {
   }
   return b as any
 }
-
-/**
- * @internal
- * @since 3.0.0
- */
-export interface ReadonlyNonEmptyArray<A> extends ReadonlyArray<A> {
-  readonly 0: A
-}

@@ -58,12 +58,8 @@ describe('Expression', () => {
     assertExpression(E.partial({ a: E.string }), 'S.partial({ a: S.string })')
   })
 
-  it('literals', () => {
-    assertExpression(E.literals([1, 'a', null, true]), 'S.literals([1, "a", null, true])')
-  })
-
-  it('literalsOr', () => {
-    assertExpression(E.literalsOr([1, 'a', null], E.boolean), 'S.literalsOr([1, "a", null], S.boolean)')
+  it('literal', () => {
+    assertExpression(E.literal(1, 'a', null, true), 'S.literal(1, "a", null, true)')
   })
 
   it('sum', () => {
@@ -79,30 +75,22 @@ describe('Expression', () => {
   describe('lazy', () => {
     it('lazy', () => {
       assertExpression(
-        E.lazy('A', () =>
-          E.type({
-            a: E.number,
-            b: E.literalsOr([null], E.$ref('A'))
-          })
-        ),
-        'S.lazy(() => S.type({ a: S.number, b: S.literalsOr([null], A(S)) }))'
+        E.lazy('A', () => E.intersection(E.type({ a: E.number }), E.partial({ b: E.$ref('A') }))),
+        'S.lazy(() => S.intersection(S.type({ a: S.number }), S.partial({ b: A(S) })))'
       )
     })
 
     it('lazy', () => {
       interface A {
         a: number
-        b: null | A
+        b?: A
       }
 
       const expression: E.Expression<A> = E.lazy('A', () =>
-        E.type({
-          a: E.number,
-          b: E.literalsOr([null], expression)
-        })
+        E.intersection(E.type({ a: E.number }), E.partial({ b: expression }))
       )
 
-      assertExpression(expression, 'S.lazy(() => S.type({ a: S.number, b: S.literalsOr([null], A(S)) }))')
+      assertExpression(expression, 'S.lazy(() => S.intersection(S.type({ a: S.number }), S.partial({ b: A(S) })))')
     })
   })
 })

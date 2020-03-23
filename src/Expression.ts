@@ -5,7 +5,6 @@ import * as C from 'fp-ts/lib/Const'
 import * as ts from 'typescript'
 import { Literal, fold } from './Literal'
 import * as S from './Schemable'
-import { ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -38,47 +37,19 @@ const toLiteralExpression = fold<ts.Expression>(
   () => ts.createNull()
 )
 
-function toLiteralsExpression(values: ReadonlyNonEmptyArray<Literal>): ts.Expression {
-  return ts.createArrayLiteral(values.map(toLiteralExpression))
-}
-
 const schemable = ts.createIdentifier('S')
 
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal>(value: A): Expression<A> {
+export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
+  value: A,
+  ...values: B
+): Expression<A | B[number]> {
+  const vs = [value, ...values]
   return {
     expression: () =>
-      C.make(ts.createCall(ts.createPropertyAccess(schemable, 'literal'), undefined, [toLiteralExpression(value)]))
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Expression<A> {
-  return {
-    expression: () =>
-      C.make(ts.createCall(ts.createPropertyAccess(schemable, 'literals'), undefined, [toLiteralsExpression(values)]))
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends Literal, B>(
-  values: ReadonlyNonEmptyArray<A>,
-  or: Expression<B>
-): Expression<A | B> {
-  return {
-    expression: () =>
-      C.make(
-        ts.createCall(ts.createPropertyAccess(schemable, 'literalsOr'), undefined, [
-          toLiteralsExpression(values),
-          or.expression()
-        ])
-      )
+      C.make(ts.createCall(ts.createPropertyAccess(schemable, 'literal'), undefined, vs.map(toLiteralExpression)))
   }
 }
 
@@ -300,8 +271,6 @@ declare module 'fp-ts/lib/HKT' {
 export const expression: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
-  literals,
-  literalsOr,
   string,
   number,
   boolean,

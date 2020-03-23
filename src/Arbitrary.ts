@@ -4,7 +4,7 @@
 import * as fc from 'fast-check'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { intersect, ReadonlyNonEmptyArray } from './util'
+import { intersect } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -22,22 +22,11 @@ export interface Arbitrary<A> extends fc.Arbitrary<A> {}
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal>(value: A): Arbitrary<A> {
-  return fc.constant(value)
-}
-
-/**
- * @since 3.0.0
- */
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Arbitrary<A> {
-  return fc.oneof(...values.map(a => fc.constant(a)))
-}
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Arbitrary<B>): Arbitrary<A | B> {
-  return fc.oneof<A | B>(literals(values), or)
+export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
+  value: A,
+  ...values: B
+): Arbitrary<A | B[number]> {
+  return fc.oneof(fc.constant(value), ...values.map(v => fc.constant(v)))
 }
 
 // -------------------------------------------------------------------------------------
@@ -101,7 +90,13 @@ export function type<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitr
  * @since 3.0.0
  */
 export function partial<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<Partial<A>> {
-  return fc.record(properties, { withDeletedKeys: true })
+  const keys = fc.oneof(...Object.keys(properties).map(p => fc.constant(p)))
+  return keys.chain(key =>
+    fc.record(properties).map(o => {
+      delete (o as any)[key]
+      return o
+    })
+  )
 }
 
 /**
@@ -192,8 +187,6 @@ declare module 'fp-ts/lib/HKT' {
 export const arbitrary: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
-  literals,
-  literalsOr,
   string,
   number,
   boolean,

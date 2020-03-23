@@ -4,29 +4,13 @@
 import * as A from 'fp-ts/lib/Array'
 import * as E from 'fp-ts/lib/Eq'
 import * as R from 'fp-ts/lib/Record'
-import * as G from './Guard'
-import { Literal } from './Literal'
 import * as S from './Schemable'
-import { hasOwnProperty, ReadonlyNonEmptyArray } from './util'
+import { hasOwnProperty } from './util'
+import Eq = E.Eq
 
 // -------------------------------------------------------------------------------------
 // model
 // -------------------------------------------------------------------------------------
-import Eq = E.Eq
-
-// -------------------------------------------------------------------------------------
-// constructors
-// -------------------------------------------------------------------------------------
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Eq<B>): Eq<A | B> {
-  const literals = G.literals(values)
-  return {
-    equals: (x, y) => (literals.is(x) || literals.is(y) ? x === y : or.equals(x, y))
-  }
-}
 
 // -------------------------------------------------------------------------------------
 // primitives
@@ -158,8 +142,6 @@ export function lazy<A>(f: () => Eq<A>): Eq<A> {
 export const eq: typeof E.eq & S.Schemable<E.URI> = {
   ...E.eq,
   literal: () => E.eqStrict,
-  literals: () => E.eqStrict,
-  literalsOr,
   string,
   number,
   boolean,

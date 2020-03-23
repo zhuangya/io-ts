@@ -6,7 +6,6 @@ import * as R from 'fp-ts/lib/Record'
 import { JSONSchema7 } from 'json-schema'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -26,28 +25,13 @@ export interface JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal>(value: A): JsonSchema<A> {
-  return literals([value])
-}
-
-/**
- * @since 3.0.0
- */
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): JsonSchema<A> {
+export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
+  value: A,
+  ...values: B
+): JsonSchema<A | B[number]> {
+  const vs = [value, ...values]
   return {
-    compile: () => C.make({ enum: [...values] })
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends Literal, B>(
-  values: ReadonlyNonEmptyArray<A>,
-  or: JsonSchema<B>
-): JsonSchema<A | B> {
-  return {
-    compile: lazy => C.make({ anyOf: [{ enum: [...values] }, or.compile(lazy)] })
+    compile: () => C.make({ enum: vs })
   }
 }
 
@@ -248,8 +232,6 @@ declare module 'fp-ts/lib/HKT' {
 export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
-  literals,
-  literalsOr,
   string,
   number,
   boolean,

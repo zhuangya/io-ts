@@ -15,20 +15,6 @@ function make<A>(f: Schema<A>): Schema<A> {
 make(S => S.literal('a')) // $ExpectType Schema<"a">
 
 //
-// literals
-//
-make(S => S.literals(['a'])) // $ExpectType Schema<"a">
-make(S => S.literals([1])) // $ExpectType Schema<1>
-make(S => S.literals([true])) // $ExpectType Schema<true>
-make(S => S.literals([null])) // $ExpectType Schema<null>
-make(S => S.literals([null, 1])) // $ExpectType Schema<1 | null>
-
-//
-// literalsOr
-//
-make(S => S.literalsOr([null], S.type({ a: S.string }))) // $ExpectType Schema<{ a: string; } | null>
-
-//
 // string
 //
 make(S => S.string) // $ExpectType Schema<string>
@@ -89,8 +75,8 @@ make(S => S.intersection(S.type({ a: S.string }), S.type({ b: S.number }))) // $
 //
 // sum
 //
-const S1 = make(S => S.type({ _tag: S.literals(['A']), a: S.string }))
-const S2 = make(S => S.type({ _tag: S.literals(['B']), b: S.number }))
+const S1 = make(S => S.type({ _tag: S.literal('A'), a: S.string }))
+const S2 = make(S => S.type({ _tag: S.literal('B'), b: S.number }))
 
 // $ExpectType Schema<{ _tag: "A"; a: string; } | { _tag: "B"; b: number; }>
 make(S => S.sum('_tag')({ A: S1(S), B: S2(S) }))

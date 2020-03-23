@@ -5,7 +5,6 @@ import * as C from 'fp-ts/lib/Const'
 import * as ts from 'typescript'
 import { Literal, fold } from './Literal'
 import * as S from './Schemable'
-import { ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -38,34 +37,16 @@ const toLiteralTypeNode = fold<ts.TypeNode>(
   () => ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword)
 )
 
-function toLiteralsTypeNode(values: ReadonlyNonEmptyArray<Literal>): Array<ts.TypeNode> {
-  return values.map(toLiteralTypeNode)
-}
-
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal>(value: A): TypeNode<A> {
+export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
+  value: A,
+  ...values: B
+): TypeNode<A | B[number]> {
+  const vs = [value, ...values]
   return {
-    typeNode: () => C.make(toLiteralTypeNode(value))
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): TypeNode<A> {
-  return {
-    typeNode: () => C.make(ts.createUnionTypeNode(toLiteralsTypeNode(values)))
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: TypeNode<B>): TypeNode<A | B> {
-  return {
-    typeNode: () => C.make(ts.createUnionTypeNode([...toLiteralsTypeNode(values), or.typeNode()]))
+    typeNode: () => C.make(ts.createUnionTypeNode(vs.map(toLiteralTypeNode)))
   }
 }
 
@@ -256,8 +237,6 @@ declare module 'fp-ts/lib/HKT' {
 export const typeNode: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
-  literals,
-  literalsOr,
   string,
   number,
   boolean,

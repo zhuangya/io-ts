@@ -45,24 +45,12 @@ export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal>(value: A): Decoder<A> {
-  const expected = JSON.stringify(value)
-  return fromGuard(G.literal(value), expected)
-}
-
-/**
- * @since 3.0.0
- */
-export function literals<A extends Literal>(values: U.ReadonlyNonEmptyArray<A>): Decoder<A> {
-  const expected = values.map(value => JSON.stringify(value)).join(' | ')
-  return fromGuard(G.literals(values), expected)
-}
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends Literal, B>(values: U.ReadonlyNonEmptyArray<A>, or: Decoder<B>): Decoder<A | B> {
-  return union(literals(values), or)
+export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
+  value: A,
+  ...values: B
+): Decoder<A | B[number]> {
+  const expected = [value, ...values].map(value => JSON.stringify(value)).join(' | ')
+  return fromGuard(G.guard.literal(value, ...values), expected)
 }
 
 // -------------------------------------------------------------------------------------
@@ -429,8 +417,6 @@ export const decoder: Applicative1<URI> & D<URI> & S.Schemable<URI> & S.WithUnio
   }),
   zero: () => never,
   literal,
-  literals,
-  literalsOr,
   string,
   number,
   boolean,

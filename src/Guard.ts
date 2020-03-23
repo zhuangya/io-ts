@@ -3,7 +3,7 @@
  */
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { hasOwnProperty, ReadonlyNonEmptyArray } from './util'
+import { hasOwnProperty } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -23,26 +23,14 @@ export interface Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal>(value: A): Guard<A> {
+export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
+  value: A,
+  ...values: B
+): Guard<A | B[number]> {
+  const vs = [value, ...values]
   return {
-    is: (u: unknown): u is A => u === value
+    is: (u: unknown): u is A => vs.findIndex(a => a === u) !== -1
   }
-}
-
-/**
- * @since 3.0.0
- */
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Guard<A> {
-  return {
-    is: (u: unknown): u is A => values.findIndex(a => a === u) !== -1
-  }
-}
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Guard<B>): Guard<A | B> {
-  return union(literals(values), or)
 }
 
 // -------------------------------------------------------------------------------------
@@ -240,8 +228,6 @@ declare module 'fp-ts/lib/HKT' {
 export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   literal,
-  literals,
-  literalsOr,
   string,
   number,
   boolean,

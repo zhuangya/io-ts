@@ -3,16 +3,16 @@
  */
 import { Kind, URIS } from 'fp-ts/lib/HKT'
 import { Literal } from './Literal'
-import { ReadonlyNonEmptyArray } from './util'
 
 /**
  * @since 3.0.0
  */
 export interface Schemable<S extends URIS> {
   readonly URI: S
-  readonly literal: <A extends Literal>(value: A) => Kind<S, A>
-  readonly literals: <A extends Literal>(values: ReadonlyNonEmptyArray<A>) => Kind<S, A>
-  readonly literalsOr: <A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Kind<S, B>) => Kind<S, A | B>
+  readonly literal: <A extends Literal, V extends ReadonlyArray<Literal>>(
+    value: A,
+    ...values: V
+  ) => Kind<S, A | V[number]>
   readonly string: Kind<S, string>
   readonly number: Kind<S, number>
   readonly boolean: Kind<S, boolean>

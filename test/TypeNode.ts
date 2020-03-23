@@ -54,12 +54,8 @@ describe('TypeNode', () => {
     assertTypeNode(T.partial({ a: T.string }), 'Partial<{\n    a: string;\n}>')
   })
 
-  it('literals', () => {
-    assertTypeNode(T.literals([1, 'a', null, true]), '1 | "a" | null | true')
-  })
-
-  it('literalsOr', () => {
-    assertTypeNode(T.literalsOr([1, 'a', null], T.boolean), '1 | "a" | null | boolean')
+  it('literal', () => {
+    assertTypeNode(T.literal(1, 'a', null, true), '1 | "a" | null | true')
   })
 
   it('sum', () => {
@@ -73,32 +69,24 @@ describe('TypeNode', () => {
   })
 
   describe('lazy', () => {
-    it('lazy', () => {
+    it('by $ref', () => {
       assertTypeNode(
-        T.lazy('A', () =>
-          T.type({
-            a: T.number,
-            b: T.literalsOr([null], T.$ref('A'))
-          })
-        ),
-        '{\n    a: number;\n    b: null | A;\n}'
+        T.lazy('A', () => T.intersection(T.type({ a: T.number }), T.partial({ b: T.$ref('A') }))),
+        '{\n    a: number;\n} & Partial<{\n    b: A;\n}>'
       )
     })
 
-    it('lazy', () => {
+    it('by reference', () => {
       interface A {
         a: number
-        b: null | A
+        b?: A
       }
 
       const typeNode: T.TypeNode<A> = T.lazy('A', () =>
-        T.type({
-          a: T.number,
-          b: T.literalsOr([null], typeNode)
-        })
+        T.intersection(T.type({ a: T.number }), T.partial({ b: typeNode }))
       )
 
-      assertTypeNode(typeNode, '{\n    a: number;\n    b: null | A;\n}')
+      assertTypeNode(typeNode, '{\n    a: number;\n} & Partial<{\n    b: A;\n}>')
     })
   })
 })

@@ -2,37 +2,6 @@ import * as assert from 'assert'
 import * as G from '../src/Guard'
 
 describe('Guard', () => {
-  describe('literals', () => {
-    describe('should optimize when used with just one value', () => {
-      it('should accepts valid inputs', () => {
-        const guard = G.literalsOr(['a'], G.boolean)
-        assert.strictEqual(guard.is('a'), true)
-        assert.strictEqual(guard.is(true), true)
-        assert.strictEqual(guard.is(false), true)
-      })
-
-      it('should rejects invalid inputs', () => {
-        const guard = G.literalsOr(['a'], G.boolean)
-        assert.strictEqual(guard.is('c'), false)
-      })
-    })
-  })
-
-  describe('literalsOr', () => {
-    it('should accepts valid inputs', () => {
-      const guard = G.literalsOr(['a', 'b'], G.boolean)
-      assert.strictEqual(guard.is('a'), true)
-      assert.strictEqual(guard.is('b'), true)
-      assert.strictEqual(guard.is(true), true)
-      assert.strictEqual(guard.is(false), true)
-    })
-
-    it('should rejects invalid inputs', () => {
-      const guard = G.literalsOr(['a', 'b'], G.boolean)
-      assert.strictEqual(guard.is('c'), false)
-    })
-  })
-
   describe('refinement', () => {
     it('should accepts valid inputs', () => {
       const guard = G.refinement(G.string, (s): s is string => s.length > 0)
@@ -189,8 +158,8 @@ describe('Guard', () => {
 
     it('should accepts valid inputs', () => {
       const guard = sum({
-        A: G.type({ _tag: G.literals(['A']), a: G.string }),
-        B: G.type({ _tag: G.literals(['B']), b: G.number })
+        A: G.type({ _tag: G.literal('A'), a: G.string }),
+        B: G.type({ _tag: G.literal('B'), b: G.number })
       })
       assert.deepStrictEqual(guard.is({ _tag: 'A', a: 'a' }), true)
       assert.deepStrictEqual(guard.is({ _tag: 'B', b: 1 }), true)
@@ -198,8 +167,8 @@ describe('Guard', () => {
 
     it('should rejects invalid inputs', () => {
       const guard = sum({
-        A: G.type({ _tag: G.literals(['A']), a: G.string }),
-        B: G.type({ _tag: G.literals(['B']), b: G.number })
+        A: G.type({ _tag: G.literal('A'), a: G.string }),
+        B: G.type({ _tag: G.literal('B'), b: G.number })
       })
       assert.strictEqual(guard.is(undefined), false)
       assert.strictEqual(guard.is({}), false)

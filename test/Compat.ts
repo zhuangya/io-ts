@@ -76,81 +76,21 @@ describe('Compat', () => {
   describe('literal', () => {
     describe('decode', () => {
       it('should decode a valid input', () => {
-        const codec = C.literal('a')
-        assert.deepStrictEqual(codec.decode('a'), right('a'))
-      })
-
-      it('should reject an invalid input', () => {
-        const codec = C.literal('a')
-        assert.deepStrictEqual(codec.decode('b'), left([T.make('cannot decode "b", should be "a"')]))
-      })
-    })
-
-    describe('encode', () => {
-      it('should encode a value', () => {
-        const codec = C.literal('a')
-        assert.deepStrictEqual(codec.encode('a'), 'a')
-      })
-    })
-  })
-
-  describe('literals', () => {
-    describe('decode', () => {
-      it('should decode a valid input', () => {
-        const codec = C.literals(['a', null])
+        const codec = C.literal('a', null, 'b', 1, true)
         assert.deepStrictEqual(codec.decode('a'), right('a'))
         assert.deepStrictEqual(codec.decode(null), right(null))
       })
 
       it('should reject an invalid input', () => {
-        const codec = C.literals(['a', null])
+        const codec = C.literal('a', null)
         assert.deepStrictEqual(codec.decode('b'), left([T.make('cannot decode "b", should be "a" | null')]))
       })
     })
 
     describe('encode', () => {
       it('should encode a value', () => {
-        const codec = C.literals(['a', null])
+        const codec = C.literal('a')
         assert.deepStrictEqual(codec.encode('a'), 'a')
-        assert.deepStrictEqual(codec.encode(null), null)
-      })
-    })
-  })
-
-  describe('literalsOr', () => {
-    describe('decode', () => {
-      it('should decode a valid input', () => {
-        const codec = C.literalsOr(['a', null], NumberFromString)
-        assert.deepStrictEqual(codec.decode('a'), right('a'))
-        assert.deepStrictEqual(codec.decode(null), right(null))
-        assert.deepStrictEqual(codec.decode('2'), right(2))
-      })
-
-      it('should reject an invalid input', () => {
-        const codec = C.literalsOr(['a', null], NumberFromString)
-        assert.deepStrictEqual(
-          codec.decode(2),
-          left([
-            T.make('member 0', [T.make('cannot decode 2, should be "a" | null')]),
-            T.make('member 1', [T.make('cannot decode 2, should be string')])
-          ])
-        )
-        assert.deepStrictEqual(
-          codec.decode('b'),
-          left([
-            T.make('member 0', [T.make('cannot decode "b", should be "a" | null')]),
-            T.make('member 1', [T.make('NumberFromString')])
-          ])
-        )
-      })
-    })
-
-    describe('encode', () => {
-      it('should encode a value', () => {
-        const codec = C.literalsOr(['a', null], NumberFromString)
-        assert.deepStrictEqual(codec.encode('a'), 'a')
-        assert.deepStrictEqual(codec.encode(null), null)
-        assert.deepStrictEqual(codec.encode(2), '2')
       })
     })
   })
@@ -348,6 +288,10 @@ describe('Compat', () => {
         assert.deepStrictEqual(codec.decode(['a', 1]), right(['a', 1]))
       })
 
+      it('should handle zero components', () => {
+        assert.deepStrictEqual(C.tuple().decode([]), right([]))
+      })
+
       it('should strip additional components', () => {
         const codec = C.tuple(C.string, C.number)
         assert.deepStrictEqual(codec.decode(['a', 1, true]), right(['a', 1]))
@@ -446,6 +390,10 @@ describe('Compat', () => {
         )
       })
 
+      it('should handle zero members', () => {
+        assert.deepStrictEqual(C.sum('_tag')({}).decode({}), left([T.make('cannot decode {}, should be never')]))
+      })
+
       it('should support empty records', () => {
         const decoder = sum({})
         assert.deepStrictEqual(decoder.decode({}), left([T.make('cannot decode {}, should be never')]))
@@ -466,40 +414,34 @@ describe('Compat', () => {
   describe('lazy', () => {
     interface A {
       a: number
-      b: null | A
+      b?: A
     }
 
     const codec: C.Compat<A> = C.lazy('A', () =>
-      C.type({
-        a: NumberFromString,
-        b: C.literalsOr([null], codec)
-      })
+      C.intersection(C.type({ a: NumberFromString }), C.partial({ b: codec }))
     )
 
     describe('decode', () => {
       it('should decode a valid input', () => {
-        assert.deepStrictEqual(codec.decode({ a: '1', b: null }), right({ a: 1, b: null }))
-        assert.deepStrictEqual(codec.decode({ a: '1', b: { a: '2', b: null } }), right({ a: 1, b: { a: 2, b: null } }))
+        assert.deepStrictEqual(codec.decode({ a: '1' }), right({ a: 1 }))
+        assert.deepStrictEqual(codec.decode({ a: '1', b: { a: '2' } }), right({ a: 1, b: { a: 2 } }))
       })
 
       it('should reject an invalid input', () => {
         assert.deepStrictEqual(
-          codec.decode({ a: 1, b: null }),
+          codec.decode({ a: 1 }),
           left([T.make('A', [T.make('required property "a"', [T.make('cannot decode 1, should be string')])])])
         )
         assert.deepStrictEqual(
-          codec.decode({ a: 'a', b: null }),
+          codec.decode({ a: 'a' }),
           left([T.make('A', [T.make('required property "a"', [T.make('NumberFromString')])])])
         )
         assert.deepStrictEqual(
           codec.decode({ a: '1', b: {} }),
           left([
             T.make('A', [
-              T.make('required property "b"', [
-                T.make('member 0', [T.make('cannot decode {}, should be null')]),
-                T.make('member 1', [
-                  T.make('A', [T.make('required property "a"', [T.make('cannot decode undefined, should be string')])])
-                ])
+              T.make('optional property "b"', [
+                T.make('A', [T.make('required property "a"', [T.make('cannot decode undefined, should be string')])])
               ])
             ])
           ])
@@ -509,8 +451,8 @@ describe('Compat', () => {
 
     describe('encode', () => {
       it('should encode a value', () => {
-        assert.deepStrictEqual(codec.encode({ a: 1, b: null }), { a: '1', b: null })
-        assert.deepStrictEqual(codec.encode({ a: 1, b: { a: 2, b: null } }), { a: '1', b: { a: '2', b: null } })
+        assert.deepStrictEqual(codec.encode({ a: 1 }), { a: '1' })
+        assert.deepStrictEqual(codec.encode({ a: 1, b: { a: 2 } }), { a: '1', b: { a: '2' } })
       })
     })
   })

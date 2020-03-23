@@ -44,7 +44,6 @@ import * as D from './Decoder'
 import * as E from './Encoder'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { ReadonlyNonEmptyArray } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -77,22 +76,11 @@ export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> 
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal>(value: A): Codec<A> {
-  return make(D.decoder.literal(value), E.encoder.literal(value))
-}
-
-/**
- * @since 3.0.0
- */
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Codec<A> {
-  return make(D.decoder.literals(values), E.encoder.literals(values))
-}
-
-/**
- * @since 3.0.0
- */
-export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Codec<B>): Codec<A | B> {
-  return make(D.decoder.literalsOr(values, or), E.encoder.literalsOr(values, or))
+export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
+  value: A,
+  ...values: B
+): Codec<A | B[number]> {
+  return make(D.decoder.literal(value, ...values), E.encoder.literal(value, ...values))
 }
 
 // -------------------------------------------------------------------------------------
@@ -232,8 +220,6 @@ export const codec: Invariant1<URI> & S.Schemable<URI> = {
   URI,
   imap: (fa, f, g) => make(D.decoder.map(fa, f), E.encoder.contramap(fa, g)),
   literal,
-  literals,
-  literalsOr,
   string,
   number,
   boolean,
