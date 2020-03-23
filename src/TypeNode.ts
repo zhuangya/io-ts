@@ -37,16 +37,19 @@ const toLiteralTypeNode = fold<ts.TypeNode>(
   () => ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword)
 )
 
+const never = {
+  typeNode: () => C.make(ts.createKeywordTypeNode(ts.SyntaxKind.NeverKeyword))
+}
+
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
-  value: A,
-  ...values: B
-): TypeNode<A | B[number]> {
-  const vs = [value, ...values]
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): TypeNode<A[number]> {
+  if (values.length === 0) {
+    return never
+  }
   return {
-    typeNode: () => C.make(ts.createUnionTypeNode(vs.map(toLiteralTypeNode)))
+    typeNode: () => C.make(ts.createUnionTypeNode(values.map(toLiteralTypeNode)))
   }
 }
 
@@ -176,8 +179,12 @@ export function sum<T extends string>(
   _tag: T
 ): <A>(members: { [K in keyof A]: TypeNode<A[K] & Record<T, K>> }) => TypeNode<A[keyof A]> {
   return (members: Record<string, TypeNode<unknown>>) => {
+    const keys = Object.keys(members)
+    if (keys.length === 0) {
+      return never
+    }
     return {
-      typeNode: () => C.make(ts.createUnionTypeNode(Object.keys(members).map(k => members[k].typeNode())))
+      typeNode: () => C.make(ts.createUnionTypeNode(keys.map(k => members[k].typeNode())))
     }
   }
 }
@@ -204,6 +211,9 @@ export function lazy<A>(id: string, f: () => TypeNode<A>): TypeNode<A> {
 export function union<A extends ReadonlyArray<unknown>>(
   ...members: { [K in keyof A]: TypeNode<A[K]> }
 ): TypeNode<A[number]> {
+  if (members.length === 0) {
+    return never
+  }
   return {
     typeNode: () => C.make(ts.createUnionTypeNode(members.map(m => m.typeNode())))
   }

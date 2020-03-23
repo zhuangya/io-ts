@@ -23,13 +23,9 @@ export interface Guard<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
-  value: A,
-  ...values: B
-): Guard<A | B[number]> {
-  const vs = [value, ...values]
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): Guard<A[number]> {
   return {
-    is: (u: unknown): u is A => vs.findIndex(a => a === u) !== -1
+    is: (u: unknown): u is A[number] => values.findIndex(a => a === u) !== -1
   }
 }
 

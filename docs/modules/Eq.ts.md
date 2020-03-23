@@ -19,7 +19,6 @@ Added in v3.0.0
 - [eq](#eq)
 - [intersection](#intersection)
 - [lazy](#lazy)
-- [literalsOr](#literalsor)
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
@@ -96,16 +95,6 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(f: () => Eq<A>): Eq<A> { ... }
-```
-
-Added in v3.0.0
-
-# literalsOr
-
-**Signature**
-
-```ts
-export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Eq<B>): Eq<A | B> { ... }
 ```
 
 Added in v3.0.0

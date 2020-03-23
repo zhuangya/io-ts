@@ -31,8 +31,6 @@ Added in v3.0.0
 - [intersection](#intersection)
 - [lazy](#lazy)
 - [literal](#literal)
-- [literals](#literals)
-- [literalsOr](#literalsor)
 - [make](#make)
 - [number](#number)
 - [partial](#partial)
@@ -153,27 +151,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends Literal>(value: A): Compat<A> { ... }
-```
-
-Added in v3.0.0
-
-# literals
-
-**Signature**
-
-```ts
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Compat<A> { ... }
-```
-
-Added in v3.0.0
-
-# literalsOr
-
-**Signature**
-
-```ts
-export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Compat<B>): Compat<A | B> { ... }
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): Compat<A[number]> { ... }
 ```
 
 Added in v3.0.0
@@ -275,10 +253,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A, B extends ReadonlyArray<unknown>>(
-  member: Compat<A>,
-  ...members: { [K in keyof B]: Compat<B[K]> }
-): Compat<A | B[number]> { ... }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: Compat<A[K]> }
+): Compat<A[number]> { ... }
 ```
 
 Added in v3.0.0

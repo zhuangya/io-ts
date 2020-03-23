@@ -25,13 +25,9 @@ export interface JsonSchema<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
-  value: A,
-  ...values: B
-): JsonSchema<A | B[number]> {
-  const vs = [value, ...values]
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): JsonSchema<A[number]> {
   return {
-    compile: () => C.make({ enum: vs })
+    compile: () => C.make({ enum: [...values] })
   }
 }
 

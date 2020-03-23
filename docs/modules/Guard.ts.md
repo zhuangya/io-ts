@@ -23,8 +23,6 @@ Added in v3.0.0
 - [intersection](#intersection)
 - [lazy](#lazy)
 - [literal](#literal)
-- [literals](#literals)
-- [literalsOr](#literalsor)
 - [never](#never)
 - [number](#number)
 - [partial](#partial)
@@ -145,27 +143,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends Literal>(value: A): Guard<A> { ... }
-```
-
-Added in v3.0.0
-
-# literals
-
-**Signature**
-
-```ts
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Guard<A> { ... }
-```
-
-Added in v3.0.0
-
-# literalsOr
-
-**Signature**
-
-```ts
-export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Guard<B>): Guard<A | B> { ... }
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): Guard<A[number]> { ... }
 ```
 
 Added in v3.0.0
@@ -267,10 +245,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A, B extends ReadonlyArray<unknown>>(
-  member: Guard<A>,
-  ...members: { [K in keyof B]: Guard<B[K]> }
-): Guard<A | B[number]> { ... }
+export function union<A extends ReadonlyArray<unknown>>(...members: { [K in keyof A]: Guard<A[K]> }): Guard<A[number]> { ... }
 ```
 
 Added in v3.0.0

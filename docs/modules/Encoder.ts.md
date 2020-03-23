@@ -21,7 +21,6 @@ Added in v3.0.0
 - [id](#id)
 - [intersection](#intersection)
 - [lazy](#lazy)
-- [literalsOr](#literalsor)
 - [partial](#partial)
 - [record](#record)
 - [sum](#sum)
@@ -118,16 +117,6 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(f: () => Encoder<A>): Encoder<A> { ... }
-```
-
-Added in v3.0.0
-
-# literalsOr
-
-**Signature**
-
-```ts
-export function literalsOr<A extends Literal, B>(values: U.ReadonlyNonEmptyArray<A>, or: Encoder<B>): Encoder<A | B> { ... }
 ```
 
 Added in v3.0.0

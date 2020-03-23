@@ -23,8 +23,6 @@ Added in v3.0.0
 - [intersection](#intersection)
 - [lazy](#lazy)
 - [literal](#literal)
-- [literals](#literals)
-- [literalsOr](#literalsor)
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
@@ -141,27 +139,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends Literal>(value: A): Arbitrary<A> { ... }
-```
-
-Added in v3.0.0
-
-# literals
-
-**Signature**
-
-```ts
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Arbitrary<A> { ... }
-```
-
-Added in v3.0.0
-
-# literalsOr
-
-**Signature**
-
-```ts
-export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Arbitrary<B>): Arbitrary<A | B> { ... }
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): Arbitrary<A[number]> { ... }
 ```
 
 Added in v3.0.0
@@ -245,10 +223,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A, B extends ReadonlyArray<unknown>>(
-  member: Arbitrary<A>,
-  ...members: { [K in keyof B]: Arbitrary<B[K]> }
-): Arbitrary<A | B[number]> { ... }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: Arbitrary<A[K]> }
+): Arbitrary<A[number]> { ... }
 ```
 
 Added in v3.0.0

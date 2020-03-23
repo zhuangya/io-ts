@@ -23,8 +23,6 @@ Added in v3.0.0
 - [jsonSchema](#jsonschema)
 - [lazy](#lazy)
 - [literal](#literal)
-- [literals](#literals)
-- [literalsOr](#literalsor)
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
@@ -143,30 +141,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends Literal>(value: A): JsonSchema<A> { ... }
-```
-
-Added in v3.0.0
-
-# literals
-
-**Signature**
-
-```ts
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): JsonSchema<A> { ... }
-```
-
-Added in v3.0.0
-
-# literalsOr
-
-**Signature**
-
-```ts
-export function literalsOr<A extends Literal, B>(
-  values: ReadonlyNonEmptyArray<A>,
-  or: JsonSchema<B>
-): JsonSchema<A | B> { ... }
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): JsonSchema<A[number]> { ... }
 ```
 
 Added in v3.0.0
@@ -250,10 +225,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A, B extends ReadonlyArray<unknown>>(
-  member: JsonSchema<A>,
-  ...members: { [K in keyof B]: JsonSchema<B[K]> }
-): JsonSchema<A | B[number]> { ... }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: JsonSchema<A[K]> }
+): JsonSchema<A[number]> { ... }
 ```
 
 Added in v3.0.0

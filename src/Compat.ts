@@ -42,11 +42,8 @@ export function make<A>(codec: C.Codec<A>, guard: G.Guard<A>): Compat<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
-  value: A,
-  ...values: B
-): Compat<A | B[number]> {
-  return make(C.codec.literal(value, ...values), G.guard.literal(value, ...values))
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): Compat<A[number]> {
+  return make(C.codec.literal(...values), G.guard.literal(...values))
 }
 
 // -------------------------------------------------------------------------------------

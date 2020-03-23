@@ -63,8 +63,6 @@ Added in v3.0.0
 - [intersection](#intersection)
 - [lazy](#lazy)
 - [literal](#literal)
-- [literals](#literals)
-- [literalsOr](#literalsor)
 - [make](#make)
 - [number](#number)
 - [partial](#partial)
@@ -188,27 +186,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends Literal>(value: A): Codec<A> { ... }
-```
-
-Added in v3.0.0
-
-# literals
-
-**Signature**
-
-```ts
-export function literals<A extends Literal>(values: ReadonlyNonEmptyArray<A>): Codec<A> { ... }
-```
-
-Added in v3.0.0
-
-# literalsOr
-
-**Signature**
-
-```ts
-export function literalsOr<A extends Literal, B>(values: ReadonlyNonEmptyArray<A>, or: Codec<B>): Codec<A | B> { ... }
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): Codec<A[number]> { ... }
 ```
 
 Added in v3.0.0

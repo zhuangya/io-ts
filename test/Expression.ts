@@ -61,17 +61,19 @@ describe('Expression', () => {
 
   it('literal', () => {
     assertExpression(E.literal(1, 'a', null, true), 'S.literal(1, "a", null, true)')
+    assertExpression(E.literal(), 'S.literal()')
   })
 
   it('sum', () => {
+    const sum = E.sum('_tag')
     assertExpression(
-      E.sum('_tag')({
+      sum({
         A: E.type({ _tag: E.literal('A'), a: E.string }),
         B: E.type({ _tag: E.literal('B'), b: E.number })
       }),
       'S.sum("_tag")({ A: S.type({ _tag: S.literal("A"), a: S.string }), B: S.type({ _tag: S.literal("B"), b: S.number }) })'
     )
-    assertExpression(E.sum('_tag')({}), 'S.sum("_tag")({})')
+    assertExpression(sum({}), 'S.sum("_tag")({})')
   })
 
   describe('lazy', () => {

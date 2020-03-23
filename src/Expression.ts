@@ -42,14 +42,10 @@ const schemable = ts.createIdentifier('S')
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
-  value: A,
-  ...values: B
-): Expression<A | B[number]> {
-  const vs = [value, ...values]
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): Expression<A[number]> {
   return {
     expression: () =>
-      C.make(ts.createCall(ts.createPropertyAccess(schemable, 'literal'), undefined, vs.map(toLiteralExpression)))
+      C.make(ts.createCall(ts.createPropertyAccess(schemable, 'literal'), undefined, values.map(toLiteralExpression)))
   }
 }
 

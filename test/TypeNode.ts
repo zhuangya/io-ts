@@ -36,6 +36,7 @@ describe('TypeNode', () => {
 
   it('union', () => {
     assertTypeNode(T.union(T.string, T.number), 'string | number')
+    assertTypeNode(T.union(), 'never')
   })
 
   it('intersection', () => {
@@ -56,16 +57,19 @@ describe('TypeNode', () => {
 
   it('literal', () => {
     assertTypeNode(T.literal(1, 'a', null, true), '1 | "a" | null | true')
+    assertTypeNode(T.literal(), 'never')
   })
 
   it('sum', () => {
+    const sum = T.sum('_tag')
     assertTypeNode(
-      T.sum('_tag')({
+      sum({
         A: T.type({ _tag: T.literal('A'), a: T.string }),
         B: T.type({ _tag: T.literal('B'), b: T.number })
       }),
       '{\n    _tag: "A";\n    a: string;\n} | {\n    _tag: "B";\n    b: number;\n}'
     )
+    assertTypeNode(sum({}), 'never')
   })
 
   describe('lazy', () => {

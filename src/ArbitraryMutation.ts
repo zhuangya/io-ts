@@ -39,14 +39,8 @@ const literalsArbitrary: A.Arbitrary<Literal> = A.union(A.string, A.number, A.bo
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
-  value: A,
-  ...values: B
-): ArbitraryMutation<A | B[number]> {
-  return make(
-    literalsArbitrary.filter(not(G.guard.literal(value, ...values).is)),
-    A.arbitrary.literal(value, ...values)
-  )
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): ArbitraryMutation<A[number]> {
+  return make(literalsArbitrary.filter(not(G.guard.literal(...values).is)), A.arbitrary.literal(...values))
 }
 
 // -------------------------------------------------------------------------------------

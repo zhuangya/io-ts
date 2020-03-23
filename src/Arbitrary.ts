@@ -22,11 +22,8 @@ export interface Arbitrary<A> extends fc.Arbitrary<A> {}
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
-  value: A,
-  ...values: B
-): Arbitrary<A | B[number]> {
-  return fc.oneof(fc.constant(value), ...values.map(v => fc.constant(v)))
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): Arbitrary<A[number]> {
+  return fc.oneof(...values.map(v => fc.constant(v)))
 }
 
 // -------------------------------------------------------------------------------------

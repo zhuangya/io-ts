@@ -45,12 +45,12 @@ export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
-  value: A,
-  ...values: B
-): Decoder<A | B[number]> {
-  const expected = [value, ...values].map(value => JSON.stringify(value)).join(' | ')
-  return fromGuard(G.guard.literal(value, ...values), expected)
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): Decoder<A[number]> {
+  if (values.length === 0) {
+    return never
+  }
+  const expected = values.map(value => JSON.stringify(value)).join(' | ')
+  return fromGuard(G.guard.literal(...values), expected)
 }
 
 // -------------------------------------------------------------------------------------

@@ -23,8 +23,6 @@ Added in v3.0.0
 - [intersection](#intersection)
 - [lazy](#lazy)
 - [literal](#literal)
-- [literals](#literals)
-- [literalsOr](#literalsor)
 - [make](#make)
 - [number](#number)
 - [partial](#partial)
@@ -147,30 +145,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends Literal>(value: A): ArbitraryMutation<A> { ... }
-```
-
-Added in v3.0.0
-
-# literals
-
-**Signature**
-
-```ts
-export function literals<A extends Literal>(values: U.ReadonlyNonEmptyArray<A>): ArbitraryMutation<A> { ... }
-```
-
-Added in v3.0.0
-
-# literalsOr
-
-**Signature**
-
-```ts
-export function literalsOr<A extends Literal, B>(
-  values: U.ReadonlyNonEmptyArray<A>,
-  or: ArbitraryMutation<B>
-): ArbitraryMutation<A | B> { ... }
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): ArbitraryMutation<A[number]> { ... }
 ```
 
 Added in v3.0.0
@@ -264,10 +239,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A, B extends ReadonlyArray<unknown>>(
-  member: ArbitraryMutation<A>,
-  ...members: { [K in keyof B]: ArbitraryMutation<B[K]> }
-): ArbitraryMutation<B[number]> { ... }
+export function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: ArbitraryMutation<A[K]> }
+): ArbitraryMutation<A[number]> { ... }
 ```
 
 Added in v3.0.0

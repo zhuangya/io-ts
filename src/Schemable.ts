@@ -9,10 +9,7 @@ import { Literal } from './Literal'
  */
 export interface Schemable<S extends URIS> {
   readonly URI: S
-  readonly literal: <A extends Literal, V extends ReadonlyArray<Literal>>(
-    value: A,
-    ...values: V
-  ) => Kind<S, A | V[number]>
+  readonly literal: <A extends ReadonlyArray<Literal>>(...values: A) => Kind<S, A[number]>
   readonly string: Kind<S, string>
   readonly number: Kind<S, number>
   readonly boolean: Kind<S, boolean>

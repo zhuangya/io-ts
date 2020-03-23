@@ -76,11 +76,8 @@ export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> 
 /**
  * @since 3.0.0
  */
-export function literal<A extends Literal, B extends ReadonlyArray<Literal>>(
-  value: A,
-  ...values: B
-): Codec<A | B[number]> {
-  return make(D.decoder.literal(value, ...values), E.encoder.literal(value, ...values))
+export function literal<A extends ReadonlyArray<Literal>>(...values: A): Codec<A[number]> {
+  return make(D.decoder.literal(...values), E.encoder.literal(...values))
 }
 
 // -------------------------------------------------------------------------------------
