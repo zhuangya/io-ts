@@ -95,6 +95,16 @@ export const UnknownRecord: Expression<Record<string, unknown>> = {
 /**
  * @since 3.0.0
  */
+export function nullable<A>(or: Expression<A>): Expression<null | A> {
+  return {
+    expression: () =>
+      C.make(ts.createCall(ts.createPropertyAccess(schemable, 'nullable'), undefined, [or.expression()]))
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
 export function type<A>(properties: { [K in keyof A]: Expression<A[K]> }): Expression<A> {
   const expressions: Record<string, Expression<unknown>> = properties
   return {
@@ -272,6 +282,7 @@ export const expression: S.Schemable<URI> & S.WithUnion<URI> = {
   boolean,
   UnknownArray,
   UnknownRecord,
+  nullable,
   type,
   partial,
   record,

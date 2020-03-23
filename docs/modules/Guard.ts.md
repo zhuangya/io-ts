@@ -24,6 +24,7 @@ Added in v3.0.0
 - [lazy](#lazy)
 - [literal](#literal)
 - [never](#never)
+- [nullable](#nullable)
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
@@ -154,6 +155,16 @@ Added in v3.0.0
 
 ```ts
 export const never: Guard<never> = ...
+```
+
+Added in v3.0.0
+
+# nullable
+
+**Signature**
+
+```ts
+export function nullable<A>(or: Guard<A>): Guard<null | A> { ... }
 ```
 
 Added in v3.0.0

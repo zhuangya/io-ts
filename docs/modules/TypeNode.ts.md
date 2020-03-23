@@ -23,6 +23,7 @@ Added in v3.0.0
 - [intersection](#intersection)
 - [lazy](#lazy)
 - [literal](#literal)
+- [nullable](#nullable)
 - [number](#number)
 - [partial](#partial)
 - [print](#print)
@@ -144,6 +145,16 @@ Added in v3.0.0
 
 ```ts
 export function literal<A extends ReadonlyArray<Literal>>(...values: A): TypeNode<A[number]> { ... }
+```
+
+Added in v3.0.0
+
+# nullable
+
+**Signature**
+
+```ts
+export function nullable<A>(or: TypeNode<A>): TypeNode<null | A> { ... }
 ```
 
 Added in v3.0.0

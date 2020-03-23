@@ -24,6 +24,7 @@ Added in v3.0.0
 - [lazy](#lazy)
 - [literal](#literal)
 - [make](#make)
+- [nullable](#nullable)
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
@@ -156,6 +157,16 @@ Added in v3.0.0
 
 ```ts
 export function make<A>(mutation: fc.Arbitrary<unknown>, arbitrary: fc.Arbitrary<A>): ArbitraryMutation<A> { ... }
+```
+
+Added in v3.0.0
+
+# nullable
+
+**Signature**
+
+```ts
+export function nullable<A>(or: ArbitraryMutation<A>): ArbitraryMutation<null | A> { ... }
 ```
 
 Added in v3.0.0

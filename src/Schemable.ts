@@ -15,6 +15,7 @@ export interface Schemable<S extends URIS> {
   readonly boolean: Kind<S, boolean>
   readonly UnknownArray: Kind<S, Array<unknown>>
   readonly UnknownRecord: Kind<S, Record<string, unknown>>
+  readonly nullable: <A>(or: Kind<S, A>) => Kind<S, null | A>
   readonly type: <A>(properties: { [K in keyof A]: Kind<S, A[K]> }) => Kind<S, A>
   readonly partial: <A>(properties: { [K in keyof A]: Kind<S, A[K]> }) => Kind<S, Partial<A>>
   readonly record: <A>(codomain: Kind<S, A>) => Kind<S, Record<string, A>>

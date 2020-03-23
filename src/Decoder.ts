@@ -149,6 +149,13 @@ export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string,
 /**
  * @since 3.0.0
  */
+export function nullable<A>(or: Decoder<A>): Decoder<null | A> {
+  return union(literal(null), or)
+}
+
+/**
+ * @since 3.0.0
+ */
 export function type<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decoder<A> {
   return {
     decode: u => {
@@ -425,6 +432,7 @@ export const decoder: Applicative1<URI> & D<URI> & S.Schemable<URI> & S.WithUnio
   boolean,
   UnknownArray,
   UnknownRecord,
+  nullable,
   type,
   partial,
   record,

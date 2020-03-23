@@ -2,23 +2,18 @@
  * Breaking changes:
  * - remove `brand` combinator
  * - rename `recursive` to `lazy`
- * - intersections support two, spreaded arguments
- * - tuples support up to 3 spreaded arguments
+ * - intersections support two arguments
  *
  * FAQ
  * - is it possible to provide a custom message?
- *   - `withMessage` (already existing codecs)
+ *   - `withExpected` (already existing codecs)
  * - how to change a field? (for example snake case to camel case)
- *   - `map`
+ *   - `imap`
  *
  * Open questions:
- * - is it possible to define a Semigroup for DecodeError?
  * - is it possible to handle `enum`s?
  * - is it possible to define a Decoder which fails on additional properties?
- * - is it possible to get only the first error?
  * - readonly support?
- * - Is there a way to generate newtypes?
- * - Is there a way to generate branded types + smart constructors based on a user provided predicate?
  *
  * Schemas:
  * - Schemable<URI>
@@ -133,6 +128,13 @@ export function refinement<A, B extends A>(from: Codec<A>, refinement: (a: A) =>
 /**
  * @since 3.0.0
  */
+export function nullable<A>(or: Codec<A>): Codec<null | A> {
+  return make(D.decoder.nullable(or), E.encoder.nullable(or))
+}
+
+/**
+ * @since 3.0.0
+ */
 export function type<A>(properties: { [K in keyof A]: Codec<A[K]> }): Codec<A> {
   return make(D.decoder.type(properties), E.encoder.type(properties))
 }
@@ -222,6 +224,7 @@ export const codec: Invariant1<URI> & S.Schemable<URI> = {
   boolean,
   UnknownArray,
   UnknownRecord,
+  nullable,
   type,
   partial,
   record,

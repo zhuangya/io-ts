@@ -26,6 +26,23 @@ describe('TypeNode', () => {
     assertTypeNode(T.UnknownRecord, 'Record<string, unknown>')
   })
 
+  it('literal', () => {
+    assertTypeNode(T.literal(1, 'a', null, true), '1 | "a" | null | true')
+    assertTypeNode(T.literal(), 'never')
+  })
+
+  it('nullable', () => {
+    assertTypeNode(T.nullable(T.string), 'null | string')
+  })
+
+  it('type', () => {
+    assertTypeNode(T.type({ a: T.string }), '{\n    a: string;\n}')
+  })
+
+  it('partial', () => {
+    assertTypeNode(T.partial({ a: T.string }), 'Partial<{\n    a: string;\n}>')
+  })
+
   it('array', () => {
     assertTypeNode(T.array(T.string), 'Array<string>')
   })
@@ -45,19 +62,6 @@ describe('TypeNode', () => {
 
   it('tuple', () => {
     assertTypeNode(T.tuple(T.string, T.number), '[string, number]')
-  })
-
-  it('type', () => {
-    assertTypeNode(T.type({ a: T.string }), '{\n    a: string;\n}')
-  })
-
-  it('partial', () => {
-    assertTypeNode(T.partial({ a: T.string }), 'Partial<{\n    a: string;\n}>')
-  })
-
-  it('literal', () => {
-    assertTypeNode(T.literal(1, 'a', null, true), '1 | "a" | null | true')
-    assertTypeNode(T.literal(), 'never')
   })
 
   it('sum', () => {

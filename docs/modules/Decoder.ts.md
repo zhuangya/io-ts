@@ -31,6 +31,7 @@ Added in v3.0.0
 - [literal](#literal)
 - [map](#map)
 - [never](#never)
+- [nullable](#nullable)
 - [number](#number)
 - [parse](#parse)
 - [partial](#partial)
@@ -233,6 +234,16 @@ Added in v3.0.0
 
 ```ts
 export const never: Decoder<never> = ...
+```
+
+Added in v3.0.0
+
+# nullable
+
+**Signature**
+
+```ts
+export function nullable<A>(or: Decoder<A>): Decoder<null | A> { ... }
 ```
 
 Added in v3.0.0

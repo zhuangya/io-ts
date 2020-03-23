@@ -23,6 +23,7 @@ Added in v3.0.0
 - [jsonSchema](#jsonschema)
 - [lazy](#lazy)
 - [literal](#literal)
+- [nullable](#nullable)
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
@@ -142,6 +143,16 @@ Added in v3.0.0
 
 ```ts
 export function literal<A extends ReadonlyArray<Literal>>(...values: A): JsonSchema<A[number]> { ... }
+```
+
+Added in v3.0.0
+
+# nullable
+
+**Signature**
+
+```ts
+export function nullable<A>(or: JsonSchema<A>): JsonSchema<null | A> { ... }
 ```
 
 Added in v3.0.0

@@ -10,25 +10,20 @@ Breaking changes:
 
 - remove `brand` combinator
 - rename `recursive` to `lazy`
-- intersections support two, spreaded arguments
-- tuples support up to 3 spreaded arguments
+- intersections support two arguments
 
 FAQ
 
 - is it possible to provide a custom message?
-  - `withMessage` (already existing codecs)
+  - `withExpected` (already existing codecs)
 - how to change a field? (for example snake case to camel case)
-  - `map`
+  - `imap`
 
 Open questions:
 
-- is it possible to define a Semigroup for DecodeError?
 - is it possible to handle `enum`s?
 - is it possible to define a Decoder which fails on additional properties?
-- is it possible to get only the first error?
 - readonly support?
-- Is there a way to generate newtypes?
-- Is there a way to generate branded types + smart constructors based on a user provided predicate?
 
 Schemas:
 
@@ -64,6 +59,7 @@ Added in v3.0.0
 - [lazy](#lazy)
 - [literal](#literal)
 - [make](#make)
+- [nullable](#nullable)
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
@@ -197,6 +193,16 @@ Added in v3.0.0
 
 ```ts
 export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> { ... }
+```
+
+Added in v3.0.0
+
+# nullable
+
+**Signature**
+
+```ts
+export function nullable<A>(or: Codec<A>): Codec<null | A> { ... }
 ```
 
 Added in v3.0.0

@@ -32,6 +32,7 @@ Added in v3.0.0
 - [lazy](#lazy)
 - [literal](#literal)
 - [make](#make)
+- [nullable](#nullable)
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
@@ -162,6 +163,16 @@ Added in v3.0.0
 
 ```ts
 export function make<A>(codec: C.Codec<A>, guard: G.Guard<A>): Compat<A> { ... }
+```
+
+Added in v3.0.0
+
+# nullable
+
+**Signature**
+
+```ts
+export function nullable<A>(or: Compat<A>): Compat<null | A> { ... }
 ```
 
 Added in v3.0.0

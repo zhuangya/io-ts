@@ -91,6 +91,15 @@ export function refinement<A, B extends A>(from: Guard<A>, refinement: (a: A) =>
 /**
  * @since 3.0.0
  */
+export function nullable<A>(or: Guard<A>): Guard<null | A> {
+  return {
+    is: (u): u is null | A => u === null || or.is(u)
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
 export function type<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
   return refinement(UnknownRecord, (r): r is {
     [K in keyof A]: A[K]
@@ -224,6 +233,7 @@ export const guard: S.Schemable<URI> & S.WithUnion<URI> = {
   boolean,
   UnknownArray,
   UnknownRecord,
+  nullable,
   type,
   partial,
   record,

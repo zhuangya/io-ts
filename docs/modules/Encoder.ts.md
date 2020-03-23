@@ -21,6 +21,7 @@ Added in v3.0.0
 - [id](#id)
 - [intersection](#intersection)
 - [lazy](#lazy)
+- [nullable](#nullable)
 - [partial](#partial)
 - [record](#record)
 - [sum](#sum)
@@ -117,6 +118,16 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(f: () => Encoder<A>): Encoder<A> { ... }
+```
+
+Added in v3.0.0
+
+# nullable
+
+**Signature**
+
+```ts
+export function nullable<A>(or: Encoder<A>): Encoder<null | A> { ... }
 ```
 
 Added in v3.0.0

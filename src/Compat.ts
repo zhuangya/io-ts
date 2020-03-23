@@ -89,6 +89,13 @@ export function refinement<A, B extends A>(from: Compat<A>, refinement: (a: A) =
 /**
  * @since 3.0.0
  */
+export function nullable<A>(or: Compat<A>): Compat<null | A> {
+  return make(C.codec.nullable(or), G.guard.nullable(or))
+}
+
+/**
+ * @since 3.0.0
+ */
 export function type<A>(properties: { [K in keyof A]: Compat<A[K]> }): Compat<A> {
   return make(C.codec.type(properties), G.guard.type(properties))
 }
@@ -197,6 +204,7 @@ export const compat: S.Schemable<URI> & S.WithUnion<URI> = {
   UnknownArray,
   UnknownRecord,
   type,
+  nullable,
   partial,
   record,
   array,

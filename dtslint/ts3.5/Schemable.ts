@@ -40,6 +40,11 @@ make(S => S.UnknownArray) // $ExpectType Schema<unknown[]>
 make(S => S.UnknownRecord) // $ExpectType Schema<Record<string, unknown>>
 
 //
+// nullable
+//
+make(S => S.nullable(S.string)) // $ExpectType Schema<string | null>
+
+//
 // type
 //
 make(S => S.type({ a: S.string })) // $ExpectType Schema<{ a: string; }>

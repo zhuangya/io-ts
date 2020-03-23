@@ -83,6 +83,10 @@ describe('Arbitrary', () => {
     assert(make(S => S.literal('a', null)))
   })
 
+  it('nullable', () => {
+    assert(make(S => S.nullable(S.string)))
+  })
+
   it('type', () => {
     assert(
       make(S =>

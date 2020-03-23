@@ -30,6 +30,23 @@ describe('Expression', () => {
     assertExpression(E.UnknownRecord, 'S.UnknownRecord')
   })
 
+  it('literal', () => {
+    assertExpression(E.literal(1, 'a', null, true), 'S.literal(1, "a", null, true)')
+    assertExpression(E.literal(), 'S.literal()')
+  })
+
+  it('nullable', () => {
+    assertExpression(E.nullable(E.string), 'S.nullable(S.string)')
+  })
+
+  it('type', () => {
+    assertExpression(E.type({ a: E.string }), 'S.type({ a: S.string })')
+  })
+
+  it('partial', () => {
+    assertExpression(E.partial({ a: E.string }), 'S.partial({ a: S.string })')
+  })
+
   it('array', () => {
     assertExpression(E.array(E.string), 'S.array(S.string)')
   })
@@ -49,19 +66,6 @@ describe('Expression', () => {
 
   it('tuple', () => {
     assertExpression(E.tuple(E.string, E.number), 'S.tuple(S.string, S.number)')
-  })
-
-  it('type', () => {
-    assertExpression(E.type({ a: E.string }), 'S.type({ a: S.string })')
-  })
-
-  it('partial', () => {
-    assertExpression(E.partial({ a: E.string }), 'S.partial({ a: S.string })')
-  })
-
-  it('literal', () => {
-    assertExpression(E.literal(1, 'a', null, true), 'S.literal(1, "a", null, true)')
-    assertExpression(E.literal(), 'S.literal()')
   })
 
   it('sum', () => {

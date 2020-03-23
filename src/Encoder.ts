@@ -36,6 +36,15 @@ export const id: Encoder<unknown> = {
 /**
  * @since 3.0.0
  */
+export function nullable<A>(or: Encoder<A>): Encoder<null | A> {
+  return {
+    encode: a => (a === null ? a : or.encode(a))
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
 export function type<A>(properties: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> {
   return {
     encode: a => {
@@ -167,6 +176,7 @@ export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   boolean: id,
   UnknownArray: id,
   UnknownRecord: id,
+  nullable,
   type,
   partial,
   record,

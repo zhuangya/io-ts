@@ -60,6 +60,15 @@ export const UnknownRecord: Eq<Record<string, unknown>> = E.fromEquals((x, y) =>
 /**
  * @since 3.0.0
  */
+export function nullable<A>(or: Eq<A>): Eq<null | A> {
+  return {
+    equals: (x, y) => (x === null || y === null ? x === y : or.equals(x, y))
+  }
+}
+
+/**
+ * @since 3.0.0
+ */
 export const type: <A>(eqs: { [K in keyof A]: Eq<A[K]> }) => Eq<A> = E.getStructEq
 
 /**
@@ -147,6 +156,7 @@ export const eq: typeof E.eq & S.Schemable<E.URI> = {
   boolean,
   UnknownArray,
   UnknownRecord,
+  nullable,
   type,
   partial,
   record,

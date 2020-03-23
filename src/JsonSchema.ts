@@ -74,6 +74,17 @@ export const UnknownRecord: JsonSchema<Record<string, unknown>> = {
 // combinators
 // -------------------------------------------------------------------------------------
 
+const nullJsonSchema: JsonSchema<null> = {
+  compile: () => C.make({ enum: [null] })
+}
+
+/**
+ * @since 3.0.0
+ */
+export function nullable<A>(or: JsonSchema<A>): JsonSchema<null | A> {
+  return union(nullJsonSchema, or)
+}
+
 /**
  * @since 3.0.0
  */
@@ -231,6 +242,7 @@ export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = {
   boolean,
   UnknownArray,
   UnknownRecord,
+  nullable,
   type,
   partial,
   record,

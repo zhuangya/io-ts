@@ -83,16 +83,14 @@ export const UnknownRecord: ArbitraryMutation<Record<string, unknown>> = make(A.
 // combinators
 // -------------------------------------------------------------------------------------
 
-// TODO: parse?
-// /**
-//  * @since 3.0.0
-//  */
-// export function parse<A, B>(from: ArbitraryMutation<A>, parser: (a: A) => Either<string, B>): ArbitraryMutation<B> {
-//   return make(
-//     from.arbitrary.filter(a => isLeft(parser(a))),
-//     A.parse(from.arbitrary, parser)
-//   )
-// }
+const nullMutation: ArbitraryMutation<null> = make(fc.constant({}), fc.constant(null))
+
+/**
+ * @since 3.0.0
+ */
+export function nullable<A>(or: ArbitraryMutation<A>): ArbitraryMutation<null | A> {
+  return union(nullMutation, or)
+}
 
 /**
  * @since 3.0.0
@@ -251,6 +249,7 @@ export const arbitraryMutation: S.Schemable<URI> & S.WithUnion<URI> = {
   boolean,
   UnknownArray,
   UnknownRecord,
+  nullable,
   type,
   partial,
   record,

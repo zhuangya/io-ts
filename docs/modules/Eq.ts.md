@@ -19,6 +19,7 @@ Added in v3.0.0
 - [eq](#eq)
 - [intersection](#intersection)
 - [lazy](#lazy)
+- [nullable](#nullable)
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
@@ -95,6 +96,16 @@ Added in v3.0.0
 
 ```ts
 export function lazy<A>(f: () => Eq<A>): Eq<A> { ... }
+```
+
+Added in v3.0.0
+
+# nullable
+
+**Signature**
+
+```ts
+export function nullable<A>(or: Eq<A>): Eq<null | A> { ... }
 ```
 
 Added in v3.0.0

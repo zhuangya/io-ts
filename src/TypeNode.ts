@@ -102,6 +102,17 @@ export const UnknownRecord: TypeNode<Record<string, unknown>> = {
 // combinators
 // -------------------------------------------------------------------------------------
 
+const nullTypeNode: TypeNode<null> = {
+  typeNode: () => C.make(ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword))
+}
+
+/**
+ * @since 3.0.0
+ */
+export function nullable<A>(or: TypeNode<A>): TypeNode<null | A> {
+  return union(nullTypeNode, or)
+}
+
 /**
  * @since 3.0.0
  */
@@ -250,6 +261,7 @@ export const typeNode: S.Schemable<URI> & S.WithUnion<URI> = {
   boolean,
   UnknownArray,
   UnknownRecord,
+  nullable,
   type,
   partial,
   record,

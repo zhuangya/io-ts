@@ -65,16 +65,12 @@ export const UnknownRecord: Arbitrary<Record<string, unknown>> = fc.dictionary(s
 // combinators
 // -------------------------------------------------------------------------------------
 
-// TODO: parse?
-// /**
-//  * @since 3.0.0
-//  */
-// export function parse<A, B>(from: Arbitrary<A>, parser: (a: A) => Either<string, B>): Arbitrary<B> {
-//   return from
-//     .map(parser)
-//     .filter(isRight)
-//     .map((e: any) => e.right)
-// }
+/**
+ * @since 3.0.0
+ */
+export function nullable<A>(or: Arbitrary<A>): Arbitrary<null | A> {
+  return fc.oneof(fc.constant(null), or)
+}
 
 /**
  * @since 3.0.0
@@ -185,6 +181,7 @@ export const arbitrary: S.Schemable<URI> & S.WithUnion<URI> = {
   boolean,
   UnknownArray,
   UnknownRecord,
+  nullable,
   type,
   partial,
   record,
