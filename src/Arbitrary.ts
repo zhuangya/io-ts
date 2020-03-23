@@ -88,12 +88,11 @@ export function type<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitr
  */
 export function partial<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<Partial<A>> {
   const keys = fc.oneof(...Object.keys(properties).map(p => fc.constant(p)))
-  return keys.chain(key =>
-    fc.record(properties).map(o => {
-      delete (o as any)[key]
-      return o
-    })
-  )
+  return keys.chain(key => {
+    const p: any = { ...properties }
+    delete p[key]
+    return fc.record(p)
+  })
 }
 
 /**

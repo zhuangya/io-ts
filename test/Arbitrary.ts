@@ -129,14 +129,15 @@ describe('Arbitrary', () => {
     assert(make(S => S.sum('_tag')({ A: A(S), B: B(S) })))
   })
 
-  it.skip('lazy', () => {
+  it('lazy', () => {
     interface A {
       a: string
       b?: A
+      c?: number
     }
 
     const schema: Schema<A> = make(S =>
-      S.lazy('A', () => S.intersection(S.type({ a: S.string }), S.partial({ b: schema(S) })))
+      S.lazy('A', () => S.intersection(S.type({ a: S.string }), S.partial({ b: schema(S), c: S.number })))
     )
     assert(schema)
   })
