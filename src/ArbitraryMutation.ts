@@ -50,22 +50,18 @@ export function literal<A extends ReadonlyArray<Literal>>(...values: A): Arbitra
 /**
  * @since 3.0.0
  */
-export const string: ArbitraryMutation<string> = make(fc.oneof<number | boolean>(A.number, A.boolean), A.string)
+export const string: ArbitraryMutation<string> = make(fc.oneof(A.number, A.boolean), A.string)
 
 /**
  * @since 3.0.0
  */
-export const number: ArbitraryMutation<number> = make(fc.oneof<string | boolean>(A.string, A.boolean), A.number)
+export const number: ArbitraryMutation<number> = make(fc.oneof(A.string, A.boolean), A.number)
 
 /**
  * @since 3.0.0
  */
 export const boolean: ArbitraryMutation<boolean> = make(
-  fc.oneof<string | number>(
-    A.string,
-    A.number,
-    fc.oneof(fc.constant('true'), fc.constant('false'), fc.constant('0'), fc.constant('1'))
-  ),
+  fc.oneof(A.string, A.number, fc.oneof(fc.constant('true'), fc.constant('false'), fc.constant('0'), fc.constant('1'))),
   A.boolean
 )
 
