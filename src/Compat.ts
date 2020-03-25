@@ -125,7 +125,7 @@ export function array<A>(items: Compat<A>): Compat<Array<A>> {
  * @since 3.0.0
  */
 export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Compat<A[K]> }): Compat<A> {
-  return make(C.codec.tuple<A>(...(components as any)), G.guard.tuple<A>(...(components as any)))
+  return make(C.codec.tuple(...(components as any)), G.guard.tuple(...(components as any)))
 }
 
 /**

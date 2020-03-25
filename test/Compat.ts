@@ -296,11 +296,6 @@ describe('Compat', () => {
         assert.deepStrictEqual(C.tuple().decode([]), right([]))
       })
 
-      it('should strip additional components', () => {
-        const codec = C.tuple(C.string, C.number)
-        assert.deepStrictEqual(codec.decode(['a', 1, true]), right(['a', 1]))
-      })
-
       it('should reject an invalid input', () => {
         const codec = C.tuple(C.string, C.number)
         assert.deepStrictEqual(
@@ -315,6 +310,11 @@ describe('Compat', () => {
           codec.decode([1, 2]),
           left([T.make('component 0', [T.make('cannot decode 1, should be string')])])
         )
+      })
+
+      it('should fail with additional components', () => {
+        const codec = C.tuple(C.string, C.number)
+        assert.deepStrictEqual(codec.decode(['a', 1, true]), left([T.make('should not have more than 2 items')]))
       })
     })
 

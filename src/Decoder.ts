@@ -271,6 +271,7 @@ export function array<A>(items: Decoder<A>): Decoder<Array<A>> {
  * @since 3.0.0
  */
 export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Decoder<A[K]> }): Decoder<A> {
+  const len = components.length
   return {
     decode: u => {
       const e = UnknownArray.decode(u)
@@ -278,8 +279,11 @@ export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in k
         return e
       }
       const us = e.right
+      if (us.length > len) {
+        return E.left([T.make(`should not have more than ${len} items`)])
+      }
       const a: Array<unknown> = []
-      for (let i = 0; i < components.length; i++) {
+      for (let i = 0; i < len; i++) {
         const e = components[i].decode(us[i])
         if (E.isLeft(e)) {
           return E.left([T.make(`component ${i}`, e.left)])
