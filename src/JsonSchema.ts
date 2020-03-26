@@ -15,7 +15,7 @@ import * as S from './Schemable'
  * @since 3.0.0
  */
 export interface JsonSchema<A> {
-  readonly compile: (lazy: boolean) => C.Const<JSONSchema7, A>
+  readonly compile: (definitions?: Record<string, JSONSchema7 | undefined>) => C.Const<JSONSchema7, A>
 }
 
 // -------------------------------------------------------------------------------------
@@ -182,20 +182,23 @@ export function sum<T extends string>(
  * @since 3.0.0
  */
 export function lazy<A>(id: string, f: () => JsonSchema<A>): JsonSchema<A> {
-  // TODO: support mutually recursive json schemas
   const $ref = `#/definitions/${id}`
   return {
-    compile: lazy => {
-      if (lazy) {
-        return C.make({ $ref })
+    compile: definitions => {
+      if (definitions) {
+        if (definitions.hasOwnProperty(id)) {
+          return C.make({ $ref })
+        }
+        definitions[id] = undefined
+        return (definitions[id] = f().compile(definitions))
+      } else {
+        definitions = { [id]: undefined }
+        definitions[id] = f().compile(definitions)
+        return C.make({
+          definitions,
+          $ref
+        })
       }
-      return C.make({
-        $id: $ref,
-        definitions: {
-          [id]: f().compile(true)
-        },
-        $ref
-      })
     }
   }
 }

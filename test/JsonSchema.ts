@@ -7,39 +7,39 @@ const ajv = new Ajv()
 
 describe('JsonSchema', () => {
   it('literal', () => {
-    const validate = ajv.compile(J.literal('a').compile(false))
+    const validate = ajv.compile(J.literal('a').compile())
     assert.strictEqual(validate('a'), true)
     assert.strictEqual(validate(1), false)
   })
 
   it('string', () => {
-    const validate = ajv.compile(J.string.compile(false))
+    const validate = ajv.compile(J.string.compile())
     assert.strictEqual(validate('a'), true)
     assert.strictEqual(validate(1), false)
   })
 
   it('boolean', () => {
-    const validate = ajv.compile(J.boolean.compile(false))
+    const validate = ajv.compile(J.boolean.compile())
     assert.strictEqual(validate(true), true)
     assert.strictEqual(validate(1), false)
   })
 
   it('UnknownArray', () => {
-    const validate = ajv.compile(J.UnknownArray.compile(false))
+    const validate = ajv.compile(J.UnknownArray.compile())
     assert.strictEqual(validate([]), true)
     assert.strictEqual(validate([1, 2, 3]), true)
     assert.strictEqual(validate(1), false)
   })
 
   it('UnknownRecord', () => {
-    const validate = ajv.compile(J.UnknownRecord.compile(false))
+    const validate = ajv.compile(J.UnknownRecord.compile())
     assert.strictEqual(validate({}), true)
     assert.strictEqual(validate({ a: 'a', b: 1 }), true)
     assert.strictEqual(validate(1), false)
   })
 
   it('type', () => {
-    const schema = J.type({ a: J.string, b: J.number }).compile(false)
+    const schema = J.type({ a: J.string, b: J.number }).compile()
     const validate = ajv.compile(schema)
     assert.strictEqual(validate({ a: 'a', b: 1 }), true)
     assert.strictEqual(validate({ a: 'a' }), false)
@@ -47,7 +47,7 @@ describe('JsonSchema', () => {
   })
 
   it('partial', () => {
-    const validate = ajv.compile(J.partial({ a: J.string, b: J.number }).compile(false))
+    const validate = ajv.compile(J.partial({ a: J.string, b: J.number }).compile())
     assert.strictEqual(validate({ a: 'a', b: 1 }), true)
     assert.strictEqual(validate({ a: 'a' }), true)
     assert.strictEqual(validate({ a: 'a', b: undefined }), true)
@@ -55,20 +55,20 @@ describe('JsonSchema', () => {
   })
 
   it('record', () => {
-    const validate = ajv.compile(J.record(J.string).compile(false))
+    const validate = ajv.compile(J.record(J.string).compile())
     assert.strictEqual(validate({ a: 'a', b: 'b' }), true)
     assert.strictEqual(validate({ a: 'a', b: 1 }), false)
   })
 
   it('array', () => {
-    const validate = ajv.compile(J.array(J.number).compile(false))
+    const validate = ajv.compile(J.array(J.number).compile())
     assert.strictEqual(validate([]), true)
     assert.strictEqual(validate([1, 2, 3]), true)
     assert.strictEqual(validate([1, 'a', 3]), false)
   })
 
   it('tuple', () => {
-    const validate = ajv.compile(J.tuple(J.string, J.number).compile(false))
+    const validate = ajv.compile(J.tuple(J.string, J.number).compile())
     assert.strictEqual(validate(['a', 1]), true)
     assert.strictEqual(validate(['a', 1, true]), false)
     assert.strictEqual(validate(['a']), false)
@@ -76,7 +76,7 @@ describe('JsonSchema', () => {
 
   describe('intersection', () => {
     it('should handle non primitive values', () => {
-      const validate = ajv.compile(J.intersection(J.type({ a: J.string }), J.type({ b: J.number })).compile(false))
+      const validate = ajv.compile(J.intersection(J.type({ a: J.string }), J.type({ b: J.number })).compile())
       assert.strictEqual(validate({ a: 'a', b: 1 }), true)
       assert.strictEqual(validate({ a: 'a' }), false)
     })
@@ -101,7 +101,7 @@ describe('JsonSchema', () => {
     }
 
     it('should handle primitives', () => {
-      const validate = ajv.compile(J.intersection(Int, Positive).compile(false))
+      const validate = ajv.compile(J.intersection(Int, Positive).compile())
       assert.strictEqual(validate(1), true)
       assert.strictEqual(validate(-1), false)
     })
@@ -112,7 +112,7 @@ describe('JsonSchema', () => {
 
     const A = J.type({ _tag: J.literal('A'), a: J.string })
     const B = J.type({ _tag: J.literal('B'), b: J.number })
-    const validate = ajv.compile(sum({ A, B }).compile(false))
+    const validate = ajv.compile(sum({ A, B }).compile())
     assert.strictEqual(validate({ _tag: 'A', a: 'a' }), true)
     assert.strictEqual(validate({ _tag: 'B', b: 1 }), true)
     assert.strictEqual(validate(undefined), false)
@@ -120,7 +120,7 @@ describe('JsonSchema', () => {
   })
 
   it('union', () => {
-    const validate = ajv.compile(J.union(J.string, J.number).compile(false))
+    const validate = ajv.compile(J.union(J.string, J.number).compile())
     assert.strictEqual(validate('a'), true)
     assert.strictEqual(validate(1), true)
     assert.strictEqual(validate(true), false)
@@ -137,14 +137,15 @@ describe('JsonSchema', () => {
         J.intersection(J.type({ a: J.number }), J.partial({ b: schema }))
       )
 
-      const validate = ajv.compile(schema.compile(false))
+      const jsonSchema = schema.compile()
+      const validate = ajv.compile(jsonSchema)
       assert.strictEqual(validate({}), false)
       assert.strictEqual(validate({ a: 1 }), true)
       assert.strictEqual(validate({ a: 1, b: null }), false)
       assert.strictEqual(validate({ a: 1, b: { a: 2 } }), true)
     })
 
-    it.skip('should support mutually recursive json schemas', () => {
+    it('should support mutually recursive json schemas', () => {
       interface A {
         b?: B
       }
@@ -153,13 +154,13 @@ describe('JsonSchema', () => {
       }
       const A: J.JsonSchema<A> = J.lazy('A', () => J.partial({ b: B }))
       const B: J.JsonSchema<B> = J.lazy('B', () => J.partial({ a: A }))
-      console.log(JSON.stringify(A.compile(false), null, 2))
-      const validateA = ajv.compile(A.compile(false))
+      const jsonSchema = A.compile()
+      const validateA = ajv.compile(jsonSchema)
       assert.strictEqual(validateA({}), true)
       assert.strictEqual(validateA({ b: {} }), true)
       assert.strictEqual(validateA({ b: { a: {} } }), true)
 
-      const validateB = ajv.compile(B.compile(false))
+      const validateB = ajv.compile(B.compile())
       assert.strictEqual(validateB({}), true)
       assert.strictEqual(validateB({ a: {} }), true)
       assert.strictEqual(validateB({ a: { b: {} } }), true)

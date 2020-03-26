@@ -27,7 +27,7 @@ function assert<A>(schema: Schema<A>): void {
   const compat = schema(C.compat)
   const eq = schema(E.eq)
   const guard = schema(G.guard)
-  const validate = ajv.compile(schema(J.jsonSchema).compile(false))
+  const validate = ajv.compile(schema(J.jsonSchema).compile())
   fc.assert(
     fc.property(
       arb,
@@ -46,7 +46,7 @@ function assertWithUnion<A>(schema: Sc.Schema<A>): void {
   const arb = schema(Arb.arbitrary)
   const am = schema(ArbMut.arbitraryMutation)
   const compat = schema(C.compat)
-  const validate = ajv.compile(schema(J.jsonSchema).compile(false))
+  const validate = ajv.compile(schema(J.jsonSchema).compile())
   fc.assert(
     fc.property(
       arb,
