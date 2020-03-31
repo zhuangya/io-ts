@@ -79,7 +79,7 @@ export function nullable(or) {
 export function type(properties) {
     return refinement(UnknownRecord, function (r) {
         for (var k in properties) {
-            if (!properties[k].is(r[k])) {
+            if (!hasOwnProperty(r, k) || !properties[k].is(r[k])) {
                 return false;
             }
         }

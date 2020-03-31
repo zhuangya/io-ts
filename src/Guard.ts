@@ -105,7 +105,7 @@ export function type<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
     [K in keyof A]: A[K]
   } => {
     for (const k in properties) {
-      if (!properties[k].is(r[k])) {
+      if (!hasOwnProperty(r, k) || !properties[k].is(r[k])) {
         return false
       }
     }

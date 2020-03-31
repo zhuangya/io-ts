@@ -31,6 +31,14 @@ describe('Guard', () => {
       assert.strictEqual(guard.is(undefined), false)
       assert.strictEqual(guard.is({ a: 'a' }), false)
     })
+
+    it('should check missing fields', () => {
+      const undef: G.Guard<undefined> = {
+        is: (u): u is undefined => u === undefined
+      }
+      const guard = G.type({ a: undef })
+      assert.strictEqual(guard.is({}), false)
+    })
   })
 
   describe('partial', () => {
