@@ -25,6 +25,8 @@ Added in v3.0.0
 - [array](#array)
 - [boolean](#boolean)
 - [decoder](#decoder)
+- [failure](#failure)
+- [failures](#failures)
 - [fromGuard](#fromguard)
 - [intersection](#intersection)
 - [lazy](#lazy)
@@ -38,7 +40,9 @@ Added in v3.0.0
 - [record](#record)
 - [refinement](#refinement)
 - [string](#string)
+- [success](#success)
 - [sum](#sum)
+- [tree](#tree)
 - [tuple](#tuple)
 - [type](#type)
 - [union](#union)
@@ -52,7 +56,7 @@ Added in v3.0.0
 
 ```ts
 export interface Decoder<A> {
-  readonly decode: (u: unknown) => E.Either<NonEmptyArray<T.Tree<string>>, A>
+  readonly decode: (u: unknown) => Either<NonEmptyArray<T.Tree<string>>, A>
 }
 ```
 
@@ -178,6 +182,29 @@ export const decoder: Applicative1<URI> & D<URI> & S.Schemable<URI> & S.WithUnio
 
 Added in v3.0.0
 
+# failure
+
+**Signature**
+
+```ts
+export function failure<A = never>(message: string): Either<NonEmptyArray<T.Tree<string>>, A> { ... }
+```
+
+Added in v3.0.0
+
+# failures
+
+**Signature**
+
+```ts
+export function failures<A = never>(
+  message: string,
+  errors: NonEmptyArray<T.Tree<string>>
+): Either<NonEmptyArray<T.Tree<string>>, A> { ... }
+```
+
+Added in v3.0.0
+
 # fromGuard
 
 **Signature**
@@ -263,7 +290,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string, B>): Decoder<B> { ... }
+export function parse<A, B>(from: Decoder<A>, parser: (a: A) => Either<string, B>): Decoder<B> { ... }
 ```
 
 Added in v3.0.0
@@ -312,6 +339,16 @@ export const string: Decoder<string> = ...
 
 Added in v3.0.0
 
+# success
+
+**Signature**
+
+```ts
+export function success<A>(a: A): Either<NonEmptyArray<T.Tree<string>>, A> { ... }
+```
+
+Added in v3.0.0
+
 # sum
 
 **Signature**
@@ -320,6 +357,16 @@ Added in v3.0.0
 export function sum<T extends string>(
   tag: T
 ): <A>(members: { [K in keyof A]: Decoder<A[K] & Record<T, K>> }) => Decoder<A[keyof A]> { ... }
+```
+
+Added in v3.0.0
+
+# tree
+
+**Signature**
+
+```ts
+export const tree: typeof T.make = ...
 ```
 
 Added in v3.0.0

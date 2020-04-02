@@ -3,7 +3,7 @@
  */
 import { Alternative1 as D } from 'fp-ts/lib/Alternative'
 import { Applicative1 } from 'fp-ts/lib/Applicative'
-import * as E from 'fp-ts/lib/Either'
+import { Either, right, left, mapLeft, isLeft, isRight, either } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { pipe, pipeable } from 'fp-ts/lib/pipeable'
 import * as T from 'fp-ts/lib/Tree'
@@ -20,7 +20,7 @@ import * as U from './util'
  * @since 3.0.0
  */
 export interface Decoder<A> {
-  readonly decode: (u: unknown) => E.Either<NonEmptyArray<T.Tree<string>>, A>
+  readonly decode: (u: unknown) => Either<NonEmptyArray<T.Tree<string>>, A>
 }
 
 /**
@@ -35,10 +35,38 @@ export type TypeOf<D> = D extends Decoder<infer A> ? A : never
 /**
  * @since 3.0.0
  */
+export const tree = T.make
+
+/**
+ * @since 3.0.0
+ */
+export function success<A>(a: A): Either<NonEmptyArray<T.Tree<string>>, A> {
+  return right(a)
+}
+
+/**
+ * @since 3.0.0
+ */
+export function failure<A = never>(message: string): Either<NonEmptyArray<T.Tree<string>>, A> {
+  return left([tree(message)])
+}
+
+/**
+ * @since 3.0.0
+ */
+export function failures<A = never>(
+  message: string,
+  errors: NonEmptyArray<T.Tree<string>>
+): Either<NonEmptyArray<T.Tree<string>>, A> {
+  return left([tree(message, errors)])
+}
+
+/**
+ * @since 3.0.0
+ */
 export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
   return {
-    decode: u =>
-      guard.is(u) ? E.right(u) : E.left([T.make(`cannot decode ${JSON.stringify(u)}, should be ${expected}`)])
+    decode: u => (guard.is(u) ? success(u) : failure(`cannot decode ${JSON.stringify(u)}, should be ${expected}`))
   }
 }
 
@@ -102,7 +130,7 @@ export function withExpected<A>(
     decode: u =>
       pipe(
         decoder.decode(u),
-        E.mapLeft(nea => expected(u, nea))
+        mapLeft(nea => expected(u, nea))
       )
   }
 }
@@ -118,11 +146,11 @@ export function refinement<A, B extends A>(
   return {
     decode: u => {
       const e = from.decode(u)
-      if (E.isLeft(e)) {
+      if (isLeft(e)) {
         return e
       }
       const a = e.right
-      return refinement(a) ? E.right(a) : E.left([T.make(`cannot refine ${JSON.stringify(u)}, should be ${expected}`)])
+      return refinement(a) ? success(a) : failure(`cannot refine ${JSON.stringify(u)}, should be ${expected}`)
     }
   }
 }
@@ -130,16 +158,16 @@ export function refinement<A, B extends A>(
 /**
  * @since 3.0.0
  */
-export function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string, B>): Decoder<B> {
+export function parse<A, B>(from: Decoder<A>, parser: (a: A) => Either<string, B>): Decoder<B> {
   return {
     decode: u => {
       const e = from.decode(u)
-      if (E.isLeft(e)) {
+      if (isLeft(e)) {
         return e
       }
       const pe = parser(e.right)
-      if (E.isLeft(pe)) {
-        return E.left([T.make(pe.left)])
+      if (isLeft(pe)) {
+        return failure(pe.left)
       }
       return pe
     }
@@ -160,20 +188,20 @@ export function type<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decoder<
   return {
     decode: u => {
       const e = UnknownRecord.decode(u)
-      if (E.isLeft(e)) {
+      if (isLeft(e)) {
         return e
       } else {
         const r = e.right
         let a: Partial<A> = {}
         for (const k in properties) {
           const e = properties[k].decode(r[k])
-          if (E.isLeft(e)) {
-            return E.left([T.make(`required property ${JSON.stringify(k)}`, e.left)])
+          if (isLeft(e)) {
+            return failures(`required property ${JSON.stringify(k)}`, e.left)
           } else {
             a[k] = e.right
           }
         }
-        return E.right(a as A)
+        return success(a as A)
       }
     }
   }
@@ -186,7 +214,7 @@ export function partial<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decod
   return {
     decode: u => {
       const e = UnknownRecord.decode(u)
-      if (E.isLeft(e)) {
+      if (isLeft(e)) {
         return e
       } else {
         const r = e.right
@@ -200,15 +228,15 @@ export function partial<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decod
               a[k] = undefined
             } else {
               const e = properties[k].decode(rk)
-              if (E.isLeft(e)) {
-                return E.left([T.make(`optional property ${JSON.stringify(k)}`, e.left)])
+              if (isLeft(e)) {
+                return failures(`optional property ${JSON.stringify(k)}`, e.left)
               } else {
                 a[k] = e.right
               }
             }
           }
         }
-        return E.right(a)
+        return success(a)
       }
     }
   }
@@ -221,20 +249,20 @@ export function record<A>(codomain: Decoder<A>): Decoder<Record<string, A>> {
   return {
     decode: u => {
       const e = UnknownRecord.decode(u)
-      if (E.isLeft(e)) {
+      if (isLeft(e)) {
         return e
       } else {
         const r = e.right
         let a: Record<string, A> = {}
         for (const k in r) {
           const e = codomain.decode(r[k])
-          if (E.isLeft(e)) {
-            return E.left([T.make(`key ${JSON.stringify(k)}`, e.left)])
+          if (isLeft(e)) {
+            return failures(`key ${JSON.stringify(k)}`, e.left)
           } else {
             a[k] = e.right
           }
         }
-        return E.right(a)
+        return success(a)
       }
     }
   }
@@ -247,7 +275,7 @@ export function array<A>(items: Decoder<A>): Decoder<Array<A>> {
   return {
     decode: u => {
       const e = UnknownArray.decode(u)
-      if (E.isLeft(e)) {
+      if (isLeft(e)) {
         return e
       } else {
         const us = e.right
@@ -255,13 +283,13 @@ export function array<A>(items: Decoder<A>): Decoder<Array<A>> {
         const a: Array<A> = new Array(len)
         for (let i = 0; i < len; i++) {
           const e = items.decode(us[i])
-          if (E.isLeft(e)) {
-            return E.left([T.make(`item ${i}`, e.left)])
+          if (isLeft(e)) {
+            return failures(`item ${i}`, e.left)
           } else {
             a[i] = e.right
           }
         }
-        return E.right(a)
+        return success(a)
       }
     }
   }
@@ -274,20 +302,20 @@ export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in k
   return {
     decode: u => {
       const e = UnknownArray.decode(u)
-      if (E.isLeft(e)) {
+      if (isLeft(e)) {
         return e
       }
       const us = e.right
       const a: Array<unknown> = []
       for (let i = 0; i < components.length; i++) {
         const e = components[i].decode(us[i])
-        if (E.isLeft(e)) {
-          return E.left([T.make(`component ${i}`, e.left)])
+        if (isLeft(e)) {
+          return failures(`component ${i}`, e.left)
         } else {
           a.push(e.right)
         }
       }
-      return E.right(a as any)
+      return success(a as any)
     }
   }
 }
@@ -299,14 +327,14 @@ export function intersection<A, B>(left: Decoder<A>, right: Decoder<B>): Decoder
   return {
     decode: u => {
       const ea = left.decode(u)
-      if (E.isLeft(ea)) {
+      if (isLeft(ea)) {
         return ea
       }
       const eb = right.decode(u)
-      if (E.isLeft(eb)) {
+      if (isLeft(eb)) {
         return eb
       }
-      return E.right(U.intersect(ea.right, eb.right))
+      return success(U.intersect(ea.right, eb.right))
     }
   }
 }
@@ -320,7 +348,7 @@ export function lazy<A>(id: string, f: () => Decoder<A>): Decoder<A> {
     decode: u =>
       pipe(
         get().decode(u),
-        E.mapLeft(nea => [T.make(id, nea)])
+        mapLeft(nea => [tree(id, nea)])
       )
   }
 }
@@ -340,17 +368,15 @@ export function sum<T extends string>(
     return {
       decode: u => {
         const e = UnknownRecord.decode(u)
-        if (E.isLeft(e)) {
+        if (isLeft(e)) {
           return e
         }
         const v = e.right[tag]
         if (typeof v === 'string' && U.hasOwnProperty(members, v)) {
           return members[v].decode(u)
         }
-        return E.left([
-          T.make(`required property ${JSON.stringify(tag)}`, [
-            T.make(`cannot decode ${JSON.stringify(v)}, should be ${expected}`)
-          ])
+        return failures(`required property ${JSON.stringify(tag)}`, [
+          tree(`cannot decode ${JSON.stringify(v)}, should be ${expected}`)
         ])
       }
     }
@@ -370,19 +396,19 @@ export function union<A extends ReadonlyArray<unknown>>(
   return {
     decode: u => {
       const e = members[0].decode(u)
-      if (E.isRight(e)) {
+      if (isRight(e)) {
         return e
       } else {
-        const forest: NonEmptyArray<T.Tree<string>> = [T.make(`member 0`, e.left)]
+        const forest: NonEmptyArray<T.Tree<string>> = [tree(`member 0`, e.left)]
         for (let i = 1; i < len; i++) {
           const e = members[i].decode(u)
-          if (E.isRight(e)) {
+          if (isRight(e)) {
             return e
           } else {
-            forest.push(T.make(`member ${i}`, e.left))
+            forest.push(tree(`member ${i}`, e.left))
           }
         }
-        return E.left(forest)
+        return left(forest)
       }
     }
   }
@@ -414,16 +440,16 @@ declare module 'fp-ts/lib/HKT' {
 export const decoder: Applicative1<URI> & D<URI> & S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   map: (fa, f) => ({
-    decode: u => E.either.map(fa.decode(u), f)
+    decode: u => either.map(fa.decode(u), f)
   }),
   of: a => ({
-    decode: () => E.right(a)
+    decode: () => success(a)
   }),
   ap: (fab, fa) => ({
-    decode: u => E.either.ap(fab.decode(u), fa.decode(u))
+    decode: u => either.ap(fab.decode(u), fa.decode(u))
   }),
   alt: (fx, fy) => ({
-    decode: u => E.either.alt(fx.decode(u), () => fy().decode(u))
+    decode: u => either.alt(fx.decode(u), () => fy().decode(u))
   }),
   zero: () => never,
   literal,
