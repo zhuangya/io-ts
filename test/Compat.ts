@@ -312,9 +312,9 @@ describe('Compat', () => {
         )
       })
 
-      it('should fail with additional components', () => {
+      it('should strip additional components', () => {
         const codec = C.tuple(C.string, C.number)
-        assert.deepStrictEqual(codec.decode(['a', 1, true]), left([T.make('should not have more than 2 items')]))
+        assert.deepStrictEqual(codec.decode(['a', 1, true]), right(['a', 1]))
       })
     })
 

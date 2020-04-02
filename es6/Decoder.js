@@ -238,7 +238,6 @@ export function tuple() {
     for (var _i = 0; _i < arguments.length; _i++) {
         components[_i] = arguments[_i];
     }
-    var len = components.length;
     return {
         decode: function (u) {
             var e = UnknownArray.decode(u);
@@ -246,11 +245,8 @@ export function tuple() {
                 return e;
             }
             var us = e.right;
-            if (us.length > len) {
-                return E.left([T.make("should not have more than " + len + " items")]);
-            }
             var a = [];
-            for (var i = 0; i < len; i++) {
+            for (var i = 0; i < components.length; i++) {
                 var e_5 = components[i].decode(us[i]);
                 if (E.isLeft(e_5)) {
                     return E.left([T.make("component " + i, e_5.left)]);

@@ -41,7 +41,7 @@ Added in v3.0.0
 
 ```ts
 export interface JsonSchema<A> {
-  readonly compile: (lazy: boolean) => C.Const<JSONSchema7, A>
+  readonly compile: (definitions?: Record<string, JSONSchema7 | undefined>) => C.Const<JSONSchema7, A>
 }
 ```
 
