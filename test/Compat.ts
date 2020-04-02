@@ -5,6 +5,7 @@ import * as Co from '../src/Codec'
 import * as C from '../src/Compat'
 import * as D from '../src/Decoder'
 import * as G from '../src/Guard'
+import * as E from '../src/Encoder'
 
 const NumberFromString: C.Compat<number> = C.make(
   Co.make(
@@ -28,6 +29,11 @@ interface IntBrand {
 }
 type Int = number & IntBrand
 const Int: C.Compat<Int> = C.refinement(C.number, (n): n is Int => Number.isInteger(n), 'Int')
+
+const undefinedGuard: G.Guard<undefined> = {
+  is: (u): u is undefined => u === undefined
+}
+const undef: C.Compat<undefined> = C.make(Co.make(D.fromGuard(undefinedGuard, 'undefined'), E.id), undefinedGuard)
 
 describe('Compat', () => {
   describe('string', () => {
@@ -137,6 +143,13 @@ describe('Compat', () => {
         assert.deepStrictEqual(codec.decode({ a: 'a', b: 1 }), right({ a: 'a' }))
       })
 
+      it('should not strip fields corresponding to undefined values', () => {
+        const codec = C.type({
+          a: undef
+        })
+        assert.deepStrictEqual(codec.decode({}), right({ a: undefined }))
+      })
+
       it('should reject an invalid input', () => {
         const codec = C.type({
           a: C.string
@@ -184,7 +197,7 @@ describe('Compat', () => {
         assert.deepStrictEqual(codec.decode({}), right({}))
       })
 
-      it('should not strip undefined fields', () => {
+      it('should not strip fields corresponding to undefined values', () => {
         const codec = C.partial({ a: C.string })
         assert.deepStrictEqual(codec.decode({ a: undefined }), right({ a: undefined }))
       })
@@ -220,7 +233,7 @@ describe('Compat', () => {
         assert.deepStrictEqual(codec.encode({}), {})
       })
 
-      it('should not strip undefined fields', () => {
+      it('should not strip fields corresponding to undefined values', () => {
         const codec = C.partial({ a: C.string })
         assert.deepStrictEqual(codec.encode({ a: undefined }), { a: undefined })
       })
