@@ -7,6 +7,6 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 /**
  * @since 3.0.0
  */
-export function toString(e: NonEmptyArray<Tree<string>>): string {
+export function draw(e: NonEmptyArray<Tree<string>>): string {
   return e.map(drawTree).join('\n')
 }

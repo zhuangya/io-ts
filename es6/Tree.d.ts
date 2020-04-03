@@ -6,4 +6,4 @@ import { NonEmptyArray } from 'fp-ts/es6/NonEmptyArray';
 /**
  * @since 3.0.0
  */
-export declare function toString(e: NonEmptyArray<Tree<string>>): string;
+export declare function draw(e: NonEmptyArray<Tree<string>>): string;

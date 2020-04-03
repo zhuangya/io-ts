@@ -1,4 +1,4 @@
-import * as E from 'fp-ts/es6/Either';
+import { right, left, mapLeft, isLeft, isRight, either } from 'fp-ts/es6/Either';
 import { pipe, pipeable } from 'fp-ts/es6/pipeable';
 import * as T from 'fp-ts/es6/Tree';
 import * as G from './Guard';
@@ -10,11 +10,31 @@ import * as U from './util';
 /**
  * @since 3.0.0
  */
+export var tree = T.make;
+/**
+ * @since 3.0.0
+ */
+export function success(a) {
+    return right(a);
+}
+/**
+ * @since 3.0.0
+ */
+export function failure(message) {
+    return left([tree(message)]);
+}
+/**
+ * @since 3.0.0
+ */
+export function failures(message, errors) {
+    return left([tree(message, errors)]);
+}
+/**
+ * @since 3.0.0
+ */
 export function fromGuard(guard, expected) {
     return {
-        decode: function (u) {
-            return guard.is(u) ? E.right(u) : E.left([T.make("cannot decode " + JSON.stringify(u) + ", should be " + expected)]);
-        }
+        decode: function (u) { return (guard.is(u) ? success(u) : failure("cannot decode " + JSON.stringify(u) + ", should be " + expected)); }
     };
 }
 /**
@@ -68,7 +88,7 @@ export var UnknownRecord = fromGuard(G.UnknownRecord, 'Record<string, unknown>')
 export function withExpected(decoder, expected) {
     return {
         decode: function (u) {
-            return pipe(decoder.decode(u), E.mapLeft(function (nea) { return expected(u, nea); }));
+            return pipe(decoder.decode(u), mapLeft(function (nea) { return expected(u, nea); }));
         }
     };
 }
@@ -79,11 +99,11 @@ export function refinement(from, refinement, expected) {
     return {
         decode: function (u) {
             var e = from.decode(u);
-            if (E.isLeft(e)) {
+            if (isLeft(e)) {
                 return e;
             }
             var a = e.right;
-            return refinement(a) ? E.right(a) : E.left([T.make("cannot refine " + JSON.stringify(u) + ", should be " + expected)]);
+            return refinement(a) ? success(a) : failure("cannot refine " + JSON.stringify(u) + ", should be " + expected);
         }
     };
 }
@@ -94,12 +114,12 @@ export function parse(from, parser) {
     return {
         decode: function (u) {
             var e = from.decode(u);
-            if (E.isLeft(e)) {
+            if (isLeft(e)) {
                 return e;
             }
             var pe = parser(e.right);
-            if (E.isLeft(pe)) {
-                return E.left([T.make(pe.left)]);
+            if (isLeft(pe)) {
+                return failure(pe.left);
             }
             return pe;
         }
@@ -118,7 +138,7 @@ export function type(properties) {
     return {
         decode: function (u) {
             var e = UnknownRecord.decode(u);
-            if (E.isLeft(e)) {
+            if (isLeft(e)) {
                 return e;
             }
             else {
@@ -126,14 +146,14 @@ export function type(properties) {
                 var a = {};
                 for (var k in properties) {
                     var e_1 = properties[k].decode(r[k]);
-                    if (E.isLeft(e_1)) {
-                        return E.left([T.make("required property " + JSON.stringify(k), e_1.left)]);
+                    if (isLeft(e_1)) {
+                        return failures("required property " + JSON.stringify(k), e_1.left);
                     }
                     else {
                         a[k] = e_1.right;
                     }
                 }
-                return E.right(a);
+                return success(a);
             }
         }
     };
@@ -145,7 +165,7 @@ export function partial(properties) {
     return {
         decode: function (u) {
             var e = UnknownRecord.decode(u);
-            if (E.isLeft(e)) {
+            if (isLeft(e)) {
                 return e;
             }
             else {
@@ -161,8 +181,8 @@ export function partial(properties) {
                         }
                         else {
                             var e_2 = properties[k].decode(rk);
-                            if (E.isLeft(e_2)) {
-                                return E.left([T.make("optional property " + JSON.stringify(k), e_2.left)]);
+                            if (isLeft(e_2)) {
+                                return failures("optional property " + JSON.stringify(k), e_2.left);
                             }
                             else {
                                 a[k] = e_2.right;
@@ -170,7 +190,7 @@ export function partial(properties) {
                         }
                     }
                 }
-                return E.right(a);
+                return success(a);
             }
         }
     };
@@ -182,7 +202,7 @@ export function record(codomain) {
     return {
         decode: function (u) {
             var e = UnknownRecord.decode(u);
-            if (E.isLeft(e)) {
+            if (isLeft(e)) {
                 return e;
             }
             else {
@@ -190,14 +210,14 @@ export function record(codomain) {
                 var a = {};
                 for (var k in r) {
                     var e_3 = codomain.decode(r[k]);
-                    if (E.isLeft(e_3)) {
-                        return E.left([T.make("key " + JSON.stringify(k), e_3.left)]);
+                    if (isLeft(e_3)) {
+                        return failures("key " + JSON.stringify(k), e_3.left);
                     }
                     else {
                         a[k] = e_3.right;
                     }
                 }
-                return E.right(a);
+                return success(a);
             }
         }
     };
@@ -209,7 +229,7 @@ export function array(items) {
     return {
         decode: function (u) {
             var e = UnknownArray.decode(u);
-            if (E.isLeft(e)) {
+            if (isLeft(e)) {
                 return e;
             }
             else {
@@ -218,14 +238,14 @@ export function array(items) {
                 var a = new Array(len);
                 for (var i = 0; i < len; i++) {
                     var e_4 = items.decode(us[i]);
-                    if (E.isLeft(e_4)) {
-                        return E.left([T.make("item " + i, e_4.left)]);
+                    if (isLeft(e_4)) {
+                        return failures("item " + i, e_4.left);
                     }
                     else {
                         a[i] = e_4.right;
                     }
                 }
-                return E.right(a);
+                return success(a);
             }
         }
     };
@@ -241,21 +261,21 @@ export function tuple() {
     return {
         decode: function (u) {
             var e = UnknownArray.decode(u);
-            if (E.isLeft(e)) {
+            if (isLeft(e)) {
                 return e;
             }
             var us = e.right;
             var a = [];
             for (var i = 0; i < components.length; i++) {
                 var e_5 = components[i].decode(us[i]);
-                if (E.isLeft(e_5)) {
-                    return E.left([T.make("component " + i, e_5.left)]);
+                if (isLeft(e_5)) {
+                    return failures("component " + i, e_5.left);
                 }
                 else {
                     a.push(e_5.right);
                 }
             }
-            return E.right(a);
+            return success(a);
         }
     };
 }
@@ -266,14 +286,14 @@ export function intersection(left, right) {
     return {
         decode: function (u) {
             var ea = left.decode(u);
-            if (E.isLeft(ea)) {
+            if (isLeft(ea)) {
                 return ea;
             }
             var eb = right.decode(u);
-            if (E.isLeft(eb)) {
+            if (isLeft(eb)) {
                 return eb;
             }
-            return E.right(U.intersect(ea.right, eb.right));
+            return success(U.intersect(ea.right, eb.right));
         }
     };
 }
@@ -284,7 +304,7 @@ export function lazy(id, f) {
     var get = S.memoize(f);
     return {
         decode: function (u) {
-            return pipe(get().decode(u), E.mapLeft(function (nea) { return [T.make(id, nea)]; }));
+            return pipe(get().decode(u), mapLeft(function (nea) { return [tree(id, nea)]; }));
         }
     };
 }
@@ -301,17 +321,15 @@ export function sum(tag) {
         return {
             decode: function (u) {
                 var e = UnknownRecord.decode(u);
-                if (E.isLeft(e)) {
+                if (isLeft(e)) {
                     return e;
                 }
                 var v = e.right[tag];
                 if (typeof v === 'string' && U.hasOwnProperty(members, v)) {
                     return members[v].decode(u);
                 }
-                return E.left([
-                    T.make("required property " + JSON.stringify(tag), [
-                        T.make("cannot decode " + JSON.stringify(v) + ", should be " + expected)
-                    ])
+                return failures("required property " + JSON.stringify(tag), [
+                    tree("cannot decode " + JSON.stringify(v) + ", should be " + expected)
                 ]);
             }
         };
@@ -332,21 +350,21 @@ export function union() {
     return {
         decode: function (u) {
             var e = members[0].decode(u);
-            if (E.isRight(e)) {
+            if (isRight(e)) {
                 return e;
             }
             else {
-                var forest = [T.make("member 0", e.left)];
+                var forest = [tree("member 0", e.left)];
                 for (var i = 1; i < len; i++) {
                     var e_6 = members[i].decode(u);
-                    if (E.isRight(e_6)) {
+                    if (isRight(e_6)) {
                         return e_6;
                     }
                     else {
-                        forest.push(T.make("member " + i, e_6.left));
+                        forest.push(tree("member " + i, e_6.left));
                     }
                 }
-                return E.left(forest);
+                return left(forest);
             }
         }
     };
@@ -364,16 +382,16 @@ export var URI = 'Decoder';
 export var decoder = {
     URI: URI,
     map: function (fa, f) { return ({
-        decode: function (u) { return E.either.map(fa.decode(u), f); }
+        decode: function (u) { return either.map(fa.decode(u), f); }
     }); },
     of: function (a) { return ({
-        decode: function () { return E.right(a); }
+        decode: function () { return success(a); }
     }); },
     ap: function (fab, fa) { return ({
-        decode: function (u) { return E.either.ap(fab.decode(u), fa.decode(u)); }
+        decode: function (u) { return either.ap(fab.decode(u), fa.decode(u)); }
     }); },
     alt: function (fx, fy) { return ({
-        decode: function (u) { return E.either.alt(fx.decode(u), function () { return fy().decode(u); }); }
+        decode: function (u) { return either.alt(fx.decode(u), function () { return fy().decode(u); }); }
     }); },
     zero: function () { return never; },
     literal: literal,

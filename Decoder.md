@@ -200,3 +200,84 @@ export const MySum: D.Decoder<
   B: D.type({ type: D.literal('B'), b: D.number })
 })
 ```
+
+## The `refinement` combinator
+
+The `refinement` combinator allows to define refinements, for example a branded type
+
+```ts
+export interface PositiveBrand {
+  readonly Positive: unique symbol
+}
+
+export type Positive = number & PositiveBrand
+
+export const isPositive = (n: number): n is Positive => n > 0
+
+export const Positive: D.Decoder<Positive> = D.refinement(D.number, (n): n is Positive => n > 0, 'Positive')
+
+console.log(isRight(Positive.decode(1))) // => true
+console.log(isRight(Positive.decode(-1))) // => false
+```
+
+## The `parse` combinator
+
+The `parse` combinator is more powerful than `refinement` in that you can change the output type
+
+```ts
+import { left, right } from 'fp-ts/lib/Either'
+
+export const NumberFromString: D.Decoder<number> = D.parse(D.string, s => {
+  const n = parseFloat(s)
+  return isNaN(n) ? left(`cannot decode ${JSON.stringify(s)}, should be NumberFromString`) : right(n)
+})
+
+console.log(isRight(NumberFromString.decode('1'))) // => true
+console.log(isRight(NumberFromString.decode('a'))) // => false
+```
+
+# Extracting static types from decoders
+
+Static types can be extracted from decoders using the `TypeOf` operator
+
+```ts
+export const Person = D.type({
+  name: D.string,
+  age: D.number
+})
+
+export type Person = D.TypeOf<typeof Person>
+/*
+type Person = {
+    name: string;
+    age: number;
+}
+*/
+```
+
+You can define an `interface` instead of a type alias
+
+```ts
+export interface Person extends D.TypeOf<typeof Person> {}
+```
+
+# Built-in error reporter
+
+```ts
+export const Person = D.type({
+  name: D.string,
+  age: D.number
+})
+
+import { isLeft } from 'fp-ts/lib/Either'
+import { draw } from 'io-ts/lib/Tree'
+
+const result = Person.decode({})
+if (isLeft(result)) {
+  console.log(draw(result.left))
+}
+/*
+required property "name"
+└─ cannot decode undefined, should be string
+*/
+```

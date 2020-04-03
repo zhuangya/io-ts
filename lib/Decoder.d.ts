@@ -3,7 +3,7 @@
  */
 import { Alternative1 as D } from 'fp-ts/lib/Alternative';
 import { Applicative1 } from 'fp-ts/lib/Applicative';
-import * as E from 'fp-ts/lib/Either';
+import { Either } from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import * as T from 'fp-ts/lib/Tree';
 import * as G from './Guard';
@@ -13,12 +13,28 @@ import * as S from './Schemable';
  * @since 3.0.0
  */
 export interface Decoder<A> {
-    readonly decode: (u: unknown) => E.Either<NonEmptyArray<T.Tree<string>>, A>;
+    readonly decode: (u: unknown) => Either<NonEmptyArray<T.Tree<string>>, A>;
 }
 /**
  * @since 3.0.0
  */
 export declare type TypeOf<D> = D extends Decoder<infer A> ? A : never;
+/**
+ * @since 3.0.0
+ */
+export declare const tree: typeof T.make;
+/**
+ * @since 3.0.0
+ */
+export declare function success<A>(a: A): Either<NonEmptyArray<T.Tree<string>>, A>;
+/**
+ * @since 3.0.0
+ */
+export declare function failure<A = never>(message: string): Either<NonEmptyArray<T.Tree<string>>, A>;
+/**
+ * @since 3.0.0
+ */
+export declare function failures<A = never>(message: string, errors: NonEmptyArray<T.Tree<string>>): Either<NonEmptyArray<T.Tree<string>>, A>;
 /**
  * @since 3.0.0
  */
@@ -62,7 +78,7 @@ export declare function refinement<A, B extends A>(from: Decoder<A>, refinement:
 /**
  * @since 3.0.0
  */
-export declare function parse<A, B>(from: Decoder<A>, parser: (a: A) => E.Either<string, B>): Decoder<B>;
+export declare function parse<A, B>(from: Decoder<A>, parser: (a: A) => Either<string, B>): Decoder<B>;
 /**
  * @since 3.0.0
  */

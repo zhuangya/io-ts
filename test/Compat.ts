@@ -11,7 +11,7 @@ const NumberFromString: C.Compat<number> = C.make(
   Co.make(
     D.parse(D.string, s => {
       const n = parseFloat(s)
-      return isNaN(n) ? left('NumberFromString') : right(n)
+      return isNaN(n) ? left(`cannot decode ${JSON.stringify(s)}, should be parsable into a number`) : right(n)
     }),
     { encode: String }
   ),
@@ -451,7 +451,11 @@ describe('Compat', () => {
         )
         assert.deepStrictEqual(
           codec.decode({ a: 'a' }),
-          left([T.make('A', [T.make('required property "a"', [T.make('NumberFromString')])])])
+          left([
+            T.make('A', [
+              T.make('required property "a"', [T.make('cannot decode "a", should be parsable into a number')])
+            ])
+          ])
         )
         assert.deepStrictEqual(
           codec.decode({ a: '1', b: {} }),

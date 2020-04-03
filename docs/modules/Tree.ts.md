@@ -12,16 +12,16 @@ Added in v3.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [toString](#tostring)
+- [draw](#draw)
 
 ---
 
-# toString
+# draw
 
 **Signature**
 
 ```ts
-export function toString(e: NonEmptyArray<Tree<string>>): string { ... }
+export function draw(e: NonEmptyArray<Tree<string>>): string { ... }
 ```
 
 Added in v3.0.0
