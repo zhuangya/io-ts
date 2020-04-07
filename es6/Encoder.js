@@ -1,7 +1,7 @@
 import { identity } from 'fp-ts/es6/function';
 import { pipeable } from 'fp-ts/es6/pipeable';
 import * as S from './Schemable';
-import * as U from './util';
+import { intersect } from './Decoder';
 // -------------------------------------------------------------------------------------
 // primitives
 // -------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ export function partial(properties) {
             for (var k in properties) {
                 var v = a[k];
                 // don't add missing properties
-                if (U.hasOwnProperty(a, k)) {
+                if (k in a) {
                     // don't strip undefined properties
                     o[k] = v === undefined ? v : properties[k].encode(v);
                 }
@@ -94,7 +94,7 @@ export function tuple() {
  */
 export function intersection(left, right) {
     return {
-        encode: function (ab) { return U.intersect(left.encode(ab), right.encode(ab)); }
+        encode: function (ab) { return intersect(left.encode(ab), right.encode(ab)); }
     };
 }
 /**

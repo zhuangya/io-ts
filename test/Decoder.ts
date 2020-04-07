@@ -9,7 +9,7 @@ describe('Decoder', () => {
     it('map', () => {
       const decoder = pipe(
         D.string,
-        D.map(s => s.length)
+        D.map((s) => s.length)
       )
       assert.deepStrictEqual(decoder.decode('aaa'), E.right(3))
     })
@@ -62,6 +62,44 @@ describe('Decoder', () => {
 
     it('should handle zero members', () => {
       assert.deepStrictEqual(D.union().decode({}), E.left([T.make('cannot decode {}, should be never')]))
+    })
+  })
+
+  describe('intersect', () => {
+    it('should concat strings', () => {
+      assert.deepStrictEqual(D.intersect('a', 'b'), 'b')
+    })
+
+    it('should concat numbers', () => {
+      assert.deepStrictEqual(D.intersect(1, 2), 2)
+    })
+
+    it('should concat booleans', () => {
+      assert.deepStrictEqual(D.intersect(true, false), false)
+    })
+
+    it('should concat nulls', () => {
+      assert.deepStrictEqual(D.intersect(null, null), null)
+    })
+
+    it('should concat undefineds', () => {
+      assert.deepStrictEqual(D.intersect(undefined, undefined), undefined)
+    })
+
+    it('should concat objects', () => {
+      assert.deepStrictEqual(D.intersect({ a: 1 }, { b: 2 }), { a: 1, b: 2 })
+    })
+
+    it('should concat a string with an object', () => {
+      assert.deepStrictEqual(D.intersect('a', { a: 1 }), { 0: 'a', a: 1 })
+    })
+
+    it('should concat a number with an object', () => {
+      assert.deepStrictEqual(D.intersect(1, { a: 1 }), { a: 1 })
+    })
+
+    it('should concat a boolean with an object', () => {
+      assert.deepStrictEqual(D.intersect(true, { a: 1 }), { a: 1 })
     })
   })
 })

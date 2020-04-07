@@ -5,7 +5,6 @@ import * as A from 'fp-ts/lib/Array'
 import * as E from 'fp-ts/lib/Eq'
 import * as R from 'fp-ts/lib/Record'
 import * as S from './Schemable'
-import { hasOwnProperty } from './util'
 import Eq = E.Eq
 
 // -------------------------------------------------------------------------------------
@@ -41,12 +40,12 @@ export const UnknownArray: Eq<Array<unknown>> = E.fromEquals((x, y) => x.length 
  */
 export const UnknownRecord: Eq<Record<string, unknown>> = E.fromEquals((x, y) => {
   for (const k in x) {
-    if (!hasOwnProperty(y, k)) {
+    if (!(k in y)) {
       return false
     }
   }
   for (const k in y) {
-    if (!hasOwnProperty(x, k)) {
+    if (!(k in x)) {
       return false
     }
   }

@@ -31,9 +31,9 @@ export function $ref(id: string): TypeNode<unknown> {
 }
 
 const toLiteralTypeNode = fold<ts.TypeNode>(
-  s => ts.createLiteralTypeNode(ts.createStringLiteral(s)),
-  n => ts.createLiteralTypeNode(ts.createNumericLiteral(String(n))),
-  b => ts.createLiteralTypeNode(ts.createLiteral(b)),
+  (s) => ts.createLiteralTypeNode(ts.createStringLiteral(s)),
+  (n) => ts.createLiteralTypeNode(ts.createNumericLiteral(String(n))),
+  (b) => ts.createLiteralTypeNode(ts.createLiteral(b)),
   () => ts.createKeywordTypeNode(ts.SyntaxKind.NullKeyword)
 )
 
@@ -122,7 +122,7 @@ export function type<A>(properties: { [K in keyof A]: TypeNode<A[K]> }): TypeNod
     typeNode: () =>
       C.make(
         ts.createTypeLiteralNode(
-          Object.keys(typeNodes).map(k =>
+          Object.keys(typeNodes).map((k) =>
             ts.createPropertySignature(undefined, k, undefined, typeNodes[k].typeNode(), undefined)
           )
         )
@@ -170,7 +170,7 @@ export function tuple<A extends ReadonlyArray<unknown>>(
   ...components: { [K in keyof A]: TypeNode<A[K]> }
 ): TypeNode<A> {
   return {
-    typeNode: () => C.make(ts.createTupleTypeNode(components.map(c => c.typeNode())))
+    typeNode: () => C.make(ts.createTupleTypeNode(components.map((c) => c.typeNode())))
   }
 }
 
@@ -195,7 +195,7 @@ export function sum<T extends string>(
       return never
     }
     return {
-      typeNode: () => C.make(ts.createUnionTypeNode(keys.map(k => members[k].typeNode())))
+      typeNode: () => C.make(ts.createUnionTypeNode(keys.map((k) => members[k].typeNode())))
     }
   }
 }
@@ -226,7 +226,7 @@ export function union<A extends ReadonlyArray<unknown>>(
     return never
   }
   return {
-    typeNode: () => C.make(ts.createUnionTypeNode(members.map(m => m.typeNode())))
+    typeNode: () => C.make(ts.createUnionTypeNode(members.map((m) => m.typeNode())))
   }
 }
 

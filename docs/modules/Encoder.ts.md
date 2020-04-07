@@ -57,7 +57,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const URI: "Encoder" = ...
+export declare const URI: 'Encoder'
 ```
 
 Added in v3.0.0
@@ -67,7 +67,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(items: Encoder<A>): Encoder<Array<A>> { ... }
+export declare function array<A>(items: Encoder<A>): Encoder<Array<A>>
 ```
 
 Added in v3.0.0
@@ -77,7 +77,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-<A, B>(f: (b: B) => A) => (fa: Encoder<A>) => Encoder<B>
+export declare const contramap: <A, B>(f: (b: B) => A) => (fa: Encoder<A>) => Encoder<B>
 ```
 
 Added in v3.0.0
@@ -87,7 +87,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const encoder: Contravariant1<URI> & S.Schemable<URI> = ...
+export declare const encoder: Contravariant1<'Encoder'> & S.Schemable<'Encoder'>
 ```
 
 Added in v3.0.0
@@ -97,7 +97,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const id: Encoder<unknown> = ...
+export declare const id: Encoder<unknown>
 ```
 
 Added in v3.0.0
@@ -107,7 +107,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(left: Encoder<A>, right: Encoder<B>): Encoder<A & B> { ... }
+export declare function intersection<A, B>(left: Encoder<A>, right: Encoder<B>): Encoder<A & B>
 ```
 
 Added in v3.0.0
@@ -117,7 +117,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(f: () => Encoder<A>): Encoder<A> { ... }
+export declare function lazy<A>(f: () => Encoder<A>): Encoder<A>
 ```
 
 Added in v3.0.0
@@ -127,7 +127,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function nullable<A>(or: Encoder<A>): Encoder<null | A> { ... }
+export declare function nullable<A>(or: Encoder<A>): Encoder<null | A>
 ```
 
 Added in v3.0.0
@@ -137,7 +137,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(properties: { [K in keyof A]: Encoder<A[K]> }): Encoder<Partial<A>> { ... }
+export declare function partial<A>(properties: { [K in keyof A]: Encoder<A[K]> }): Encoder<Partial<A>>
 ```
 
 Added in v3.0.0
@@ -147,7 +147,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codomain: Encoder<A>): Encoder<Record<string, A>> { ... }
+export declare function record<A>(codomain: Encoder<A>): Encoder<Record<string, A>>
 ```
 
 Added in v3.0.0
@@ -157,9 +157,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function sum<T extends string>(
+export declare function sum<T extends string>(
   tag: T
-): <A>(members: { [K in keyof A]: Encoder<A[K] & Record<T, K>> }) => Encoder<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: Encoder<A[K] & Record<T, K>> }) => Encoder<A[keyof A]>
 ```
 
 Added in v3.0.0
@@ -169,7 +169,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> { ... }
+export declare function tuple<A extends ReadonlyArray<unknown>>(
+  ...components: { [K in keyof A]: Encoder<A[K]> }
+): Encoder<A>
 ```
 
 Added in v3.0.0
@@ -179,7 +181,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(properties: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> { ... }
+export declare function type<A>(properties: { [K in keyof A]: Encoder<A[K]> }): Encoder<A>
 ```
 
 Added in v3.0.0

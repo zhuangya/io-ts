@@ -1,5 +1,4 @@
 import * as S from './Schemable';
-import { hasOwnProperty } from './util';
 // -------------------------------------------------------------------------------------
 // constructors
 // -------------------------------------------------------------------------------------
@@ -79,7 +78,7 @@ export function nullable(or) {
 export function type(properties) {
     return refinement(UnknownRecord, function (r) {
         for (var k in properties) {
-            if (!hasOwnProperty(r, k) || !properties[k].is(r[k])) {
+            if (!(k in r) || !properties[k].is(r[k])) {
                 return false;
             }
         }
@@ -158,7 +157,7 @@ export function sum(tag) {
     return function (members) {
         return refinement(UnknownRecord, function (r) {
             var v = r[tag];
-            if (typeof v === 'string' && hasOwnProperty(members, v)) {
+            if (typeof v === 'string' && v in members) {
                 return members[v].is(r);
             }
             return false;

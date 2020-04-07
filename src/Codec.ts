@@ -182,7 +182,7 @@ export function sum<T extends string>(
 ): <A>(members: { [K in keyof A]: Codec<A[K] & Record<T, K>> }) => Codec<A[keyof A]> {
   const sumD = D.decoder.sum(tag)
   const sumE = E.encoder.sum(tag)
-  return members => make(sumD(members), sumE(members))
+  return (members) => make(sumD(members), sumE(members))
 }
 
 /**

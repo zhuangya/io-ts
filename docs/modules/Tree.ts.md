@@ -21,7 +21,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function draw(e: NonEmptyArray<Tree<string>>): string { ... }
+export declare function draw(e: NonEmptyArray<Tree<string>>): string
 ```
 
 Added in v3.0.0

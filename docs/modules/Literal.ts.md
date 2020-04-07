@@ -32,12 +32,12 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function fold<R>(
+export declare function fold<R>(
   onString: (s: string) => R,
   onNumber: (n: number) => R,
   onBoolean: (b: boolean) => R,
   onNull: () => R
-): (literal: Literal) => R { ... }
+): (literal: Literal) => R
 ```
 
 Added in v3.0.0

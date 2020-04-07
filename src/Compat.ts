@@ -144,7 +144,7 @@ export function union<A extends ReadonlyArray<unknown>>(
   return {
     is: G.guard.union(...members).is,
     decode: D.decoder.union(...members).decode,
-    encode: a => {
+    encode: (a) => {
       for (const member of members) {
         if (member.is(a)) {
           return member.encode(a)
@@ -162,7 +162,7 @@ export function sum<T extends string>(
 ): <A>(members: { [K in keyof A]: Compat<A[K] & Record<T, K>> }) => Compat<A[keyof A]> {
   const sumC = C.codec.sum(tag)
   const sumG = G.guard.sum(tag)
-  return members => make(sumC(members), sumG(members))
+  return (members) => make(sumC(members), sumG(members))
 }
 
 /**

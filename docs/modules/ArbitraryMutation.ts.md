@@ -66,7 +66,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const URI: "ArbitraryMutation" = ...
+export declare const URI: 'ArbitraryMutation'
 ```
 
 Added in v3.0.0
@@ -76,7 +76,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownArray: ArbitraryMutation<Array<unknown>> = ...
+export declare const UnknownArray: ArbitraryMutation<unknown[]>
 ```
 
 Added in v3.0.0
@@ -86,7 +86,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownRecord: ArbitraryMutation<Record<string, unknown>> = ...
+export declare const UnknownRecord: ArbitraryMutation<Record<string, unknown>>
 ```
 
 Added in v3.0.0
@@ -96,7 +96,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const arbitraryMutation: S.Schemable<URI> & S.WithUnion<URI> = ...
+export declare const arbitraryMutation: S.Schemable<'ArbitraryMutation'> & S.WithUnion<'ArbitraryMutation'>
 ```
 
 Added in v3.0.0
@@ -106,7 +106,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(items: ArbitraryMutation<A>): ArbitraryMutation<Array<A>> { ... }
+export declare function array<A>(items: ArbitraryMutation<A>): ArbitraryMutation<Array<A>>
 ```
 
 Added in v3.0.0
@@ -116,7 +116,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const boolean: ArbitraryMutation<boolean> = ...
+export declare const boolean: ArbitraryMutation<boolean>
 ```
 
 Added in v3.0.0
@@ -126,7 +126,10 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(left: ArbitraryMutation<A>, right: ArbitraryMutation<B>): ArbitraryMutation<A & B> { ... }
+export declare function intersection<A, B>(
+  left: ArbitraryMutation<A>,
+  right: ArbitraryMutation<B>
+): ArbitraryMutation<A & B>
 ```
 
 Added in v3.0.0
@@ -136,7 +139,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(f: () => ArbitraryMutation<A>): ArbitraryMutation<A> { ... }
+export declare function lazy<A>(f: () => ArbitraryMutation<A>): ArbitraryMutation<A>
 ```
 
 Added in v3.0.0
@@ -146,7 +149,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends ReadonlyArray<Literal>>(...values: A): ArbitraryMutation<A[number]> { ... }
+export declare function literal<A extends ReadonlyArray<Literal>>(...values: A): ArbitraryMutation<A[number]>
 ```
 
 Added in v3.0.0
@@ -156,7 +159,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(mutation: fc.Arbitrary<unknown>, arbitrary: fc.Arbitrary<A>): ArbitraryMutation<A> { ... }
+export declare function make<A>(mutation: fc.Arbitrary<unknown>, arbitrary: fc.Arbitrary<A>): ArbitraryMutation<A>
 ```
 
 Added in v3.0.0
@@ -166,7 +169,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function nullable<A>(or: ArbitraryMutation<A>): ArbitraryMutation<null | A> { ... }
+export declare function nullable<A>(or: ArbitraryMutation<A>): ArbitraryMutation<null | A>
 ```
 
 Added in v3.0.0
@@ -176,7 +179,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const number: ArbitraryMutation<number> = ...
+export declare const number: ArbitraryMutation<number>
 ```
 
 Added in v3.0.0
@@ -186,7 +189,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(properties: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<Partial<A>> { ... }
+export declare function partial<A>(
+  properties: { [K in keyof A]: ArbitraryMutation<A[K]> }
+): ArbitraryMutation<Partial<A>>
 ```
 
 Added in v3.0.0
@@ -196,7 +201,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codomain: ArbitraryMutation<A>): ArbitraryMutation<Record<string, A>> { ... }
+export declare function record<A>(codomain: ArbitraryMutation<A>): ArbitraryMutation<Record<string, A>>
 ```
 
 Added in v3.0.0
@@ -206,7 +211,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const string: ArbitraryMutation<string> = ...
+export declare const string: ArbitraryMutation<string>
 ```
 
 Added in v3.0.0
@@ -216,9 +221,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function sum<T extends string>(
+export declare function sum<T extends string>(
   tag: T
-): <A>(members: { [K in keyof A]: ArbitraryMutation<A[K] & Record<T, K>> }) => ArbitraryMutation<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: ArbitraryMutation<A[K] & Record<T, K>> }) => ArbitraryMutation<A[keyof A]>
 ```
 
 Added in v3.0.0
@@ -228,9 +233,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A extends ReadonlyArray<unknown>>(
+export declare function tuple<A extends ReadonlyArray<unknown>>(
   ...components: { [K in keyof A]: ArbitraryMutation<A[K]> }
-): ArbitraryMutation<A> { ... }
+): ArbitraryMutation<A>
 ```
 
 Added in v3.0.0
@@ -240,7 +245,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(properties: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<A> { ... }
+export declare function type<A>(properties: { [K in keyof A]: ArbitraryMutation<A[K]> }): ArbitraryMutation<A>
 ```
 
 Added in v3.0.0
@@ -250,9 +255,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyArray<unknown>>(
+export declare function union<A extends ReadonlyArray<unknown>>(
   ...members: { [K in keyof A]: ArbitraryMutation<A[K]> }
-): ArbitraryMutation<A[number]> { ... }
+): ArbitraryMutation<A[number]>
 ```
 
 Added in v3.0.0

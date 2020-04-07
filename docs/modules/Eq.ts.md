@@ -35,7 +35,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownArray: Eq<Array<unknown>> = ...
+export declare const UnknownArray: E.Eq<unknown[]>
 ```
 
 Added in v3.0.0
@@ -45,7 +45,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownRecord: Eq<Record<string, unknown>> = ...
+export declare const UnknownRecord: E.Eq<Record<string, unknown>>
 ```
 
 Added in v3.0.0
@@ -55,7 +55,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const array: <A>(eq: Eq<A>) => Eq<Array<A>> = ...
+export declare const array: <A>(eq: E.Eq<A>) => E.Eq<A[]>
 ```
 
 Added in v3.0.0
@@ -65,7 +65,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const boolean: Eq<boolean> = ...
+export declare const boolean: E.Eq<boolean>
 ```
 
 Added in v3.0.0
@@ -75,7 +75,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const eq: typeof E.eq & S.Schemable<E.URI> = ...
+export declare const eq: Contravariant1<'Eq'> & S.Schemable<'Eq'>
 ```
 
 Added in v3.0.0
@@ -85,7 +85,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(left: Eq<A>, right: Eq<B>): Eq<A & B> { ... }
+export declare function intersection<A, B>(left: Eq<A>, right: Eq<B>): Eq<A & B>
 ```
 
 Added in v3.0.0
@@ -95,7 +95,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(f: () => Eq<A>): Eq<A> { ... }
+export declare function lazy<A>(f: () => Eq<A>): Eq<A>
 ```
 
 Added in v3.0.0
@@ -105,7 +105,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function nullable<A>(or: Eq<A>): Eq<null | A> { ... }
+export declare function nullable<A>(or: Eq<A>): Eq<null | A>
 ```
 
 Added in v3.0.0
@@ -115,7 +115,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const number: Eq<number> = ...
+export declare const number: E.Eq<number>
 ```
 
 Added in v3.0.0
@@ -125,7 +125,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(properties: { [K in keyof A]: Eq<A[K]> }): Eq<Partial<A>> { ... }
+export declare function partial<A>(properties: { [K in keyof A]: Eq<A[K]> }): Eq<Partial<A>>
 ```
 
 Added in v3.0.0
@@ -135,7 +135,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const record: <A>(codomain: Eq<A>) => Eq<Record<string, A>> = ...
+export declare const record: <A>(codomain: E.Eq<A>) => E.Eq<Record<string, A>>
 ```
 
 Added in v3.0.0
@@ -145,7 +145,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const string: Eq<string> = ...
+export declare const string: E.Eq<string>
 ```
 
 Added in v3.0.0
@@ -155,9 +155,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function sum<T extends string>(
+export declare function sum<T extends string>(
   tag: T
-): <A>(members: { [K in keyof A]: Eq<A[K] & Record<T, K>> }) => Eq<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: Eq<A[K] & Record<T, K>> }) => Eq<A[keyof A]>
 ```
 
 Added in v3.0.0
@@ -167,9 +167,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const tuple: <A extends ReadonlyArray<unknown>>(
-  ...components: { [K in keyof A]: Eq<A[K]> }
-) => Eq<A> = ...
+export declare const tuple: <A extends readonly unknown[]>(...components: { [K in keyof A]: E.Eq<A[K]> }) => E.Eq<A>
 ```
 
 Added in v3.0.0
@@ -179,7 +177,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const type: <A>(eqs: { [K in keyof A]: Eq<A[K]> }) => Eq<A> = ...
+export declare const type: <A>(eqs: { [K in keyof A]: E.Eq<A[K]> }) => E.Eq<A>
 ```
 
 Added in v3.0.0

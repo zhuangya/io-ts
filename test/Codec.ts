@@ -10,7 +10,7 @@ interface PositiveBrand {
 }
 type Positive = number & PositiveBrand
 const Positive = C.make(
-  D.parse(C.number, n => (n > 0 ? right(n as Positive) : left('Positive'))),
+  D.parse(C.number, (n) => (n > 0 ? right(n as Positive) : left('Positive'))),
   E.id
 )
 
@@ -19,7 +19,7 @@ describe('Codec', () => {
     it('imap', () => {
       const codec = C.codec.imap(
         C.string,
-        s => ({ value: s }),
+        (s) => ({ value: s }),
         ({ value }) => value
       )
       assert.deepStrictEqual(codec.decode('a'), right({ value: 'a' }))

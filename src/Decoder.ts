@@ -10,7 +10,6 @@ import * as T from 'fp-ts/lib/Tree'
 import * as G from './Guard'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import * as U from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -66,7 +65,7 @@ export function failures<A = never>(
  */
 export function fromGuard<A>(guard: G.Guard<A>, expected: string): Decoder<A> {
   return {
-    decode: u => (guard.is(u) ? success(u) : failure(`cannot decode ${JSON.stringify(u)}, should be ${expected}`))
+    decode: (u) => (guard.is(u) ? success(u) : failure(`cannot decode ${JSON.stringify(u)}, should be ${expected}`))
   }
 }
 
@@ -77,7 +76,7 @@ export function literal<A extends ReadonlyArray<Literal>>(...values: A): Decoder
   if (values.length === 0) {
     return never
   }
-  const expected = values.map(value => JSON.stringify(value)).join(' | ')
+  const expected = values.map((value) => JSON.stringify(value)).join(' | ')
   return fromGuard(G.guard.literal(...values), expected)
 }
 
@@ -127,10 +126,10 @@ export function withExpected<A>(
   expected: (actual: unknown, nea: NonEmptyArray<T.Tree<string>>) => NonEmptyArray<T.Tree<string>>
 ): Decoder<A> {
   return {
-    decode: u =>
+    decode: (u) =>
       pipe(
         decoder.decode(u),
-        mapLeft(nea => expected(u, nea))
+        mapLeft((nea) => expected(u, nea))
       )
   }
 }
@@ -144,7 +143,7 @@ export function refinement<A, B extends A>(
   expected: string
 ): Decoder<B> {
   return {
-    decode: u => {
+    decode: (u) => {
       const e = from.decode(u)
       if (isLeft(e)) {
         return e
@@ -160,7 +159,7 @@ export function refinement<A, B extends A>(
  */
 export function parse<A, B>(from: Decoder<A>, parser: (a: A) => Either<string, B>): Decoder<B> {
   return {
-    decode: u => {
+    decode: (u) => {
       const e = from.decode(u)
       if (isLeft(e)) {
         return e
@@ -186,7 +185,7 @@ export function nullable<A>(or: Decoder<A>): Decoder<null | A> {
  */
 export function type<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decoder<A> {
   return {
-    decode: u => {
+    decode: (u) => {
       const e = UnknownRecord.decode(u)
       if (isLeft(e)) {
         return e
@@ -212,7 +211,7 @@ export function type<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decoder<
  */
 export function partial<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decoder<Partial<A>> {
   return {
-    decode: u => {
+    decode: (u) => {
       const e = UnknownRecord.decode(u)
       if (isLeft(e)) {
         return e
@@ -221,7 +220,7 @@ export function partial<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decod
         let a: Partial<A> = {}
         for (const k in properties) {
           // don't add missing properties
-          if (U.hasOwnProperty(r, k)) {
+          if (k in r) {
             const rk = r[k]
             // don't strip undefined properties
             if (rk === undefined) {
@@ -247,7 +246,7 @@ export function partial<A>(properties: { [K in keyof A]: Decoder<A[K]> }): Decod
  */
 export function record<A>(codomain: Decoder<A>): Decoder<Record<string, A>> {
   return {
-    decode: u => {
+    decode: (u) => {
       const e = UnknownRecord.decode(u)
       if (isLeft(e)) {
         return e
@@ -273,7 +272,7 @@ export function record<A>(codomain: Decoder<A>): Decoder<Record<string, A>> {
  */
 export function array<A>(items: Decoder<A>): Decoder<Array<A>> {
   return {
-    decode: u => {
+    decode: (u) => {
       const e = UnknownArray.decode(u)
       if (isLeft(e)) {
         return e
@@ -300,7 +299,7 @@ export function array<A>(items: Decoder<A>): Decoder<Array<A>> {
  */
 export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Decoder<A[K]> }): Decoder<A> {
   return {
-    decode: u => {
+    decode: (u) => {
       const e = UnknownArray.decode(u)
       if (isLeft(e)) {
         return e
@@ -320,12 +319,30 @@ export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in k
   }
 }
 
+function typeOf(x: unknown): string {
+  return x === null ? 'null' : typeof x
+}
+
+/**
+ * @internal
+ */
+export function intersect<A, B>(a: A, b: B): A & B {
+  if (a !== undefined && b !== undefined) {
+    const tx = typeOf(a)
+    const ty = typeOf(b)
+    if (tx === 'object' || ty === 'object') {
+      return Object.assign({}, a, b)
+    }
+  }
+  return b as any
+}
+
 /**
  * @since 3.0.0
  */
 export function intersection<A, B>(left: Decoder<A>, right: Decoder<B>): Decoder<A & B> {
   return {
-    decode: u => {
+    decode: (u) => {
       const ea = left.decode(u)
       if (isLeft(ea)) {
         return ea
@@ -334,7 +351,7 @@ export function intersection<A, B>(left: Decoder<A>, right: Decoder<B>): Decoder
       if (isLeft(eb)) {
         return eb
       }
-      return success(U.intersect(ea.right, eb.right))
+      return success(intersect(ea.right, eb.right))
     }
   }
 }
@@ -345,10 +362,10 @@ export function intersection<A, B>(left: Decoder<A>, right: Decoder<B>): Decoder
 export function lazy<A>(id: string, f: () => Decoder<A>): Decoder<A> {
   const get = S.memoize<void, Decoder<A>>(f)
   return {
-    decode: u =>
+    decode: (u) =>
       pipe(
         get().decode(u),
-        mapLeft(nea => [tree(id, nea)])
+        mapLeft((nea) => [tree(id, nea)])
       )
   }
 }
@@ -359,21 +376,21 @@ export function lazy<A>(id: string, f: () => Decoder<A>): Decoder<A> {
 export function sum<T extends string>(
   tag: T
 ): <A>(members: { [K in keyof A]: Decoder<A[K] & Record<T, K>> }) => Decoder<A[keyof A]> {
-  return members => {
+  return (members) => {
     const keys = Object.keys(members)
     if (keys.length === 0) {
       return never
     }
-    const expected = keys.map(k => JSON.stringify(k)).join(' | ')
+    const expected = keys.map((k) => JSON.stringify(k)).join(' | ')
     return {
-      decode: u => {
+      decode: (u) => {
         const e = UnknownRecord.decode(u)
         if (isLeft(e)) {
           return e
         }
         const v = e.right[tag]
-        if (typeof v === 'string' && U.hasOwnProperty(members, v)) {
-          return members[v].decode(u)
+        if (G.string.is(v) && v in members) {
+          return (members as any)[v].decode(u)
         }
         return failures(`required property ${JSON.stringify(tag)}`, [
           tree(`cannot decode ${JSON.stringify(v)}, should be ${expected}`)
@@ -394,7 +411,7 @@ export function union<A extends ReadonlyArray<unknown>>(
     return never
   }
   return {
-    decode: u => {
+    decode: (u) => {
       const e = members[0].decode(u)
       if (isRight(e)) {
         return e
@@ -440,16 +457,16 @@ declare module 'fp-ts/lib/HKT' {
 export const decoder: Applicative1<URI> & D<URI> & S.Schemable<URI> & S.WithUnion<URI> = {
   URI,
   map: (fa, f) => ({
-    decode: u => either.map(fa.decode(u), f)
+    decode: (u) => either.map(fa.decode(u), f)
   }),
-  of: a => ({
+  of: (a) => ({
     decode: () => success(a)
   }),
   ap: (fab, fa) => ({
-    decode: u => either.ap(fab.decode(u), fa.decode(u))
+    decode: (u) => either.ap(fab.decode(u), fa.decode(u))
   }),
   alt: (fx, fy) => ({
-    decode: u => either.alt(fx.decode(u), () => fy().decode(u))
+    decode: (u) => either.alt(fx.decode(u), () => fy().decode(u))
   }),
   zero: () => never,
   literal,

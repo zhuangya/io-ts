@@ -16,7 +16,6 @@ import * as A from 'fp-ts/es6/Array';
 import * as E from 'fp-ts/es6/Eq';
 import * as R from 'fp-ts/es6/Record';
 import * as S from './Schemable';
-import { hasOwnProperty } from './util';
 // -------------------------------------------------------------------------------------
 // model
 // -------------------------------------------------------------------------------------
@@ -44,12 +43,12 @@ export var UnknownArray = E.fromEquals(function (x, y) { return x.length === y.l
  */
 export var UnknownRecord = E.fromEquals(function (x, y) {
     for (var k in x) {
-        if (!hasOwnProperty(y, k)) {
+        if (!(k in y)) {
             return false;
         }
     }
     for (var k in y) {
-        if (!hasOwnProperty(x, k)) {
+        if (!(k in x)) {
             return false;
         }
     }

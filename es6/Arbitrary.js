@@ -14,7 +14,7 @@ var __assign = (this && this.__assign) || function () {
  */
 import * as fc from 'fast-check';
 import * as S from './Schemable';
-import { intersect } from './util';
+import { intersect } from './Decoder';
 // -------------------------------------------------------------------------------------
 // constructors
 // -------------------------------------------------------------------------------------

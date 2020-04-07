@@ -90,10 +90,10 @@ export function nullable<A>(or: JsonSchema<A>): JsonSchema<null | A> {
  */
 export function type<A>(properties: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<A> {
   return {
-    compile: lazy =>
+    compile: (lazy) =>
       C.make({
         type: 'object',
-        properties: R.record.map<JsonSchema<unknown>, JSONSchema7>(properties, p => p.compile(lazy)),
+        properties: R.record.map<JsonSchema<unknown>, JSONSchema7>(properties, (p) => p.compile(lazy)),
         required: Object.keys(properties)
       })
   }
@@ -104,10 +104,10 @@ export function type<A>(properties: { [K in keyof A]: JsonSchema<A[K]> }): JsonS
  */
 export function partial<A>(properties: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<Partial<A>> {
   return {
-    compile: lazy =>
+    compile: (lazy) =>
       C.make({
         type: 'object',
-        properties: R.record.map<JsonSchema<unknown>, JSONSchema7>(properties, p => p.compile(lazy))
+        properties: R.record.map<JsonSchema<unknown>, JSONSchema7>(properties, (p) => p.compile(lazy))
       })
   }
 }
@@ -117,7 +117,7 @@ export function partial<A>(properties: { [K in keyof A]: JsonSchema<A[K]> }): Js
  */
 export function record<A>(codomain: JsonSchema<A>): JsonSchema<Record<string, A>> {
   return {
-    compile: lazy =>
+    compile: (lazy) =>
       C.make({
         type: 'object',
         additionalProperties: codomain.compile(lazy)
@@ -130,7 +130,7 @@ export function record<A>(codomain: JsonSchema<A>): JsonSchema<Record<string, A>
  */
 export function array<A>(items: JsonSchema<A>): JsonSchema<Array<A>> {
   return {
-    compile: lazy =>
+    compile: (lazy) =>
       C.make({
         type: 'array',
         items: items.compile(lazy)
@@ -146,10 +146,10 @@ export function tuple<A extends ReadonlyArray<unknown>>(
 ): JsonSchema<A> {
   const len = components.length
   return {
-    compile: lazy =>
+    compile: (lazy) =>
       C.make({
         type: 'array',
-        items: len > 0 ? components.map(c => c.compile(lazy)) : undefined,
+        items: len > 0 ? components.map((c) => c.compile(lazy)) : undefined,
         minItems: len,
         maxItems: len
       })
@@ -161,7 +161,7 @@ export function tuple<A extends ReadonlyArray<unknown>>(
  */
 export function intersection<A, B>(left: JsonSchema<A>, right: JsonSchema<B>): JsonSchema<A & B> {
   return {
-    compile: lazy => C.make({ allOf: [left.compile(lazy), right.compile(lazy)] })
+    compile: (lazy) => C.make({ allOf: [left.compile(lazy), right.compile(lazy)] })
   }
 }
 
@@ -173,7 +173,7 @@ export function sum<T extends string>(
 ): <A>(members: { [K in keyof A]: JsonSchema<A[K] & Record<T, K>> }) => JsonSchema<A[keyof A]> {
   return (members: Record<string, JsonSchema<unknown>>) => {
     return {
-      compile: lazy => C.make({ anyOf: Object.keys(members).map(k => members[k].compile(lazy)) })
+      compile: (lazy) => C.make({ anyOf: Object.keys(members).map((k) => members[k].compile(lazy)) })
     }
   }
 }
@@ -184,7 +184,7 @@ export function sum<T extends string>(
 export function lazy<A>(id: string, f: () => JsonSchema<A>): JsonSchema<A> {
   const $ref = `#/definitions/${id}`
   return {
-    compile: definitions => {
+    compile: (definitions) => {
       if (definitions) {
         if (definitions.hasOwnProperty(id)) {
           return C.make({ $ref })
@@ -210,7 +210,7 @@ export function union<A extends ReadonlyArray<unknown>>(
   ...members: { [K in keyof A]: JsonSchema<A[K]> }
 ): JsonSchema<A[number]> {
   return {
-    compile: lazy => C.make({ anyOf: members.map(m => m.compile(lazy)) })
+    compile: (lazy) => C.make({ anyOf: members.map((m) => m.compile(lazy)) })
   }
 }
 

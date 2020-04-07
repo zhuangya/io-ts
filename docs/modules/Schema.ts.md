@@ -45,7 +45,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(f: Schema<A>): Schema<A> { ... }
+export declare function make<A>(f: Schema<A>): Schema<A>
 ```
 
 Added in v3.0.0

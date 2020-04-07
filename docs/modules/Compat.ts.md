@@ -72,7 +72,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const URI: "Compat" = ...
+export declare const URI: 'Compat'
 ```
 
 Added in v3.0.0
@@ -82,7 +82,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownArray: Compat<Array<unknown>> = ...
+export declare const UnknownArray: Compat<unknown[]>
 ```
 
 Added in v3.0.0
@@ -92,7 +92,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownRecord: Compat<Record<string, unknown>> = ...
+export declare const UnknownRecord: Compat<Record<string, unknown>>
 ```
 
 Added in v3.0.0
@@ -102,7 +102,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(items: Compat<A>): Compat<Array<A>> { ... }
+export declare function array<A>(items: Compat<A>): Compat<Array<A>>
 ```
 
 Added in v3.0.0
@@ -112,7 +112,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const boolean: Compat<boolean> = ...
+export declare const boolean: Compat<boolean>
 ```
 
 Added in v3.0.0
@@ -122,7 +122,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const compat: S.Schemable<URI> & S.WithUnion<URI> = ...
+export declare const compat: S.Schemable<'Compat'> & S.WithUnion<'Compat'>
 ```
 
 Added in v3.0.0
@@ -132,7 +132,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(left: Compat<A>, right: Compat<B>): Compat<A & B> { ... }
+export declare function intersection<A, B>(left: Compat<A>, right: Compat<B>): Compat<A & B>
 ```
 
 Added in v3.0.0
@@ -142,7 +142,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(id: string, f: () => Compat<A>): Compat<A> { ... }
+export declare function lazy<A>(id: string, f: () => Compat<A>): Compat<A>
 ```
 
 Added in v3.0.0
@@ -152,7 +152,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends ReadonlyArray<Literal>>(...values: A): Compat<A[number]> { ... }
+export declare function literal<A extends ReadonlyArray<Literal>>(...values: A): Compat<A[number]>
 ```
 
 Added in v3.0.0
@@ -162,7 +162,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(codec: C.Codec<A>, guard: G.Guard<A>): Compat<A> { ... }
+export declare function make<A>(codec: C.Codec<A>, guard: G.Guard<A>): Compat<A>
 ```
 
 Added in v3.0.0
@@ -172,7 +172,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function nullable<A>(or: Compat<A>): Compat<null | A> { ... }
+export declare function nullable<A>(or: Compat<A>): Compat<null | A>
 ```
 
 Added in v3.0.0
@@ -182,7 +182,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const number: Compat<number> = ...
+export declare const number: Compat<number>
 ```
 
 Added in v3.0.0
@@ -192,7 +192,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(properties: { [K in keyof A]: Compat<A[K]> }): Compat<Partial<A>> { ... }
+export declare function partial<A>(properties: { [K in keyof A]: Compat<A[K]> }): Compat<Partial<A>>
 ```
 
 Added in v3.0.0
@@ -202,7 +202,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codomain: Compat<A>): Compat<Record<string, A>> { ... }
+export declare function record<A>(codomain: Compat<A>): Compat<Record<string, A>>
 ```
 
 Added in v3.0.0
@@ -212,7 +212,11 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(from: Compat<A>, refinement: (a: A) => a is B, expected: string): Compat<B> { ... }
+export declare function refinement<A, B extends A>(
+  from: Compat<A>,
+  refinement: (a: A) => a is B,
+  expected: string
+): Compat<B>
 ```
 
 Added in v3.0.0
@@ -222,7 +226,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const string: Compat<string> = ...
+export declare const string: Compat<string>
 ```
 
 Added in v3.0.0
@@ -232,9 +236,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function sum<T extends string>(
+export declare function sum<T extends string>(
   tag: T
-): <A>(members: { [K in keyof A]: Compat<A[K] & Record<T, K>> }) => Compat<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: Compat<A[K] & Record<T, K>> }) => Compat<A[keyof A]>
 ```
 
 Added in v3.0.0
@@ -244,7 +248,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Compat<A[K]> }): Compat<A> { ... }
+export declare function tuple<A extends ReadonlyArray<unknown>>(
+  ...components: { [K in keyof A]: Compat<A[K]> }
+): Compat<A>
 ```
 
 Added in v3.0.0
@@ -254,7 +260,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(properties: { [K in keyof A]: Compat<A[K]> }): Compat<A> { ... }
+export declare function type<A>(properties: { [K in keyof A]: Compat<A[K]> }): Compat<A>
 ```
 
 Added in v3.0.0
@@ -264,9 +270,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyArray<unknown>>(
+export declare function union<A extends ReadonlyArray<unknown>>(
   ...members: { [K in keyof A]: Compat<A[K]> }
-): Compat<A[number]> { ... }
+): Compat<A[number]>
 ```
 
 Added in v3.0.0

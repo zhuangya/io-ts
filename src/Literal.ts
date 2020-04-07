@@ -12,7 +12,7 @@ export function fold<R>(
   onBoolean: (b: boolean) => R,
   onNull: () => R
 ): (literal: Literal) => R {
-  return literal => {
+  return (literal) => {
     if (typeof literal === 'string') {
       return onString(literal)
     } else if (typeof literal === 'number') {

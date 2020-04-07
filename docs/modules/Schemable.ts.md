@@ -66,7 +66,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function memoize<A, B>(f: (a: A) => B): (a: A) => B { ... }
+export declare function memoize<A, B>(f: (a: A) => B): (a: A) => B
 ```
 
 Added in v3.0.0

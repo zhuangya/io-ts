@@ -64,7 +64,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function $ref(id: string): TypeNode<unknown> { ... }
+export declare function $ref(id: string): TypeNode<unknown>
 ```
 
 Added in v3.0.0
@@ -74,7 +74,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const URI: "TypeNode" = ...
+export declare const URI: 'TypeNode'
 ```
 
 Added in v3.0.0
@@ -84,7 +84,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownArray: TypeNode<Array<unknown>> = ...
+export declare const UnknownArray: TypeNode<unknown[]>
 ```
 
 Added in v3.0.0
@@ -94,7 +94,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownRecord: TypeNode<Record<string, unknown>> = ...
+export declare const UnknownRecord: TypeNode<Record<string, unknown>>
 ```
 
 Added in v3.0.0
@@ -104,7 +104,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(items: TypeNode<A>): TypeNode<Array<A>> { ... }
+export declare function array<A>(items: TypeNode<A>): TypeNode<Array<A>>
 ```
 
 Added in v3.0.0
@@ -114,7 +114,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const boolean: TypeNode<boolean> = ...
+export declare const boolean: TypeNode<boolean>
 ```
 
 Added in v3.0.0
@@ -124,7 +124,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(left: TypeNode<A>, right: TypeNode<B>): TypeNode<A & B> { ... }
+export declare function intersection<A, B>(left: TypeNode<A>, right: TypeNode<B>): TypeNode<A & B>
 ```
 
 Added in v3.0.0
@@ -134,7 +134,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(id: string, f: () => TypeNode<A>): TypeNode<A> { ... }
+export declare function lazy<A>(id: string, f: () => TypeNode<A>): TypeNode<A>
 ```
 
 Added in v3.0.0
@@ -144,7 +144,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends ReadonlyArray<Literal>>(...values: A): TypeNode<A[number]> { ... }
+export declare function literal<A extends ReadonlyArray<Literal>>(...values: A): TypeNode<A[number]>
 ```
 
 Added in v3.0.0
@@ -154,7 +154,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function nullable<A>(or: TypeNode<A>): TypeNode<null | A> { ... }
+export declare function nullable<A>(or: TypeNode<A>): TypeNode<null | A>
 ```
 
 Added in v3.0.0
@@ -164,7 +164,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const number: TypeNode<number> = ...
+export declare const number: TypeNode<number>
 ```
 
 Added in v3.0.0
@@ -174,7 +174,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(properties: { [K in keyof A]: TypeNode<A[K]> }): TypeNode<Partial<A>> { ... }
+export declare function partial<A>(properties: { [K in keyof A]: TypeNode<A[K]> }): TypeNode<Partial<A>>
 ```
 
 Added in v3.0.0
@@ -184,7 +184,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function print(node: ts.Node): string { ... }
+export declare function print(node: ts.Node): string
 ```
 
 Added in v3.0.0
@@ -194,7 +194,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codomain: TypeNode<A>): TypeNode<Record<string, A>> { ... }
+export declare function record<A>(codomain: TypeNode<A>): TypeNode<Record<string, A>>
 ```
 
 Added in v3.0.0
@@ -204,7 +204,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const string: TypeNode<string> = ...
+export declare const string: TypeNode<string>
 ```
 
 Added in v3.0.0
@@ -214,9 +214,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function sum<T extends string>(
+export declare function sum<T extends string>(
   _tag: T
-): <A>(members: { [K in keyof A]: TypeNode<A[K] & Record<T, K>> }) => TypeNode<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: TypeNode<A[K] & Record<T, K>> }) => TypeNode<A[keyof A]>
 ```
 
 Added in v3.0.0
@@ -226,9 +226,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A extends ReadonlyArray<unknown>>(
+export declare function tuple<A extends ReadonlyArray<unknown>>(
   ...components: { [K in keyof A]: TypeNode<A[K]> }
-): TypeNode<A> { ... }
+): TypeNode<A>
 ```
 
 Added in v3.0.0
@@ -238,7 +238,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(properties: { [K in keyof A]: TypeNode<A[K]> }): TypeNode<A> { ... }
+export declare function type<A>(properties: { [K in keyof A]: TypeNode<A[K]> }): TypeNode<A>
 ```
 
 Added in v3.0.0
@@ -248,7 +248,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const typeNode: S.Schemable<URI> & S.WithUnion<URI> = ...
+export declare const typeNode: S.Schemable<'TypeNode'> & S.WithUnion<'TypeNode'>
 ```
 
 Added in v3.0.0
@@ -258,9 +258,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyArray<unknown>>(
+export declare function union<A extends ReadonlyArray<unknown>>(
   ...members: { [K in keyof A]: TypeNode<A[K]> }
-): TypeNode<A[number]> { ... }
+): TypeNode<A[number]>
 ```
 
 Added in v3.0.0

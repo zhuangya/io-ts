@@ -64,7 +64,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const URI: "Guard" = ...
+export declare const URI: 'Guard'
 ```
 
 Added in v3.0.0
@@ -74,7 +74,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownArray: Guard<Array<unknown>> = ...
+export declare const UnknownArray: Guard<unknown[]>
 ```
 
 Added in v3.0.0
@@ -84,7 +84,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownRecord: Guard<Record<string, unknown>> = ...
+export declare const UnknownRecord: Guard<Record<string, unknown>>
 ```
 
 Added in v3.0.0
@@ -94,7 +94,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(items: Guard<A>): Guard<Array<A>> { ... }
+export declare function array<A>(items: Guard<A>): Guard<Array<A>>
 ```
 
 Added in v3.0.0
@@ -104,7 +104,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const boolean: Guard<boolean> = ...
+export declare const boolean: Guard<boolean>
 ```
 
 Added in v3.0.0
@@ -114,7 +114,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const guard: S.Schemable<URI> & S.WithUnion<URI> = ...
+export declare const guard: S.Schemable<'Guard'> & S.WithUnion<'Guard'>
 ```
 
 Added in v3.0.0
@@ -124,7 +124,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(left: Guard<A>, right: Guard<B>): Guard<A & B> { ... }
+export declare function intersection<A, B>(left: Guard<A>, right: Guard<B>): Guard<A & B>
 ```
 
 Added in v3.0.0
@@ -134,7 +134,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(f: () => Guard<A>): Guard<A> { ... }
+export declare function lazy<A>(f: () => Guard<A>): Guard<A>
 ```
 
 Added in v3.0.0
@@ -144,7 +144,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends ReadonlyArray<Literal>>(...values: A): Guard<A[number]> { ... }
+export declare function literal<A extends ReadonlyArray<Literal>>(...values: A): Guard<A[number]>
 ```
 
 Added in v3.0.0
@@ -154,7 +154,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const never: Guard<never> = ...
+export declare const never: Guard<never>
 ```
 
 Added in v3.0.0
@@ -164,7 +164,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function nullable<A>(or: Guard<A>): Guard<null | A> { ... }
+export declare function nullable<A>(or: Guard<A>): Guard<null | A>
 ```
 
 Added in v3.0.0
@@ -174,7 +174,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const number: Guard<number> = ...
+export declare const number: Guard<number>
 ```
 
 Added in v3.0.0
@@ -184,7 +184,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>> { ... }
+export declare function partial<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<Partial<A>>
 ```
 
 Added in v3.0.0
@@ -194,7 +194,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codomain: Guard<A>): Guard<Record<string, A>> { ... }
+export declare function record<A>(codomain: Guard<A>): Guard<Record<string, A>>
 ```
 
 Added in v3.0.0
@@ -204,7 +204,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(from: Guard<A>, refinement: (a: A) => a is B): Guard<B> { ... }
+export declare function refinement<A, B extends A>(from: Guard<A>, refinement: (a: A) => a is B): Guard<B>
 ```
 
 Added in v3.0.0
@@ -214,7 +214,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const string: Guard<string> = ...
+export declare const string: Guard<string>
 ```
 
 Added in v3.0.0
@@ -224,9 +224,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function sum<T extends string>(
+export declare function sum<T extends string>(
   tag: T
-): <A>(members: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => Guard<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) => Guard<A[keyof A]>
 ```
 
 Added in v3.0.0
@@ -236,7 +236,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Guard<A[K]> }): Guard<A> { ... }
+export declare function tuple<A extends ReadonlyArray<unknown>>(
+  ...components: { [K in keyof A]: Guard<A[K]> }
+): Guard<A>
 ```
 
 Added in v3.0.0
@@ -246,7 +248,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<A> { ... }
+export declare function type<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<A>
 ```
 
 Added in v3.0.0
@@ -256,7 +258,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyArray<unknown>>(...members: { [K in keyof A]: Guard<A[K]> }): Guard<A[number]> { ... }
+export declare function union<A extends ReadonlyArray<unknown>>(
+  ...members: { [K in keyof A]: Guard<A[K]> }
+): Guard<A[number]>
 ```
 
 Added in v3.0.0

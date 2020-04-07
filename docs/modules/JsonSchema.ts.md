@@ -62,7 +62,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const URI: "JsonSchema" = ...
+export declare const URI: 'JsonSchema'
 ```
 
 Added in v3.0.0
@@ -72,7 +72,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownArray: JsonSchema<Array<unknown>> = ...
+export declare const UnknownArray: JsonSchema<unknown[]>
 ```
 
 Added in v3.0.0
@@ -82,7 +82,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownRecord: JsonSchema<Record<string, unknown>> = ...
+export declare const UnknownRecord: JsonSchema<Record<string, unknown>>
 ```
 
 Added in v3.0.0
@@ -92,7 +92,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(items: JsonSchema<A>): JsonSchema<Array<A>> { ... }
+export declare function array<A>(items: JsonSchema<A>): JsonSchema<Array<A>>
 ```
 
 Added in v3.0.0
@@ -102,7 +102,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const boolean: JsonSchema<boolean> = ...
+export declare const boolean: JsonSchema<boolean>
 ```
 
 Added in v3.0.0
@@ -112,7 +112,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(left: JsonSchema<A>, right: JsonSchema<B>): JsonSchema<A & B> { ... }
+export declare function intersection<A, B>(left: JsonSchema<A>, right: JsonSchema<B>): JsonSchema<A & B>
 ```
 
 Added in v3.0.0
@@ -122,7 +122,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const jsonSchema: S.Schemable<URI> & S.WithUnion<URI> = ...
+export declare const jsonSchema: S.Schemable<'JsonSchema'> & S.WithUnion<'JsonSchema'>
 ```
 
 Added in v3.0.0
@@ -132,7 +132,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(id: string, f: () => JsonSchema<A>): JsonSchema<A> { ... }
+export declare function lazy<A>(id: string, f: () => JsonSchema<A>): JsonSchema<A>
 ```
 
 Added in v3.0.0
@@ -142,7 +142,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends ReadonlyArray<Literal>>(...values: A): JsonSchema<A[number]> { ... }
+export declare function literal<A extends ReadonlyArray<Literal>>(...values: A): JsonSchema<A[number]>
 ```
 
 Added in v3.0.0
@@ -152,7 +152,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function nullable<A>(or: JsonSchema<A>): JsonSchema<null | A> { ... }
+export declare function nullable<A>(or: JsonSchema<A>): JsonSchema<null | A>
 ```
 
 Added in v3.0.0
@@ -162,7 +162,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const number: JsonSchema<number> = ...
+export declare const number: JsonSchema<number>
 ```
 
 Added in v3.0.0
@@ -172,7 +172,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(properties: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<Partial<A>> { ... }
+export declare function partial<A>(properties: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<Partial<A>>
 ```
 
 Added in v3.0.0
@@ -182,7 +182,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codomain: JsonSchema<A>): JsonSchema<Record<string, A>> { ... }
+export declare function record<A>(codomain: JsonSchema<A>): JsonSchema<Record<string, A>>
 ```
 
 Added in v3.0.0
@@ -192,7 +192,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const string: JsonSchema<string> = ...
+export declare const string: JsonSchema<string>
 ```
 
 Added in v3.0.0
@@ -202,9 +202,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function sum<T extends string>(
+export declare function sum<T extends string>(
   _tag: T
-): <A>(members: { [K in keyof A]: JsonSchema<A[K] & Record<T, K>> }) => JsonSchema<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: JsonSchema<A[K] & Record<T, K>> }) => JsonSchema<A[keyof A]>
 ```
 
 Added in v3.0.0
@@ -214,9 +214,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A extends ReadonlyArray<unknown>>(
+export declare function tuple<A extends ReadonlyArray<unknown>>(
   ...components: { [K in keyof A]: JsonSchema<A[K]> }
-): JsonSchema<A> { ... }
+): JsonSchema<A>
 ```
 
 Added in v3.0.0
@@ -226,7 +226,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(properties: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<A> { ... }
+export declare function type<A>(properties: { [K in keyof A]: JsonSchema<A[K]> }): JsonSchema<A>
 ```
 
 Added in v3.0.0
@@ -236,9 +236,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyArray<unknown>>(
+export declare function union<A extends ReadonlyArray<unknown>>(
   ...members: { [K in keyof A]: JsonSchema<A[K]> }
-): JsonSchema<A[number]> { ... }
+): JsonSchema<A[number]>
 ```
 
 Added in v3.0.0

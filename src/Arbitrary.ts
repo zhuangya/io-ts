@@ -4,7 +4,7 @@
 import * as fc from 'fast-check'
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { intersect } from './util'
+import { intersect } from './Decoder'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -23,7 +23,7 @@ export interface Arbitrary<A> extends fc.Arbitrary<A> {}
  * @since 3.0.0
  */
 export function literal<A extends ReadonlyArray<Literal>>(...values: A): Arbitrary<A[number]> {
-  return fc.oneof(...values.map(v => fc.constant(v)))
+  return fc.oneof(...values.map((v) => fc.constant(v)))
 }
 
 // -------------------------------------------------------------------------------------
@@ -83,8 +83,8 @@ export function type<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitr
  * @since 3.0.0
  */
 export function partial<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<Partial<A>> {
-  const keys = fc.oneof(...Object.keys(properties).map(p => fc.constant(p)))
-  return keys.chain(key => {
+  const keys = fc.oneof(...Object.keys(properties).map((p) => fc.constant(p)))
+  return keys.chain((key) => {
     const p: any = { ...properties }
     delete p[key]
     return fc.record(p)
@@ -130,7 +130,7 @@ export function intersection<A, B>(left: Arbitrary<A>, right: Arbitrary<B>): Arb
 export function sum<T extends string>(
   _tag: T
 ): <A>(members: { [K in keyof A]: Arbitrary<A[K] & Record<T, K>> }) => Arbitrary<A[keyof A]> {
-  return (members: Record<string, Arbitrary<any>>) => fc.oneof(...Object.keys(members).map(k => members[k]))
+  return (members: Record<string, Arbitrary<any>>) => fc.oneof(...Object.keys(members).map((k) => members[k]))
 }
 
 /**

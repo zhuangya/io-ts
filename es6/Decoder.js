@@ -3,7 +3,6 @@ import { pipe, pipeable } from 'fp-ts/es6/pipeable';
 import * as T from 'fp-ts/es6/Tree';
 import * as G from './Guard';
 import * as S from './Schemable';
-import * as U from './util';
 // -------------------------------------------------------------------------------------
 // constructors
 // -------------------------------------------------------------------------------------
@@ -173,7 +172,7 @@ export function partial(properties) {
                 var a = {};
                 for (var k in properties) {
                     // don't add missing properties
-                    if (U.hasOwnProperty(r, k)) {
+                    if (k in r) {
                         var rk = r[k];
                         // don't strip undefined properties
                         if (rk === undefined) {
@@ -279,6 +278,22 @@ export function tuple() {
         }
     };
 }
+function typeOf(x) {
+    return x === null ? 'null' : typeof x;
+}
+/**
+ * @internal
+ */
+export function intersect(a, b) {
+    if (a !== undefined && b !== undefined) {
+        var tx = typeOf(a);
+        var ty = typeOf(b);
+        if (tx === 'object' || ty === 'object') {
+            return Object.assign({}, a, b);
+        }
+    }
+    return b;
+}
 /**
  * @since 3.0.0
  */
@@ -293,7 +308,7 @@ export function intersection(left, right) {
             if (isLeft(eb)) {
                 return eb;
             }
-            return success(U.intersect(ea.right, eb.right));
+            return success(intersect(ea.right, eb.right));
         }
     };
 }
@@ -325,7 +340,7 @@ export function sum(tag) {
                     return e;
                 }
                 var v = e.right[tag];
-                if (typeof v === 'string' && U.hasOwnProperty(members, v)) {
+                if (G.string.is(v) && v in members) {
                     return members[v].decode(u);
                 }
                 return failures("required property " + JSON.stringify(tag), [

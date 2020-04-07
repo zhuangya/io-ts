@@ -102,7 +102,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const URI: "Codec" = ...
+export declare const URI: 'Codec'
 ```
 
 Added in v3.0.0
@@ -112,7 +112,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownArray: Codec<Array<unknown>> = ...
+export declare const UnknownArray: Codec<unknown[]>
 ```
 
 Added in v3.0.0
@@ -122,7 +122,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownRecord: Codec<Record<string, unknown>> = ...
+export declare const UnknownRecord: Codec<Record<string, unknown>>
 ```
 
 Added in v3.0.0
@@ -132,7 +132,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(items: Codec<A>): Codec<Array<A>> { ... }
+export declare function array<A>(items: Codec<A>): Codec<Array<A>>
 ```
 
 Added in v3.0.0
@@ -142,7 +142,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const boolean: Codec<boolean> = ...
+export declare const boolean: Codec<boolean>
 ```
 
 Added in v3.0.0
@@ -152,7 +152,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const codec: Invariant1<URI> & S.Schemable<URI> = ...
+export declare const codec: Invariant1<'Codec'> & S.Schemable<'Codec'>
 ```
 
 Added in v3.0.0
@@ -162,7 +162,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(left: Codec<A>, right: Codec<B>): Codec<A & B> { ... }
+export declare function intersection<A, B>(left: Codec<A>, right: Codec<B>): Codec<A & B>
 ```
 
 Added in v3.0.0
@@ -172,7 +172,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(id: string, f: () => Codec<A>): Codec<A> { ... }
+export declare function lazy<A>(id: string, f: () => Codec<A>): Codec<A>
 ```
 
 Added in v3.0.0
@@ -182,7 +182,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends ReadonlyArray<Literal>>(...values: A): Codec<A[number]> { ... }
+export declare function literal<A extends ReadonlyArray<Literal>>(...values: A): Codec<A[number]>
 ```
 
 Added in v3.0.0
@@ -192,7 +192,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A> { ... }
+export declare function make<A>(decoder: D.Decoder<A>, encoder: E.Encoder<A>): Codec<A>
 ```
 
 Added in v3.0.0
@@ -202,7 +202,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function nullable<A>(or: Codec<A>): Codec<null | A> { ... }
+export declare function nullable<A>(or: Codec<A>): Codec<null | A>
 ```
 
 Added in v3.0.0
@@ -212,7 +212,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const number: Codec<number> = ...
+export declare const number: Codec<number>
 ```
 
 Added in v3.0.0
@@ -222,7 +222,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(properties: { [K in keyof A]: Codec<A[K]> }): Codec<Partial<A>> { ... }
+export declare function partial<A>(properties: { [K in keyof A]: Codec<A[K]> }): Codec<Partial<A>>
 ```
 
 Added in v3.0.0
@@ -232,7 +232,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codomain: Codec<A>): Codec<Record<string, A>> { ... }
+export declare function record<A>(codomain: Codec<A>): Codec<Record<string, A>>
 ```
 
 Added in v3.0.0
@@ -242,7 +242,11 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function refinement<A, B extends A>(from: Codec<A>, refinement: (a: A) => a is B, expected: string): Codec<B> { ... }
+export declare function refinement<A, B extends A>(
+  from: Codec<A>,
+  refinement: (a: A) => a is B,
+  expected: string
+): Codec<B>
 ```
 
 Added in v3.0.0
@@ -252,7 +256,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const string: Codec<string> = ...
+export declare const string: Codec<string>
 ```
 
 Added in v3.0.0
@@ -262,9 +266,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function sum<T extends string>(
+export declare function sum<T extends string>(
   tag: T
-): <A>(members: { [K in keyof A]: Codec<A[K] & Record<T, K>> }) => Codec<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: Codec<A[K] & Record<T, K>> }) => Codec<A[keyof A]>
 ```
 
 Added in v3.0.0
@@ -274,7 +278,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Codec<A[K]> }): Codec<A> { ... }
+export declare function tuple<A extends ReadonlyArray<unknown>>(
+  ...components: { [K in keyof A]: Codec<A[K]> }
+): Codec<A>
 ```
 
 Added in v3.0.0
@@ -284,7 +290,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(properties: { [K in keyof A]: Codec<A[K]> }): Codec<A> { ... }
+export declare function type<A>(properties: { [K in keyof A]: Codec<A[K]> }): Codec<A>
 ```
 
 Added in v3.0.0
@@ -294,10 +300,10 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function withExpected<A>(
+export declare function withExpected<A>(
   codec: Codec<A>,
   expected: (actual: unknown, nea: NonEmptyArray<T.Tree<string>>) => NonEmptyArray<T.Tree<string>>
-): Codec<A> { ... }
+): Codec<A>
 ```
 
 Added in v3.0.0

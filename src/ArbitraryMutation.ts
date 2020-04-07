@@ -102,10 +102,10 @@ export function type<A>(properties: { [K in keyof A]: ArbitraryMutation<A[K]> })
     mutations[k] = properties[k].mutation
     arbitraries[k] = properties[k].arbitrary
   }
-  const key: fc.Arbitrary<string> = fc.oneof(...keys.map(key => fc.constant(key)))
+  const key: fc.Arbitrary<string> = fc.oneof(...keys.map((key) => fc.constant(key)))
   const arbitrary = A.type(arbitraries)
   return make(
-    arbitrary.chain(a => key.chain(key => mutations[key].map(m => ({ ...a, [key]: m })))),
+    arbitrary.chain((a) => key.chain((key) => mutations[key].map((m) => ({ ...a, [key]: m })))),
     arbitrary
   )
 }
@@ -128,10 +128,10 @@ export function partial<A>(properties: { [K in keyof A]: ArbitraryMutation<A[K]>
     mutations[k] = properties[k].mutation
     arbitraries[k] = properties[k].arbitrary
   }
-  const key: fc.Arbitrary<string> = fc.oneof(...keys.map(key => fc.constant(key)))
+  const key: fc.Arbitrary<string> = fc.oneof(...keys.map((key) => fc.constant(key)))
   const arbitrary = A.partial(arbitraries)
   return make(
-    arbitrary.filter(nonEmpty).chain(a => key.chain(key => mutations[key].map(m => ({ ...a, [key]: m })))),
+    arbitrary.filter(nonEmpty).chain((a) => key.chain((key) => mutations[key].map((m) => ({ ...a, [key]: m })))),
     arbitrary
   )
 }
@@ -156,14 +156,14 @@ export function array<A>(items: ArbitraryMutation<A>): ArbitraryMutation<Array<A
 export function tuple<A extends ReadonlyArray<unknown>>(
   ...components: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ): ArbitraryMutation<A> {
-  const arbitrary = A.tuple(...components.map(c => c.arbitrary))
+  const arbitrary = A.tuple(...components.map((c) => c.arbitrary))
   if (components.length === 0) {
     return make(fc.constant({}), arbitrary) as any
   }
-  const mutations = components.map(c => c.mutation)
+  const mutations = components.map((c) => c.mutation)
   const index = fc.oneof(...components.map((_, i) => fc.constant(i)))
   return make(
-    arbitrary.chain(t => index.chain(i => mutations[i].map(m => unsafeUpdateAt(i, m, t)))),
+    arbitrary.chain((t) => index.chain((i) => mutations[i].map((m) => unsafeUpdateAt(i, m, t)))),
     arbitrary
   ) as any
 }
@@ -209,8 +209,8 @@ export function lazy<A>(f: () => ArbitraryMutation<A>): ArbitraryMutation<A> {
 export function union<A extends ReadonlyArray<unknown>>(
   ...members: { [K in keyof A]: ArbitraryMutation<A[K]> }
 ): ArbitraryMutation<A[number]> {
-  const mutations = members.map(member => member.mutation)
-  const arbitraries = members.map(member => member.arbitrary)
+  const mutations = members.map((member) => member.mutation)
+  const arbitraries = members.map((member) => member.arbitrary)
   return make(A.union(...mutations), A.union(...arbitraries))
 }
 

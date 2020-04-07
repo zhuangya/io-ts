@@ -42,7 +42,7 @@ export interface WithUnion<S extends URIS> {
  */
 export function memoize<A, B>(f: (a: A) => B): (a: A) => B {
   let cache = new Map()
-  return a => {
+  return (a) => {
     if (!cache.has(a)) {
       const b = f(a)
       cache.set(a, b)

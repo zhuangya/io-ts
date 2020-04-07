@@ -31,7 +31,7 @@ function assert<A>(schema: Schema<A>): void {
   fc.assert(
     fc.property(
       arb,
-      a =>
+      (a) =>
         guard.is(a) &&
         eq.equals(a, a) &&
         isRight(compat.decode(a)) &&
@@ -39,7 +39,7 @@ function assert<A>(schema: Schema<A>): void {
         isRight(compat.decode(compat.encode(a)))
     )
   )
-  fc.assert(fc.property(am.mutation, m => !guard.is(m) && isLeft(compat.decode(m))))
+  fc.assert(fc.property(am.mutation, (m) => !guard.is(m) && isLeft(compat.decode(m))))
 }
 
 function assertWithUnion<A>(schema: Sc.Schema<A>): void {
@@ -50,46 +50,47 @@ function assertWithUnion<A>(schema: Sc.Schema<A>): void {
   fc.assert(
     fc.property(
       arb,
-      a => compat.is(a) && isRight(compat.decode(a)) && Boolean(validate(a)) && isRight(compat.decode(compat.encode(a)))
+      (a) =>
+        compat.is(a) && isRight(compat.decode(a)) && Boolean(validate(a)) && isRight(compat.decode(compat.encode(a)))
     )
   )
-  fc.assert(fc.property(am.mutation, m => !compat.is(m) && isLeft(compat.decode(m))))
+  fc.assert(fc.property(am.mutation, (m) => !compat.is(m) && isLeft(compat.decode(m))))
 }
 
 describe('Arbitrary', () => {
   it('string', () => {
-    assert(make(S => S.string))
+    assert(make((S) => S.string))
   })
 
   it('number', () => {
-    assert(make(S => S.number))
+    assert(make((S) => S.number))
   })
 
   it('boolean', () => {
-    assert(make(S => S.boolean))
+    assert(make((S) => S.boolean))
   })
 
   it('UnknownArray', () => {
-    assert(make(S => S.UnknownArray))
+    assert(make((S) => S.UnknownArray))
   })
 
   it('UnknownRecord', () => {
-    assert(make(S => S.UnknownRecord))
+    assert(make((S) => S.UnknownRecord))
   })
 
   it('literal', () => {
-    assert(make(S => S.literal('a')))
-    assert(make(S => S.literal('a', 1)))
-    assert(make(S => S.literal('a', null)))
+    assert(make((S) => S.literal('a')))
+    assert(make((S) => S.literal('a', 1)))
+    assert(make((S) => S.literal('a', null)))
   })
 
   it('nullable', () => {
-    assert(make(S => S.nullable(S.string)))
+    assert(make((S) => S.nullable(S.string)))
   })
 
   it('type', () => {
     assert(
-      make(S =>
+      make((S) =>
         S.type({
           name: S.string,
           age: S.number
@@ -100,7 +101,7 @@ describe('Arbitrary', () => {
 
   it('partial', () => {
     assert(
-      make(S =>
+      make((S) =>
         S.partial({
           name: S.string,
           age: S.number
@@ -110,27 +111,27 @@ describe('Arbitrary', () => {
   })
 
   it('record', () => {
-    assert(make(S => S.record(S.string)))
+    assert(make((S) => S.record(S.string)))
   })
 
   it('array', () => {
-    assert(make(S => S.array(S.string)))
+    assert(make((S) => S.array(S.string)))
   })
 
   it('tuple', () => {
-    assert(make(S => S.tuple()))
-    assert(make(S => S.tuple(S.string)))
-    assert(make(S => S.tuple(S.string, S.number)))
+    assert(make((S) => S.tuple()))
+    assert(make((S) => S.tuple(S.string)))
+    assert(make((S) => S.tuple(S.string, S.number)))
   })
 
   it('intersection', () => {
-    assert(make(S => S.intersection(S.type({ a: S.string }), S.type({ b: S.number }))))
+    assert(make((S) => S.intersection(S.type({ a: S.string }), S.type({ b: S.number }))))
   })
 
   it('sum', () => {
-    const A = make(S => S.type({ _tag: S.literal('A'), a: S.string }))
-    const B = make(S => S.type({ _tag: S.literal('B'), b: S.number }))
-    assert(make(S => S.sum('_tag')({ A: A(S), B: B(S) })))
+    const A = make((S) => S.type({ _tag: S.literal('A'), a: S.string }))
+    const B = make((S) => S.type({ _tag: S.literal('B'), b: S.number }))
+    assert(make((S) => S.sum('_tag')({ A: A(S), B: B(S) })))
   })
 
   it('lazy', () => {
@@ -140,13 +141,13 @@ describe('Arbitrary', () => {
       c?: number
     }
 
-    const schema: Schema<A> = make(S =>
+    const schema: Schema<A> = make((S) =>
       S.lazy('A', () => S.intersection(S.type({ a: S.string }), S.partial({ b: schema(S), c: S.number })))
     )
     assert(schema)
   })
 
   it('union', () => {
-    assertWithUnion(Sc.make(S => S.union(S.type({ a: S.string }), S.type({ b: S.number }))))
+    assertWithUnion(Sc.make((S) => S.union(S.type({ a: S.string }), S.type({ b: S.number }))))
   })
 })

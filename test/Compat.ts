@@ -9,7 +9,7 @@ import * as E from '../src/Encoder'
 
 const NumberFromString: C.Compat<number> = C.make(
   Co.make(
-    D.parse(D.string, s => {
+    D.parse(D.string, (s) => {
       const n = parseFloat(s)
       return isNaN(n) ? left(`cannot decode ${JSON.stringify(s)}, should be parsable into a number`) : right(n)
     }),

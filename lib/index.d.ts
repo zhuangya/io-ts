@@ -101,8 +101,17 @@ export declare class Type<A, O = A, I = unknown> implements Decoder<I, A>, Encod
     readonly validate: Validate<I, A>;
     /** converts a value of type A to a value of type O */
     readonly encode: Encode<A, O>;
+    /**
+     * @since 1.0.0
+     */
     readonly _A: A;
+    /**
+     * @since 1.0.0
+     */
     readonly _O: O;
+    /**
+     * @since 1.0.0
+     */
     readonly _I: I;
     constructor(
     /** a unique name for this codec */
@@ -163,6 +172,9 @@ export declare const success: <T>(value: T) => Validation<T>;
  * @since 1.0.0
  */
 export declare class NullType extends Type<null> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'NullType';
     constructor();
 }
@@ -179,6 +191,9 @@ export declare const nullType: NullC;
  * @since 1.0.0
  */
 export declare class UndefinedType extends Type<undefined> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'UndefinedType';
     constructor();
 }
@@ -192,6 +207,9 @@ declare const undefinedType: UndefinedC;
  * @since 1.2.0
  */
 export declare class VoidType extends Type<void> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'VoidType';
     constructor();
 }
@@ -208,6 +226,9 @@ export declare const voidType: VoidC;
  * @since 1.5.0
  */
 export declare class UnknownType extends Type<unknown> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'UnknownType';
     constructor();
 }
@@ -224,6 +245,9 @@ export declare const unknown: UnknownC;
  * @since 1.0.0
  */
 export declare class StringType extends Type<string> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'StringType';
     constructor();
 }
@@ -240,6 +264,9 @@ export declare const string: StringC;
  * @since 1.0.0
  */
 export declare class NumberType extends Type<number> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'NumberType';
     constructor();
 }
@@ -253,9 +280,31 @@ export interface NumberC extends NumberType {
  */
 export declare const number: NumberC;
 /**
+ * @since 2.1.0
+ */
+export declare class BigIntType extends Type<bigint> {
+    /**
+     * @since 1.0.0
+     */
+    readonly _tag: 'BigIntType';
+    constructor();
+}
+/**
+ * @since 2.1.0
+ */
+export interface BigIntC extends BigIntType {
+}
+/**
+ * @since 2.1.0
+ */
+export declare const bigint: BigIntC;
+/**
  * @since 1.0.0
  */
 export declare class BooleanType extends Type<boolean> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'BooleanType';
     constructor();
 }
@@ -272,6 +321,9 @@ export declare const boolean: BooleanC;
  * @since 1.0.0
  */
 export declare class AnyArrayType extends Type<Array<unknown>> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'AnyArrayType';
     constructor();
 }
@@ -290,6 +342,9 @@ export declare const UnknownArray: UnknownArrayC;
 export declare class AnyDictionaryType extends Type<{
     [key: string]: unknown;
 }> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'AnyDictionaryType';
     constructor();
 }
@@ -307,6 +362,9 @@ export interface UnknownRecordC extends AnyDictionaryType {
  * @deprecated
  */
 export declare class FunctionType extends Type<Function> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'FunctionType';
     constructor();
 }
@@ -327,6 +385,9 @@ export declare const Function: FunctionC;
 export declare class RefinementType<C extends Any, A = any, O = A, I = unknown> extends Type<A, O, I> {
     readonly type: C;
     readonly predicate: Predicate<A>;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'RefinementType';
     constructor(name: string, is: RefinementType<C, A, O, I>['is'], validate: RefinementType<C, A, O, I>['validate'], encode: RefinementType<C, A, O, I>['encode'], type: C, predicate: Predicate<A>);
 }
@@ -371,6 +432,9 @@ declare type LiteralValue = string | number | boolean;
  */
 export declare class LiteralType<V extends LiteralValue> extends Type<V> {
     readonly value: V;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'LiteralType';
     constructor(name: string, is: LiteralType<V>['is'], validate: LiteralType<V>['validate'], encode: LiteralType<V>['encode'], value: V);
 }
@@ -390,6 +454,9 @@ export declare class KeyofType<D extends {
     [key: string]: unknown;
 }> extends Type<keyof D> {
     readonly keys: D;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'KeyofType';
     constructor(name: string, is: KeyofType<D>['is'], validate: KeyofType<D>['validate'], encode: KeyofType<D>['encode'], keys: D);
 }
@@ -411,8 +478,14 @@ export declare const keyof: <D extends {
  */
 export declare class RecursiveType<C extends Any, A = any, O = A, I = unknown> extends Type<A, O, I> {
     runDefinition: () => C;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'RecursiveType';
     constructor(name: string, is: RecursiveType<C, A, O, I>['is'], validate: RecursiveType<C, A, O, I>['validate'], encode: RecursiveType<C, A, O, I>['encode'], runDefinition: () => C);
+    /**
+     * @since 1.0.0
+     */
     readonly type: C;
 }
 /**
@@ -424,6 +497,9 @@ export declare const recursion: <A, O = A, I = unknown, C extends Type<A, O, I> 
  */
 export declare class ArrayType<C extends Any, A = any, O = A, I = unknown> extends Type<A, O, I> {
     readonly type: C;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'ArrayType';
     constructor(name: string, is: ArrayType<C, A, O, I>['is'], validate: ArrayType<C, A, O, I>['validate'], encode: ArrayType<C, A, O, I>['encode'], type: C);
 }
@@ -441,6 +517,9 @@ export declare const array: <C extends Mixed>(codec: C, name?: string) => ArrayC
  */
 export declare class InterfaceType<P, A = any, O = A, I = unknown> extends Type<A, O, I> {
     readonly props: P;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'InterfaceType';
     constructor(name: string, is: InterfaceType<P, A, O, I>['is'], validate: InterfaceType<P, A, O, I>['validate'], encode: InterfaceType<P, A, O, I>['encode'], props: P);
 }
@@ -486,6 +565,9 @@ export declare const type: <P extends Props>(props: P, name?: string) => TypeC<P
  */
 export declare class PartialType<P, A = any, O = A, I = unknown> extends Type<A, O, I> {
     readonly props: P;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'PartialType';
     constructor(name: string, is: PartialType<P, A, O, I>['is'], validate: PartialType<P, A, O, I>['validate'], encode: PartialType<P, A, O, I>['encode'], props: P);
 }
@@ -520,6 +602,9 @@ export declare const partial: <P extends Props>(props: P, name?: string) => Part
 export declare class DictionaryType<D extends Any, C extends Any, A = any, O = A, I = unknown> extends Type<A, O, I> {
     readonly domain: D;
     readonly codomain: C;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'DictionaryType';
     constructor(name: string, is: DictionaryType<D, C, A, O, I>['is'], validate: DictionaryType<D, C, A, O, I>['validate'], encode: DictionaryType<D, C, A, O, I>['encode'], domain: D, codomain: C);
 }
@@ -547,12 +632,15 @@ export interface RecordC<D extends Mixed, C extends Mixed> extends DictionaryTyp
 /**
  * @since 1.7.1
  */
-export declare const record: <D extends Mixed, C extends Mixed>(domain: D, codomain: C, name?: string) => RecordC<D, C>;
+export declare function record<D extends Mixed, C extends Mixed>(domain: D, codomain: C, name?: string): RecordC<D, C>;
 /**
  * @since 1.0.0
  */
 export declare class UnionType<CS extends Array<Any>, A = any, O = A, I = unknown> extends Type<A, O, I> {
     readonly types: CS;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'UnionType';
     constructor(name: string, is: UnionType<CS, A, O, I>['is'], validate: UnionType<CS, A, O, I>['validate'], encode: UnionType<CS, A, O, I>['encode'], types: CS);
 }
@@ -570,6 +658,9 @@ export declare const union: <CS extends [Mixed, Mixed, ...Mixed[]]>(codecs: CS, 
  */
 export declare class IntersectionType<CS extends Array<Any>, A = any, O = A, I = unknown> extends Type<A, O, I> {
     readonly types: CS;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'IntersectionType';
     constructor(name: string, is: IntersectionType<CS, A, O, I>['is'], validate: IntersectionType<CS, A, O, I>['validate'], encode: IntersectionType<CS, A, O, I>['encode'], types: CS);
 }
@@ -606,6 +697,9 @@ export declare function intersection<A extends Mixed, B extends Mixed>(codecs: [
  */
 export declare class TupleType<CS extends Array<Any>, A = any, O = A, I = unknown> extends Type<A, O, I> {
     readonly types: CS;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'TupleType';
     constructor(name: string, is: TupleType<CS, A, O, I>['is'], validate: TupleType<CS, A, O, I>['validate'], encode: TupleType<CS, A, O, I>['encode'], types: CS);
 }
@@ -647,6 +741,9 @@ export declare function tuple<A extends Mixed>(codecs: [A], name?: string): Tupl
  */
 export declare class ReadonlyType<C extends Any, A = any, O = A, I = unknown> extends Type<A, O, I> {
     readonly type: C;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'ReadonlyType';
     constructor(name: string, is: ReadonlyType<C, A, O, I>['is'], validate: ReadonlyType<C, A, O, I>['validate'], encode: ReadonlyType<C, A, O, I>['encode'], type: C);
 }
@@ -668,6 +765,9 @@ export declare const readonly: <C extends Mixed>(codec: C, name?: string) => Rea
  */
 export declare class ReadonlyArrayType<C extends Any, A = any, O = A, I = unknown> extends Type<A, O, I> {
     readonly type: C;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'ReadonlyArrayType';
     constructor(name: string, is: ReadonlyArrayType<C, A, O, I>['is'], validate: ReadonlyArrayType<C, A, O, I>['validate'], encode: ReadonlyArrayType<C, A, O, I>['encode'], type: C);
 }
@@ -712,6 +812,9 @@ export declare const taggedUnion: <Tag extends string, CS extends [Mixed, Mixed,
  */
 export declare class ExactType<C extends Any, A = any, O = A, I = unknown> extends Type<A, O, I> {
     readonly type: C;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'ExactType';
     constructor(name: string, is: ExactType<C, A, O, I>['is'], validate: ExactType<C, A, O, I>['validate'], encode: ExactType<C, A, O, I>['encode'], type: C);
 }
@@ -794,6 +897,9 @@ export declare const getDefaultContext: (decoder: Decoder<any, any>) => Context;
  * @deprecated
  */
 export declare class NeverType extends Type<never> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'NeverType';
     constructor();
 }
@@ -813,6 +919,9 @@ export declare const never: NeverC;
  * @deprecated
  */
 export declare class AnyType extends Type<any> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'AnyType';
     constructor();
 }
@@ -839,6 +948,9 @@ export declare const Dictionary: UnknownRecordC;
  * @deprecated
  */
 export declare class ObjectType extends Type<object> {
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'ObjectType';
     constructor();
 }
@@ -893,6 +1005,9 @@ export declare type Compact<A> = {
  */
 export declare class StrictType<P, A = any, O = A, I = unknown> extends Type<A, O, I> {
     readonly props: P;
+    /**
+     * @since 1.0.0
+     */
     readonly _tag: 'StrictType';
     constructor(name: string, is: StrictType<P, A, O, I>['is'], validate: StrictType<P, A, O, I>['validate'], encode: StrictType<P, A, O, I>['encode'], props: P);
 }

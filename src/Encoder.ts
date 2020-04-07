@@ -5,7 +5,7 @@ import { Contravariant1 } from 'fp-ts/lib/Contravariant'
 import { identity } from 'fp-ts/lib/function'
 import { pipeable } from 'fp-ts/lib/pipeable'
 import * as S from './Schemable'
-import * as U from './util'
+import { intersect } from './Decoder'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -38,7 +38,7 @@ export const id: Encoder<unknown> = {
  */
 export function nullable<A>(or: Encoder<A>): Encoder<null | A> {
   return {
-    encode: a => (a === null ? a : or.encode(a))
+    encode: (a) => (a === null ? a : or.encode(a))
   }
 }
 
@@ -47,7 +47,7 @@ export function nullable<A>(or: Encoder<A>): Encoder<null | A> {
  */
 export function type<A>(properties: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> {
   return {
-    encode: a => {
+    encode: (a) => {
       const o: Record<string, unknown> = {}
       for (const k in properties) {
         o[k] = properties[k].encode(a[k])
@@ -62,12 +62,12 @@ export function type<A>(properties: { [K in keyof A]: Encoder<A[K]> }): Encoder<
  */
 export function partial<A>(properties: { [K in keyof A]: Encoder<A[K]> }): Encoder<Partial<A>> {
   return {
-    encode: a => {
+    encode: (a) => {
       const o: Record<string, unknown> = {}
       for (const k in properties) {
         const v: A[Extract<keyof A, string>] | undefined = a[k]
         // don't add missing properties
-        if (U.hasOwnProperty(a, k)) {
+        if (k in a) {
           // don't strip undefined properties
           o[k] = v === undefined ? v : properties[k].encode(v)
         }
@@ -82,7 +82,7 @@ export function partial<A>(properties: { [K in keyof A]: Encoder<A[K]> }): Encod
  */
 export function record<A>(codomain: Encoder<A>): Encoder<Record<string, A>> {
   return {
-    encode: r => {
+    encode: (r) => {
       const o: Record<string, unknown> = {}
       for (const k in r) {
         o[k] = codomain.encode(r[k])
@@ -97,7 +97,7 @@ export function record<A>(codomain: Encoder<A>): Encoder<Record<string, A>> {
  */
 export function array<A>(items: Encoder<A>): Encoder<Array<A>> {
   return {
-    encode: as => as.map(items.encode)
+    encode: (as) => as.map(items.encode)
   }
 }
 
@@ -106,7 +106,7 @@ export function array<A>(items: Encoder<A>): Encoder<Array<A>> {
  */
 export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Encoder<A[K]> }): Encoder<A> {
   return {
-    encode: as => components.map((c, i) => c.encode(as[i]))
+    encode: (as) => components.map((c, i) => c.encode(as[i]))
   }
 }
 
@@ -115,7 +115,7 @@ export function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in k
  */
 export function intersection<A, B>(left: Encoder<A>, right: Encoder<B>): Encoder<A & B> {
   return {
-    encode: ab => U.intersect(left.encode(ab), right.encode(ab))
+    encode: (ab) => intersect(left.encode(ab), right.encode(ab))
   }
 }
 
@@ -138,7 +138,7 @@ export function sum<T extends string>(
 export function lazy<A>(f: () => Encoder<A>): Encoder<A> {
   const get = S.memoize<void, Encoder<A>>(f)
   return {
-    encode: a => get().encode(a)
+    encode: (a) => get().encode(a)
   }
 }
 
@@ -168,7 +168,7 @@ declare module 'fp-ts/lib/HKT' {
 export const encoder: Contravariant1<URI> & S.Schemable<URI> = {
   URI,
   contramap: (fa, f) => ({
-    encode: b => fa.encode(f(b))
+    encode: (b) => fa.encode(f(b))
   }),
   literal: () => id,
   string: id,

@@ -31,9 +31,9 @@ export function $ref(id: string): Expression<unknown> {
 }
 
 const toLiteralExpression = fold<ts.Expression>(
-  s => ts.createStringLiteral(s),
-  n => ts.createNumericLiteral(String(n)),
-  b => ts.createLiteral(b),
+  (s) => ts.createStringLiteral(s),
+  (n) => ts.createNumericLiteral(String(n)),
+  (b) => ts.createLiteral(b),
   () => ts.createNull()
 )
 
@@ -112,7 +112,7 @@ export function type<A>(properties: { [K in keyof A]: Expression<A[K]> }): Expre
       C.make(
         ts.createCall(ts.createPropertyAccess(schemable, 'type'), undefined, [
           ts.createObjectLiteral(
-            Object.keys(expressions).map(k => ts.createPropertyAssignment(k, expressions[k].expression()))
+            Object.keys(expressions).map((k) => ts.createPropertyAssignment(k, expressions[k].expression()))
           )
         ])
       )
@@ -129,7 +129,7 @@ export function partial<A>(properties: { [K in keyof A]: Expression<A[K]> }): Ex
       C.make(
         ts.createCall(ts.createPropertyAccess(schemable, 'partial'), undefined, [
           ts.createObjectLiteral(
-            Object.keys(expressions).map(k => ts.createPropertyAssignment(k, expressions[k].expression()))
+            Object.keys(expressions).map((k) => ts.createPropertyAssignment(k, expressions[k].expression()))
           )
         ])
       )
@@ -168,7 +168,7 @@ export function tuple<A extends ReadonlyArray<unknown>>(
         ts.createCall(
           ts.createPropertyAccess(schemable, 'tuple'),
           undefined,
-          components.map(c => c.expression())
+          components.map((c) => c.expression())
         )
       )
   }
@@ -204,7 +204,7 @@ export function sum<T extends string>(
             undefined,
             [
               ts.createObjectLiteral(
-                Object.keys(members).map(k => ts.createPropertyAssignment(k, members[k].expression()))
+                Object.keys(members).map((k) => ts.createPropertyAssignment(k, members[k].expression()))
               )
             ]
           )
@@ -245,7 +245,7 @@ export function union<A extends ReadonlyArray<unknown>>(
         ts.createCall(
           ts.createPropertyAccess(schemable, 'union'),
           undefined,
-          members.map(m => m.expression())
+          members.map((m) => m.expression())
         )
       )
   }

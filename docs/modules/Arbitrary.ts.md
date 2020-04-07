@@ -60,7 +60,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const URI: "Arbitrary" = ...
+export declare const URI: 'Arbitrary'
 ```
 
 Added in v3.0.0
@@ -70,7 +70,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownArray: Arbitrary<Array<unknown>> = ...
+export declare const UnknownArray: Arbitrary<unknown[]>
 ```
 
 Added in v3.0.0
@@ -80,7 +80,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const UnknownRecord: Arbitrary<Record<string, unknown>> = ...
+export declare const UnknownRecord: Arbitrary<Record<string, unknown>>
 ```
 
 Added in v3.0.0
@@ -90,7 +90,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const arbitrary: S.Schemable<URI> & S.WithUnion<URI> = ...
+export declare const arbitrary: S.Schemable<'Arbitrary'> & S.WithUnion<'Arbitrary'>
 ```
 
 Added in v3.0.0
@@ -100,7 +100,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function array<A>(items: Arbitrary<A>): Arbitrary<Array<A>> { ... }
+export declare function array<A>(items: Arbitrary<A>): Arbitrary<Array<A>>
 ```
 
 Added in v3.0.0
@@ -110,7 +110,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const boolean: Arbitrary<boolean> = ...
+export declare const boolean: Arbitrary<boolean>
 ```
 
 Added in v3.0.0
@@ -120,7 +120,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function intersection<A, B>(left: Arbitrary<A>, right: Arbitrary<B>): Arbitrary<A & B> { ... }
+export declare function intersection<A, B>(left: Arbitrary<A>, right: Arbitrary<B>): Arbitrary<A & B>
 ```
 
 Added in v3.0.0
@@ -130,7 +130,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function lazy<A>(f: () => Arbitrary<A>): Arbitrary<A> { ... }
+export declare function lazy<A>(f: () => Arbitrary<A>): Arbitrary<A>
 ```
 
 Added in v3.0.0
@@ -140,7 +140,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function literal<A extends ReadonlyArray<Literal>>(...values: A): Arbitrary<A[number]> { ... }
+export declare function literal<A extends ReadonlyArray<Literal>>(...values: A): Arbitrary<A[number]>
 ```
 
 Added in v3.0.0
@@ -150,7 +150,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function nullable<A>(or: Arbitrary<A>): Arbitrary<null | A> { ... }
+export declare function nullable<A>(or: Arbitrary<A>): Arbitrary<null | A>
 ```
 
 Added in v3.0.0
@@ -160,7 +160,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const number: Arbitrary<number> = ...
+export declare const number: Arbitrary<number>
 ```
 
 Added in v3.0.0
@@ -170,7 +170,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function partial<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<Partial<A>> { ... }
+export declare function partial<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<Partial<A>>
 ```
 
 Added in v3.0.0
@@ -180,7 +180,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function record<A>(codomain: Arbitrary<A>): Arbitrary<Record<string, A>> { ... }
+export declare function record<A>(codomain: Arbitrary<A>): Arbitrary<Record<string, A>>
 ```
 
 Added in v3.0.0
@@ -190,7 +190,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export const string: Arbitrary<string> = ...
+export declare const string: Arbitrary<string>
 ```
 
 Added in v3.0.0
@@ -200,9 +200,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function sum<T extends string>(
+export declare function sum<T extends string>(
   _tag: T
-): <A>(members: { [K in keyof A]: Arbitrary<A[K] & Record<T, K>> }) => Arbitrary<A[keyof A]> { ... }
+): <A>(members: { [K in keyof A]: Arbitrary<A[K] & Record<T, K>> }) => Arbitrary<A[keyof A]>
 ```
 
 Added in v3.0.0
@@ -212,9 +212,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function tuple<A extends ReadonlyArray<unknown>>(
+export declare function tuple<A extends ReadonlyArray<unknown>>(
   ...components: { [K in keyof A]: Arbitrary<A[K]> }
-): Arbitrary<A> { ... }
+): Arbitrary<A>
 ```
 
 Added in v3.0.0
@@ -224,7 +224,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function type<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<A> { ... }
+export declare function type<A>(properties: { [K in keyof A]: Arbitrary<A[K]> }): Arbitrary<A>
 ```
 
 Added in v3.0.0
@@ -234,9 +234,9 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export function union<A extends ReadonlyArray<unknown>>(
+export declare function union<A extends ReadonlyArray<unknown>>(
   ...members: { [K in keyof A]: Arbitrary<A[K]> }
-): Arbitrary<A[number]> { ... }
+): Arbitrary<A[number]>
 ```
 
 Added in v3.0.0

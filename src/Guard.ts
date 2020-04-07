@@ -3,7 +3,6 @@
  */
 import { Literal } from './Literal'
 import * as S from './Schemable'
-import { hasOwnProperty } from './util'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -25,7 +24,7 @@ export interface Guard<A> {
  */
 export function literal<A extends ReadonlyArray<Literal>>(...values: A): Guard<A[number]> {
   return {
-    is: (u: unknown): u is A[number] => values.findIndex(a => a === u) !== -1
+    is: (u: unknown): u is A[number] => values.findIndex((a) => a === u) !== -1
   }
 }
 
@@ -105,7 +104,7 @@ export function type<A>(properties: { [K in keyof A]: Guard<A[K]> }): Guard<A> {
     [K in keyof A]: A[K]
   } => {
     for (const k in properties) {
-      if (!hasOwnProperty(r, k) || !properties[k].is(r[k])) {
+      if (!(k in r) || !properties[k].is(r[k])) {
         return false
       }
     }
@@ -172,7 +171,7 @@ export function intersection<A, B>(left: Guard<A>, right: Guard<B>): Guard<A & B
  */
 export function union<A extends ReadonlyArray<unknown>>(...members: { [K in keyof A]: Guard<A[K]> }): Guard<A[number]> {
   return {
-    is: (u: unknown): u is A | A[number] => members.some(m => m.is(u))
+    is: (u: unknown): u is A | A[number] => members.some((m) => m.is(u))
   }
 }
 
@@ -185,8 +184,8 @@ export function sum<T extends string>(
   return <A>(members: { [K in keyof A]: Guard<A[K] & Record<T, K>> }) =>
     refinement(UnknownRecord, (r): r is { [K in keyof A]: A[K] & Record<T, K> }[keyof A] => {
       const v = r[tag]
-      if (typeof v === 'string' && hasOwnProperty(members, v)) {
-        return members[v].is(r)
+      if (typeof v === 'string' && v in members) {
+        return (members as any)[v].is(r)
       }
       return false
     })
