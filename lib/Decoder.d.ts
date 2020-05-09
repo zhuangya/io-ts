@@ -7,7 +7,7 @@ import { Either } from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { Tree, Forest } from 'fp-ts/lib/Tree';
 import * as G from './Guard';
-import { Schemable, WithUnion, Literal } from './Schemable';
+import { Schemable, WithUnion, Literal, WithRefinement } from './Schemable';
 /**
  * @since 2.2.2
  */
@@ -149,7 +149,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 2.2.0
  */
-export declare const decoder: Applicative1<URI> & Alternative1<URI> & Schemable<URI> & WithUnion<URI>;
+export declare const decoder: Applicative1<URI> & Alternative1<URI> & Schemable<URI> & WithUnion<URI> & WithRefinement<URI>;
 declare const alt: <A>(that: () => Decoder<A>) => (fa: Decoder<A>) => Decoder<A>, ap: <A>(fa: Decoder<A>) => <B>(fab: Decoder<(a: A) => B>) => Decoder<B>, apFirst: <B>(fb: Decoder<B>) => <A>(fa: Decoder<A>) => Decoder<A>, apSecond: <B>(fb: Decoder<B>) => <A>(fa: Decoder<A>) => Decoder<B>, map: <A, B>(f: (a: A) => B) => (fa: Decoder<A>) => Decoder<B>;
 export { 
 /**

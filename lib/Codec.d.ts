@@ -4,7 +4,7 @@
 import { Invariant1 } from 'fp-ts/lib/Invariant';
 import * as D from './Decoder';
 import * as E from './Encoder';
-import { Schemable, Literal } from './Schemable';
+import { Schemable, Literal, WithRefinement } from './Schemable';
 /**
  * Laws:
  *
@@ -115,4 +115,4 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 2.2.0
  */
-export declare const codec: Invariant1<URI> & Schemable<URI>;
+export declare const codec: Invariant1<URI> & Schemable<URI> & WithRefinement<URI>;

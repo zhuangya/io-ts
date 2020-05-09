@@ -1,7 +1,7 @@
 /**
  * @since 2.2.0
  */
-import { Schemable, WithUnion, Literal } from './Schemable';
+import { Schemable, WithUnion, Literal, WithRefinement } from './Schemable';
 /**
  * @since 2.2.0
  */
@@ -110,4 +110,4 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 2.2.0
  */
-export declare const guard: Schemable<URI> & WithUnion<URI>;
+export declare const guard: Schemable<URI> & WithUnion<URI> & WithRefinement<URI>;

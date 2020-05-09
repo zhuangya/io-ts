@@ -1,12 +1,13 @@
+import * as assert from 'assert'
 import * as fc from 'fast-check'
-import * as T from '../src/Type'
-import * as A from './Arbitrary'
+import { isRight } from 'fp-ts/lib/Either'
+import { Kind, URIS } from 'fp-ts/lib/HKT'
+import * as t from '../src'
 import * as D from '../src/Decoder'
 import * as G from '../src/Guard'
-import { isRight } from 'fp-ts/lib/Either'
-import * as t from '../src'
-import { Kind, URIS } from 'fp-ts/lib/HKT'
 import { memoize, Schemable, WithUnion } from '../src/Schemable'
+import * as T from '../src/Type'
+import * as A from './Arbitrary'
 
 interface Schema<A> {
   <S extends URIS>(S: Schemable<S> & WithUnion<S>): Kind<S, A>
@@ -174,5 +175,15 @@ describe('Type', () => {
       make((S) => S.union(S.string, S.number)),
       t.union([t.string, t.number])
     )
+  })
+
+  it('refinement', () => {
+    interface NonEmptyStringBrand {
+      readonly NonEmptyString: unique symbol
+    }
+    type NonEmptyString = string & NonEmptyStringBrand
+    const type = T.refinement(T.string, (s): s is NonEmptyString => s.length > 0, 'NonEmptyString')
+    assert.deepStrictEqual(isRight(type.decode('a')), true)
+    assert.deepStrictEqual(isRight(type.decode('')), false)
   })
 })

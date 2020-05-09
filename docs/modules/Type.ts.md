@@ -26,6 +26,7 @@ Added in v2.2.3
 - [number](#number)
 - [partial](#partial)
 - [record](#record)
+- [refinement](#refinement)
 - [string](#string)
 - [sum](#sum)
 - [tuple](#tuple)
@@ -99,7 +100,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare const instance: Schemable<'Type'> & WithUnion<'Type'>
+export declare const instance: Schemable<'Type'> & WithUnion<'Type'> & WithRefinement<'Type'>
 ```
 
 Added in v2.2.3
@@ -170,6 +171,20 @@ Added in v2.2.3
 
 ```ts
 export declare function record<A>(codomain: t.Type<A>): t.Type<Record<string, A>>
+```
+
+Added in v2.2.3
+
+# refinement
+
+**Signature**
+
+```ts
+export declare function refinement<A, B extends A>(
+  from: t.Type<A>,
+  refinement: (a: A) => a is B,
+  expected: string
+): t.Type<B>
 ```
 
 Added in v2.2.3

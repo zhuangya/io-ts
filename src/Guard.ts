@@ -1,7 +1,7 @@
 /**
  * @since 2.2.0
  */
-import { Schemable, memoize, WithUnion, Literal } from './Schemable'
+import { Schemable, memoize, WithUnion, Literal, WithRefinement } from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // model
@@ -228,7 +228,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 2.2.0
  */
-export const guard: Schemable<URI> & WithUnion<URI> = {
+export const guard: Schemable<URI> & WithUnion<URI> & WithRefinement<URI> = {
   URI,
   literal,
   string,
@@ -245,5 +245,6 @@ export const guard: Schemable<URI> & WithUnion<URI> = {
   intersection,
   sum,
   lazy: (_, f) => lazy(f),
-  union
+  union,
+  refinement: refinement as WithRefinement<URI>['refinement']
 }

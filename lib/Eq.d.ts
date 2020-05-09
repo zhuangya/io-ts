@@ -72,4 +72,4 @@ export declare function lazy<A>(f: () => Eq<A>): Eq<A>;
 /**
  * @since 2.2.2
  */
-export declare const eq: typeof E.eq & S.Schemable<E.URI>;
+export declare const eq: typeof E.eq & S.Schemable<E.URI> & S.WithRefinement<E.URI>;

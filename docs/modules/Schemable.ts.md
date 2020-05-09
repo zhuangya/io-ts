@@ -13,6 +13,7 @@ Added in v2.2.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [Schemable (interface)](#schemable-interface)
+- [WithRefinement (interface)](#withrefinement-interface)
 - [WithUnion (interface)](#withunion-interface)
 - [Literal (type alias)](#literal-type-alias)
 - [memoize](#memoize)
@@ -47,6 +48,18 @@ export interface Schemable<S extends URIS> {
 ```
 
 Added in v2.2.0
+
+# WithRefinement (interface)
+
+**Signature**
+
+```ts
+export interface WithRefinement<S extends URIS> {
+  readonly refinement: <A, B extends A>(from: Kind<S, A>, refinement: (a: A) => a is B, expected: string) => Kind<S, B>
+}
+```
+
+Added in v2.2.3
 
 # WithUnion (interface)
 

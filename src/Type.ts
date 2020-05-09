@@ -2,7 +2,7 @@
  * @since 2.2.3
  */
 import * as t from './index'
-import { Literal, Schemable, WithUnion } from './Schemable'
+import { Literal, Schemable, WithUnion, WithRefinement } from './Schemable'
 
 // -------------------------------------------------------------------------------------
 // constructors
@@ -47,6 +47,14 @@ export const UnknownRecord: t.Type<Record<string, unknown>> = t.UnknownRecord
 // -------------------------------------------------------------------------------------
 // combinators
 // -------------------------------------------------------------------------------------
+
+/**
+ * @since 2.2.3
+ */
+export function refinement<A, B extends A>(from: t.Type<A>, refinement: (a: A) => a is B, expected: string): t.Type<B> {
+  // tslint:disable-next-line: deprecation
+  return t.refinement(from, refinement, expected) as any
+}
 
 /**
  * @since 2.2.3
@@ -145,7 +153,7 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 2.2.3
  */
-export const instance: Schemable<URI> & WithUnion<URI> = {
+export const instance: Schemable<URI> & WithUnion<URI> & WithRefinement<URI> = {
   URI,
   literal,
   string,
@@ -162,5 +170,6 @@ export const instance: Schemable<URI> & WithUnion<URI> = {
   intersection,
   sum,
   lazy,
-  union
+  union,
+  refinement: refinement as WithRefinement<URI>['refinement']
 }

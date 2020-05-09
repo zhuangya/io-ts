@@ -42,6 +42,13 @@ export interface WithUnion<S extends URIS> {
 }
 
 /**
+ * @since 2.2.3
+ */
+export interface WithRefinement<S extends URIS> {
+  readonly refinement: <A, B extends A>(from: Kind<S, A>, refinement: (a: A) => a is B, expected: string) => Kind<S, B>
+}
+
+/**
  * @since 2.2.0
  */
 export function memoize<A, B>(f: (a: A) => B): (a: A) => B {

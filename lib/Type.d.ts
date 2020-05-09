@@ -2,7 +2,7 @@
  * @since 2.2.3
  */
 import * as t from './index';
-import { Literal, Schemable, WithUnion } from './Schemable';
+import { Literal, Schemable, WithUnion, WithRefinement } from './Schemable';
 /**
  * @since 2.2.3
  */
@@ -27,6 +27,10 @@ export declare const UnknownArray: t.Type<Array<unknown>>;
  * @since 2.2.3
  */
 export declare const UnknownRecord: t.Type<Record<string, unknown>>;
+/**
+ * @since 2.2.3
+ */
+export declare function refinement<A, B extends A>(from: t.Type<A>, refinement: (a: A) => a is B, expected: string): t.Type<B>;
 /**
  * @since 2.2.3
  */
@@ -93,4 +97,4 @@ declare module 'fp-ts/lib/HKT' {
 /**
  * @since 2.2.3
  */
-export declare const instance: Schemable<URI> & WithUnion<URI>;
+export declare const instance: Schemable<URI> & WithUnion<URI> & WithRefinement<URI>;
