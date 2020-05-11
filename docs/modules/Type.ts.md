@@ -12,6 +12,7 @@ Added in v2.2.3
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [Type (interface)](#type-interface)
 - [URI (type alias)](#uri-type-alias)
 - [URI](#uri)
 - [UnknownArray](#unknownarray)
@@ -34,6 +35,16 @@ Added in v2.2.3
 - [union](#union)
 
 ---
+
+# Type (interface)
+
+**Signature**
+
+```ts
+export interface Type<A> extends t.Type<A, unknown> {}
+```
+
+Added in v2.2.3
 
 # URI (type alias)
 
@@ -60,7 +71,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare const UnknownArray: t.Type<unknown[], unknown[], unknown>
+export declare const UnknownArray: Type<unknown[]>
 ```
 
 Added in v2.2.3
@@ -70,7 +81,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare const UnknownRecord: t.Type<Record<string, unknown>, Record<string, unknown>, unknown>
+export declare const UnknownRecord: Type<Record<string, unknown>>
 ```
 
 Added in v2.2.3
@@ -80,7 +91,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare function array<A>(items: t.Type<A>): t.Type<Array<A>>
+export declare function array<A>(items: Type<A>): Type<Array<A>>
 ```
 
 Added in v2.2.3
@@ -90,7 +101,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare const boolean: t.Type<boolean, boolean, unknown>
+export declare const boolean: Type<boolean>
 ```
 
 Added in v2.2.3
@@ -110,7 +121,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare function intersection<A, B>(left: t.Type<A>, right: t.Type<B>): t.Type<A & B>
+export declare function intersection<A, B>(left: Type<A>, right: Type<B>): Type<A & B>
 ```
 
 Added in v2.2.3
@@ -120,7 +131,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare function lazy<A>(id: string, f: () => t.Type<A>): t.Type<A>
+export declare function lazy<A>(id: string, f: () => Type<A>): Type<A>
 ```
 
 Added in v2.2.3
@@ -130,7 +141,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare function literal<A extends ReadonlyArray<Literal>>(...values: A): t.Type<A[number]>
+export declare function literal<A extends ReadonlyArray<Literal>>(...values: A): Type<A[number]>
 ```
 
 Added in v2.2.3
@@ -140,7 +151,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare function nullable<A>(or: t.Type<A>): t.Type<null | A>
+export declare function nullable<A>(or: Type<A>): Type<null | A>
 ```
 
 Added in v2.2.3
@@ -150,7 +161,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare const number: t.Type<number, number, unknown>
+export declare const number: Type<number>
 ```
 
 Added in v2.2.3
@@ -160,7 +171,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare function partial<A>(properties: { [K in keyof A]: t.Type<A[K]> }): t.Type<Partial<A>>
+export declare function partial<A>(properties: { [K in keyof A]: Type<A[K]> }): Type<Partial<A>>
 ```
 
 Added in v2.2.3
@@ -170,7 +181,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare function record<A>(codomain: t.Type<A>): t.Type<Record<string, A>>
+export declare function record<A>(codomain: Type<A>): Type<Record<string, A>>
 ```
 
 Added in v2.2.3
@@ -181,10 +192,10 @@ Added in v2.2.3
 
 ```ts
 export declare function refinement<A, B extends A>(
-  from: t.Type<A>,
+  from: Type<A>,
   refinement: (a: A) => a is B,
   expected: string
-): t.Type<B>
+): Type<B>
 ```
 
 Added in v2.2.3
@@ -194,7 +205,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare const string: t.Type<string, string, unknown>
+export declare const string: Type<string>
 ```
 
 Added in v2.2.3
@@ -206,7 +217,7 @@ Added in v2.2.3
 ```ts
 export declare function sum<T extends string>(
   _tag: T
-): <A>(members: { [K in keyof A]: t.Type<A[K] & Record<T, K>> }) => t.Type<A[keyof A]>
+): <A>(members: { [K in keyof A]: Type<A[K] & Record<T, K>> }) => Type<A[keyof A]>
 ```
 
 Added in v2.2.3
@@ -216,9 +227,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare function tuple<A extends ReadonlyArray<unknown>>(
-  ...components: { [K in keyof A]: t.Type<A[K]> }
-): t.Type<A>
+export declare function tuple<A extends ReadonlyArray<unknown>>(...components: { [K in keyof A]: Type<A[K]> }): Type<A>
 ```
 
 Added in v2.2.3
@@ -228,7 +237,7 @@ Added in v2.2.3
 **Signature**
 
 ```ts
-export declare function type<A>(properties: { [K in keyof A]: t.Type<A[K]> }): t.Type<A>
+export declare function type<A>(properties: { [K in keyof A]: Type<A[K]> }): Type<A>
 ```
 
 Added in v2.2.3
@@ -239,8 +248,8 @@ Added in v2.2.3
 
 ```ts
 export declare function union<A extends ReadonlyArray<unknown>>(
-  ...members: { [K in keyof A]: t.Type<A[K]> }
-): t.Type<A[number]>
+  ...members: { [K in keyof A]: Type<A[K]> }
+): Type<A[number]>
 ```
 
 Added in v2.2.3
